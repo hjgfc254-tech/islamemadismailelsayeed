@@ -14,15 +14,20 @@ Compact resume state for autonomous sessions. Update after every committed batch
    `requestFocusAfterShow`/heading/`#view`; `head()` heading `tabindex="-1"`), `market-ui.page.js` (filter focus request; timeline
    `aria-current="step"`), `tests/unit/customer-screen-focus.test.js` (new, 9), `tests/e2e/lib/cdp.js` (new, shared helpers),
    `tests/e2e/customer-orders.cdp.js` (new), Provider runner refactored onto lib (still 231/231), SW cache `-12`, docs.
-   `npm test` 265/265; Customer browser 60/60.
+   `npm test` 265/265; Customer browser 60/60. Commit `cf1e81c`.
+9. Customer routing/session/guest — placeholders converted to real modules: `apps/customer/customer-session.js`, `customer-router.js`,
+   `apps/guest/guest-policy.js`, `guest-entry.js` (+ `apps/guest/README.md`); wired into `index.html`, `app.js`, `account.page.js`, `market-ui.page.js`,
+   `request-wizard.page.js`; SW cache `-13`. Tests: `customer-routing-session.test.js` (12; 0/12 on placeholders), shared `customer-app-harness.js`.
+   `npm test` 277/277; Customer browser 68/68.
 
 ## Current task
-Customer Addresses and Support keyboard & accessibility (Phase 5 item 4) — see `START_HERE.md`.
+Customer `providers.page.js` extraction and `request-create.page.js` route entry (see `START_HERE.md`).
 
 ## Remaining queue (priority order)
-1. Customer Addresses + Support a11y.
-2. Phase 5 item 5: console/network smoke across Customer and Admin entries (reuse `lib/cdp.js` error collection).
-3. Admin page/dialog keyboard traversal.
+1. `providers.page.js` + `request-create.page.js` (real implementations).
+2. Admin placeholders (`admin-router`/`navigation-builder`/`permission-guard`/`admin-session`/`login.html`, `modules/*`): extract from `admin-shell.js`/pages, no duplication.
+3. Customer Addresses + Support a11y; console/network smoke; Admin keyboard traversal.
+4. Not implementable in this phase: `services/*-api.js` (backend HTTP); split design-system CSS (needs a migration decision).
 
 ## Pending user decisions
 - Reroute Customer «بوابة مقدم الخدمة»/«انضم الآن» to the standalone Provider app (separate demo identities).

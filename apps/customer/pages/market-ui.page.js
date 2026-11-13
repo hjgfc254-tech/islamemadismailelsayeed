@@ -23,7 +23,8 @@ const fmtDT = s => { try{ if(!s) return ''; const d = new Date(s); if(Number.isN
 const fmtDateOnly = s => { try{ return new Date(s).toLocaleDateString('ar-EG',{day:'numeric',month:'long',weekday:'short'}); }catch{ return s||''; } };
 const money = n => (+n||0).toLocaleString('ar-EG',{maximumFractionDigits:2})+' ج.م';
 const stars = n => starsHtml(n);
-const me = () => { const u = store.get('user',null); return u ? MP.db().customers.find(c=>c.phone===u.phone) || null : null; };
+const me = () => (typeof HSCustomerSession !== 'undefined' ? HSCustomerSession.customer()
+  : (u => u ? MP.db().customers.find(c=>c.phone===u.phone) || null : null)(store.get('user',null)));
 const myReqs = () => { const c = me(); return c ? MP.reqs().filter(r=>r.customerId===c.id) : []; };
 
 /* ═════════ عناصر الحالة (loading/empty/error/offline) ═════════ */

@@ -18,7 +18,7 @@
    • CLEAR_CACHE  — مسح كل الكاش (لأدوات العرض التجريبي).
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'hansalhlak-v8-architecture-12';
+const CACHE = 'hansalhlak-v8-architecture-13';
 
 /* الملفات الأساسية — يجب أن تعمل offline بعد أول زيارة */
 const FILES = [
@@ -32,6 +32,10 @@ const FILES = [
   'shared/config/legacy-data.js',
   'services/local-catalog.js',
   'services/local-market-store.js',
+  'apps/customer/customer-session.js',
+  'apps/customer/customer-router.js',
+  'apps/guest/guest-policy.js',
+  'apps/guest/guest-entry.js',
   'apps/customer/pages/home.page.js',
   'apps/customer/app.js',
   'shared/components/ui-kit.js',

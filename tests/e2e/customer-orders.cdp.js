@@ -78,6 +78,37 @@ async function run({ exe, wsUrl }) {
     }
     ok(errors.length === 0, `${tag} no JS errors or failed local requests${errors.length ? ' — ' + errors.slice(0, 3).join(' | ') : ''}`);
   }
+  // Deep links (customer-router + guest-policy/guest-entry + customer-session), real browser at 390px.
+  {
+    const tag = 'deep-link';
+    errors.length = 0;
+    await cdp.send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
+    await cdp.send('Page.navigate', { url: ENTRY });
+    await waitFor('document.readyState==="complete" && typeof MP!=="undefined"');
+    const rid = await evaluate(`(()=>{localStorage.clear();sessionStorage.clear();sessionStorage.setItem('hs_intro_v1','1');MP.reset();
+      MP.customerFor('سارة QA','01011112222');MP.db().settings.autoAssign=false;
+      return MP.createRequest({name:'سارة QA',phone:'01011112222',cat:'electric',serviceId:'s1',serviceName:'فحص كهرباء',desc:'وصف',gov:'القاهرة',area:'مدينة نصر',addr:'ش 1'}).id;})()`);
+    // Guest opens a tracking link → sign-in screen, then types credentials and is returned to the request.
+    await cdp.send('Page.navigate', { url: `${ENTRY}#/track/${rid}` });
+    await sleep(100); await cdp.send('Page.reload', { ignoreCache: true });
+    ok(await waitFor('!!document.querySelector("#loginFormAcc")', 6000), `${tag} guest tracking link shows the sign-in form`);
+    ok(await evaluate(`sessionStorage.getItem('hs_return_to') === '#/track/${rid}'`), `${tag} the requested link is remembered`);
+    await evaluate(`document.querySelector('#loginFormAcc [name="name"]').focus()`); await cdp.send('Input.insertText', { text: 'سارة QA' });
+    await evaluate(`document.querySelector('#loginFormAcc [name="phone"]').focus()`); await cdp.send('Input.insertText', { text: '01011112222' });
+    await ENTER();
+    ok(await waitFor('/متابعة الطلب/.test(document.querySelector("#view .dhead h2")?.textContent||"")'), `${tag} after sign-in the user lands on the requested tracking page`);
+    ok(await evaluate(`location.hash === '#/track/${rid}'`), `${tag} URL shows #/track/<id>`);
+    // Address-bar edit → hashchange navigation; URL follows in-app navigation.
+    await evaluate(`location.hash = '#/orders'`);
+    ok(await waitFor('!!document.querySelector("#view .order-filter")'), `${tag} editing the hash to #/orders opens Orders`);
+    await evaluate(`document.querySelector('#tabbar [data-go="account"]').click(); true`);
+    ok(await waitFor(`location.hash === '#/account'`), `${tag} URL follows in-app tab navigation`);
+    // Signed-in deep link on a fresh load.
+    await cdp.send('Page.navigate', { url: `${ENTRY}#/orders` }); await sleep(100); await cdp.send('Page.reload', { ignoreCache: true });
+    ok(await waitFor('!!document.querySelector("#view .order-filter")', 6000), `${tag} signed-in reload of #/orders opens Orders`);
+    ok(errors.length === 0, `${tag} no JS errors or failed local requests${errors.length ? ' — ' + errors.slice(0, 3).join(' | ') : ''}`);
+  }
+
   await cdp.send('Browser.close').catch(() => {});
   cdp.ws.close();
   console.log(failures() ? `\n${failures()} check(s) failed` : '\nAll checks passed');

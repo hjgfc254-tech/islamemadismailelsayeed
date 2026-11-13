@@ -706,7 +706,7 @@ async function wzSubmit(){
     } catch (e) { /* المرفقات قد تفشل — لا نُفشل الطلب */ }
 
     /* تحديث store المستخدم */
-    try { store.set('user', { name: w.contact.name.trim(), phone: w.contact.phone.trim() }); } catch {}
+    try { HSCustomerSession.update({ name: w.contact.name.trim(), phone: w.contact.phone.trim() }); } catch {}
 
     /* حفظ رسالة النجاح في الحالة، ثم مسح المسودة */
     WZ.done = { id: r.id, no: r.no };

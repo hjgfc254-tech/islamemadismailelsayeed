@@ -269,7 +269,7 @@ const Account = (() => {
     if (d.accountProfileEdit !== undefined) return openProfile();
     if (d.accountLogout !== undefined) {
       if (confirm('تسجيل الخروج؟')) {
-        store.set('user', null);
+        HSCustomerSession.signOut();
         if (typeof state !== 'undefined') state.accountTab = 'orders';
         if (typeof show === 'function') show('account');
         toast('تم تسجيل الخروج');
@@ -305,12 +305,11 @@ const Account = (() => {
     if (f.id === 'loginFormAcc') {
       e.preventDefault();
       const d = new FormData(f);
-      const name = (d.get('name') || '').trim();
-      const phone = (d.get('phone') || '').trim();
-      if (!name || !/^[0-9+ ]{8,15}$/.test(phone)) return toast('اسم أو رقم غير صحيح');
-      store.set('user', {name, phone});
-      try { MP.customerFor(name, phone); } catch {}
+      const res = HSCustomerSession.signIn(d.get('name'), d.get('phone'));
+      if (!res.ok) return toast(res.error);
       toast('تم التسجيل');
+      /* إن جاء المستخدم من رابط يتطلب تسجيل الدخول (#/orders، #/track/…) نعيده إليه */
+      if (typeof afterSignIn === 'function' && afterSignIn()) return;
       if (typeof show === 'function') show('account');
     }
     if (f.id === 'accProfileForm') {
@@ -326,7 +325,7 @@ const Account = (() => {
       if (dup) return toast('هذا الرقم مسجّل باسم آخر');
       u.name = name; u.phone = phone; u.email = email;
       MP.save();
-      try { store.set('user', {name, phone}); } catch {}
+      HSCustomerSession.update({name, phone});
       if (typeof closeSheet === 'function') closeSheet();
       toast('تم حفظ التعديلات');
       if (typeof show === 'function') show('account');
@@ -346,7 +345,7 @@ const Account = (() => {
         db.searchHistory = db.searchHistory.filter(x => x.customerId !== u.id);
         MP.save();
       } catch {}
-      try { store.set('user', null); } catch {}
+      HSCustomerSession.signOut();
       if (typeof closeSheet === 'function') closeSheet();
       toast('تم حذف الحساب');
       if (typeof show === 'function') show('account');

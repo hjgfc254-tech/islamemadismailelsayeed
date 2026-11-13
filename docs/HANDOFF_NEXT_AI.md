@@ -391,3 +391,15 @@ Frontend only. Do not touch `backend/`, `database/`, production auth/API, paymen
 **Preserved:** routes, globals (one new: `requestFocusAfterShow`), storage keys, script order, renderer contracts, existing tests (home/wizard/search/sheet).
 **Tests:** unit 9/9 (6 fail on the previous code); `npm test` **265/265**. Browser (real Edge): Customer orders **60/60** at 1280/768/390/320; Provider runner re-verified **231/231** after the refactor.
 **Next:** Customer Addresses and Support a11y (see `START_HERE.md`).
+---
+
+# AGENT HANDOFF — 2026-11-13 — Customer routing, session and guest entry: placeholders → real modules (Claude Code)
+
+**Converted from documentation-only placeholders to real code:** `apps/customer/customer-session.js` (`HSCustomerSession`), `apps/customer/customer-router.js` (`HSCustomerRouter`), `apps/guest/guest-policy.js` (`HSGuestPolicy`), `apps/guest/guest-entry.js` (`HSGuestEntry`), `apps/guest/README.md`.
+**Created:** `tests/helpers/customer-app-harness.js` (extracted from the focus test + hash/history/session/hashchange support), `tests/unit/customer-routing-session.test.js` (12).
+**Modified (connections):** `apps/customer/index.html` (4 scripts), `app.js` (`show()` URL sync, `openRoute`, `applyEntry`, `afterSignIn`, `hashchange`, session sign-in/out), `account.page.js`, `market-ui.page.js` (`me()`), `request-wizard.page.js`, `service-worker.js` (precache + cache `-13`), 4 cache-literal tests, `customer-screen-focus.test.js` (uses shared harness), `tests/e2e/customer-orders.cdp.js` (+8 deep-link checks), docs.
+
+**Features:** deep links `#/home|sections|search|orders|account`, `#/track/<id>`, `#/provider/<id>`; URL follows the screen; address-bar edits navigate; a guest opening a customer-only link signs in and is returned to it; a customer cannot open another customer's tracking link; one validated session module for every sign-in/out path.
+**Regression caught during the batch:** the session first read `globalThis.MP` — `MP` is a top-level `const`, not a global property — so every user looked signed out; fixed before commit.
+**Tests:** 12/12 (0/12 against the placeholder files); `npm test` **277/277**. Browser (real Edge): Customer runner **68/68** incl. typed sign-in-and-return.
+**Next:** `providers.page.js` extraction + `request-create.page.js` route entry.

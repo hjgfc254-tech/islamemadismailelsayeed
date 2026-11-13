@@ -31,7 +31,7 @@
 ## المرحلة 2 — فصل وحدات العميل تدريجيًا
 1. فصل home rendering من app.js بعد حصر العقود.
 2. فصل orders/order-details/providers من market-ui.page.js بوظيفة واحدة في كل مرة.
-3. تنفيذ router/session boundaries فقط كسلوك Frontend تجريبي واضح.
+3. ✅ **منجز (2026-11-13):** تنفيذ router/session boundaries كسلوك Frontend تجريبي — `customer-router.js` (روابط عميقة `#/orders`، `#/track/<id>`…)، `customer-session.js` (هوية تجريبية على `hs_user`)، `apps/guest/guest-policy.js` و`guest-entry.js` (تسجيل الدخول ثم الرجوع للرابط). اختبارات `customer-routing-session.test.js` (12) ومتصفح حقيقي 68/68.
 4. تحديث اختبارات regression بعد كل خطوة.
 
 ## المرحلة 3 — مقدم الخدمة

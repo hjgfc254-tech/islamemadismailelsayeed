@@ -33,3 +33,10 @@
 - `renderTabs()` keeps focus on the equivalent tab after rebuilding `#tabbar`.
 - New global: `requestFocusAfterShow(selector)` (app.js) — call before `show()` when a specific control should keep focus.
 - Tests: `tests/unit/customer-screen-focus.test.js` (boots the full Customer script list from `index.html`); browser: `tests/e2e/customer-orders.cdp.js`.
+
+## Routing, session and guest entry (2026-11-13) — implemented
+- `customer-session.js` → `HSCustomerSession` (demo identity on existing key `hs_user`): `current/validate/signIn/update/signOut/customer`. Used by the account sign-in/logout/profile/delete paths, the legacy `#loginForm`, the wizard and `me()`.
+- `customer-router.js` → `HSCustomerRouter`: `#/home|sections|search|orders|account`, `#/track/<id>`, `#/provider/<id>`; `show()` mirrors the screen into the URL (`replaceState`).
+- `app.js`: `openRoute`, `applyEntry(hash)` (boot + `hashchange`), `afterSignIn()` (returns to a remembered link). Guest rules: `apps/guest/README.md`.
+- Script order: `local-market-store.js` → `customer-session.js` → `customer-router.js` → `../guest/guest-policy.js` → `../guest/guest-entry.js` → `pages/home.page.js` → `app.js`.
+- Gotcha: `MP`/`store` are top-level `const` (global lexical bindings), **not** `globalThis` properties — reference them directly (`typeof MP`), never `window.MP`.

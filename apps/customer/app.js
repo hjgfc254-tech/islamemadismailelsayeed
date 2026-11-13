@@ -682,6 +682,7 @@ function show(name, arg){
   view.innerHTML = screens[name](arg);
   view.scrollTop = 0;
   restoreScreenFocus(name);
+  if (typeof HSCustomerRouter !== 'undefined') HSCustomerRouter.sync(name, arg);   /* الرابط يعكس الشاشة الحالية (#/orders، #/track/<id>…) */
   if (name === 'wizard') {
     const heading = view.querySelector('[data-wz-heading]');
     if (heading) {
@@ -712,9 +713,9 @@ function show(name, arg){
     const f = $('#loginForm');
     if (f) f.addEventListener('submit', e => {
       e.preventDefault(); const d = new FormData(f);
-      store.set('user', {name: d.get('name'), phone: d.get('phone')});
-      try { MP.customerFor(d.get('name'), d.get('phone')); } catch {}
-      toast('أهلاً بيك'); show('account');
+      const res = HSCustomerSession.signIn(d.get('name'), d.get('phone'));
+      if (!res.ok) return toast(res.error);
+      toast('أهلاً بيك'); if (!afterSignIn()) show('account');
     });
   }
 }
@@ -724,6 +725,36 @@ function go(tab, arg){
   state.tab = tab; state.stack = []; renderTabs(); show(tab, arg);
   history.replaceState({tab}, '');
 }
+
+/* ───────── الروابط العميقة (customer-router + guest-policy/guest-entry) ─────────
+   تفتح الشاشة بنفس مسار النقر داخل التطبيق: التبويب أولًا، ثم شاشة الطلب/المزود فوق المكدس حتى يعمل زر الرجوع. */
+function openRoute(r){
+  if (!r) { go('home'); return; }
+  if (r.screen === 'tracking' || r.screen === 'providerDetails') {
+    go(r.tab);
+    state.stack.push((r.screen === 'tracking' ? 'track:' : 'provider:') + r.id);
+    history.pushState({dl:1}, '');
+    show(r.screen, r.id);
+    return;
+  }
+  go(r.tab);
+}
+/* يطبّق رابطًا (عند البدء أو عند تعديل العنوان يدويًا). يعيد true إذا تعامل مع الرابط. */
+function applyEntry(hash){
+  if (typeof HSGuestEntry === 'undefined') return false;
+  const customer = typeof HSCustomerSession !== 'undefined' ? HSCustomerSession.customer() : null;
+  const entry = HSGuestEntry.resolve(hash, customer, MP);
+  if (!entry) return false;
+  if (entry.signin) { HSGuestEntry.rememberReturn(entry.returnTo); go('account'); toast('سجّل الدخول (تجريبيًا) لعرض هذه الصفحة'); return true; }
+  if (entry.notFound) { go('home'); toast('الرابط غير متاح'); return true; }
+  openRoute(entry); return true;
+}
+/* بعد تسجيل دخول ناجح: ارجع إلى الرابط الذي طُلب قبل تسجيل الدخول إن وُجد. */
+function afterSignIn(){
+  const back = typeof HSGuestEntry !== 'undefined' ? HSGuestEntry.consumeReturn() : '';
+  return back ? applyEntry(back) : false;
+}
+window.addEventListener('hashchange', () => { applyEntry(location.hash); });
 function openDevice(k){
   if (!DEVICES[k]) return;
   closeSheet(true); state.stack.push(k); history.pushState({dev:k},''); show('details',k);
@@ -972,7 +1003,7 @@ document.addEventListener('click', e => {
     case 'role': closeSheet(true); enterRole(d.r); break;
     case 'tech': openTech(d.key); break;
     case 'solved': closeSheet(); toast('تمام! سعداء إننا ساعدنا'); break;
-    case 'logout': store.set('user', null); show('account'); toast('تم تسجيل الخروج'); break;
+    case 'logout': HSCustomerSession.signOut(); show('account'); toast('تم تسجيل الخروج'); break;
     case 'openAddresses': { try { go('addresses'); } catch { toast('العناوين ستُضاف في تحديث لاحق'); } break; }
     case 'openNotifs': openNotes(); break;
   }
@@ -1058,7 +1089,7 @@ const Intro = (() => {
 /* V8-C3: البدء مؤجل حتى تُحمَّل كل السكربتات (market-ui.js يعرّف me/reqCard؛ ui-kit.js يعرّف UIK).
    قبلها كان أول عرض للرئيسية يجري قبل تعريفها فيفقد الترحيب والطلبات النشطة. */
 function boot(){
-  go('home');
+  if (!applyEntry(location.hash)) go('home');   /* رابط عميق مثل #/orders أو #/track/<id>؛ وإلا الرئيسية */
   Intro.init();
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
     navigator.serviceWorker.register('../../service-worker.js').catch(()=>{});

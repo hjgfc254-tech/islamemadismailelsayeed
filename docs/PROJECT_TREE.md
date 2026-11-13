@@ -364,6 +364,7 @@ hansalhlak/
 │   ├── fixtures/
 │   │   └── README.md
 │   ├── helpers/
+│   │   ├── customer-app-harness.js
 │   │   ├── design-token-audit.js
 │   │   └── provider-app-harness.js
 │   ├── integration/
@@ -381,6 +382,7 @@ hansalhlak/
 │       ├── commissions.test.js
 │       ├── complaints-management.test.js
 │       ├── customer-page-renderers.test.js
+│       ├── customer-routing-session.test.js
 │       ├── customer-screen-focus.test.js
 │       ├── customer-workflow.test.js
 │       ├── customers-management.test.js

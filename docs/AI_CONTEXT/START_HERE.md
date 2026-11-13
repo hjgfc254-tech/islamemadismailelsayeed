@@ -1,7 +1,7 @@
 # HANSALEHLAK V8 — START HERE
 
 **Current phase:** FRONTEND ONLY  
-**Latest verified baseline:** `npm test` → 265/265 passed (2026-11-13, after Customer orders/tracking focus). Real-browser QA: Provider 231/231, Customer orders 60/60.  
+**Latest verified baseline:** `npm test` → 277/277 passed (2026-11-13, after Customer routing/session). Real-browser QA: Provider 231/231, Customer 68/68.  
 **Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md`  
 **Current handoff:** `docs/HANDOFF_NEXT_AI.md`  
 **Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`  
@@ -25,7 +25,13 @@
 - Shared: design system, local stores, UI primitives and shared components; reuse actual APIs rather than duplicating them.
 - `backend/` and `database/` are future scaffolding and OUT OF SCOPE.
 
-## Exact next task — Customer Addresses and Support keyboard & accessibility (Phase 5 item 4)
+## Exact next task — real implementation of remaining Customer placeholders
+Customer routing/session and guest policy are now real (`DOMAIN_MAPS/CUSTOMER.md`). Next placeholders with documented intent:
+- `apps/customer/pages/providers.page.js` — extract the provider list/detail renderers from `market-ui.page.js` (`providerCard`, `screens.providerDetails`, matches) into `HSCustomerProvidersPage`, same pattern as `orders.page.js`; load before `market-ui.page.js`; parity tests.
+- `apps/customer/pages/request-create.page.js` — route-level entry into the existing wizard (`#/request` deep link with optional `cat`), no wizard duplication.
+Out of scope / deferred (see checkpoint): `services/*-api.js` (future backend HTTP), split design-system CSS (pinned by `design-token-audit.test.js`).
+
+## Previous next task — Customer Addresses and Support keyboard & accessibility (Phase 5 item 4)
 Done: standalone Provider (P0–P3, G1, G3, G4) and Customer Orders/Tracking focus (`DOMAIN_MAPS/CUSTOMER.md` "Screen focus contract").
 **Pending user decision:** reroute Customer «بوابة مقدم الخدمة»/«انضم الآن» to `apps/provider/index.html` — do not do it unasked.
 Next: audit `apps/customer/pages/addresses.page.js` and `support.page.js` (forms, sheets, list actions) for keyboard operation, labels,
