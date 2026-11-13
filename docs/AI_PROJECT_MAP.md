@@ -5,6 +5,9 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | Path | Status | Responsibility | Next action |
 |---|---|---|---|
 | _redirects | CONFIGURATION | Project asset or configuration file. | Update only when related implementation changes. |
+| .claude/skills/browser-qa/SKILL.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| .claude/skills/finish-gate/SKILL.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| .claude/skills/vm-script-test/SKILL.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | .editorconfig | CONFIGURATION | Current inventory entry; inspect file for exact behavior. | Read when relevant; do not duplicate behavior. |
 | .gitignore | CONFIGURATION | Current inventory entry; inspect file for exact behavior. | Read when relevant; do not duplicate behavior. |
 | AGENTS.md | DOCUMENTATION | Added to the normalized current inventory; inspect source for exact behavior. | Read only when relevant to the task; do not duplicate existing behavior. |

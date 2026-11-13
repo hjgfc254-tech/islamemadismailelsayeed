@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 350,
+  "file_count": 353,
   "files": [
     {
       "path": "_redirects",
@@ -8,6 +8,27 @@
       "status": "CONFIGURATION",
       "bytes": 244,
       "sha256": "9f0f4c07307befba908a870ec3b9d0bb00cf7b80462abff56c07ae8ac6842dad"
+    },
+    {
+      "path": ".claude/skills/browser-qa/SKILL.md",
+      "area": ".claude",
+      "status": "NEEDS_REVIEW",
+      "bytes": 3196,
+      "sha256": "932e76217588d1a0da4c4e4866ee1d4b6d98c26e6e6da938eb0fc51cdbd04096"
+    },
+    {
+      "path": ".claude/skills/finish-gate/SKILL.md",
+      "area": ".claude",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2943,
+      "sha256": "ee0fdb8cc1212820283740580e397d185cf4c6f8f362dba169ed6cf20a851a90"
+    },
+    {
+      "path": ".claude/skills/vm-script-test/SKILL.md",
+      "area": ".claude",
+      "status": "NEEDS_REVIEW",
+      "bytes": 3852,
+      "sha256": "dec51e8b118875024573f92b1356ace2d6c4148df1e56ddd95c7305b949e18db"
     },
     {
       "path": ".editorconfig",
@@ -1245,22 +1266,22 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 226051,
-      "sha256": "c45199167498827f0d318ded08f415b8ba1e2a281ee9853df70b095e2c994aef"
+      "bytes": 226746,
+      "sha256": "03d5b410e6a8422b3a036847074a7a35c1e5f0503e26de8bb94421519fa776bf"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 1427395,
+      "bytes": 1429254,
       "sha256": null
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 90747,
-      "sha256": "888b15e538408ab36202cba14dd9fa0fe724edf7f2d7837e600678643b17d26b"
+      "bytes": 91400,
+      "sha256": "d6569013b5aad960e7aa452ba0ebbb7aee9f326d01c5dbb758cef17e8719c50f"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -1553,8 +1574,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 16496,
-      "sha256": "25f70ec35589b0079b61987478e919b04c5473281e068f4bc4270e016f1e551d"
+      "bytes": 16743,
+      "sha256": "e54899e0b0587b00c509a63676a2c37c51c313c2a7111ac0cfb1532cea9f6bab"
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",

@@ -2,8 +2,8 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 350,
-    "total_files": 350,
+    "file_count": 353,
+    "total_files": 353,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 50,
@@ -22,7 +22,7 @@
       "IMPLEMENTED (SHELL, DEMO)": 1,
       "IMPLEMENTED (SHELL)": 2,
       "LEGACY": 2,
-      "NEEDS_REVIEW": 6,
+      "NEEDS_REVIEW": 9,
       "PARTIALLY IMPLEMENTED": 2,
       "PLACEHOLDER": 103,
       "TEST": 48
@@ -103,6 +103,42 @@
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
       "bytes": 244
+    },
+    {
+      "path": ".claude/skills/browser-qa/SKILL.md",
+      "area": ".claude",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "SKILL.md",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "932e76217588d1a0da4c4e4866ee1d4b6d98c26e6e6da938eb0fc51cdbd04096",
+      "bytes": 3196
+    },
+    {
+      "path": ".claude/skills/finish-gate/SKILL.md",
+      "area": ".claude",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "SKILL.md",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "ee0fdb8cc1212820283740580e397d185cf4c6f8f362dba169ed6cf20a851a90",
+      "bytes": 2943
+    },
+    {
+      "path": ".claude/skills/vm-script-test/SKILL.md",
+      "area": ".claude",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "SKILL.md",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "dec51e8b118875024573f92b1356ace2d6c4148df1e56ddd95c7305b949e18db",
+      "bytes": 3852
     },
     {
       "path": ".editorconfig",
@@ -8336,7 +8372,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "c45199167498827f0d318ded08f415b8ba1e2a281ee9853df70b095e2c994aef",
+      "sha256": "03d5b410e6a8422b3a036847074a7a35c1e5f0503e26de8bb94421519fa776bf",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8372,7 +8408,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 226051
+      "bytes": 226746
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -8420,7 +8456,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1427395
+      "bytes": 1429254
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
@@ -8432,7 +8468,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "888b15e538408ab36202cba14dd9fa0fe724edf7f2d7837e600678643b17d26b",
+      "sha256": "d6569013b5aad960e7aa452ba0ebbb7aee9f326d01c5dbb758cef17e8719c50f",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8468,7 +8504,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 90747
+      "bytes": 91400
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -9908,7 +9944,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "25f70ec35589b0079b61987478e919b04c5473281e068f4bc4270e016f1e551d",
+      "sha256": "e54899e0b0587b00c509a63676a2c37c51c313c2a7111ac0cfb1532cea9f6bab",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -9945,7 +9981,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 16496
+      "bytes": 16743
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",

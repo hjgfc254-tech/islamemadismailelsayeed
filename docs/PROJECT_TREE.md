@@ -4,6 +4,14 @@
 
 ```text
 hansalhlak/
+├── .claude/
+│   └── skills/
+│       ├── browser-qa/
+│       │   └── SKILL.md
+│       ├── finish-gate/
+│       │   └── SKILL.md
+│       └── vm-script-test/
+│           └── SKILL.md
 ├── apps/
 │   ├── admin/
 │   │   ├── modules/
