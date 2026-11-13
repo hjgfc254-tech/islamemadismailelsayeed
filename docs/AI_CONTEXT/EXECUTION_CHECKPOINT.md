@@ -9,25 +9,27 @@ Compact resume state for autonomous sessions. Update after every committed batch
 4. Service Worker precache completeness — `c137eef`.
 5. Provider P3 legacy parity audit — `7bbe4c8`.
 6. Provider G3 commission preview + G4 login hand-off — `b85425c`.
-7. Provider G1 demo self-registration — `apps/provider/app.js` (register action, `openRegisterForm`, `registrationFrom`, cancel on picker,
-   field-targeted `invalid`), `styles/provider.css` (registration styles, `[hidden]` override, `scroll-margin-top`), harness (`getAll`,
-   multi-class form regexes), `provider-app-register.test.js` (new, 9), parity/pages tests, CDP runner (+registration, nav visibility,
-   occlusion), SW cache `-11`, docs. `npm test` 256/256; browser 231/231.
+7. Provider G1 demo self-registration (+ nav `[hidden]`, sticky-chrome, picker-cancel fixes) — `8e081d9`.
+8. Customer Orders/Tracking focus — `apps/customer/app.js` (`renderTabs` keeps tab focus; `show()` restores lost focus via
+   `requestFocusAfterShow`/heading/`#view`; `head()` heading `tabindex="-1"`), `market-ui.page.js` (filter focus request; timeline
+   `aria-current="step"`), `tests/unit/customer-screen-focus.test.js` (new, 9), `tests/e2e/lib/cdp.js` (new, shared helpers),
+   `tests/e2e/customer-orders.cdp.js` (new), Provider runner refactored onto lib (still 231/231), SW cache `-12`, docs.
+   `npm test` 265/265; Customer browser 60/60.
 
 ## Current task
-Customer Orders / Order Details / Tracking keyboard & accessibility (Phase 5 item 4) — see `START_HERE.md`.
+Customer Addresses and Support keyboard & accessibility (Phase 5 item 4) — see `START_HERE.md`.
 
 ## Remaining queue (priority order)
-1. Customer orders/details/tracking a11y + real-browser check.
-2. Customer addresses and support a11y.
-3. Phase 5 item 5 console/network smoke checks across Customer/Admin (Provider already covered).
-4. Admin page/dialog keyboard traversal.
+1. Customer Addresses + Support a11y.
+2. Phase 5 item 5: console/network smoke across Customer and Admin entries (reuse `lib/cdp.js` error collection).
+3. Admin page/dialog keyboard traversal.
 
 ## Pending user decisions
 - Reroute Customer «بوابة مقدم الخدمة»/«انضم الآن» to the standalone Provider app (separate demo identities).
 - Legacy Admin console inside `portal-compat.js` vs `apps/admin/` (separate audit).
-- Zero-total Provider quotes accepted (no documented rule); profile edit stays disabled (G2).
+- Zero-total Provider quotes accepted (no documented rule); Provider profile edit stays disabled (G2).
 - `test-write.tmp` is ignored locally but listed in the inventory (a clean clone reports it missing).
 
 ## Exact next action
-Read `apps/customer/pages/orders.page.js`, `order-details.page.js` and their callers; run the existing Customer harness tests; then build a CDP check for the orders → details → back journey.
+Read `apps/customer/pages/addresses.page.js` and `support.page.js` (event handlers, sheets, forms); extend the
+`customer-screen-focus.test.js` harness approach to those flows before changing code.

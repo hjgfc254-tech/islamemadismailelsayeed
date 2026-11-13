@@ -375,3 +375,19 @@ Frontend only. Do not touch `backend/`, `database/`, production auth/API, paymen
 **Tests:** `npm test` **256/256**. Browser (real Edge): **231/231** at 1280/768/430/390/320.
 **Pending user decision:** reroute Customer Provider entry points to the standalone app.
 **Next:** Customer orders/details/tracking keyboard & accessibility (see `START_HERE.md`).
+---
+
+# AGENT HANDOFF — 2026-11-13 — Customer Orders/Tracking focus (Claude Code)
+
+**Goal:** Phase 5 item 4 — Customer Orders / Order Details / Tracking keyboard & accessibility. **Baseline:** `npm test` 256/256 (`8e081d9`).
+**Created:** `tests/unit/customer-screen-focus.test.js` (9), `tests/e2e/lib/cdp.js` (shared CDP helpers), `tests/e2e/customer-orders.cdp.js`.
+**Modified:** `apps/customer/app.js`, `apps/customer/pages/market-ui.page.js`, `tests/e2e/provider-standalone.cdp.js` (now uses `lib/cdp.js`; behavior unchanged, 231/231), `service-worker.js` (cache `-12`) + 4 cache-literal tests, `.claude/skills/browser-qa`, docs (keyboard audit, Customer/Testing maps, order, README, START_HERE, checkpoint).
+
+**Defects and fixes:**
+1. Every screen change (except Wizard/Search) left keyboard focus on `<body>` → `show()` restores *lost* focus to a requested control, else the screen heading (`<h2 tabindex="-1">`), else `#view`; never on the boot render.
+2. `renderTabs()` (called by `go()` before `show()`) rebuilt `#tabbar` and destroyed the focused tab → it now refocuses the equivalent tab. Found only in the real browser (unit stubs did not rebuild the bar).
+3. Orders filter re-render destroyed the pressed filter → `requestFocusAfterShow('[data-order-filter="…"]')`.
+4. Timeline had no current-step semantics → exactly one `aria-current="step"`.
+**Preserved:** routes, globals (one new: `requestFocusAfterShow`), storage keys, script order, renderer contracts, existing tests (home/wizard/search/sheet).
+**Tests:** unit 9/9 (6 fail on the previous code); `npm test` **265/265**. Browser (real Edge): Customer orders **60/60** at 1280/768/390/320; Provider runner re-verified **231/231** after the refactor.
+**Next:** Customer Addresses and Support a11y (see `START_HERE.md`).

@@ -12,8 +12,9 @@ Browser checks are manual and are not part of `npm test`. Evidence or "not run" 
   and was not installed at last audit. Microsoft Edge is installed; Chrome is not.
 - Python e2e scripts (`tests/e2e/*.browser.py`) hardcode `/usr/bin/chromium` and `/opt/pyvenv` (Linux) — they will not run here unmodified.
 - JS e2e scripts (`tests/e2e/*.browser.js`) need `require('playwright')` (global, or `NODE_PATH`).
-- **Dependency-free option (works here):** `tests/e2e/provider-standalone.cdp.js` drives Edge/Chromium over the
-  DevTools Protocol using Node's built-in `WebSocket`. Copy its `launch`/`connect`/`evaluate`/`key` helpers for other entries.
+- **Dependency-free option (works here):** `tests/e2e/lib/cdp.js` (launch/connect/driver/withBrowser) drives Edge/Chromium over
+  the DevTools Protocol using Node's built-in `WebSocket`. Runners: `provider-standalone.cdp.js`, `customer-orders.cdp.js`.
+  Assert what is *rendered* (`getComputedStyle`, `elementFromPoint`), not DOM properties.
   Gotchas: on PowerShell run Edge via the script (direct `& msedge --dump-dom` prints nothing); `Page.navigate` to a URL that
   differs only by `#fragment` does not reload — clear storage then `Page.reload`; always tear the browser down in `finally`.
 - A Playwright MCP server, if configured, can drive the browser interactively instead.

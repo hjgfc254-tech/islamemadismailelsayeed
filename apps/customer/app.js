@@ -242,7 +242,7 @@ const tile = (k, small) => {
   return `<button class="tile glass neon ${small?'small':''}" ${target} aria-label="${DEVICES[k].name}"><span class="tart">${ART[DEVICES[k].art]}</span><span class="tl">${DEVICES[k].cat}</span></button>`;
 };
 const tiles = (small) => `<div class="grid fit">${HOME_ORDER.map(k=>tile(k,small)).join('')}</div>`;
-const head = (title, back) => `<div class="dhead">${back?`<button class="back" data-back aria-label="رجوع">${ic('back')}</button>`:'<span></span>'}<h2>${title}</h2><span></span></div>`;
+const head = (title, back) => `<div class="dhead">${back?`<button class="back" data-back aria-label="رجوع">${ic('back')}</button>`:'<span></span>'}<h2 tabindex="-1">${title}</h2><span></span></div>`;
 
 /* ───────── الشرائح (كما في V6) ───────── */
 const discover = () => `
@@ -642,18 +642,46 @@ const screens = {
 let state = { tab:'home', stack:[], sheet:false };
 const renderTabs = () => {
   const nAct = homeActiveRequests().length;
+  const keepTab = focusedTab(); /* إعادة البناء تُدمّر التبويب المُركَّز عليه — نعيد التركيز إلى مكافئه (لكل المستدعين: go وshow) */
   $('#tabbar').innerHTML = TABS.map(([id,l,i])=>{
     const b = (id==='orders' && nAct) ? `<b class="tab-badge" aria-hidden="true">${nAct>9?'9+':nAct}</b>` : '';
     const lbl = (id==='orders' && nAct) ? `${l} — ${nAct} نشطة` : l;
     return `<button class="tab ${state.tab===id?'on':''}" data-go="${id}" aria-label="${lbl}"${state.tab===id?' aria-current="page"':''}>${ic(i)}<span>${l}</span>${b}</button>`;
   }).join('');
+  if (keepTab) {
+    const t = document.querySelector(`#tabbar [data-go="${keepTab}"]`);
+    if (t) { try { t.focus({preventScroll:true}); } catch { try { t.focus(); } catch {} } }
+  }
 };
+
+/* إدارة التركيز بعد تبديل الشاشة: استبدال innerHTML يُسقط التركيز إلى <body> إذا كان داخل #view.
+   نعيده فقط عند فقدانه فعلًا، ولا نفعل ذلك في أول عرض (الإقلاع)، ولا نسحبه من شريط التبويب أو الورقة السفلية.
+   يمكن للمستدعي طلب عنصر محدد عبر requestFocusAfterShow(selector) (مثل زر التصفية المضغوط). */
+let showCount = 0, focusAfterShow = null;
+function requestFocusAfterShow(selector){ focusAfterShow = selector || null; }
+function focusLostAfterRender(){
+  const ae = document.activeElement;
+  if (!ae || ae === document.body) return true;
+  return typeof document.contains === 'function' ? !document.contains(ae) : false;
+}
+function focusedTab(){
+  const ae = document.activeElement;
+  return ae && typeof ae.closest === 'function' && ae.closest('#tabbar') ? ((ae.dataset || {}).go || null) : null;
+}
+function restoreScreenFocus(name){
+  const wanted = focusAfterShow; focusAfterShow = null;
+  if (showCount++ === 0 || name === 'wizard' || name === 'search') return;
+  if (!wanted && !focusLostAfterRender()) return;
+  const target = (wanted && view.querySelector(wanted)) || view.querySelector('.dhead h2') || view;
+  try { target.focus({preventScroll:true}); } catch { try { target.focus(); } catch {} }
+}
 
 function show(name, arg){
   clearInterval(carTimer);
   renderTabs();   /* V8-C3: يحدّث شارة الطلبات النشطة عند كل عرض */
   view.innerHTML = screens[name](arg);
   view.scrollTop = 0;
+  restoreScreenFocus(name);
   if (name === 'wizard') {
     const heading = view.querySelector('[data-wz-heading]');
     if (heading) {

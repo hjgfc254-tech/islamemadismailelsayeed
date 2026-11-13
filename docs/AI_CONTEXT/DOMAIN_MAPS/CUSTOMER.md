@@ -26,3 +26,10 @@
 - **2026-11-13 page extraction:** Home and Orders markup were extracted behind explicit dependency-injection contracts. `home.page.js` loads before `app.js`; `orders.page.js` loads before `market-ui.page.js`. Both are presentation-only and preserve existing globals/actions. Tests: `tests/unit/customer-page-renderers.test.js`; harnesses `home.test.js` and `discover.test.js` load the home module in the same order as production.
 
 - **Customer extraction batch 01 (continued):** Tracking/order-details markup moved from `market-ui.page.js` to `order-details.page.js` as `HSCustomerOrderDetailsPage.render(ctx)`. It retains current status messages, provider/search/quote/proposal blocks, request summary, action data attributes, and simulated-progress banner. Data lookup and all click/submit handling remain in `market-ui.page.js`; no workflow behavior was reimplemented.
+
+
+## Screen focus contract (2026-11-13)
+- `show(name)` restores lost focus after rendering: `requestFocusAfterShow(selector)` target → `.dhead h2` (`head()` renders `tabindex="-1"`) → `#view`. Not on the first (boot) render; Wizard/Search manage their own focus.
+- `renderTabs()` keeps focus on the equivalent tab after rebuilding `#tabbar`.
+- New global: `requestFocusAfterShow(selector)` (app.js) — call before `show()` when a specific control should keep focus.
+- Tests: `tests/unit/customer-screen-focus.test.js` (boots the full Customer script list from `index.html`); browser: `tests/e2e/customer-orders.cdp.js`.

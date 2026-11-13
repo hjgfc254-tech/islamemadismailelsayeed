@@ -1,7 +1,7 @@
 # HANSALEHLAK V8 — START HERE
 
 **Current phase:** FRONTEND ONLY  
-**Latest verified baseline:** `npm test` → 256/256 passed (2026-11-13, after Provider G1). Real-browser Provider QA: 231/231.  
+**Latest verified baseline:** `npm test` → 265/265 passed (2026-11-13, after Customer orders/tracking focus). Real-browser QA: Provider 231/231, Customer orders 60/60.  
 **Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md`  
 **Current handoff:** `docs/HANDOFF_NEXT_AI.md`  
 **Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`  
@@ -25,14 +25,13 @@
 - Shared: design system, local stores, UI primitives and shared components; reuse actual APIs rather than duplicating them.
 - `backend/` and `database/` are future scaffolding and OUT OF SCOPE.
 
-## Exact next task — Customer Orders / Order Details / Tracking keyboard & accessibility (Phase 5 item 4)
-The standalone Provider app is complete for this phase (P0–P3, G1, G3, G4). **Pending user decision:** reroute Customer
-«بوابة مقدم الخدمة»/«انضم الآن» to `apps/provider/index.html` (see `docs/PROVIDER_LEGACY_PARITY_AUDIT.md` §4) — do not do it unasked.
-Next per `docs/AI_NEXT_IMPLEMENTATION_ORDER.md` Phase 5 item 4: audit the Customer Orders list and Order Details/Tracking
-(`apps/customer/pages/orders.page.js`, `order-details.page.js`, callers in `market-ui.page.js`/`app.js`) for keyboard operation,
-focus on open/close, accessible names, status semantics and live feedback; fix defects with behavior tests
-(`tests/unit/customer-page-renderers.test.js` pattern) and add a dependency-free CDP browser check modelled on
-`tests/e2e/provider-standalone.cdp.js`. Then Addresses and Support. Preserve Customer globals, script order and storage keys.
+## Exact next task — Customer Addresses and Support keyboard & accessibility (Phase 5 item 4)
+Done: standalone Provider (P0–P3, G1, G3, G4) and Customer Orders/Tracking focus (`DOMAIN_MAPS/CUSTOMER.md` "Screen focus contract").
+**Pending user decision:** reroute Customer «بوابة مقدم الخدمة»/«انضم الآن» to `apps/provider/index.html` — do not do it unasked.
+Next: audit `apps/customer/pages/addresses.page.js` and `support.page.js` (forms, sheets, list actions) for keyboard operation, labels,
+error association/announcement and focus after add/edit/delete/submit; reuse `show()`'s `requestFocusAfterShow(selector)` and the sheet
+focus manager; tests in the `customer-screen-focus.test.js` harness style; real-browser runner on `tests/e2e/lib/cdp.js`.
+Preserve Customer globals, script order and storage keys.
 
 ## Required finish gate
 Run targeted tests, then `npm test`; browser QA when available; update domain/page/status/handoff docs; run:

@@ -346,7 +346,10 @@ hansalhlak/
 │   └── README.md
 ├── tests/
 │   ├── e2e/
+│   │   ├── lib/
+│   │   │   └── cdp.js
 │   │   ├── audit-log.browser.js
+│   │   ├── customer-orders.cdp.js
 │   │   ├── customer-request-wizard-accessibility.browser.py
 │   │   ├── customer-search-keyboard.browser.py
 │   │   ├── customer-sheet-focus.browser.py
@@ -378,6 +381,7 @@ hansalhlak/
 │       ├── commissions.test.js
 │       ├── complaints-management.test.js
 │       ├── customer-page-renderers.test.js
+│       ├── customer-screen-focus.test.js
 │       ├── customer-workflow.test.js
 │       ├── customers-management.test.js
 │       ├── data-grid.test.js

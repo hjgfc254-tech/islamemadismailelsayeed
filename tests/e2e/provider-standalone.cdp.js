@@ -10,85 +10,25 @@
      BROWSER=<path to msedge/chrome/chromium>  (default: Edge on Windows, else chromium/chrome on PATH locations)
      QA_SHOTS=<dir>                            (optional: write PNG screenshots per viewport; keep outside the repo)
    Google Fonts are blocked for determinism; a fresh profile is used so the cache-first Service Worker cannot serve stale JS. */
-const { spawn } = require('node:child_process');
 const fs = require('node:fs');
-const os = require('node:os');
 const path = require('node:path');
+const { connect, driver, setupPage, withBrowser, reporter, sleep } = require('./lib/cdp.js');
 
 const BASE = (process.argv[2] || 'http://127.0.0.1:8099').replace(/\/$/, '');
 const ENTRY = BASE + '/apps/provider/index.html';
 const VIEWPORTS = [[1280, 800], [768, 1024], [430, 932], [390, 844], [320, 640]];
 const ROUTES = ['home', 'new', 'accepted', 'progress', 'quote', 'schedule', 'done', 'cancelled', 'reviews', 'transactions', 'earnings', 'services', 'notifications', 'profile'];
-const CANDIDATES = [process.env.BROWSER, 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Microsoft/Edge/Application/msedge.exe',
-  'C:/Program Files/Google/Chrome/Application/chrome.exe', '/usr/bin/chromium', '/usr/bin/chromium-browser', '/usr/bin/google-chrome'].filter(Boolean);
+const { ok, failures: failureCount } = reporter();
 
-let failures = 0;
-const ok = (cond, msg) => { console.log((cond ? '✓ ' : '✗ ') + msg); if (!cond) failures++; };
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-async function launch() {
-  const exe = CANDIDATES.find(p => fs.existsSync(p));
-  if (!exe) throw new Error('No Chromium-based browser found; set BROWSER=<path>.');
-  const profile = fs.mkdtempSync(path.join(os.tmpdir(), 'hs-cdp-'));
-  const proc = spawn(exe, ['--headless=new', '--remote-debugging-port=0', `--user-data-dir=${profile}`, '--no-first-run',
-    '--no-default-browser-check', '--disable-gpu', '--disable-extensions', 'about:blank'], { stdio: 'ignore' });
-  const portFile = path.join(profile, 'DevToolsActivePort');
-  for (let i = 0; i < 100 && !fs.existsSync(portFile); i++) await sleep(100);
-  if (!fs.existsSync(portFile)) throw new Error('Browser did not expose DevToolsActivePort');
-  await sleep(200);
-  const port = fs.readFileSync(portFile, 'utf8').split('\n')[0].trim();
-  const targets = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json();
-  const page = targets.find(t => t.type === 'page');
-  return { proc, profile, exe, wsUrl: page.webSocketDebuggerUrl };
-}
-
-function connect(wsUrl) {
-  const ws = new WebSocket(wsUrl);
-  let seq = 0; const pending = new Map(); const handlers = [];
-  ws.onmessage = ev => {
-    const msg = JSON.parse(ev.data);
-    if (msg.id && pending.has(msg.id)) { const { resolve, reject } = pending.get(msg.id); pending.delete(msg.id); msg.error ? reject(new Error(msg.error.message)) : resolve(msg.result); }
-    else if (msg.method) handlers.forEach(h => h(msg));
-  };
-  const send = (method, params = {}) => new Promise((resolve, reject) => { const id = ++seq; pending.set(id, { resolve, reject }); ws.send(JSON.stringify({ id, method, params })); });
-  return new Promise((resolve, reject) => { ws.onopen = () => resolve({ ws, send, on: h => handlers.push(h) }); ws.onerror = reject; });
-}
-
-async function main() {
-  const browser = await launch();
-  /* Guaranteed teardown: a failing step or a hung page must never leave the browser (and this process) running. */
-  const teardown = () => { try { browser.proc.kill(); } catch {} try { fs.rmSync(browser.profile, { recursive: true, force: true }); } catch {} };
-  const watchdog = setTimeout(() => { console.error('✗ watchdog: run exceeded 180s'); teardown(); process.exit(3); }, 180000);
-  try { await run(browser); } finally { clearTimeout(watchdog); setTimeout(teardown, 300); }
-}
+/* Guaranteed teardown + watchdog live in lib/cdp.js withBrowser(). */
+const main = () => withBrowser(run);
 
 async function run({ exe, wsUrl }) {
   console.log('Browser:', exe);
   const cdp = await connect(wsUrl);
-  const errors = [];
-  cdp.on(m => {
-    if (m.method === 'Runtime.exceptionThrown') errors.push('exception: ' + (m.params.exceptionDetails.exception?.description || m.params.exceptionDetails.text));
-    if (m.method === 'Runtime.consoleAPICalled' && m.params.type === 'error') errors.push('console.error: ' + m.params.args.map(a => a.value ?? a.description).join(' '));
-    if (m.method === 'Network.responseReceived' && m.params.response.url.startsWith(BASE) && m.params.response.status >= 400) errors.push(`HTTP ${m.params.response.status}: ${m.params.response.url}`);
-    if (m.method === 'Network.loadingFailed' && !m.params.blockedReason && !m.params.canceled) errors.push('load failed: ' + m.params.errorText);
-  });
-  await cdp.send('Runtime.enable'); await cdp.send('Page.enable'); await cdp.send('Network.enable');
-  await cdp.send('Network.setBlockedURLs', { urls: ['*fonts.googleapis.com*', '*fonts.gstatic.com*'] });
-  await cdp.send('Network.setBypassServiceWorker', { bypass: true });
-
-  const evaluate = async expr => {
-    const r = await cdp.send('Runtime.evaluate', { expression: expr, returnByValue: true, awaitPromise: true });
-    if (r.exceptionDetails) throw new Error('evaluate failed: ' + (r.exceptionDetails.exception?.description || r.exceptionDetails.text) + ' :: ' + expr.slice(0, 120));
-    return r.result.value;
-  };
-  const waitFor = async (expr, timeout = 4000) => { const end = Date.now() + timeout; while (Date.now() < end) { if (await evaluate(expr)) return true; await sleep(50); } return false; };
-  const key = async (k, code, vk, text) => {
-    await cdp.send('Input.dispatchKeyEvent', { type: 'keyDown', key: k, code, windowsVirtualKeyCode: vk, nativeVirtualKeyCode: vk, text });
-    await cdp.send('Input.dispatchKeyEvent', { type: 'keyUp', key: k, code, windowsVirtualKeyCode: vk, nativeVirtualKeyCode: vk });
-  };
-  const TAB = () => key('Tab', 'Tab', 9); const ENTER = () => key('Enter', 'Enter', 13, '\r'); const ESC = () => key('Escape', 'Escape', 27);
+  const { errors, evaluate, waitFor, TAB, ENTER, ESC, noOverflow } = driver(cdp, BASE);
+  await setupPage(cdp);
   const goto = async url => { await cdp.send('Page.navigate', { url }); await waitFor('document.readyState==="complete" && !!document.querySelector("#provider-view")'); await sleep(150); };
-  const noOverflow = () => evaluate('document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1');
   const clipped = () => evaluate(`[...document.querySelectorAll('#provider-view *')].filter(e=>{const r=e.getBoundingClientRect();return r.width>0&&(r.right>innerWidth+1||r.left<-1)&&!e.closest('[style*="overflow"]');}).slice(0,3).map(e=>e.tagName+'.'+e.className).join(', ')`);
   /* Icons from ic() must be glyph-sized and unfilled; an unstyled SVG renders at container size with a black fill. */
   const badIcons = () => evaluate(`[...document.querySelectorAll('#provider-app svg.i')].filter(s=>{const r=s.getBoundingClientRect();return r.width>48||r.height>48||getComputedStyle(s).fill!=='none';}).length`);
@@ -217,8 +157,9 @@ async function run({ exe, wsUrl }) {
 
   await cdp.send('Browser.close').catch(() => {});
   cdp.ws.close();
-  console.log(failures ? `\n${failures} check(s) failed` : '\nAll checks passed');
-  process.exitCode = failures ? 1 : 0;
+  const failed = failureCount();
+  console.log(failed ? `\n${failed} check(s) failed` : '\nAll checks passed');
+  process.exitCode = failed ? 1 : 0;
 }
 
 main().catch(e => { console.error(e); process.exitCode = 2; });

@@ -15,7 +15,7 @@
 - Accessibility: partial; a complete automated accessibility runner is not currently established.
 
 ## Current baseline
-- `npm test`: **256 passed, 0 failed** (55 files) after Provider G1 (2026-11-13). Provider CDP runner: 231/231.
+- `npm test`: **265 passed, 0 failed** (56 files) after Customer orders/tracking focus batch (2026-11-13). CDP runners: Provider 231/231, Customer orders 60/60 (shared `tests/e2e/lib/cdp.js`).
 - CDP lesson: assert what is *rendered*, not DOM state — `el.hidden === true` passed while CSS still displayed the element; use `getComputedStyle(...).display` and `document.elementFromPoint` for occlusion.
 - Real-browser QA without packages: `tests/e2e/provider-standalone.cdp.js` (Edge over DevTools Protocol, Node built-in `WebSocket`); see `tests/e2e/README.md`. Last run 170/170.
 - Provider app behavior harness: `tests/helpers/provider-app-harness.js` (see `DOMAIN_MAPS/PROVIDER.md` §6). Project skill: `.claude/skills/vm-script-test`.

@@ -73,3 +73,11 @@ This is a focused keyboard-navigation improvement, not a WCAG conformance claim.
 - Bottom Sheet regression: 25/25 at each of 1280/768/390/320px (100 checks total).
 - Existing responsive browser runner could not be run in this environment because Node's `playwright` package is unavailable; Python Playwright + Chromium were available for the Customer suites. No project dependency was added.
 - Not verified: screen readers (NVDA/VoiceOver/TalkBack), Firefox/WebKit/Safari, real devices, zoom/reflow at 200–400%, full contrast/touch-target audit, and exhaustive keyboard traversal of every Customer/Provider/Admin screen. Phase 5 item 4 remains PARTIAL; no WCAG conformance claim.
+
+
+## Customer Orders / Order Details / Tracking — focus management (2026-11-13)
+- **Defect:** `show()` replaced `#view` and left keyboard focus on `<body>` for every screen except Wizard/Search; `renderTabs()` (called by both `go()` and `show()`) rebuilt `#tabbar` and destroyed the focused tab; the Orders filter re-render destroyed the pressed filter.
+- **Fix (`apps/customer/app.js`):** `renderTabs()` refocuses the equivalent tab when a tab had focus; `show()` restores focus only when it was actually lost (never on the boot render, never for Wizard/Search, which keep their own handling) — to a caller-requested control (`requestFocusAfterShow(selector)`, used by the Orders filter) or else the screen heading (`head()` `<h2 tabindex="-1">`), else `#view`.
+- **Semantics (`market-ui.page.js`):** the tracking timeline marks exactly one entry `aria-current="step"`.
+- **Evidence:** `tests/unit/customer-screen-focus.test.js` (9; 6 fail on the previous code); real Edge `tests/e2e/customer-orders.cdp.js` 60/60 at 1280/768/390/320 (tab, filter, open request, action, back — all by keyboard).
+- **Not covered yet:** Addresses and Support flows; screen readers; Firefox/WebKit.

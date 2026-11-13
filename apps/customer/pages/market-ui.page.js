@@ -51,20 +51,23 @@ const reqCard = x => `<button class="prow glass neon" data-track="${x.id}">
 /* ═════════ عرض الحالة الحالية + المسار ═════════ */
 function statusTimeline(r){
   const history = Array.isArray(r.history) ? r.history : [];
+  /* aria-current="step" على آخر سجل للحالة الحالية، حتى يعلن قارئ الشاشة الخطوة الحالية داخل القائمة */
+  let currentIdx = -1;
+  history.forEach((h, i) => { if (h.s === r.status) currentIdx = i; });
   const events = history.map((h, i) => {
     const label = STATUS_LABEL[h.s] || h.s || 'تحديث حالة';
     const terminal = ['cancelled','failed'].includes(h.s);
-    return `<li class="${terminal?'bad':'done'}"><i>${ic(terminal ? icStatus(h.s) : 'tick')}</i><span>${esc(label)}</span>${h.note?`<small>${esc(h.note)}</small>`:''}<time>${fmtDT(h.at)}</time></li>`;
+    return `<li class="${terminal?'bad':'done'}"${i===currentIdx?' aria-current="step"':''}><i>${ic(terminal ? icStatus(h.s) : 'tick')}</i><span>${esc(label)}</span>${h.note?`<small>${esc(h.note)}</small>`:''}<time>${fmtDT(h.at)}</time></li>`;
   });
-  const currentRecorded = history.some(h => h.s === r.status);
+  const currentRecorded = currentIdx >= 0;
   if (!currentRecorded && r.status) {
     const terminal = ['cancelled','failed'].includes(r.status);
-    events.push(`<li class="${terminal?'bad':'now'}"><i>${ic(icStatus(r.status),'live')}</i><span>${esc(STATUS_LABEL[r.status] || r.status)}</span><small>الحالة الحالية</small></li>`);
+    events.push(`<li class="${terminal?'bad':'now'}" aria-current="step"><i>${ic(icStatus(r.status),'live')}</i><span>${esc(STATUS_LABEL[r.status] || r.status)}</span><small>الحالة الحالية</small></li>`);
   }
   if (!events.length) {
     const idx = FLOW.findIndex(f => f[0] === r.status);
     const label = STATUS_LABEL[r.status] || r.status;
-    events.push(`<li class="now"><i>${ic(icStatus(r.status),'live')}</i><span>${esc(label)}</span><small>الحالة الحالية</small></li>`);
+    events.push(`<li class="now" aria-current="step"><i>${ic(icStatus(r.status),'live')}</i><span>${esc(label)}</span><small>الحالة الحالية</small></li>`);
     if (idx >= 0 && FLOW[idx+1]) events.push(`<li><i>${idx+2}</i><span>${esc(FLOW[idx+1][1])}</span><small>الخطوة التالية المتوقعة</small></li>`);
   }
   return `<ol class="tl" aria-label="السجل الزمني للطلب">${events.slice(-12).reverse().join('')}</ol>`;
@@ -436,6 +439,8 @@ document.addEventListener('click', e => {
   const b = e.target.closest('[data-order-filter]');
   if (!b) return;
   if (typeof state !== 'undefined') state.orderFilter = b.dataset.orderFilter;
+  /* أعِد التركيز إلى زر التصفية المضغوط بعد إعادة رسم الشاشة (لوحة المفاتيح/قارئ الشاشة) */
+  if (typeof requestFocusAfterShow === 'function') requestFocusAfterShow(`[data-order-filter="${b.dataset.orderFilter}"]`);
   if (typeof show === 'function') show('orders');
 });
 
