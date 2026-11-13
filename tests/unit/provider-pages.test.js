@@ -47,8 +47,35 @@ test('provider renderers escape user-controlled text and render meaningful empty
   assert.match(profileHtml,/&lt;img/); assert.doesNotMatch(profileHtml,/<img/);
 });
 
+test('provider stylesheet sizes ic() icons and the entry declares a favicon (P2 browser defects)', () => {
+  const css=fs.readFileSync(path.join(ROOT,'apps/provider/styles/provider.css'),'utf8');
+  const rule=/\.pv-app svg\.i\{([^}]*)\}/.exec(css);
+  assert.ok(rule,'provider.css must define the svg.i icon contract');
+  for(const decl of ['width:1em','height:1em','fill:none','stroke:currentColor']) assert.ok(rule[1].includes(decl),`svg.i must set ${decl}`);
+  const html=fs.readFileSync(path.join(ROOT,'apps/provider/index.html'),'utf8');
+  assert.match(html,/<link rel="icon" href="\.\.\/\.\.\/assets\/icon\.svg">/);
+  assert.ok(fs.existsSync(path.join(ROOT,'assets/icon.svg')));
+});
+
+test('every pv-* class emitted by the Provider runtime has a rule in provider.css', () => {
+  const css=fs.readFileSync(path.join(ROOT,'apps/provider/styles/provider.css'),'utf8');
+  const sources=['apps/provider/app.js','apps/provider/provider-shell.js',...fs.readdirSync(path.join(ROOT,'apps/provider/pages')).map(f=>`apps/provider/pages/${f}`)];
+  /* Not classes: inline form ids (styled via .pv-inline-form). Modifier styled by its base class: pv-finance-kpis (+ .pv-kpis). */
+  const notStyledByOwnRule=new Set(['pv-reject-form','pv-propose-form','pv-quote-form','pv-complete-form','pv-finance-kpis']);
+  const missing=new Set();
+  for(const file of sources){
+    const js=fs.readFileSync(path.join(ROOT,file),'utf8');
+    for(const m of js.matchAll(/(?<![\w-])pv-[a-z0-9-]+/g)) if(!notStyledByOwnRule.has(m[0])&&!css.includes('.'+m[0])) missing.add(`${m[0]} (${file})`);
+  }
+  assert.deepEqual([...missing],[],'unstyled Provider classes');
+  assert.match(css,/\.pv-toast\{[^}]*position:fixed[^}]*opacity:0/,'toast hidden until shown, out of document flow');
+  assert.match(css,/\.pv-toast\.is-visible\{[^}]*opacity:1/);
+  assert.doesNotMatch(css,/\.pv-toast\{[^}]*(visibility:hidden|display:none)/,'live region must stay in the accessibility tree');
+  assert.match(css,/\.pv-availability\.is-on\{/,'availability on-state is visually distinct');
+});
+
 test('service worker precaches standalone Provider entry, renderer modules and bumps cache version', () => {
   const sw=fs.readFileSync(path.join(ROOT,'service-worker.js'),'utf8');
-  assert.match(sw,/hansalhlak-v8-architecture-7/);
+  assert.match(sw,/hansalhlak-v8-architecture-8/);
   for(const file of ['apps/provider/index.html','apps/provider/styles/provider.css','apps/provider/app.js',...fs.readdirSync(path.join(ROOT,'apps/provider/pages')).filter(x=>x.endsWith('.js')).map(x=>`apps/provider/pages/${x}`)]) assert.ok(sw.includes(`'${file}'`),`${file} should be precached`);
 });

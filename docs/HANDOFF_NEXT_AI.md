@@ -302,3 +302,20 @@ Frontend only. Do not touch `backend/`, `database/`, production auth/API, paymen
 **Tests:** a11y 14/14, Provider suites 56/56; `npm test` **230/230**.
 **Browser:** headless Edge load smoke only (picker + title). No screen reader, keyboard or viewport run.
 **Next:** Provider P2 real-browser QA (see `START_HERE.md`).
+---
+
+# AGENT HANDOFF — 2026-11-13 — Provider P2 real-browser QA (Claude Code)
+
+**Goal:** protocol §6 P2. **Baseline:** `npm test` 230/230 (`5b25c44`). Playwright not installed; no packages added.
+**Created:** `tests/e2e/provider-standalone.cdp.js` — drives Microsoft Edge over the DevTools Protocol with Node's built-in `WebSocket`.
+**Modified:** `apps/provider/styles/provider.css`, `apps/provider/index.html`, `tests/unit/provider-pages.test.js` (+2), `service-worker.js` (cache `hansalhlak-v8-architecture-8`) + 4 cache-literal tests, `tests/e2e/README.md`, `.claude/skills/browser-qa/SKILL.md`, docs.
+
+**Defects found in the real browser and fixed:**
+1. Every `ic()` icon rendered at container width with a black fill — `provider.css` had no `svg.i` rule (Customer/Admin define it in their own CSS). Added a scoped `.pv-app svg.i` contract using Provider tokens.
+2. `.pv-availability` (incl. on-state), `.pv-toast`, `.pv-note`, `.pv-quote` had no CSS; the live toast text stayed in the page flow permanently. Added styles; toast is fixed, hidden with opacity (stays in the a11y tree), respects reduced motion.
+3. No favicon link → `/favicon.ico` 404 on every load. Added `assets/icon.svg` link like Customer/Admin.
+
+**Interruption note:** the first P2 run crashed (runner could not find a control because storage isolation silently failed: `Page.navigate` to a fragment-only change does not reload) and then hung because teardown was not in `finally`. The session was cut by a connection loss at that point. Fixed: guaranteed teardown, 180s watchdog, clear-storage + `Page.reload`, soft control lookup that reports on-screen state.
+
+**Tests:** `npm test` **232/232**. Browser: `provider-standalone.cdp.js` **170/170**, run twice, at 1280/768/430/390/320 (real Edge, fonts blocked, fresh profile, SW bypassed). Not covered: WebKit/Firefox, screen readers, Cairo webfont rendering.
+**Next:** Service Worker precache completeness (see `START_HERE.md`), then Provider P3 parity audit.

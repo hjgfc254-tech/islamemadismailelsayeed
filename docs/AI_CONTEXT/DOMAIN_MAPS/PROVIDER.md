@@ -102,7 +102,7 @@ Do not confuse source/script-order tests with end-to-end browser proof. Standalo
 ## 7. Next work — exact priority
 1. ✅ **P0 behavior tests — done 2026-11-13** (see §6). Known, deliberately unchanged: selecting an account after opening a deep link without a session lands on `#/home`, not the original link.
 2. ✅ **P1 accessibility — done 2026-11-13** (see §6). Not verified: real screen readers; per-field `aria-invalid`/`aria-describedby` (errors are announced via the live toast instead).
-3. **P2 browser QA:** 1280/768/430/390/320px; route refresh/deep links, overflow, console and local asset checks.
+3. ✅ **P2 browser QA — done 2026-11-13** with `tests/e2e/provider-standalone.cdp.js` (real Edge, 170/170 at 1280/768/430/390/320). Defects found and fixed: all `ic()` icons rendered at container size with black fill (no `svg.i` rule in `provider.css`); `.pv-availability`, `.pv-toast`, `.pv-note`, `.pv-quote` had no styles (toast text lingered in page flow); missing favicon link caused a 404. Guards: `provider-pages.test.js` (every runtime `pv-*` class has a rule; icon contract; favicon). Not covered: WebKit/Firefox, real screen readers, Cairo webfont (blocked for determinism).
 4. **P3 legacy parity:** map bridge/workspace contracts and prove parity before any removal.
 
 See `docs/AI_AGENT_CONTINUATION_PROTOCOL.md` sections 5–6. Do not start another Provider visual rebuild before P0 tests are added.

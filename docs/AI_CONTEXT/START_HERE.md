@@ -1,7 +1,7 @@
 # HANSALEHLAK V8 — START HERE
 
 **Current phase:** FRONTEND ONLY  
-**Latest verified baseline:** `npm test` → 230/230 passed (2026-11-13, after Provider P1).  
+**Latest verified baseline:** `npm test` → 232/232 passed (2026-11-13, after Provider P2). Real-browser Provider QA: 170/170.  
 **Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md`  
 **Current handoff:** `docs/HANDOFF_NEXT_AI.md`  
 **Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`  
@@ -25,10 +25,11 @@
 - Shared: design system, local stores, UI primitives and shared components; reuse actual APIs rather than duplicating them.
 - `backend/` and `database/` are future scaffolding and OUT OF SCOPE.
 
-## Exact next task — Provider P2 (real-browser QA)
-P0 behavior and P1 accessibility are done (see `DOMAIN_MAPS/PROVIDER.md` §6). Next, verify the standalone Provider app in a real browser at 1280/768/430/390/320px:
-no horizontal overflow, no console/page errors or failed local requests, keyboard flow (Tab/Enter/Escape), focus after route change, deep link + reload.
-Playwright is not installed; Microsoft Edge is. Prefer a dependency-free runner (Edge DevTools Protocol over Node's built-in `WebSocket`) under `tests/e2e/`, not part of `npm test`. Use the `browser-qa` skill.
+## Exact next task — Service Worker precache completeness
+Provider P0–P2 are done (`DOMAIN_MAPS/PROVIDER.md` §6–7). `service-worker.js` precaches runtime assets cache-first, but these entry-loaded files are not in its list:
+`apps/customer/pages/home.page.js`, `orders.page.js`, `order-details.page.js`, and the Admin entry `apps/admin/index.html` (verify the full Admin script list too).
+Verify how the worker handles uncached assets, add the missing entries, bump the cache version, and add a test that derives every
+`<script src>`/stylesheet from the Customer, Provider and Admin entry HTML and asserts each is precached. Then: Provider P3 legacy parity audit (no removal).
 
 ## Required finish gate
 Run targeted tests, then `npm test`; browser QA when available; update domain/page/status/handoff docs; run:

@@ -84,6 +84,6 @@ A focused shared keyboard-tabs helper is now implemented and tested: `shared/com
 - أُنجز standalone demo entry/runtime والـ shell/router و12 renderer. هذا لا يثبت تكافؤ legacy bridge ولا يبرر حذف `portal-compat.js` أو `provider-workspace.js`.
 - ✅ **P0 (منجز 2026-11-13):** `provider-app-actions.test.js` (25) و`provider-app-routing.test.js` (12) عبر `tests/helpers/provider-app-harness.js`؛ أُصلحت رسائل النجاح الكاذبة عند الإجراءات القديمة (stale)، وإلزام سبب الرفض، ورفض المواعيد الماضية، والتحقق من مبالغ عرض السعر، وانتقال `advance` لمجموعة الطلب الجديدة. التفاصيل في `DOMAIN_MAPS/PROVIDER.md` §6.
 - ✅ **P1 (منجز 2026-11-13):** إدارة التركيز عند تغيير المسار وبعد الإجراءات، عناوين الصفحات، نماذج inline بأسماء وصولية ونموذج واحد فقط وEscape وإرجاع التركيز، احترام reduced motion — `provider-app-a11y.test.js` (14). التالي: P2.
-- **P2:** Browser QA للـ Provider standalone عند 1280/768/430/390/320px؛ لا تستخدم نتيجة Responsive Sweep القديمة عبر legacy bridge كدليل على standalone.
+- ✅ **P2 (منجز 2026-11-13):** فحص متصفح حقيقي (Edge عبر DevTools Protocol بلا اعتماديات) عند 1280/768/430/390/320px — 170/170. أُصلحت أيقونات بلا حجم/تعبئة سوداء، وأنماط مفقودة (زر التوفر، الإشعار toast، ملاحظة الموعد، ملخص عرض السعر)، وfavicon مفقود. السكربت: `tests/e2e/provider-standalone.cdp.js`.
 - **P3:** parity audit منفصل لـ`legacy/portal-compat.js` و`provider-workspace.js` قبل أي إزالة أو دمج.
 - البروتوكول الإلزامي لاستلام أي وكيل جديد: `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`.
