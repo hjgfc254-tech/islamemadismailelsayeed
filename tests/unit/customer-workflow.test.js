@@ -1,0 +1,16 @@
+'use strict';
+const fs=require('fs'),assert=require('assert'),path=require('path');
+const root=path.join(__dirname,'../..');
+const market=fs.readFileSync(path.join(root,'apps/customer/pages/market-ui.page.js'),'utf8');
+const orders=fs.readFileSync(path.join(root,'apps/customer/pages/orders.page.js'),'utf8');
+const details=fs.readFileSync(path.join(root,'apps/customer/pages/order-details.page.js'),'utf8');
+const account=fs.readFileSync(path.join(root,'apps/customer/pages/account.page.js'),'utf8');
+const css=fs.readFileSync(path.join(root,'shared/design-system/design-system.css'),'utf8');
+let passed=0; const test=(name,fn)=>{try{fn();passed++;console.log('✓ '+name)}catch(e){console.error('✗ '+name+'\n '+e.message);process.exitCode=1;}};
+test('order center exposes active/completed/cancelled/all filters',()=>{for(const k of ['active','completed','cancelled','all'])assert(orders.includes(`'${k}'`) || orders.includes(`id:'${k}'`));assert(market.includes('data-order-filter'))});
+test('order filtering derives from actual request statuses',()=>{assert(orders.includes("!['closed','cancelled','failed'].includes(x.status)"));assert(orders.includes("x.status==='closed'"));assert(orders.includes("['cancelled','failed'].includes(x.status)"))});
+test('tracking renders recorded history events rather than a fabricated timeline',()=>{assert(market.includes('Array.isArray(r.history)'));assert(market.includes('history.map'));assert(market.includes('h.note'))});
+test('tracking explains next step for supported workflow states',()=>{for(const k of ['received','searching','sent','accepted','scheduled','enroute','arrived','started','quote','completed','closed','cancelled','failed'])assert(details.includes(k+':'))});
+test('account tabs expose accessible selected state',()=>{assert(account.includes('role="group"'));assert(account.includes('aria-pressed='))});
+test('responsive provider workspace is purpose-built for narrow and wide screens',()=>{for(const token of ['.pw-nav','.pw-stats','.pw-hero','@media(max-width:650px)','@media(min-width:900px)'])assert(css.includes(token))});
+console.log(`\n${passed} passed, 0 failed`);

@@ -1,0 +1,24 @@
+/* Responsive behaviour of the admin shell. Desktop (>=1024px) rules live in admin.css; this file is the drawer mode. STATUS: shell IMPLEMENTED. */
+.adm-toggle{flex:none}
+.adm-backdrop{position:fixed;inset:0;z-index:calc(var(--z-overlay) - 1);background:rgba(8,8,12,.62)}
+.adm-backdrop[hidden]{display:none}
+@media (max-width:1023px){
+  .adm-side{width:min(86vw,320px);inset-block:0;border-inline-end:0;border-inline-start:0;box-shadow:var(--shadow-3);transform:translateX(calc(var(--adm-dir) * 100%));visibility:hidden;transition:transform var(--motion-slow) ease,visibility 0s linear var(--motion-slow);padding-top:env(safe-area-inset-top)}
+  .adm[data-drawer="open"] .adm-side{transform:none;visibility:visible;transition:transform var(--motion-slow) ease,visibility 0s}
+  .adm-side-top{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);min-height:var(--adm-h);padding-inline:var(--sp-4);border-bottom:1px solid var(--border-subtle)}
+  .adm-collapse{display:none}
+  .adm-main{padding-block-start:var(--sp-4)}
+}
+@media (min-width:1024px){
+  .adm-backdrop,.adm-close{display:none}
+}
+@media (max-width:599px){
+  .adm-brand small,.adm-site{display:none}
+  .adm-chip{font-size:11px}
+  .adm-actions{width:100%}.adm-actions .adm-btn{flex:1 1 auto}
+  .adm-state{padding-block:var(--sp-6)}
+}
+@media (prefers-reduced-motion:reduce){
+  .adm-side,.adm-main,.adm-link,.adm-btn{transition:none!important}
+  .adm-spin{animation-duration:2.4s}
+}

@@ -1,0 +1,20 @@
+{
+  "name": "منصة هنصلحلك",
+  "short_name": "هنصلحلك",
+  "description": "منصة تربطك بالمتخصص المناسب وتتابع طلبك حتى اكتمال الخدمة",
+  "lang": "ar",
+  "dir": "rtl",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0B080D",
+  "theme_color": "#0B080D",
+  "start_url": "apps/customer/index.html",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

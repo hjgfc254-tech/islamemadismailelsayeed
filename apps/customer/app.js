@@ -1,0 +1,1039 @@
+/* ═══════════════════════════════════════════════════════════════
+   منصة هنصلحلك — الواجهة الأمامية الرئيسية — V7
+   ───────────────────────────────────────────────────────────────
+   V7 — تغييرات عن V6:
+   • حذف startRequest القديمة (ينتقل إلى wizard.js — مصدر وحيد).
+   • حذف bindSearch القديمة (بيانات data.js) واستبدالها بـ HS_SEARCH.bind.
+   • شاشة البحث (screens.search) تستخدم HS_SEARCH الموحّد على CAT.
+   • إضافة أقسام الرئيسية المطلوبة (المرحلة 1):
+       - خدمات مستخدمة مؤخرًا (من MP.searchHistory + myReqs)
+       - الخدمات المفضلة (MP.favoritesFor)
+       - مناطق الخدمة (Demo Banner)
+   • دالة موحدة openProblem تعتمد على CAT بدل data.js للمشاكل.
+   • ربط بطاقة مقدم الخدمة لفتح تفاصيله (سنتوسّعها في C).
+   • الحفاظ على: نظام الأيقونات، الافتتاحية، الحركات، RTL، الخط.
+
+   ملاحظات:
+   • لا يحتوي هذا الملف منطق طلب (الطلب في wizard.js).
+   • لا يحتوي منطق بيانات (في market.js).
+   • لا يحتوي منطق بحث (في search.js).
+   • يعتمد على: icons.js، data.js، catalog.js، market.js، market-ui.js، wizard.js، portal.js، attachments.js، search.js.
+   ═══════════════════════════════════════════════════════════════ */
+'use strict';
+
+/* ───────── رسومات الخدمات (SVG) — كما في V6 ───────── */
+const GEAR = (x,y,s=1) => `<g transform="translate(${x} ${y}) scale(${s})"><circle r="19" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="5" stroke-dasharray="5 8.35"/><circle r="14" fill="rgba(255,61,143,.25)" stroke="#fff" stroke-opacity=".9" stroke-width="4"/><circle r="6" fill="#140b18" stroke="#ff7ab8" stroke-width="1.5"/></g>`;
+const SPARK = (x,y,s=1) => `<path transform="translate(${x} ${y}) scale(${s})" d="M0-6L1.5-1.5 6 0 1.5 1.5 0 6-1.5 1.5-6 0-1.5-1.5z" fill="#ff9ccb"/>`;
+const ART = {
+  hero:`<svg viewBox="0 0 220 240" preserveAspectRatio="xMidYMid meet">
+    <defs>
+      <linearGradient id="hBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6a5a74"/><stop offset=".45" stop-color="#1c1521"/><stop offset="1" stop-color="#0c080e"/></linearGradient>
+      <radialGradient id="hScr" cx=".5" cy=".9" r=".95"><stop offset="0" stop-color="#ff3d8f" stop-opacity=".95"/><stop offset=".5" stop-color="#5a1642"/><stop offset="1" stop-color="#140b18"/></radialGradient>
+    </defs>
+    <ellipse cx="108" cy="132" rx="78" ry="92" fill="#ff3d8f" opacity=".32" filter="url(#gb10)"/>
+    <ellipse cx="108" cy="150" rx="100" ry="30" fill="none" stroke="#ff3d8f" stroke-width="2.2" opacity=".85" transform="rotate(-18 108 150)"/>
+    <ellipse cx="108" cy="150" rx="82" ry="22" fill="none" stroke="#ff7ab8" stroke-width="1.2" opacity=".5" transform="rotate(-18 108 150)"/>
+    <g transform="rotate(-12 100 125)">
+      <rect x="53" y="27" width="88" height="182" rx="17" fill="#2b1e30"/>
+      <rect x="46" y="20" width="88" height="182" rx="17" fill="url(#hBody)" stroke="url(#metal)" stroke-width="2.5"/>
+      <rect x="133" y="70" width="3" height="26" rx="1.5" fill="#b9b2c2"/><rect x="44" y="64" width="3" height="16" rx="1.5" fill="#b9b2c2"/>
+      <rect x="52" y="27" width="76" height="168" rx="12" fill="url(#hScr)"/>
+      <rect x="79" y="32" width="22" height="5" rx="2.5" fill="#000"/>
+      <path d="M60 44h10M110 44h10" stroke="#fff" stroke-opacity=".6" stroke-width="2" stroke-linecap="round"/>
+      ${GEAR(90,100,1.1)}
+      <g fill="#fff" fill-opacity=".2"><rect x="60" y="150" width="12" height="12" rx="3.5"/><rect x="78" y="150" width="12" height="12" rx="3.5"/><rect x="96" y="150" width="12" height="12" rx="3.5"/><rect x="114" y="150" width="8" height="12" rx="3.5" fill="#ff7ab8" fill-opacity=".5"/><rect x="60" y="170" width="12" height="12" rx="3.5"/><rect x="78" y="170" width="12" height="12" rx="3.5" fill="#ff7ab8" fill-opacity=".5"/><rect x="96" y="170" width="12" height="12" rx="3.5"/></g>
+      <path d="M52 30h44L58 150z" fill="#fff" opacity=".07"/>
+    </g>
+    <g transform="translate(166 66) rotate(38)">
+      <rect x="-8" y="12" width="16" height="116" rx="8" fill="url(#metal)" stroke="rgba(0,0,0,.35)"/>
+      <rect x="-3" y="22" width="4" height="96" rx="2" fill="#fff" opacity=".35"/>
+      <path d="M-7-20.9L-7-4 7-4 7-20.9A22 22 0 1 1-7-20.9z" fill="url(#metal2)" stroke="rgba(0,0,0,.35)"/>
+      <path d="M-15-12A18 18 0 0 0-13 8" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2.5" stroke-linecap="round"/>
+    </g>
+    ${SPARK(28,54,1.4)}${SPARK(198,176,1.2)}${SPARK(184,26,1)}${SPARK(16,176,.9)}
+  </svg>`,
+
+  electric:`<svg viewBox="0 0 160 150">
+    <ellipse cx="80" cy="142" rx="56" ry="6" fill="#ff3d8f" opacity=".5" filter="url(#gb6)"/>
+    <ellipse cx="76" cy="84" rx="62" ry="58" fill="#ff3d8f" opacity=".2" filter="url(#gb10)"/>
+    <rect x="22" y="26" width="88" height="110" rx="11" fill="#1c1521" stroke="url(#metal)" stroke-width="3"/>
+    <rect x="31" y="36" width="70" height="90" rx="6" fill="url(#glass)" stroke="rgba(255,255,255,.22)"/>
+    <g stroke="rgba(255,255,255,.28)" fill="#2b2230">
+      <rect x="39" y="46" width="24" height="20" rx="4"/><rect x="69" y="46" width="24" height="20" rx="4"/>
+      <rect x="39" y="72" width="24" height="20" rx="4"/><rect x="69" y="72" width="24" height="20" rx="4"/>
+      <rect x="39" y="98" width="24" height="20" rx="4"/><rect x="69" y="98" width="24" height="20" rx="4"/>
+    </g>
+    <g fill="url(#pinkg)"><rect x="43" y="50" width="16" height="9" rx="2.5"/><rect x="73" y="76" width="16" height="9" rx="2.5"/><rect x="43" y="102" width="16" height="9" rx="2.5"/></g>
+    <g fill="#8d8698"><rect x="43" y="59" width="16" height="3.5" rx="1.7"/><rect x="73" y="53" width="16" height="3.5" rx="1.7"/><rect x="43" y="85" width="16" height="3.5" rx="1.7"/><rect x="73" y="111" width="16" height="3.5" rx="1.7"/></g>
+    <g transform="translate(98 2) scale(.46) translate(-28 -8)">
+      <path d="M92 8L28 108h46l-12 74 70-104H86z" fill="#ff3d8f" opacity=".6" filter="url(#gb6)"/>
+      <path d="M92 8L28 108h46l-12 74 70-104H86z" fill="url(#pinkg)" stroke="#fff" stroke-opacity=".7" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M90 22L48 98h30" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="5" stroke-linecap="round"/>
+    </g>
+    <path d="M110 118h14a10 10 0 0 1 10 10v10" fill="none" stroke="#8d8698" stroke-width="5" stroke-linecap="round"/>
+    <rect x="127" y="136" width="14" height="9" rx="3" fill="url(#metal2)"/>
+    ${SPARK(16,48,1.2)}${SPARK(146,92,1.1)}${SPARK(140,26,.8)}
+  </svg>`,
+
+  plumbing:`<svg viewBox="0 0 160 150">
+    <ellipse cx="86" cy="146" rx="52" ry="5" fill="#ff3d8f" opacity=".5" filter="url(#gb6)"/>
+    <ellipse cx="86" cy="78" rx="62" ry="56" fill="#ff3d8f" opacity=".16" filter="url(#gb10)"/>
+    <rect x="6" y="34" width="14" height="48" rx="4" fill="url(#metal2)" stroke="rgba(0,0,0,.3)"/>
+    <rect x="18" y="46" width="94" height="24" rx="9" fill="url(#metal)" stroke="rgba(0,0,0,.3)"/>
+    <rect x="94" y="46" width="26" height="52" rx="10" fill="url(#metal)" stroke="rgba(0,0,0,.3)"/>
+    <rect x="90" y="94" width="34" height="13" rx="4" fill="url(#metal2)" stroke="rgba(0,0,0,.3)"/>
+    <path d="M26 52h66" stroke="#fff" stroke-opacity=".6" stroke-width="3" stroke-linecap="round"/>
+    <rect x="52" y="30" width="11" height="18" rx="3" fill="url(#metal2)"/>
+    <rect x="34" y="20" width="48" height="12" rx="6" fill="url(#pinkg)" stroke="rgba(255,255,255,.5)"/>
+    <rect x="40" y="23" width="36" height="3" rx="1.5" fill="#fff" opacity=".45"/>
+    <path d="M107 114c-5 8-8 12-8 16a8 8 0 0 0 16 0c0-4-3-8-8-14z" fill="#ff9ccb" opacity=".95"/>
+    <path d="M104 126a4 4 0 0 0 3 4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".7"/>
+    <path d="M107 134c-2 3-3 5-3 6.5a3 3 0 0 0 6 0c0-1.5-1-3.5-3-6.5z" fill="#ff7ab8" opacity=".8"/>
+    <ellipse cx="107" cy="145" rx="22" ry="3.5" fill="none" stroke="#ff7ab8" stroke-width="1.6" opacity=".8"/>
+    <rect x="10" y="108" width="46" height="16" rx="5" fill="url(#metal)" stroke="rgba(0,0,0,.3)"/>
+    <rect x="22" y="104" width="7" height="24" rx="2" fill="url(#metal2)"/><rect x="40" y="104" width="7" height="24" rx="2" fill="url(#metal2)"/>
+    ${SPARK(142,40,1.1)}${SPARK(18,98,.8)}${SPARK(140,70,.8)}
+  </svg>`,
+
+  carpentry:`<svg viewBox="0 0 160 150">
+    <ellipse cx="80" cy="142" rx="64" ry="5" fill="#ff3d8f" opacity=".45" filter="url(#gb6)"/>
+    <ellipse cx="82" cy="80" rx="62" ry="54" fill="#ff3d8f" opacity=".16" filter="url(#gb10)"/>
+    <path d="M14 16v62h10V26h40V16z" fill="url(#metal)" stroke="rgba(0,0,0,.3)"/>
+    <path d="M14 34h6M14 46h6M14 58h6M34 16v6M46 16v6M58 16v6" stroke="#2b2230" stroke-width="1.6"/>
+    <rect x="12" y="108" width="136" height="28" rx="5" fill="url(#pinkg)" stroke="rgba(255,255,255,.4)"/>
+    <path d="M20 116c20-4 34 4 56 0s40-4 64 0M20 126c24-3 40 3 62 0s36-3 58 0" fill="none" stroke="#000" stroke-opacity=".22" stroke-width="1.6"/>
+    <ellipse cx="148" cy="122" rx="5" ry="14" fill="#d6246f" stroke="rgba(0,0,0,.25)"/>
+    <rect x="108" y="82" width="5" height="28" rx="1.5" fill="url(#metal2)"/><rect x="103" y="79" width="15" height="5" rx="2.5" fill="url(#metal)"/>
+    <g transform="translate(88 70) rotate(52)">
+      <rect x="-6" y="-4" width="12" height="76" rx="6" fill="url(#metal2)" stroke="rgba(0,0,0,.3)"/>
+      <rect x="-3" y="6" width="3.5" height="56" rx="1.7" fill="#fff" opacity=".35"/>
+      <rect x="-28" y="-30" width="56" height="26" rx="6" fill="url(#metal)" stroke="rgba(0,0,0,.35)"/>
+      <path d="M-28-26C-44-30-50-18-48-8c4-6 12-8 20-8z" fill="url(#metal2)" stroke="rgba(0,0,0,.3)"/>
+      <path d="M-20-24h38" stroke="#fff" stroke-opacity=".6" stroke-width="3" stroke-linecap="round"/>
+    </g>
+    ${SPARK(132,60,1.2)}${SPARK(40,98,.9)}${SPARK(144,24,.8)}
+  </svg>`,
+
+  painting:`<svg viewBox="0 0 160 150">
+    <ellipse cx="78" cy="144" rx="54" ry="5" fill="#ff3d8f" opacity=".45" filter="url(#gb6)"/>
+    <ellipse cx="80" cy="76" rx="62" ry="54" fill="#ff3d8f" opacity=".16" filter="url(#gb10)"/>
+    <rect x="12" y="62" width="96" height="16" rx="8" fill="url(#pinkg)" opacity=".55"/>
+    <path d="M30 76v14a4 4 0 0 0 8 0V76M62 76v22a4 4 0 0 0 8 0V76M88 76v10a4 4 0 0 0 8 0V76" fill="#ff5aa5" opacity=".55"/>
+    <rect x="14" y="20" width="96" height="32" rx="12" fill="url(#pinkg)" stroke="rgba(255,255,255,.55)" stroke-width="1.5"/>
+    <path d="M24 30h72" stroke="#fff" stroke-opacity=".5" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M110 36h16a8 8 0 0 1 8 8v22a8 8 0 0 1-8 8H72v12" fill="none" stroke="url(#metal)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="63" y="92" width="18" height="46" rx="8" fill="url(#metal2)" stroke="rgba(0,0,0,.3)"/>
+    <rect x="68" y="100" width="4" height="30" rx="2" fill="#2b2230" opacity=".5"/>
+    <g transform="translate(128 98) rotate(24)">
+      <rect x="-5.5" y="2" width="11" height="40" rx="5.5" fill="url(#metal2)" stroke="rgba(0,0,0,.3)"/>
+      <rect x="-9" y="-14" width="18" height="18" rx="3" fill="url(#metal)" stroke="rgba(0,0,0,.3)"/>
+      <path d="M-9-14C-8-34 8-34 9-14z" fill="url(#pinkg)" stroke="rgba(255,255,255,.4)"/>
+    </g>
+    <circle cx="138" cy="44" r="3.5" fill="#ff7ab8"/><circle cx="148" cy="58" r="2.4" fill="#ff3d8f"/><circle cx="20" cy="108" r="3" fill="#ff9ccb"/>
+    ${SPARK(26,92,1)}${SPARK(144,20,1)}
+  </svg>`,
+
+  cleaning:`<svg viewBox="0 0 160 150">
+    <ellipse cx="80" cy="144" rx="62" ry="5" fill="#ff3d8f" opacity=".45" filter="url(#gb6)"/>
+    <ellipse cx="80" cy="76" rx="62" ry="56" fill="#ff3d8f" opacity=".16" filter="url(#gb10)"/>
+    <g transform="translate(112 12) rotate(16)">
+      <rect x="-4" y="0" width="8" height="74" rx="4" fill="url(#metal2)" stroke="rgba(0,0,0,.3)"/>
+      <rect x="-12" y="70" width="24" height="9" rx="3" fill="url(#metal)"/>
+      <path d="M-14 78h28l10 50H-24z" fill="url(#pinkg)" stroke="rgba(255,255,255,.45)"/>
+      <path d="M-8 90l-6 36M0 90v36M8 90l6 36" stroke="#000" stroke-opacity=".25" stroke-width="2" stroke-linecap="round"/>
+    </g>
+    <rect x="22" y="70" width="46" height="62" rx="11" fill="url(#glass)" stroke="url(#metal)" stroke-width="2.5"/>
+    <rect x="27" y="92" width="36" height="35" rx="7" fill="#ff3d8f" opacity=".5"/>
+    <path d="M27 100c9-4 14 3 22 0s10-3 14 0" fill="none" stroke="#ff9ccb" stroke-width="2" opacity=".8"/>
+    <rect x="36" y="54" width="18" height="18" rx="3" fill="url(#metal)"/>
+    <path d="M30 54h36a6 6 0 0 1 6 6v7H30z" fill="url(#pinkg)" stroke="rgba(255,255,255,.4)"/>
+    <path d="M66 58h10v7H66z" fill="url(#metal2)"/>
+    <circle cx="45" cy="84" r="9" fill="rgba(255,255,255,.14)" stroke="#fff" stroke-opacity=".5"/><path d="M45 79l1.6 3.4 3.6.5-2.6 2.5.6 3.6-3.2-1.7-3.2 1.7.6-3.6-2.6-2.5 3.6-.5z" fill="#fff" opacity=".85"/>
+    <g fill="none" stroke="#fff" stroke-opacity=".7" stroke-width="1.5"><circle cx="86" cy="48" r="6"/><circle cx="98" cy="62" r="4"/><circle cx="82" cy="70" r="3"/><circle cx="20" cy="40" r="5"/><circle cx="34" cy="30" r="3"/></g>
+    ${SPARK(142,20,1.1)}${SPARK(12,16,.9)}
+  </svg>`,
+
+  appliances:`<svg viewBox="0 0 160 196">
+    <ellipse cx="80" cy="190" rx="62" ry="5" fill="#ff3d8f" opacity=".55" filter="url(#gb6)"/>
+    <rect x="26" y="184" width="14" height="8" rx="2" fill="#2b2230"/><rect x="120" y="184" width="14" height="8" rx="2" fill="#2b2230"/>
+    <rect x="14" y="4" width="132" height="182" rx="13" fill="url(#metal)" stroke="rgba(255,255,255,.5)"/>
+    <rect x="14" y="4" width="38" height="182" rx="13" fill="#fff" opacity=".1"/>
+    <path d="M14 46h132" stroke="#000" stroke-opacity=".22" stroke-width="2"/>
+    <rect x="24" y="14" width="46" height="24" rx="5" fill="#150d17" stroke="rgba(255,255,255,.25)"/>
+    <path d="M31 26h8M44 26h8M57 26h8" stroke="#ff3d8f" stroke-width="3.2" stroke-linecap="round"/>
+    <circle cx="104" cy="26" r="14" fill="url(#metal2)" stroke="rgba(0,0,0,.3)"/><circle cx="104" cy="26" r="9" fill="#2b2230"/><path d="M104 26l4-6" stroke="#ff7ab8" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="134" cy="26" r="7" fill="#ff3d8f" opacity=".3"/><circle cx="134" cy="26" r="3.6" fill="#ff3d8f"/>
+    <rect x="9" y="102" width="7" height="16" rx="2" fill="#8d8698"/>
+    <circle cx="80" cy="120" r="57" fill="url(#metal2)" stroke="rgba(0,0,0,.35)"/>
+    <circle cx="80" cy="120" r="47" fill="#1a1420" stroke="rgba(255,255,255,.3)" stroke-width="2"/>
+    <circle cx="80" cy="120" r="40" fill="url(#glass)"/>
+    <circle cx="80" cy="120" r="27" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="8"/>
+    <ellipse cx="86" cy="130" rx="21" ry="11" fill="#ff3d8f" opacity=".38"/><ellipse cx="70" cy="117" rx="12" ry="8" fill="#ff7ab8" opacity=".28"/>
+    <path d="M42 126q9-5 19 0t19 0 19 0 19 0" fill="none" stroke="#ff9ccb" stroke-opacity=".55" stroke-width="2"/>
+    <path d="M50 102a34 34 0 0 1 28-17" stroke="#fff" stroke-opacity=".6" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="106" cy="142" r="3" fill="#fff" opacity=".25"/>
+  </svg>`,
+
+  car:`<svg viewBox="0 0 240 130">
+    <ellipse cx="120" cy="120" rx="104" ry="7" fill="#ff3d8f" opacity=".5" filter="url(#gb6)"/>
+    <path d="M10 94c0-14 16-18 34-22l26-27c6-6 14-9 24-9h56c12 0 20 4 28 14l18 20c18 4 32 8 32 24v8H10z" fill="url(#pinkg)"/>
+    <path d="M10 94h218v8H10z" fill="#000" opacity=".28"/>
+    <path d="M80 50l14-6h24v28H58zM126 44h28c6 0 10 3 14 8l12 20h-54z" fill="#18101c" opacity=".94"/>
+    <path d="M96 46h18l-14 26H84zM130 46h12l-12 26h-8z" fill="#fff" opacity=".1"/>
+    <path d="M24 88c44-8 124-10 202 2" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="1.6"/>
+    <path d="M122 46v56" stroke="#000" stroke-opacity=".3"/><rect x="108" y="78" width="10" height="3" rx="1.5" fill="#fff" opacity=".6"/>
+    <circle cx="62" cy="102" r="23" fill="#0a070c"/><circle cx="182" cy="102" r="23" fill="#0a070c"/>
+    <g><circle cx="62" cy="102" r="19" fill="#0e0a10" stroke="url(#metal)" stroke-width="3"/><circle cx="62" cy="102" r="12" fill="url(#metal)"/><path d="M62 90v24M50 102h24M53.5 93.5l17 17M70.5 93.5l-17 17" stroke="#0e0a10" stroke-width="1.6"/><circle cx="62" cy="102" r="3.5" fill="#0e0a10"/></g>
+    <g><circle cx="182" cy="102" r="19" fill="#0e0a10" stroke="url(#metal)" stroke-width="3"/><circle cx="182" cy="102" r="12" fill="url(#metal)"/><path d="M182 90v24M170 102h24M173.5 93.5l17 17M190.5 93.5l-17 17" stroke="#0e0a10" stroke-width="1.6"/><circle cx="182" cy="102" r="3.5" fill="#0e0a10"/></g>
+    <ellipse cx="224" cy="83" rx="14" ry="5" fill="#fff" opacity=".35" filter="url(#gb6)"/><rect x="212" y="80" width="15" height="7" rx="3.5" fill="#fff"/>
+    <rect x="8" y="78" width="6" height="9" rx="2" fill="#ff1744"/>
+  </svg>`,
+};
+
+const TABS = [['home','الرئيسية','home'],['sections','الخدمات','grid'],['search','بحث','search'],['orders','طلباتي','list'],['account','حسابي','user']];
+
+/* ───────── أدوات ───────── */
+const $ = s => document.querySelector(s);
+const view = $('#view'), app = $('#app');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const norm = s => String(s).replace(/[\u064B-\u065F\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').toLowerCase().trim();
+const store = {
+  get(k,d){ try{ const v = localStorage.getItem('hs_'+k); return v===null?d:JSON.parse(v);}catch{ return d; } },
+  set(k,v){ try{ localStorage.setItem('hs_'+k, JSON.stringify(v)); }catch{} }
+};
+let toastT;
+function toast(msg){ const t=$('#toast'); if(!t) return; t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); }
+
+/* مفتاح مشكلة "قسم:رقم" — توافق خلفي فقط للمفضلة القديمة/الروابط القديمة */
+const getProb = key => {
+  const m = /^([a-z]+):(\d+)$/.exec(String(key)); if(!m) return null;
+  const d = DEVICES[m[1]], p = d && d.problems[+m[2]];
+  return p ? [d, p, m[1], +m[2]] : null;
+};
+
+/* ترحيل خفيف */
+(function migrate(){
+  if (store.get('ver',0) < 3){ store.set('fav',[]); store.set('ver',3); }
+  const f = store.get('fav',[]); store.set('fav', Array.isArray(f) ? f.filter(k=>getProb(k)) : []);
+  const r = store.get('reqs',[]); store.set('reqs', Array.isArray(r) ? r.filter(x=>x && typeof x==='object' && x.t) : []);
+  const rc = store.get('recent',[]); store.set('recent', Array.isArray(rc) ? rc.filter(x=>typeof x==='string') : []);
+  const u = store.get('user',null); if (u && (typeof u!=='object' || !u.name)) store.set('user',null);
+})();
+
+/* ───────── مكونات ───────── */
+const topbar = () => {
+  let hasNotes = false;
+  try { const c = me(); hasNotes = c ? MP.unreadFor('customer:'+c.id) > 0 : false; } catch {}
+  return `
+<header class="topbar">
+  <div class="tb-actions">
+    <button class="ic-btn avatar" data-go="account" aria-label="حسابي">${ic('user')}</button>
+    <button class="ic-btn ${hasNotes?'dot':''}" data-act="bell" aria-label="الإشعارات">${ic('bell')}</button>
+  </div>
+  <div class="logo"><div class="mark">${ic('wrench')}</div><div class="t"><small>منصة</small><b>هنصلحلك</b></div></div>
+  <div class="tb-actions"><button class="ic-btn" data-act="menu" aria-label="القائمة">${ic('menu')}</button></div>
+</header>`;
+};
+/* V8-C3: البلاطة تفتح مسار الكتالوج الجديد (قسم ← جهاز ← مشكلة) إن وُجد القسم في CAT؛ وإلا تعود لمسار details القديم (توافق خلفي). */
+const tile = (k, small) => {
+  let viaCat = false;
+  try { const c = CAT.category(k); viaCat = !!(c && c.active); } catch {}
+  const target = viaCat ? `data-wz-hit="cat|${k}"` : `data-dev="${k}"`;
+  return `<button class="tile glass neon ${small?'small':''}" ${target} aria-label="${DEVICES[k].name}"><span class="tart">${ART[DEVICES[k].art]}</span><span class="tl">${DEVICES[k].cat}</span></button>`;
+};
+const tiles = (small) => `<div class="grid fit">${HOME_ORDER.map(k=>tile(k,small)).join('')}</div>`;
+const head = (title, back) => `<div class="dhead">${back?`<button class="back" data-back aria-label="رجوع">${ic('back')}</button>`:'<span></span>'}<h2>${title}</h2><span></span></div>`;
+
+/* ───────── الشرائح (كما في V6) ───────── */
+const discover = () => `
+<section class="disc" aria-labelledby="discT">
+  <h2 class="sec-title" id="discT">${ic('sparkle')}اكتشف خدمات هنصلحلك</h2>
+  <div class="car" id="car" tabindex="0" role="region" aria-roledescription="carousel" aria-label="اكتشف خدمات هنصلحلك">
+    <div class="track" id="track">
+      ${GUIDES.map((g,i)=>`
+      <article class="slide s-${g.id}" id="guide-slide-${g.id}" role="group" aria-roledescription="slide" aria-label="${i+1} من ${GUIDES.length}" aria-labelledby="guide-tab-${g.id}">
+        <img class="s-img" src="${g.img}" alt="" decoding="async" draggable="false" ${i?'loading="lazy"':''} onerror="this.remove()">
+        <div class="s-shade"></div>
+        <div class="s-body">
+          <h3>${g.title}</h3>
+          <p>${g.desc}</p>
+          <button class="s-cta" data-act="slide" data-s="${g.id}">${g.cta} ${ic('chev')}</button>
+        </div>
+      </article>`).join('')}
+    </div>
+  </div>
+  <div class="dots" id="dots" role="tablist" aria-label="مؤشر الشرائح">${GUIDES.map((g,i)=>`<button type="button" role="tab" id="guide-tab-${g.id}" aria-controls="guide-slide-${g.id}" class="${i?'':'on'}" data-dot="${i}" aria-label="${g.title}" aria-selected="${i?'false':'true'}"></button>`).join('')}</div>
+</section>`;
+
+let carTimer = null;
+function initCarousel(){
+  clearInterval(carTimer);
+  const car=$('#car'), track=$('#track'); if(!track) return;
+  const slides=[...track.children], dots=[...document.querySelectorAll('#dots button')];
+  const dotList = document.querySelector('#dots');
+  const dotTabs = dotList && window.HSA11yTabs ? window.HSA11yTabs.attach(dotList) : null;
+  let cur=0, pausedUntil=0, hover=false, raf=0, drag=null, moved=false;
+  const pause = (ms=7000)=>{ pausedUntil = Date.now()+ms; };
+  const nearest = () => {
+    const max = track.scrollWidth - track.clientWidth, x = Math.abs(track.scrollLeft);
+    if (x <= 2) return 0;
+    if (x >= max-2) return slides.length-1;
+    const tr = track.getBoundingClientRect(), c = tr.left + tr.width/2;
+    let best=0, bd=1e9;
+    slides.forEach((s,i)=>{ const r=s.getBoundingClientRect(), d=Math.abs(r.left+r.width/2-c); if(d<bd){bd=d;best=i;} });
+    return best;
+  };
+  const paint = () => { raf=0; cur = nearest(); dots.forEach((d,i)=>{ d.classList.toggle('on',i===cur); d.setAttribute('aria-selected',i===cur ? 'true' : 'false'); }); if(dotTabs) dotTabs.sync(); };
+  const goTo = (i, smooth=true) => {
+    const s=slides[(i+slides.length)%slides.length], tr=track.getBoundingClientRect(), r=s.getBoundingClientRect();
+    track.scrollBy({left:(r.left+r.width/2)-(tr.left+tr.width/2), behavior: smooth?'smooth':'auto'});
+  };
+  track.addEventListener('scroll', ()=>{ if(!raf) raf=requestAnimationFrame(paint); }, {passive:true});
+  dots.forEach(d=>d.addEventListener('click',()=>{ pause(9000); goTo(+d.dataset.dot); }));
+  ['touchstart','wheel','focusin'].forEach(ev=>car.addEventListener(ev,()=>pause(9000),{passive:true}));
+  car.addEventListener('keydown',e=>{
+    if(e.key==='ArrowLeft'){ e.preventDefault(); pause(9000); goTo(Math.min(cur+1,slides.length-1)); }
+    if(e.key==='ArrowRight'){ e.preventDefault(); pause(9000); goTo(Math.max(cur-1,0)); }
+  });
+  track.addEventListener('pointerdown',e=>{
+    if(e.pointerType!=='mouse' || e.button!==0) return;
+    drag={x:e.clientX, left:track.scrollLeft, id:e.pointerId}; moved=false; pause(9000);
+  });
+  track.addEventListener('pointermove',e=>{
+    if(!drag) return;
+    const dx=e.clientX-drag.x;
+    if(!moved && Math.abs(dx)>5){ moved=true; track.classList.add('drag'); try{track.setPointerCapture(drag.id);}catch{} }
+    if(moved) track.scrollLeft = drag.left - dx;
+  });
+  const end = () => { if(!drag) return; const was=moved; drag=null; track.classList.remove('drag'); if(was){ goTo(nearest()); setTimeout(()=>moved=false,0); } };
+  track.addEventListener('pointerup',end); track.addEventListener('pointercancel',end);
+  track.addEventListener('click',e=>{ if(moved){ e.preventDefault(); e.stopPropagation(); } },true);
+  car.addEventListener('mouseenter',()=>hover=true); car.addEventListener('mouseleave',()=>hover=false);
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches){
+    carTimer = setInterval(()=>{
+      if(!document.body.contains(track)) return clearInterval(carTimer);
+      if(hover || drag || state.sheet || document.hidden || Date.now()<pausedUntil) return;
+      goTo(cur+1);
+    }, 5500);
+  }
+  paint();
+}
+
+/* ═════════ أقسام الرئيسية الجديدة — V7 ═════════ */
+
+/* خدمة سابقة للعميل: يعيد [{kind:'req', req}] */
+function recentUsedServices(){
+  try {
+    const c = me(); if (!c) return [];
+    const reqs = MP.reqs().filter(r => r.customerId === c.id);
+    /* خدمة مميزة = كل زوج (itemId) فريد؛ نأخذ أول 4 */
+    const seen = new Set(), out = [];
+    for (const r of reqs) {
+      const key = r.itemId || r.cat;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      out.push(r);
+      if (out.length >= 4) break;
+    }
+    return out;
+  } catch { return []; }
+}
+
+function favoriteProviders(){
+  try {
+    const c = me(); if (!c) return [];
+    const favs = MP.favoritesFor(c.id).filter(f => f.kind === 'provider');
+    return favs.map(f => MP.get('providers', f.refId)).filter(Boolean).slice(0, 4);
+  } catch { return []; }
+}
+
+function renderRecentUsed(){
+  const list = recentUsedServices();
+  if (!list.length) return '';
+  const row = (r) => {
+    const cat = CAT.category(r.cat); const it = CAT.item(r.itemId);
+    return `<button class="prow glass neon" data-repeat="${r.id}" title="إعادة طلب الخدمة">
+      ${icp(icItem(it, r.cat), 'dev')}
+      <span class="tx">${esc(it ? it.name : r.serviceName)}<small>${esc(cat ? cat.name : '')} — إعادة طلب</small></span>
+      ${ic('chev','chev')}
+    </button>`;
+  };
+  return `<h2 class="sec-title">${ic('clock')}خدمات استخدمتها مؤخرًا</h2>
+    <div class="plist">${list.map(row).join('')}</div>`;
+}
+
+function renderFavorites(){
+  const provs = favoriteProviders();
+  let services = [];
+  try {
+    const c = me(); if (c) {
+      const favs = MP.favoritesFor(c.id).filter(f => f.kind === 'service');
+      services = favs.map(f => CAT.problem(f.refId) || CAT.item(f.refId)).filter(Boolean).slice(0, 3);
+    }
+  } catch {}
+  if (!provs.length && !services.length) return '';
+  const provRow = (p) => `<button class="prow glass neon" data-provider="${esc(p.id)}">
+    ${icp(icSec(SEC_ICON_FOR(p.cats[0])), 'sv')}
+    <span class="tx">${esc(p.name)}<small>${p.cats.map(MP.catName).join('، ')} — ${esc((p.areas||[]).slice(0,2).join('، ') || (p.govs||[]).join('، '))}</small></span>
+    <span class="tag">${starsHtml(Math.round(p.rating || 0))}</span>
+  </button>`;
+  const svcRow = (s) => {
+    const isProb = !!s.slug;
+    const type = isProb ? 'problem' : 'item';
+    return `<button class="prow glass neon" data-provider-service="${type}|${esc(s.id)}">
+      ${icp('star', 'pr')}
+      <span class="tx">${esc(s.name)}<small>${isProb ? 'مشكلة محفوظة' : 'نوع عمل محفوظ'}</small></span>
+      ${ic('chev','chev')}
+    </button>`;
+  };
+  return `<h2 class="sec-title">${ic('heart')}المفضلة</h2>
+    ${provs.length?`<div class="lbl">مقدمو خدمة</div><div class="plist">${provs.map(provRow).join('')}</div>`:''}
+    ${services.length?`<div class="lbl">خدمات</div><div class="plist">${services.map(svcRow).join('')}</div>`:''}`;
+}
+
+function renderServiceAreas(){
+  let govs = [];
+  try {
+    govs = MP.db().serviceAreas.map(x => x.gov);
+  } catch {}
+  if (!govs.length) govs = ['القاهرة','الجيزة','الإسكندرية'];
+  const chips = govs.map(g => `<span class="chip">${ic('pin')} ${esc(g)}</span>`).join('');
+  return `<h2 class="sec-title">${ic('pin')}مناطق الخدمة</h2>
+    <div class="demo-banner">${ic('info')}<span>بيانات تجريبية — المناطق الفعلية تُحدَّد عند تشغيل المنصة.</span></div>
+    <div class="chips" style="flex-wrap:wrap">${chips}</div>`;
+}
+
+/* مساعدة: أيقونة قسم من cats */
+function SEC_ICON_FOR(cat) {
+  const d = DEVICES[cat]; return d ? d.icon : 'grid';
+}
+
+
+/* ═════════ V8-C3: الرئيسية والتنقل ═════════
+   ملاحظة: me/myReqs/reqCard معرّفة في market-ui.js (تُحمَّل بعد app.js) — تُستدعى وقت العرض فقط، وأول عرض مؤجل حتى اكتمال التحميل (انظر البدء). */
+const homeMe = () => { try { return me(); } catch { return null; } };
+
+/* طلبات العميل النشطة (غير النهائية)، الأحدث أولًا */
+function homeActiveRequests(){
+  try {
+    const c = homeMe(); if (!c) return [];
+    return MP.reqs()
+      .filter(r => r.customerId === c.id && !FINAL_STATUSES.has(r.status))
+      .sort((a, b) => String(b.createdAt || '') < String(a.createdAt || '') ? -1 : 1);
+  } catch { return []; }
+}
+
+/* «الخطوة التالية» لكل حالة + هل المطلوب إجراء من العميل؟ (متوافق مع أزرار تفاصيل الطلب في market-ui.js) */
+const NEXT_STEP = {
+  received:'بنراجع طلبك', searching:'بندوّر على مقدم خدمة مناسب', sent:'بانتظار رد مقدم الخدمة',
+  accepted:'بانتظار تأكيد الموعد', scheduled:'الموعد متأكد — جهّز المكان', enroute:'مقدم الخدمة في الطريق إليك',
+  arrived:'مقدم الخدمة وصل', started:'الخدمة جارية الآن', quote:'مطلوب موافقتك على السعر', completed:'أكّد إتمام الخدمة'
+};
+function nextStepOf(r){
+  if (r.status === 'accepted' && r.proposal) return { need:true, text:'مقدم الخدمة اقترح موعدًا — محتاج موافقتك' };
+  if (r.status === 'completed' || r.status === 'quote') return { need:true, text:NEXT_STEP[r.status] };
+  return { need:false, text:NEXT_STEP[r.status] || '' };
+}
+
+function renderActiveRequests(){
+  const list = homeActiveRequests();
+  if (!list.length) return '';
+  const card = (r) => {
+    const n = nextStepOf(r);
+    return `<button class="act-card glass neon ${n.need?'need':''}" data-track="${esc(r.id)}">
+      <span class="ac-top">${icp(icStatus(r.status),'st')}
+        <span class="tx">${esc(r.serviceName)}<small>#${esc(r.no)} • ${esc(STATUS_LABEL[r.status]||'')}</small></span>
+        ${ic('chev','chev')}</span>
+      ${n.text?`<span class="ac-next">${ic(n.need?'warn':'info')}<span>${esc(n.text)}</span></span>`:''}
+    </button>`;
+  };
+  const shown = list.slice(0, 3);
+  return `<h2 class="sec-title">${ic('clock')}طلباتك النشطة${list.length>3?`<button class="sec-more" data-go="orders">عرض الكل (${list.length})</button>`:''}</h2>
+    <div class="plist">${shown.map(card).join('')}</div>`;
+}
+
+/* مشكلات شائعة: قائمة مختارة من الكتالوج الحالي (CAT) — تُتحقق من وجودها ونشاطها وقت العرض، لا نسخة بيانات موازية */
+const COMMON_PROBLEMS = [
+  'appliances/ac/no-cooling','appliances/washer-auto/no-drain','appliances/fridge/no-cooling',
+  'electric/dist-board/breaker-trips','electric/switches/socket-dead','plumbing/sinks/leak-under'
+];
+function renderCommonProblems(){
+  let rows = [];
+  try {
+    rows = COMMON_PROBLEMS.map(id => CAT.problem(id)).filter(p => p && p.active && !p.isOther)
+      .map(p => ({ p, it: CAT.item(p.item), c: CAT.category(p.cat) })).filter(x => x.it && x.c && x.it.active && x.c.active);
+  } catch {}
+  if (!rows.length) return '';
+  return `<h2 class="sec-title">${ic('bulb')}مشكلات شائعة</h2>
+    <div class="cp-grid">${rows.map(({p,it,c}) => `<button class="cp glass neon" data-wz-hit="problem|${esc(p.id)}">
+      ${icp(icItem(it, p.cat),'dev')}<span class="tx">${esc(p.name)}<small>${esc(it.name)}</small></span></button>`).join('')}</div>`;
+}
+
+/* العناوين المحفوظة — من نفس طبقة العناوين (MP.addressesFor)؛ تُدار من شاشة addresses */
+function renderSavedAddresses(){
+  const c = homeMe(); if (!c) return '';
+  let list = [];
+  try { list = MP.addressesFor(c.id); } catch {}
+  const head2 = `<h2 class="sec-title">${ic('pin')}عناويني${list.length?`<button class="sec-more" data-go="addresses">إدارة (${list.length})</button>`:''}</h2>`;
+  if (!list.length) {
+    const emptyHtml = (typeof UIK !== 'undefined') ? UIK.empty('pin','مفيش عناوين محفوظة','ضيف عنوانك علشان طلباتك تبقى أسرع')
+      : `<div class="empty">${ic('pin')}<p>مفيش عناوين محفوظة</p></div>`;
+    return head2 + `<div class="empty-card glass neon">${emptyHtml}<button class="cta ghost" data-go="addresses">${ic('plus')} إضافة عنوان</button></div>`;
+  }
+  const sorted = list.slice().sort((a, b) => (b.default ? 1 : 0) - (a.default ? 1 : 0)).slice(0, 2);
+  return head2 + `<div class="plist">${sorted.map(a => `<button class="prow glass neon" data-go="addresses">
+    ${icp('pin','pr')}<span class="tx">${esc(a.label || 'عنوان')}<small>${esc([a.gov, a.area].filter(Boolean).join(' — '))}</small></span>
+    ${a.default?'<span class="tag">افتراضي</span>':ic('chev','chev')}</button>`).join('')}</div>`;
+}
+
+/* ترحيب شخصي */
+function renderDraftResume(){
+  try {
+    const u = typeof me === 'function' ? me() : null;
+    const d = u && MP && MP.getDraft ? MP.getDraft(u.id) : null;
+    if (!d || !d.data || !(d.data.cat || d.data.item)) return '';
+    const step = Math.max(1, Math.min(10, (+d.step || 0) + 1));
+    return `<section class="draft-resume" aria-label="استكمال طلب غير مكتمل"><div><b>عندك طلب لم يكتمل</b><small>حفظنا بياناتك — توقفت عند الخطوة ${step} من 10.</small></div><button type="button" class="cta" data-act="wzResume">استكمال الطلب</button><button type="button" class="draft-discard" data-act="wzDiscardDraft" aria-label="حذف مسودة الطلب">حذف المسودة</button></section>`;
+  } catch { return ''; }
+}
+
+function renderGreeting(){
+  const c = homeMe();
+  const h = new Date().getHours();
+  const part = h < 12 ? 'صباح الخير' : h < 17 ? 'أهلاً بيك' : 'مساء الخير';
+  if (!c) return `<section class="greet"><b>${part} في هنصلحلك</b><small>سجّل بياناتك لمتابعة طلباتك بسهولة — <button class="link" data-go="account">تسجيل</button></small></section>`;
+  const first = String(c.name || '').trim().split(/\s+/)[0] || '';
+  const n = homeActiveRequests().length;
+  return `<section class="greet"><b>${part}${first?' يا '+esc(first):''}</b><small>${n?`عندك ${n===1?'طلب واحد':n+' طلبات'} شغّالة`:'تحب نصلّحلك إيه النهارده؟'}</small></section>`;
+}
+
+/* إجراءات سريعة */
+function renderQuickActions(){
+  const n = homeActiveRequests().length;
+  return `<div class="qa" role="group" aria-label="إجراءات سريعة">
+    <button class="glass neon" data-act="cam">${ic('camera')}<span>صوّر المشكلة</span></button>
+    <button class="glass neon" data-go="orders">${ic('list')}<span>طلباتي</span>${n?`<i class="n">${n>9?'9+':n}</i>`:''}</button>
+    <button class="glass neon" data-go="addresses">${ic('pin')}<span>عناويني</span></button>
+  </div>`;
+}
+
+/* اقتراحات البحث الفوري في الرئيسية — تستخدم HS_SEARCH.suggest على CAT، وتفتح الويزارد عبر data-wz-hit (بدون منطق موازٍ) */
+function homeSuggestHtml(q){
+  if (typeof HS_SEARCH === 'undefined') return '';
+  let html = '';
+  try { html = HS_SEARCH.renderSuggestions(q, 6); } catch { html = ''; }
+  if (!html) return `<div class="sr-none">${ic('search')}<span>مفيش نتيجة مباشرة لـ «${esc(q)}»</span></div>
+    <button class="sr-item" data-act="newReq" role="option">${ic('send')}<span class="sr-t">أرسل طلبًا عامًا<small>اكتب مشكلتك وهنوجهها</small></span>${ic('chev')}</button>`;
+  return html.replace(/data-hs-hit=/g, 'data-wz-hit=')
+    + `<button class="sr-item sr-all" data-act="homeSearchAll" role="option">${ic('search')}<span class="sr-t">عرض كل النتائج</span>${ic('chev')}</button>`;
+}
+function bindHomeSearch(){
+  const q = $('#q'), sg = $('#home-sg'); if (!q || !sg) return;
+  let t = 0, activeIndex = -1;
+  const options = () => Array.from(sg.querySelectorAll('[role="option"]'));
+  const syncActive = () => {
+    const items = options();
+    items.forEach((item, i) => {
+      if (!item.id) item.id = `home-sg-option-${i}`;
+      item.setAttribute('aria-selected', i === activeIndex ? 'true' : 'false');
+      item.setAttribute('tabindex', '-1');
+      item.classList.toggle('active', i === activeIndex);
+    });
+    if (activeIndex >= 0 && items[activeIndex]) q.setAttribute('aria-activedescendant', items[activeIndex].id);
+    else q.removeAttribute('aria-activedescendant');
+  };
+  const close = () => {
+    sg.hidden = true;
+    q.setAttribute('aria-expanded', 'false');
+    q.removeAttribute('aria-activedescendant');
+    activeIndex = -1;
+  };
+  const paint = () => {
+    const v = q.value.trim();
+    activeIndex = -1;
+    if (!v) { sg.innerHTML = ''; close(); return; }
+    sg.innerHTML = homeSuggestHtml(v);
+    sg.hidden = !sg.innerHTML;
+    q.setAttribute('aria-expanded', sg.hidden ? 'false' : 'true');
+    syncActive();
+  };
+  q.addEventListener('input', () => { clearTimeout(t); t = setTimeout(paint, 90); });
+  q.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      clearTimeout(t);
+      if (sg.hidden || !sg.innerHTML) paint();
+      const items = options();
+      if (!items.length) return;
+      e.preventDefault();
+      activeIndex = e.key === 'ArrowDown'
+        ? (activeIndex + 1) % items.length
+        : (activeIndex - 1 + items.length) % items.length;
+      syncActive();
+    } else if (e.key === 'Enter' && q.value.trim()) {
+      const items = options();
+      if (activeIndex >= 0 && items[activeIndex]) {
+        e.preventDefault();
+        items[activeIndex].click();
+        close();
+      } else {
+        try { MP.addSearch((homeMe() || {}).id || '', q.value.trim()); } catch {}
+        go('search', q.value.trim());
+      }
+    } else if (e.key === 'Escape' && !sg.hidden) {
+      e.preventDefault();
+      close();
+    }
+  });
+  q.addEventListener('blur', () => setTimeout(close, 200));
+}
+
+/* ───────── الشاشات ───────── */
+const screens = {
+  home(){
+    return HSCustomerHomePage.render({
+      topbar, renderGreeting, renderDraftResume, ic, ART,
+      renderQuickActions, renderActiveRequests, tiles,
+      renderCommonProblems, renderRecentUsed, renderSavedAddresses,
+      renderFavorites, discover, renderServiceAreas
+    });
+  },
+
+  sections(){ return `<div class="screen">${head('الخدمات')}
+    <div style="margin-top:14px">${tiles()}</div>
+    ${renderServiceAreas()}
+    </div>`; },
+
+  /* ═════════ شاشة البحث — V7 (تعتمد على HS_SEARCH) ═════════ */
+  search(q=''){
+    return `<div class="screen">${head('بحث')}
+      <div class="search" style="margin-top:12px">
+        <label class="field glass neon" style="flex:1">
+          ${ic('search')}
+          <input id="hs-q" type="search" aria-label="ابحث عن جهاز أو مشكلة أو خدمة" placeholder="ابحث: اسم جهاز، مشكلة، خدمة…" autocomplete="off" value="${esc(q)}">
+        </label>
+      </div>
+      <div id="hs-results" style="margin-top:6px" aria-live="polite"></div>
+    </div>`;
+  },
+
+  fav(){ const f = store.get('fav',[]).filter(k=>getProb(k)); return `<div class="screen">${head('المفضلة')}
+    ${f.length?`<div class="plist" style="margin-top:14px">${f.map(k=>{const g=getProb(k);return `<button class="prow glass neon" data-prob="${k}">${icp(g[1].i,'pr')}<span class="tx">${esc(g[1].t)}<small>${esc(g[0].name)}</small></span>${ic('chev','chev')}</button>`;}).join('')}</div>`:`<div class="empty">${ic('heart')}<p>لسه مفيش حاجة في المفضلة<br><small>اضغط على القلب في أي حل لحفظه</small></p></div>`}</div>`; },
+
+  /* حساب العميل: مصدر العرض الوحيد هو Account في account.js (يُحمَّل قبل أول render). */
+  account(){
+    return (typeof Account !== 'undefined' && Account && typeof Account.render === 'function')
+      ? Account.render()
+      : `<div class="screen">${head('حسابي')}<div class="empty">${ic('user')}<p>تعذّر تحميل الحساب. أعد المحاولة.</p></div></div>`;
+  },
+
+  details(k){ const d = DEVICES[k]; return `<div class="screen">${head('تفاصيل المشكلة',true)}
+  <section class="dcard neon">
+    <div class="info"><span class="badge">${ic(icSec(d.icon))} ${d.cat}</span><h3>${d.name}</h3><p>اختر نوع المشكلة لمعرفة الحل</p></div>
+    <div class="art">${ART[d.art]}</div>
+  </section>
+  <h2 class="sec-title">${ic('wrench')}اختر نوع المشكلة</h2>
+  <div class="plist">${d.problems.map((_,n)=>`<button class="prow glass neon" data-prob="${k}:${n}">${icp(d.problems[n].i,'pr')}<span class="tx">${esc(d.problems[n].t)}</span>${ic('chev','chev')}</button>`).join('')}</div>
+  <div class="after glass neon">${ic('bulb')}<div><b>بعد تحديد المشكلة</b><small>ستظهر لك: الأسباب المحتملة والحل خطوة بخطوة</small></div></div>
+  ${(typeof HS_DISCOVER !== 'undefined' && CAT.category(k)) ? `<button class="cta" data-disc="cat|${k}">${ic('wrench')} اطلب فنيًا في ${esc(d.cat)}</button>` : ''}
+  </div>`; }
+};
+
+/* ───────── التوجيه ───────── */
+let state = { tab:'home', stack:[], sheet:false };
+const renderTabs = () => {
+  const nAct = homeActiveRequests().length;
+  $('#tabbar').innerHTML = TABS.map(([id,l,i])=>{
+    const b = (id==='orders' && nAct) ? `<b class="tab-badge" aria-hidden="true">${nAct>9?'9+':nAct}</b>` : '';
+    const lbl = (id==='orders' && nAct) ? `${l} — ${nAct} نشطة` : l;
+    return `<button class="tab ${state.tab===id?'on':''}" data-go="${id}" aria-label="${lbl}"${state.tab===id?' aria-current="page"':''}>${ic(i)}<span>${l}</span>${b}</button>`;
+  }).join('');
+};
+
+function show(name, arg){
+  clearInterval(carTimer);
+  renderTabs();   /* V8-C3: يحدّث شارة الطلبات النشطة عند كل عرض */
+  view.innerHTML = screens[name](arg);
+  view.scrollTop = 0;
+  if (name === 'wizard') {
+    const heading = view.querySelector('[data-wz-heading]');
+    if (heading) {
+      try { heading.focus({preventScroll:true}); } catch { heading.focus(); }
+    }
+  }
+  if (name==='home'){
+    initCarousel();
+    bindHomeSearch();
+  }
+  if (name==='search'){
+    const input = document.getElementById('hs-q');
+    if (input) {
+      if (typeof HS_SEARCH !== 'undefined' && HS_SEARCH.bind) {
+        HS_SEARCH.bind(input, { wrap: null, results: document.getElementById('hs-results') });  /* V8-C4: النتائج الفورية هي الاقتراحات */
+      }
+      if (arg) input.value = arg;
+      /* لو arg موجود، نُشغّل البحث مباشرة */
+      if (arg && typeof HS_SEARCH !== 'undefined' && HS_SEARCH.query) {
+        document.getElementById('hs-results').innerHTML = HS_SEARCH.renderResults(arg);
+        const el = document.getElementById('hs-q');
+        if (el) el.dispatchEvent(new Event('input'));
+      }
+      setTimeout(() => { try { input.focus({ preventScroll: true }); } catch { input.focus(); } }, 50);
+    }
+  }
+  if (name==='account'){
+    const f = $('#loginForm');
+    if (f) f.addEventListener('submit', e => {
+      e.preventDefault(); const d = new FormData(f);
+      store.set('user', {name: d.get('name'), phone: d.get('phone')});
+      try { MP.customerFor(d.get('name'), d.get('phone')); } catch {}
+      toast('أهلاً بيك'); show('account');
+    });
+  }
+}
+
+function go(tab, arg){
+  closeSheet(true);
+  state.tab = tab; state.stack = []; renderTabs(); show(tab, arg);
+  history.replaceState({tab}, '');
+}
+function openDevice(k){
+  if (!DEVICES[k]) return;
+  closeSheet(true); state.stack.push(k); history.pushState({dev:k},''); show('details',k);
+}
+
+window.addEventListener('popstate', () => {
+  if (state.sheet) { closeSheet(); history.pushState({r:1}, ''); return; }
+  if (state.stack.length){
+    state.stack.pop();
+    const k = state.stack[state.stack.length-1];
+    if (!k) show(state.tab);
+    else if (k === 'wizard') show('wizard');
+    else if (String(k).startsWith('track:')) show('tracking', String(k).slice(6));
+    else if (String(k).startsWith('provider:')) show('providerDetails', String(k).slice(9));
+    else if (String(k).startsWith('disc:')) { const [, kd, ...rr] = String(k).split(':'); show('disc', kd + '|' + rr.join(':')); }  /* V8-C4 */
+    else show('details', k);
+  }
+});
+
+/* ───────── الورقة السفلية: إدارة التركيز والعزل ───────── */
+let origin = null; // سياق رجوع قائمة المشاكل؛ مستقل تمامًا عن عنصر فتح النافذة.
+let sheetOpener = null;
+let sheetBackgroundState = [];
+let sheetFocusRevision = 0;
+const SHEET_FOCUSABLE = 'a[href],area[href],button:not([disabled]),input:not([disabled]):not([type=hidden]),select:not([disabled]),textarea:not([disabled]),iframe,summary,[contenteditable="true"],[tabindex]:not([tabindex="-1"])';
+function sheetFocusable(){
+  return [...$('#sheet').querySelectorAll(SHEET_FOCUSABLE)].filter(el =>
+    !el.closest('[hidden],[inert],[aria-hidden="true"]') &&
+    (!el.closest('details:not([open])') || el.matches('summary')) &&
+    (el.getClientRects().length > 0 || el === document.activeElement) &&
+    getComputedStyle(el).visibility !== 'hidden' && getComputedStyle(el).display !== 'none'
+  );
+}
+function isolateSheetBackground(active){
+  const sheetNode = $('#sheet');
+  const nodes = [...app.children].filter(el => el !== sheetNode && el.id !== 'sheet-backdrop');
+  if (active){
+    sheetBackgroundState = nodes.map(el => ({el, inert:el.inert, ariaHidden:el.getAttribute('aria-hidden')}));
+    nodes.forEach(el => { el.inert = true; el.setAttribute('aria-hidden','true'); });
+  } else {
+    sheetBackgroundState.forEach(({el,inert,ariaHidden}) => {
+      el.inert = inert;
+      if (ariaHidden === null) el.removeAttribute('aria-hidden');
+      else el.setAttribute('aria-hidden',ariaHidden);
+    });
+    sheetBackgroundState = [];
+  }
+}
+function focusSheetContent(){
+  const node = $('#sheet');
+  const heading = node.querySelector('h4,[data-sheet-title]');
+  if (heading){
+    if (!heading.id) heading.id = 'customer-sheet-title';
+    if (!heading.hasAttribute('tabindex')) heading.setAttribute('tabindex','-1');
+    node.setAttribute('aria-labelledby',heading.id);
+  } else {
+    node.setAttribute('aria-label','محتوى النافذة');
+    node.removeAttribute('aria-labelledby');
+  }
+  const targets = sheetFocusable();
+  (targets[0] || heading || node).focus({preventScroll:true});
+}
+function sheet(html){
+  const wasOpen = !!state.sheet;
+  if (!wasOpen){ sheetOpener = document.activeElement instanceof HTMLElement && document.activeElement !== document.body ? document.activeElement : null; }
+  $('#sheet').innerHTML = '<div class="grab" aria-hidden="true"></div>'+html;
+  $('#sheet').scrollTop=0;
+  app.classList.add('open'); state.sheet=true;
+  if (!wasOpen) isolateSheetBackground(true);
+  const revision = ++sheetFocusRevision;
+  setTimeout(() => { if (state.sheet && revision === sheetFocusRevision) focusSheetContent(); }, 0);
+}
+function focusCustomerView(){ view.setAttribute('tabindex','-1'); view.focus({preventScroll:true}); }
+function closeSheet(suppressRestoreFocus=false){
+  if (!state.sheet) return;
+  app.classList.remove('open'); state.sheet=false; origin=null;
+  isolateSheetBackground(false);
+  const opener = sheetOpener; sheetOpener = null;
+  // Defer until the current click/submit handler has completed any synchronous route render.
+  // If that render removed the opener, move focus to the destination view instead.
+  setTimeout(() => {
+    if (state.sheet) return;
+    const openerStillUsable = !suppressRestoreFocus && opener && opener.isConnected && !opener.disabled &&
+      opener.getClientRects().length > 0 && !opener.closest('[inert],[aria-hidden="true"]') &&
+      getComputedStyle(opener).visibility !== 'hidden' && typeof opener.focus === 'function';
+    if (openerStillUsable) opener.focus({preventScroll:true});
+    else focusCustomerView();
+  }, 0);
+}
+document.addEventListener('keydown', e => {
+  if (!state.sheet) return;
+  if (e.key === 'Escape'){
+    if (e.defaultPrevented) return;
+    e.preventDefault(); e.stopPropagation(); closeSheet(); return;
+  }
+  if (e.key !== 'Tab') return;
+  const targets = sheetFocusable();
+  if (!targets.length){ e.preventDefault(); $('#sheet').focus(); return; }
+  const first = targets[0], last = targets[targets.length-1], active = document.activeElement;
+  if (!$('#sheet').contains(active)){ e.preventDefault(); (e.shiftKey ? last : first).focus(); }
+  else if (e.shiftKey && (active === first || active === $('#sheet'))){ e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && active === last){ e.preventDefault(); first.focus(); }
+}, true);
+
+/* محتوى المشاكل (data.js القديمة) — يُستخدم من openProblem فقط للتوافق.
+   المسار الأساسي للطلبات هو CAT عبر HS_SEARCH. */
+const NEED = { 'سهل':'تقدر تحلها بنفسك بالخطوات التالية.', 'متوسط':'جرّب الخطوات، ولو ما اتحلتش اطلب فني.', 'يحتاج فني':'المشكلة دي محتاجة فني متخصص — الخطوات هنا إجراءات أمان وتشخيص أولي فقط.' };
+
+function openProblem(key, ret){
+  const g = getProb(key); if(!g) return; const [d,p] = g; const fav = store.get('fav',[]).includes(key);
+  const warn = p.lvl==='يحتاج فني';
+  sheet(`${ret?`<button class="sheet-back" data-act="slide" data-s="${ret}">${ic('back')} رجوع للقائمة</button>`:''}
+    <button class="fav-btn ${fav?'on':''}" data-fav="${key}" aria-label="مفضلة">${ic('heart')}</button>
+    <h4>${p.t}</h4><div class="sub">${d.name} • ${d.cat}</div>
+    <div class="meta"><span class="tag ${warn?'warn':''}">${ic(warn?'warn':'check')} ${p.lvl}</span><span class="tag">${ic('clock')} حوالي ${p.min} دقيقة</span></div>
+    <div class="need ${warn?'warn':''}">${ic(warn?'warn':'info')}<span>${NEED[p.lvl]||''}</span></div>
+    ${p.warn?`<div class="safety">${ic('shield')}<div><b>تنبيه أمان</b><span>${p.warn}</span></div></div>`:''}
+    <button class="cta" data-act="tech" data-key="${key}">${ic('wrench')} اطلب متخصصًا — ${d.cat}</button>
+    <h5>${ic('info')} الأسباب المحتملة (للفهم فقط)</h5>
+    ${p.causes.map(c=>`<div class="cause">${c}</div>`).join('')}
+    <h5>${ic('wrench')} ${warn?'إجراءات أمان وتشخيص أولي':'نصائح سريعة'}</h5>
+    <div class="prog"><i id="pb"></i></div>
+    ${p.steps.map((s,i)=>`<button class="step" data-step><i>${i+1}</i><span>${s}</span></button>`).join('')}
+    <div class="solved" id="solved"><b>خلصت الخطوات!</b><div class="row2"><button class="cta" data-act="solved">${ic('check')} اتحلت</button><button class="cta ghost" data-act="tech" data-key="${key}">اطلب متخصصًا</button></div></div>
+  `);
+}
+function stepProgress(){
+  const all = document.querySelectorAll('#sheet .step'), done = document.querySelectorAll('#sheet .step.done');
+  const pb = $('#pb'); if (pb) pb.style.width = (all.length? done.length/all.length*100 : 0)+'%';
+  const s = $('#solved'); if (s) s.classList.toggle('show', all.length>0 && done.length===all.length);
+}
+
+/* "اطلب متخصص" من مشكلة قديمة → يفتح النموذج من خلال CAT */
+function openTech(key){
+  const g = getProb(key); if(!g) return; const [d,p] = g; const dk = key.split(':')[0];
+  /* نحاول الربط بـ CAT عبر HS_SEARCH */
+  try {
+    const hits = CAT.search(p.t);
+    const probHit = hits.find(h => h.type === 'problem' && h.cat === dk);
+    if (probHit) { if (typeof HS_DISCOVER !== 'undefined') { HS_DISCOVER.order('problem', probHit.id); return; } startRequest(probHit.cat, probHit.item); if (WZ) { WZ.problem = probHit.id; WZ.step = 3; } return; }
+  } catch {}
+  /* fallback: نفتح النموذج بدون مشكلة (الفني يشخّص) */
+  startRequest(dk);
+}
+
+function openNotes(){
+  const c = me(); if (!c) { sheet(`<h4>${ic('bell')} الإشعارات</h4><div class="empty" style="padding:24px">${ic('bell')}<p>سجّل بياناتك أولاً لعرض إشعاراتك</p></div>`); return; }
+  try { MP.markRead('customer:'+c.id); } catch {}
+  const ns = MP.notesFor('customer:'+c.id).slice(0, 30);
+  sheet(`<h4>${ic('bell')} الإشعارات</h4><div class="sub">تحديثات طلباتك</div>
+    ${ns.length?ns.map(n=>`<div class="note">${ic('bell')}<div><b>${esc(n.text)}</b><small>${fmtDT(n.at)}</small></div></div>`).join(''):`<div class="empty" style="padding:24px">${ic('bell')}<p>لا توجد إشعارات بعد</p></div>`}`);
+}
+
+function openMenu(){
+  const items = [['home','الرئيسية','home'],['sections','الخدمات','grid'],['orders','طلباتي','list'],['fav','المحفوظة','heart'],['account','حسابي','user']];
+  sheet(`<h4>القائمة</h4><div style="margin-top:8px">${items.map(([g,l,i])=>`<button class="menu-item" data-go="${g}">${ic(i)}${l}</button>`).join('')}
+    <div class="lbl">محتوى توعوي (اختياري)</div>
+    <button class="menu-item" data-act="slide" data-s="guide">${ic('book')}دليل الصيانة</button>
+    <button class="menu-item" data-act="slide" data-s="popular">${ic('medal')}أشهر الحلول</button>
+    <button class="menu-item" data-act="slide" data-s="latest">${ic('list')}أحدث المشاكل</button>
+    <div class="lbl">أدوات العرض التجريبي</div>
+    <button class="menu-item" data-act="role" data-r="provider">${ic('wrench')}بوابة مقدم الخدمة</button>
+    <button class="menu-item" data-act="role" data-r="admin">${ic('shield')}لوحة الإدارة</button>
+    <button class="menu-item" data-act="about">${ic('info')}عن هنصلحلك</button></div>`);
+}
+
+/* الشرائح (كما في V6 مع تعديلات طفيفة لتعمل مع CAT) */
+function openSlide(id){
+  if (id==='steps'){ sheet(`<h4>${ic('wrench')} خدمتك على بُعد خطوات</h4><div class="sub">اختر الخدمة، حدد موقعك، وسنساعدك في الوصول لمقدم الخدمة المناسب</div>
+      <div class="steps3"><div><i>1</i>اختر الخدمة</div><div><i>2</i>صف الطلب وحدد موقعك</div><div><i>3</i>تابع طلبك</div></div>${tiles(true)}`); origin=null; return; }
+  if (id==='specialists'){ sheet(`<h4>${ic('grid')} متخصصون في مختلف الخدمات</h4><div class="sub">اضغط على الخدمة لعرض أنواعها وإرسال طلبك</div>
+      ${HOME_ORDER.map(k=>{ const d=DEVICES[k], t=MP.db().services.filter(s=>s.cat===k); return `<details class="gd"><summary>${ic(icSec(d.icon))}<span>${d.name}</span><small>${t.length} خدمات</small>${ic('chev','chev')}</summary><div class="gd-in">${t.map(s=>`<button class="prow glass neon" data-req="${k}|${s.id}"><span class="tx">${s.name}</span>${ic('chev','chev')}</button>`).join('')}</div></details>`; }).join('')}`); origin=null; return; }
+  if (id==='track'){ if(myReqs().length){ closeSheet(true); return go('orders'); }
+    sheet(`<h4>${ic('clock')} تابع طلبك خطوة بخطوة</h4><div class="sub">من لحظة إرسال الطلب حتى اكتمال الخدمة</div>
+      <ol class="tl">${FLOW.map(([k,l],i)=>`<li><i>${i+1}</i><span>${l}</span></li>`).join('')}</ol><button class="cta" data-go="home">${ic('wrench')} ابدأ طلبك</button>`); origin=null; return; }
+  if (id==='guide'){
+    sheet(`<h4>${ic('book')} دليل الصيانة</h4><div class="sub">نصائح وقائية لكل خدمة — الوقاية أرخص من الإصلاح</div>
+      ${HOME_ORDER.map(k=>{ const d=DEVICES[k]; return `<details class="gd"><summary>${ic(icSec(d.icon))}<span>${d.name}</span><small>${d.tips.length} نصائح</small>${ic('chev','chev')}</summary>
+        <div class="gd-in">${d.tips.map(t=>`<div class="cause">${t}</div>`).join('')}
+        <button class="cta ghost" data-dev="${k}">${ic('wrench')} مشاكل ${d.cat} وحلولها (${d.problems.length})</button></div></details>`; }).join('')}
+      <h5>${ic('shield')} قاعدة أمان</h5><div class="cause">افصل الجهاز من الكهرباء قبل أي فحص، ولو شميت غاز أو شفت شرر اخرج واطلب الطوارئ.</div>`);
+    origin = null; return;
+  }
+  /* popular / latest — تستخدم devises القديمة كتوافق */
+  const POPULAR = () => Object.keys(DEVICES).flatMap(k=>DEVICES[k].problems.map((p,n)=>p.pop?{key:k+':'+n,p}:null).filter(Boolean)).sort((a,b)=>a.p.pop-b.p.pop).map(x=>x.key);
+  const LATEST = () => Object.keys(DEVICES).flatMap(k=>DEVICES[k].problems.map((p,n)=>p.nw?{key:k+':'+n,p}:null).filter(Boolean)).sort((a,b)=>b.p.nw.localeCompare(a.p.nw)).map(x=>x.key);
+  const keys = id==='popular' ? POPULAR() : LATEST();
+  sheet(`<h4>${ic(id==='popular'?'medal':'list')} ${id==='popular'?'أشهر الحلول':'أحدث المشاكل'}</h4><div class="sub">${id==='popular'?'أكتر المشاكل اللي بيدوّر عليها الناس':'آخر المشاكل والحلول اللي أضفناها فعليًا'}</div>
+    <div class="plist" style="margin-top:12px">${keys.slice(0,15).map(k=>{const g=getProb(k);if(!g)return '';return `<button class="prow glass neon" data-prob="${k}">${icp(g[1].i,'pr')}<span class="tx">${esc(g[1].t)}<small>${g[0].name}</small></span>${ic('chev','chev')}</button>`;}).join('')}</div>`);
+  origin = id;
+}
+
+let PENDING_PHOTO = null;
+function openCam(file){
+  const url = URL.createObjectURL(file);
+  sheet(`<h4>${ic('camera')} صورة المشكلة</h4><div class="sub">اختر القسم المناسب لبدء طلبك، ثم أضف الصورة من خطوة المرفقات</div>
+    <img class="preview" src="${url}" alt="صورة المشكلة">
+    <div class="demo-banner">${ic('info')}<span>في V7 تُضاف الصور عبر خطوة المرفقات داخل النموذج (IndexedDB). اضغط على القسم لبدء الطلب.</span></div>
+    ${tiles(true)}`);
+  origin = null;
+}
+
+/* ───────── الأحداث ───────── */
+document.addEventListener('click', e => {
+  if (e.target.id==='sheet-backdrop') return closeSheet();
+  const t = e.target.closest('[data-go],[data-dev],[data-prob],[data-act],[data-back],[data-fav],[data-step],[data-chip],[data-repeat],[data-provider],[data-provider-service]');
+  if (!t) return;
+  const d = t.dataset;
+  if (d.go) return go(d.go);
+  if (d.dev) return openDevice(d.dev);
+  if (d.prob){ const r = t.closest('#sheet') ? origin : null; return openProblem(d.prob, r); }
+  if ('back' in d) return history.back();
+  if ('step' in d){ t.classList.toggle('done'); return stepProgress(); }
+  if (d.chip){ const i=$('#hs-q') || $('#q2') || $('#q'); if (i){ i.value=d.chip; i.dispatchEvent(new Event('input')); } return; }
+  if (d.fav){
+    let f = store.get('fav',[]); const on = f.includes(d.fav);
+    f = on ? f.filter(x=>x!==d.fav) : [d.fav,...f]; store.set('fav',f);
+    t.classList.toggle('on',!on); toast(on?'اتشالت من المفضلة':'اتحفظت في المفضلة'); return;
+  }
+  if (d.repeat){
+    /* إعادة طلب خدمة سابقة */
+    try { const r = MP.repeatRequest(d.repeat); if (r) { toast('تم إنشاء طلب جديد '+r.no); go('orders'); } }
+    catch { toast('تعذّر إعادة الطلب'); }
+    return;
+  }
+  if (d.provider){
+    /* فتح تفاصيل مقدم الخدمة (ستوسّع في C) */
+    show('providerDetails', d.provider); return;
+  }
+  if (d.providerService){
+    const [type, id] = d.providerService.split('|');
+    if (type === 'problem' && typeof HS_DISCOVER !== 'undefined') HS_DISCOVER.order('problem', id);
+    else if (type === 'problem') { const p = CAT.problem(id); if (p) { startRequest(p.cat, p.item); if (WZ) { WZ.problem = id; WZ.step = 3; } } }
+    else { const it = CAT.item(id); if (it) startRequest(it.cat, it.id); }
+    return;
+  }
+  switch (d.act){
+    case 'cam': { const el = $('#cam'); if (el) el.click(); break; }
+    case 'menu': openMenu(); break;
+    case 'bell': openNotes(); break;
+    case 'slide': openSlide(d.s); break;
+    case 'about': toast('هنصلحلك — منصة تربطك بمقدم الخدمة المناسب'); break;
+    case 'newReq': startRequest(); break;
+    case 'homeSearchAll': { const qv = ($('#q')||{}).value; go('search', (qv||'').trim()); break; }
+    case 'scrollTiles': { const e2 = document.getElementById('tilesT'); if (e2) e2.scrollIntoView({behavior:'smooth', block:'start'}); break; }
+    case 'role': closeSheet(true); enterRole(d.r); break;
+    case 'tech': openTech(d.key); break;
+    case 'solved': closeSheet(); toast('تمام! سعداء إننا ساعدنا'); break;
+    case 'logout': store.set('user', null); show('account'); toast('تم تسجيل الخروج'); break;
+    case 'openAddresses': { try { go('addresses'); } catch { toast('العناوين ستُضاف في تحديث لاحق'); } break; }
+    case 'openNotifs': openNotes(); break;
+  }
+});
+
+/* كاميرا الصفحة الرئيسية */
+const camEl = document.getElementById('cam');
+if (camEl) camEl.addEventListener('change', e => { const f = e.target.files[0]; if (f) openCam(f); e.target.value = ''; });
+
+/* ───────── الافتتاحية السينمائية V2 (تحكم + توليد الطبقات الديناميكية) ─────────
+   سياسة الظهور كما كانت: مرة لكل جلسة (sessionStorage 'hs_intro_v1' يُفحص مبكرًا في index.html).
+   التسلسل: فك ترميز صورتي الشعار ← إضافة .go (يبدأ كل الأنيميشن) ← انتهاء introOut أو تخطي ← إزالة العقدة وفتح #app. */
+const Intro = (() => {
+  let node = null, done = false, timer = 0;
+  const root = document.documentElement;
+  const reduced = () => { try{ return matchMedia('(prefers-reduced-motion: reduce)').matches; }catch{ return false; } };
+  const unlock = () => { try{ const ap = document.getElementById('app'); if(ap) ap.inert = false; }catch{} };
+  function finish(){
+    if(done) return; done = true; clearTimeout(timer);
+    try{ document.removeEventListener('keydown', onKey); if(node){ node.removeEventListener('animationend', onEnd); const b = node.querySelector('#introSkip'); if(b) b.removeEventListener('click', skip); } }catch{}
+    try{ if(node) node.remove(); }catch{ if(node) node.style.display='none'; }
+    node = null; unlock();
+  }
+  function onEnd(e){ if(e.target===node && /^(introOut|introSkip)$/.test(e.animationName)) finish(); }
+  function skip(){ if(done||!node) return; root.classList.add('intro-skipped'); node.classList.add('skip'); clearTimeout(timer); timer = setTimeout(finish, 500); }
+  function onKey(e){ if(e.key==='Escape'||e.key==='Enter'||e.key===' '){ if(document.activeElement && document.activeElement.id==='introSkip') return; skip(); } }
+  /* خطوط نيون وجسيمات: عناصر قليلة (≈26–54) وكلها transform/opacity. المواضع نسبةً لمركز الشعار (مرساة .in-fx). */
+  function build(){
+    if(reduced()) return;
+    const lines = node.querySelector('.in-lines'), dust = node.querySelector('.in-dust'), logo = node.querySelector('.in-logo');
+    if(!lines || !dust) return;
+    const vw = innerWidth, vh = innerHeight, vmin = Math.min(vw, vh), vmax = Math.max(vw, vh), small = vw < 600, r = Math.random;
+    const lw = (logo && logo.getBoundingClientRect().width) || vmin * .6;
+    const pick = () => { const q = r(); return q < .62 ? '#ff7ab8' : q < .81 ? '#5b9bff' : '#ffa040'; };
+    const px = n => n.toFixed(0) + 'px', sec = n => n.toFixed(2) + 's';
+    const nl = small ? 10 : 16, fl = document.createDocumentFragment();
+    for(let i=0;i<nl;i++){
+      const e = document.createElement('i'), q = r();
+      e.style.cssText = `--a:${(i/nl*360 + (r()*16-8)).toFixed(1)}deg;--L:${px(vmin*(.16+r()*.2))};--f:${px(vmax*(.55+r()*.15))};--n:${px(lw*(.62+r()*.14))};--z:${px(lw*.16)};--d:${sec(1+r()*.5)};--l:${sec(.2+r()*.8)};--c:${q<.7?'rgba(255,61,143,.6)':q<.85?'rgba(59,130,246,.6)':'rgba(255,150,40,.6)'}`;
+      fl.appendChild(e);
+    }
+    lines.appendChild(fl);
+    const nd = small ? 22 : 38, fd = document.createDocumentFragment(), TAU = Math.PI*2;
+    for(let i=0;i<nd;i++){
+      const e = document.createElement('i'), big = i % 7 === 0, sz = big ? 5 + r()*3 : 1.2 + r()*2.2;
+      const a = r()*TAU, a2 = r()*TAU, rr = lw*(.5+r()*.25), br = vmax*(.4+r()*.5);
+      const sx = r()<.5?-1:1, sy = r()<.5?-1:1;
+      if(big) e.className = 'dof';
+      e.style.cssText = `--s:${sz.toFixed(1)}px;--o:${(.3+r()*.55).toFixed(2)};--c:${pick()};--d:3.6s;--l:${sec(.08+r()*.42)};--x0:${px(sx*vw*(.08+r()*.46))};--y0:${px(sy*vh*(.08+r()*.46))};--rx:${px(Math.cos(a)*rr)};--ry:${px(Math.sin(a)*rr)};--bx:${px(Math.cos(a2)*br)};--by:${px(Math.sin(a2)*br)}`;
+      fd.appendChild(e);
+    }
+    dust.appendChild(fd);
+  }
+  function go(){
+    if(done||!node) return;
+    clearTimeout(timer);
+    root.classList.add('intro-go');
+    node.classList.add('go');
+    timer = setTimeout(finish, reduced() ? 2600 : 6400);
+  }
+  function init(){
+    try{
+      node = document.getElementById('intro'); if(!node) return;
+      if(root.classList.contains('no-intro')){ node.remove(); node = null; return; }
+      const ap = document.getElementById('app'); if(ap) ap.inert = true;
+      build();
+      node.addEventListener('animationend', onEnd);
+      const b = node.querySelector('#introSkip'); if(b) b.addEventListener('click', skip);
+      document.addEventListener('keydown', onKey);
+      timer = setTimeout(finish, 8200);   /* شبكة أمان لو تأخر/تعطل تحميل الشعار */
+      /* لا نبدأ الحركة قبل جاهزية صورتي الشعار: يمنع ظهور شعار ناقص أو وميض. فشل التحميل/تأخره > 1.8ث ⇒ نتخطى الافتتاحية بهدوء. */
+      const imgs = Array.from(node.querySelectorAll('img.main'));
+      const ready = Promise.all(imgs.map(im => (im.decode ? im.decode() : Promise.resolve()).catch(() => null)))
+        .then(() => imgs.every(im => im.complete && im.naturalWidth > 0));
+      const cap = new Promise(res => setTimeout(() => res(false), 1800));
+      Promise.race([ready, cap]).then(ok => { if(ok) go(); else finish(); }).catch(finish);
+    }catch(err){ console.warn('intro disabled', err); try{ if(node) node.remove(); }catch{} node = null; unlock(); }
+  }
+  return { init, skip };
+})();
+
+/* ───────── البدء ───────── */
+/* V8-C3: البدء مؤجل حتى تُحمَّل كل السكربتات (market-ui.js يعرّف me/reqCard؛ ui-kit.js يعرّف UIK).
+   قبلها كان أول عرض للرئيسية يجري قبل تعريفها فيفقد الترحيب والطلبات النشطة. */
+function boot(){
+  go('home');
+  Intro.init();
+  if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    navigator.serviceWorker.register('../../service-worker.js').catch(()=>{});
+  }
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();

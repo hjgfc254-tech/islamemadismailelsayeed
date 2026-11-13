@@ -1,0 +1,15 @@
+'use strict';
+const fs=require('fs'),assert=require('assert'),path=require('path');
+const root=path.join(__dirname,'../..');
+const js=fs.readFileSync(path.join(root,'apps/provider/provider-workspace.js'),'utf8');
+const html=fs.readFileSync(path.join(root,'apps/customer/index.html'),'utf8');
+const sw=fs.readFileSync(path.join(root,'service-worker.js'),'utf8');
+const portal=fs.readFileSync(path.join(root,'apps/provider/legacy/portal-compat.js'),'utf8');
+let passed=0; const test=(name,fn)=>{try{fn();passed++;console.log('✓ '+name)}catch(e){console.error('✗ '+name+'\n '+e.message);process.exitCode=1;}};
+test('provider workspace is isolated to screens.provider',()=>{assert(js.includes('screens.provider = () => PW.render()'));assert(!js.includes('screens.admin ='))});
+test('provider dashboard uses existing MP provider requests and transactions',()=>{for(const token of ['provRequests(p)','MP.db().transactions','MP.rating(p.id)','MP.db().reviews'])assert(js.includes(token))});
+test('provider workspace includes actionable dashboard and appointments',()=>{for(const token of ['ماذا تحتاج أن تفعل الآن؟','المواعيد القادمة','data-pa="avail"','data-pa="tab"'])assert(js.includes(token))});
+test('provider data is not presented as verified real-world data',()=>{assert(js.includes('تجريبية ومحلية'));assert(js.includes('لا تعرض هذه الصفحة شهادات أو اعتمادات'))});
+test('workspace loads after existing provider/admin module and is precached',()=>{assert(html.indexOf('../provider/legacy/portal-compat.js')<html.indexOf('../provider/provider-workspace.js'));assert(sw.includes("'apps/provider/provider-workspace.js'"))});
+test('provider login opens dashboard by default',()=>assert(portal.includes("const PV = { tab:'home' }")));
+console.log(`\n${passed} passed, 0 failed`);

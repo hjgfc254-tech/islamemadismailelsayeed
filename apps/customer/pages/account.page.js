@@ -1,0 +1,362 @@
+/* ═══════════════════════════════════════════════════════════════
+   هنصلحلك — حساب العميل الكامل (Account) — V7 — ملف جديد
+   ───────────────────────────────────────────────────────────────
+   الغرض:
+   • شاشات حساب العميل: ملف شخصي، طلباتي، المفضلة، الإشعارات، التقييمات، الإعدادات.
+   • تعيد استخدام: MP (بيانات)، AT (مرفقات)، Addresses (شاشة العناوين).
+   • تُستخدم من app.js عبر screens.account (تُستبدل في هذا الملف).
+   • التبويبات الداخلية تُدار عبر state.accountTab.
+
+   الواجهة العامة:
+   • Account.render()          — HTML الشاشة الرئيسية (تُستدعى من screens.account)
+   • Account.tab(name)         — التنقل بين التبويبات دون إعادة تحميل
+   • Account.openProfile()     — نموذج تعديل الملف الشخصي
+   • Account.openSettings()    — شاشة الإعدادات
+   • Account.openDelete()      — تأكيد حذف الحساب (تجريبي)
+
+   ملاحظات:
+   • التقييمات هنا = سجل تقييمات العميل السابقة (عرض فقط + رابط لتقييم جديد عند الحاجة).
+   • الإعدادات = تفضيلات إشعارات محلية فقط (لا Backend).
+   • حذف الحساب = واجهة تأكيد + تنظيف محلي فقط.
+   ═══════════════════════════════════════════════════════════════ */
+'use strict';
+
+const Account = (() => {
+  const _esc = (typeof esc === 'function') ? esc : (s => String(s||'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])));
+  const safeIc = (n, cls) => (typeof ic === 'function') ? ic(n, cls) : '';
+  const safeIcp = (n, kind, cls) => (typeof icp === 'function') ? icp(n, kind, cls) : '';
+  const safeIcSec = (n) => (typeof icSec === 'function') ? icSec(n) : n;
+
+  const TABS = [
+    ['orders',    'طلباتي',   'list'],
+    ['favorites', 'المفضلة',  'heart'],
+    ['notifs',    'الإشعارات','bell'],
+    ['reviews',   'تقييماتي', 'medal'],
+    ['profile',   'الملف',    'user'],
+    ['settings',  'الإعدادات','settings']
+  ];
+
+  const typeLabel = t => ({home:'منزل', work:'عمل', other:'أخرى'})[t] || 'منزل';
+
+  /* ═════════ أدوات ═════════ */
+  const meUser = () => (typeof me === 'function') ? me() : null;
+
+  /* ═════════ تبويب: طلباتي ═════════ */
+  const tabOrders = () => {
+    const u = meUser(); if (!u) return loginPrompt();
+    const all = MP.reqs().filter(r => r.customerId === u.id);
+    if (!all.length) {
+      return `<div class="empty">${safeIc('list')}<p>لا توجد طلبات<br><small>ابدأ طلبك الأول من الرئيسية</small></p>
+        <button class="cta" data-go="home">${safeIc('home')} اطلب خدمة</button></div>`;
+    }
+    const current = all.filter(r => !['closed','cancelled','failed'].includes(r.status));
+    const past = all.filter(r => r.status === 'closed');
+    const stopped = all.filter(r => ['cancelled','failed'].includes(r.status));
+    const section = (title, items) => items.length ? `
+      <h2 class="sec-title">${safeIc('list')}${title} (${items.length})</h2>
+      <div class="plist">${items.map(reqRow).join('')}</div>` : '';
+    return section('جارية', current) + section('مكتملة', past) + section('ملغاة / متعذرة', stopped);
+  };
+
+  const reqRow = (r) => {
+    const stIco = (typeof icStatus === 'function') ? icStatus(r.status) : 'st-new';
+    const label = (typeof STATUS_LABEL !== 'undefined') ? (STATUS_LABEL[r.status] || r.status) : r.status;
+    return `<button class="prow glass neon" data-track="${_esc(r.id)}">
+      ${safeIcp(stIco, 'st')}
+      <span class="tx">${_esc(r.serviceName)}<small>#${_esc(r.no)} • ${fmtDTShort(r.createdAt)}</small></span>
+      <span class="tag">${safeIc(stIco)} ${_esc(label)}</span>
+    </button>`;
+  };
+  const fmtDTShort = s => {
+    try { return new Date(s).toLocaleDateString('ar-EG', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); }
+    catch { return s || ''; }
+  };
+
+  /* ═════════ تبويب: المفضلة ═════════ */
+  const tabFavorites = () => {
+    const u = meUser(); if (!u) return loginPrompt();
+    const favs = MP.favoritesFor(u.id);
+    if (!favs.length) {
+      return `<div class="empty">${safeIc('heart')}<p>لا توجد مفضلات<br><small>أضف مقدمي خدمة أو خدمات لتعود إليها بسرعة</small></p></div>`;
+    }
+    const provs = favs.filter(f => f.kind === 'provider').map(f => MP.get('providers', f.refId)).filter(Boolean);
+    const services = favs.filter(f => f.kind === 'service');
+    const provCards = provs.map(p => `
+      <div class="card2 glass neon prov-card">
+        <div class="top">
+          <div class="prov-avatar" style="background:${p.avatar || '#FF3D8F'}">${_esc((p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>
+          <div class="prov-head">
+            <b>${_esc(p.name)}</b>
+            <small>${p.cats.map(c => MP.catName(c)).join('، ')}${p.rating ? ` • ★ ${p.rating}` : ''}</small>
+          </div>
+          <button class="fav-btn on" data-fav-provider="${_esc(p.id)}" aria-label="إزالة من المفضلة">${safeIc('heart')}</button>
+        </div>
+        <div class="acts">
+          <button data-provider-details="${_esc(p.id)}">${safeIc('info')} التفاصيل</button>
+          ${p.available ? `<button class="pri" data-choose-provider="${_esc(p.id)}">${safeIc('check')} اختيار</button>` : `<button disabled>${safeIc('clock')} غير متاح</button>`}
+        </div>
+      </div>`).join('');
+    const svcCards = services.map(f => {
+      const prob = (typeof CAT !== 'undefined') ? CAT.problem(f.refId) : null;
+      const item = (typeof CAT !== 'undefined') ? CAT.item(f.refId) : null;
+      const target = prob || item;
+      if (!target) return '';
+      const isProb = !!prob;
+      return `<button class="prow glass neon" data-provider-service="${isProb ? 'problem' : 'item'}|${_esc(target.id)}">
+        ${safeIcp(isProb ? 'p-diagnose' : 'wrench', 'pr')}
+        <span class="tx">${_esc(target.name)}<small>${_esc((typeof CAT !== 'undefined' && CAT.category(target.cat) ? CAT.category(target.cat).name : ''))}</small></span>
+        ${safeIc('chev','chev')}
+      </button>`;
+    }).join('');
+    const visibleServices = svcCards.filter(Boolean).length;
+    const unresolved = services.length - visibleServices;
+    if (!provs.length && !visibleServices) return `<div class="empty">${safeIc('heart')}<p>لا توجد مفضلات قابلة للعرض حاليًا</p>${unresolved ? `<small>بعض العناصر المحفوظة من إصدار سابق لم تعد موجودة في الكتالوج الحالي.</small>` : ''}</div>`;
+    return `
+      ${provs.length ? `<h2 class="sec-title">${safeIc('user')}مقدمو خدمة (${provs.length})</h2><div class="plist" style="gap:10px">${provCards}</div>` : ''}
+      ${visibleServices ? `<h2 class="sec-title">${safeIc('wrench')}خدمات محفوظة (${visibleServices})</h2><div class="plist">${svcCards.join('')}</div>` : ''}
+      ${unresolved ? `<p class="hint">${unresolved} عنصر محفوظ من إصدار سابق لم يعد متاحًا في الكتالوج الحالي.</p>` : ''}
+    `;
+  };
+
+  /* ═════════ تبويب: الإشعارات ═════════ */
+  const tabNotifs = () => {
+    const u = meUser(); if (!u) return loginPrompt();
+    const ns = MP.notesFor('customer:' + u.id).slice(0, 30);
+    if (!ns.length) return `<div class="empty">${safeIc('bell')}<p>لا توجد إشعارات بعد<br><small>ستصلك إشعارات حالة الطلب هنا</small></p></div>`;
+    return `<div class="plist" style="gap:8px">${ns.map(n => `
+      <div class="card2 glass neon" style="padding:12px">
+        <div class="top"><b>${safeIc('bell')} إشعار</b>${!n.read ? '<span class="tag">جديد</span>' : ''}</div>
+        <small>${_esc(n.text)}</small>
+        <small style="color:var(--muted);font-size:11.5px">${fmtDTShort(n.at)}</small>
+        ${n.reqId ? `<button class="cta ghost" style="min-height:38px;margin-top:6px" data-track="${_esc(n.reqId)}">${safeIc('clock')} متابعة الطلب</button>` : ''}
+      </div>`).join('')}</div>`;
+  };
+
+  /* ═════════ تبويب: تقييماتي ═════════ */
+  const tabReviews = () => {
+    const u = meUser(); if (!u) return loginPrompt();
+    const revs = MP.db().reviews.filter(r => r.customerId === u.id);
+    if (!revs.length) return `<div class="empty">${safeIc('medal')}<p>لا توجد تقييمات بعد<br><small>قيّم الخدمات المكتملة لتساعد الآخرين</small></p></div>`;
+    return `<div class="plist" style="gap:10px">${revs.map(v => {
+      const p = MP.get('providers', v.providerId);
+      const r = MP.get('serviceRequests', v.reqId);
+      return `<div class="card2 glass neon">
+        <div class="top"><b>${_esc(p ? p.name : '—')}</b>${r ? `<span class="tag">#${_esc(r.no)}</span>` : ''}</div>
+        <div style="margin:4px 0">${typeof starsHtml === 'function' ? starsHtml(v.stars) : ''}</div>
+        <small>${_esc(v.quality || '')}${v.comment ? ' • ' + _esc(v.comment) : ''}</small>
+        <small style="color:var(--muted);font-size:11.5px">${fmtDTShort(v.at)}</small>
+      </div>`;
+    }).join('')}</div>`;
+  };
+
+  /* ═════════ تبويب: الملف الشخصي ═════════ */
+  const tabProfile = () => {
+    const u = meUser(); if (!u) return loginPrompt();
+    const stat = (label, value) => `<div class="stat glass"><small>${label}</small><b>${value}</b></div>`;
+    const all = MP.reqs().filter(r => r.customerId === u.id);
+    const completed = all.filter(r => ['completed','closed'].includes(r.status)).length;
+    const active = all.filter(r => !['closed','cancelled','failed'].includes(r.status)).length;
+    return `<div class="profile glass neon">
+        <div class="av">${_esc((u.name || '?')[0])}</div>
+        <div>
+          <b>${_esc(u.name)}</b>
+          <small>${_esc(u.phone || '')}</small>
+        </div>
+        <button class="ic-btn" data-account-profile-edit aria-label="تعديل">${safeIc('edit')}</button>
+      </div>
+      <div class="stats" style="grid-template-columns:1fr 1fr 1fr">
+        ${stat('الطلبات', all.length)}
+        ${stat('الجارية', active)}
+        ${stat('المكتملة', completed)}
+      </div>
+      <button class="cta ghost" data-go="addresses">${safeIc('pin')} إدارة العناوين (${MP.addressesFor(u.id).length})</button>
+    `;
+  };
+
+  /* ═════════ تبويب: الإعدادات ═════════ */
+  const tabSettings = () => {
+    const u = meUser(); if (!u) return loginPrompt();
+    const prefs = u.prefs || {notifyStatus:true, notifyQuotes:true, notifyReminders:true, preferredContact:'call'};
+    const chk = (k, label) => `<label class="menu-item" style="cursor:pointer"><input type="checkbox" data-account-pref="${k}" ${prefs[k] ? 'checked' : ''} style="width:auto;margin-inline-end:8px">${label}</label>`;
+    return `
+      <div class="card2 glass neon">
+        <b>${safeIc('bell')} تفضيلات الإشعارات</b>
+        ${chk('notifyStatus','تحديثات حالة الطلب')}
+        ${chk('notifyQuotes','عروض الأسعار')}
+        ${chk('notifyReminders','تذكير المواعيد')}
+      </div>
+      <div class="card2 glass neon">
+        <label for="account-preferred-contact"><b>${safeIc('call')} وسيلة التواصل المفضلة</b></label>
+        <select id="account-preferred-contact" class="mini" data-account-contact>
+          <option value="call" ${prefs.preferredContact === 'call' ? 'selected' : ''}>مكالمة هاتفية</option>
+          <option value="whatsapp" ${prefs.preferredContact === 'whatsapp' ? 'selected' : ''}>واتساب</option>
+          <option value="sms" ${prefs.preferredContact === 'sms' ? 'selected' : ''}>رسالة نصية</option>
+        </select>
+      </div>
+      <div class="card2 glass neon">
+        <b>${safeIc('shield')} الخصوصية والحساب</b>
+        <button class="menu-item" data-account-logout>${safeIc('logout')} تسجيل الخروج</button>
+        <button class="menu-item" style="color:#ff8a9b" data-account-delete>${safeIc('trash')} حذف الحساب</button>
+      </div>
+      <small class="hint" style="padding:10px 4px;display:block">جميع البيانات محفوظة محليًا على جهازك في الوضع التجريبي.</small>
+    `;
+  };
+
+  /* ═════════ حالة: مستخدم غير مسجل ═════════ */
+  const loginPrompt = () => `<div class="empty">${safeIc('user')}<p>سجّل بياناتك لعرض حسابك<br><small>رقم هاتفك + اسمك فقط</small></p></div>
+    <form class="form" id="loginFormAcc">
+      <div><label for="account-login-name">الاسم</label><input id="account-login-name" name="name" required placeholder="اسمك" autocomplete="name"></div>
+      <div><label for="account-login-phone">رقم الموبايل</label><input id="account-login-phone" name="phone" required type="tel" inputmode="tel" placeholder="01xxxxxxxxx" pattern="[0-9+ ]{8,15}" autocomplete="tel"></div>
+      <button class="cta" type="submit">${safeIc('check')} تسجيل</button>
+    </form>`;
+
+  /* ═════════ الرسم الرئيسي ═════════ */
+  const render = () => {
+    const u = meUser();
+    const tab = (typeof state !== 'undefined' && state.accountTab) || 'orders';
+    const tabBar = u ? `<div class="subtabs account-tabs" role="group" aria-label="أقسام الحساب" style="margin-top:10px">
+      ${TABS.map(([k, n, ico]) => `<button type="button" aria-pressed="${tab === k}" class="${tab === k ? 'on' : ''}" data-account-tab="${k}">${safeIc(ico)} ${_esc(n)}</button>`).join('')}
+    </div>` : '';
+    const body = !u ? loginPrompt() : ({
+      orders: tabOrders,
+      favorites: tabFavorites,
+      notifs: tabNotifs,
+      reviews: tabReviews,
+      profile: tabProfile,
+      settings: tabSettings
+    })[tab]();
+    return `<div class="screen">${typeof head === 'function' ? head('حسابي') : ''}${tabBar}${body}</div>`;
+  };
+
+  /* ═════════ نموذج تعديل الملف الشخصي ═════════ */
+  const openProfile = () => {
+    const u = meUser(); if (!u) { toast('سجّل بياناتك أولًا'); return; }
+    if (typeof sheet !== 'function') return;
+    sheet(`<h4>${safeIc('user')} تعديل الملف الشخصي</h4>
+      <form class="form" id="accProfileForm" data-id="${_esc(u.id)}">
+        <div><label>الاسم *</label><input name="name" required value="${_esc(u.name || '')}" autocomplete="name"></div>
+        <div><label>رقم الهاتف *</label><input name="phone" required type="tel" inputmode="tel" value="${_esc(u.phone || '')}" pattern="[0-9+ ]{8,15}" autocomplete="tel"></div>
+        <div><label>البريد الإلكتروني (اختياري)</label><input name="email" type="email" value="${_esc(u.email || '')}"></div>
+        <button class="cta" type="submit">${safeIc('check')} حفظ التعديلات</button>
+      </form>
+    `);
+  };
+
+  /* ═════════ شاشة الحذف (تجريبي) ═════════ */
+  const openDelete = () => {
+    const u = meUser(); if (!u) { toast('لا يوجد حساب'); return; }
+    if (typeof sheet !== 'function') return;
+    sheet(`<h4>${safeIc('warn')} حذف الحساب؟</h4>
+      <div class="demo-banner">${safeIc('info')}<span>حذف الحساب يمسح بياناتك المحلية فقط (الاسم، الهاتف، العناوين، المفضلة). لا يمكن التراجع.</span></div>
+      <form class="form" id="accDeleteForm" data-id="${_esc(u.id)}">
+        <div><label>للتأكيد اكتب كلمة "حذف"</label><input name="confirm" required placeholder="حذف"></div>
+        <button class="cta" style="background:#8b1a35;border-color:#8b1a35" type="submit">${safeIc('trash')} حذف نهائي</button>
+        <button class="cta ghost" type="button" data-account-cancel-delete>إلغاء</button>
+      </form>
+    `);
+  };
+
+  /* ═════════ الأحداث ═════════ */
+  document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-account-tab],[data-account-profile-edit],[data-account-logout],[data-account-delete],[data-account-cancel-delete]');
+    if (!t) return;
+    const d = t.dataset;
+    if (d.accountTab) {
+      if (typeof state !== 'undefined') state.accountTab = d.accountTab;
+      if (typeof show === 'function') show('account');
+      return;
+    }
+    if (d.accountProfileEdit !== undefined) return openProfile();
+    if (d.accountLogout !== undefined) {
+      if (confirm('تسجيل الخروج؟')) {
+        store.set('user', null);
+        if (typeof state !== 'undefined') state.accountTab = 'orders';
+        if (typeof show === 'function') show('account');
+        toast('تم تسجيل الخروج');
+      }
+      return;
+    }
+    if (d.accountDelete !== undefined) return openDelete();
+    if (d.accountCancelDelete !== undefined) { if (typeof closeSheet === 'function') closeSheet(); return; }
+  });
+
+  document.addEventListener('change', (e) => {
+    const t = e.target;
+    if (t.dataset.accountPref !== undefined) {
+      const u = meUser(); if (!u) return;
+      const prefs = u.prefs || {notifyStatus:true, notifyQuotes:true, notifyReminders:true, preferredContact:'call'};
+      prefs[t.dataset.accountPref] = t.checked;
+      u.prefs = prefs;
+      MP.save();
+      toast('تم حفظ التفضيلات');
+    }
+    if (t.dataset.accountContact !== undefined) {
+      const u = meUser(); if (!u) return;
+      const prefs = u.prefs || {notifyStatus:true, notifyQuotes:true, notifyReminders:true, preferredContact:'call'};
+      prefs.preferredContact = t.value;
+      u.prefs = prefs;
+      MP.save();
+      toast('تم حفظ وسيلة التواصل');
+    }
+  });
+
+  document.addEventListener('submit', (e) => {
+    const f = e.target;
+    if (f.id === 'loginFormAcc') {
+      e.preventDefault();
+      const d = new FormData(f);
+      const name = (d.get('name') || '').trim();
+      const phone = (d.get('phone') || '').trim();
+      if (!name || !/^[0-9+ ]{8,15}$/.test(phone)) return toast('اسم أو رقم غير صحيح');
+      store.set('user', {name, phone});
+      try { MP.customerFor(name, phone); } catch {}
+      toast('تم التسجيل');
+      if (typeof show === 'function') show('account');
+    }
+    if (f.id === 'accProfileForm') {
+      e.preventDefault();
+      const u = meUser(); if (!u) return;
+      const d = new FormData(f);
+      const name = (d.get('name') || '').trim();
+      const phone = (d.get('phone') || '').trim();
+      const email = (d.get('email') || '').trim();
+      if (!name) return toast('اكتب الاسم');
+      if (!/^[0-9+ ]{8,15}$/.test(phone)) return toast('رقم الهاتف غير صحيح');
+      const dup = MP.db().customers.find(c => c.phone === phone && c.id !== u.id);
+      if (dup) return toast('هذا الرقم مسجّل باسم آخر');
+      u.name = name; u.phone = phone; u.email = email;
+      MP.save();
+      try { store.set('user', {name, phone}); } catch {}
+      if (typeof closeSheet === 'function') closeSheet();
+      toast('تم حفظ التعديلات');
+      if (typeof show === 'function') show('account');
+    }
+    if (f.id === 'accDeleteForm') {
+      e.preventDefault();
+      const u = meUser(); if (!u) return;
+      const d = new FormData(f);
+      if ((d.get('confirm') || '').trim() !== 'حذف') return toast('اكتب كلمة "حذف" للتأكيد');
+      /* تنظيف محلي */
+      try {
+        const db = MP.db();
+        db.customers = db.customers.filter(c => c.id !== u.id);
+        db.addresses = db.addresses.filter(a => a.customerId !== u.id);
+        db.favorites = db.favorites.filter(x => x.customerId !== u.id);
+        db.drafts = db.drafts.filter(x => x.customerId !== u.id);
+        db.searchHistory = db.searchHistory.filter(x => x.customerId !== u.id);
+        MP.save();
+      } catch {}
+      try { store.set('user', null); } catch {}
+      if (typeof closeSheet === 'function') closeSheet();
+      toast('تم حذف الحساب');
+      if (typeof show === 'function') show('account');
+    }
+  });
+
+  return { render, openProfile, openDelete, tab: (n) => { if (typeof state !== 'undefined') state.accountTab = n; } };
+})();
+
+/* استبدال screens.account القديمة */
+if (typeof screens !== 'undefined' && screens) {
+  screens.account = () => Account.render();
+}

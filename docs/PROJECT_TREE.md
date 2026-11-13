@@ -1,0 +1,421 @@
+# Current Project Tree
+
+> Generated from the current working tree. Human reference only; use `docs/AI_CONTEXT/FILE_INDEX.json` for fast AI lookup.
+
+```text
+hansalhlak/
+├── apps/
+│   ├── admin/
+│   │   ├── modules/
+│   │   │   ├── access-control/
+│   │   │   │   ├── permission-matrix.js
+│   │   │   │   ├── permission-presets.js
+│   │   │   │   └── role-editor.js
+│   │   │   ├── audit/
+│   │   │   │   ├── audit-details.js
+│   │   │   │   └── audit-filters.js
+│   │   │   └── workforce/
+│   │   │       ├── employee-form.js
+│   │   │       ├── employee-invitation.js
+│   │   │       └── employee-status.js
+│   │   ├── pages/
+│   │   │   ├── admin-dashboard.page.js
+│   │   │   ├── audit-log.page.js
+│   │   │   ├── categories-management.page.js
+│   │   │   ├── commissions.page.js
+│   │   │   ├── complaints-management.page.js
+│   │   │   ├── customers-management.page.js
+│   │   │   ├── departments.page.js
+│   │   │   ├── employee-details.page.js
+│   │   │   ├── finance-dashboard.page.js
+│   │   │   ├── notifications-management.page.js
+│   │   │   ├── orders-management.page.js
+│   │   │   ├── permissions.page.js
+│   │   │   ├── providers-management.page.js
+│   │   │   ├── quotes-management.page.js
+│   │   │   ├── reports.page.js
+│   │   │   ├── reviews-management.page.js
+│   │   │   ├── roles.page.js
+│   │   │   ├── security.page.js
+│   │   │   ├── services-management.page.js
+│   │   │   ├── settlements.page.js
+│   │   │   ├── super-dashboard.page.js
+│   │   │   ├── system-settings.page.js
+│   │   │   └── workforce.page.js
+│   │   ├── styles/
+│   │   │   ├── admin-components.css
+│   │   │   ├── admin-responsive.css
+│   │   │   └── admin.css
+│   │   ├── admin-auth.js
+│   │   ├── admin-router.js
+│   │   ├── admin-session.js
+│   │   ├── admin-shell.js
+│   │   ├── app.js
+│   │   ├── index.html
+│   │   ├── login.html
+│   │   ├── navigation-builder.js
+│   │   ├── permission-guard.js
+│   │   ├── rbac-store.js
+│   │   └── README.md
+│   ├── customer/
+│   │   ├── pages/
+│   │   │   ├── account.page.js
+│   │   │   ├── addresses.page.js
+│   │   │   ├── discover.page.js
+│   │   │   ├── home.page.js
+│   │   │   ├── market-ui.page.js
+│   │   │   ├── order-details.page.js
+│   │   │   ├── orders.page.js
+│   │   │   ├── providers.page.js
+│   │   │   ├── request-create.page.js
+│   │   │   ├── request-wizard.page.js
+│   │   │   ├── search.page.js
+│   │   │   └── support.page.js
+│   │   ├── styles/
+│   │   │   └── customer.css
+│   │   ├── app.js
+│   │   ├── customer-router.js
+│   │   ├── customer-session.js
+│   │   ├── index.html
+│   │   └── README.md
+│   ├── guest/
+│   │   ├── guest-entry.js
+│   │   ├── guest-policy.js
+│   │   └── README.md
+│   └── provider/
+│       ├── legacy/
+│       │   └── portal-compat.js
+│       ├── pages/
+│       │   ├── active-jobs.page.js
+│       │   ├── dashboard.page.js
+│       │   ├── earnings.page.js
+│       │   ├── incoming-requests.page.js
+│       │   ├── notifications.page.js
+│       │   ├── profile.page.js
+│       │   ├── quotes.page.js
+│       │   ├── request-details.page.js
+│       │   ├── reviews.page.js
+│       │   ├── schedule.page.js
+│       │   ├── services.page.js
+│       │   └── transactions.page.js
+│       ├── styles/
+│       │   └── provider.css
+│       ├── app.js
+│       ├── index.html
+│       ├── login.html
+│       ├── provider-auth.js
+│       ├── provider-domain.js
+│       ├── provider-request-domain.js
+│       ├── provider-router.js
+│       ├── provider-session.js
+│       ├── provider-shell.js
+│       ├── provider-workspace.js
+│       └── README.md
+├── assets/
+│   ├── icon.svg
+│   ├── logo-mark.webp
+│   ├── logo-word.webp
+│   ├── slide-guide.svg
+│   ├── slide-latest.svg
+│   └── slide-popular.svg
+├── backend/
+│   ├── src/
+│   │   ├── config/
+│   │   │   ├── database.js
+│   │   │   ├── env.js
+│   │   │   └── storage.js
+│   │   ├── jobs/
+│   │   │   ├── notification-worker.js
+│   │   │   └── scheduled-tasks.js
+│   │   ├── middleware/
+│   │   │   ├── authenticate.js
+│   │   │   ├── error-handler.js
+│   │   │   ├── rate-limit.js
+│   │   │   ├── require-account-status.js
+│   │   │   ├── require-permission.js
+│   │   │   └── validate-request.js
+│   │   ├── modules/
+│   │   │   ├── access-control/
+│   │   │   │   ├── access.service.js
+│   │   │   │   ├── permissions.routes.js
+│   │   │   │   ├── policy.repository.js
+│   │   │   │   └── roles.routes.js
+│   │   │   ├── audit/
+│   │   │   │   └── README.md
+│   │   │   ├── auth/
+│   │   │   │   ├── auth.controller.js
+│   │   │   │   ├── auth.routes.js
+│   │   │   │   ├── auth.service.js
+│   │   │   │   └── session.repository.js
+│   │   │   ├── catalog/
+│   │   │   │   └── README.md
+│   │   │   ├── complaints/
+│   │   │   │   └── README.md
+│   │   │   ├── customers/
+│   │   │   │   └── README.md
+│   │   │   ├── finance/
+│   │   │   │   └── README.md
+│   │   │   ├── notifications/
+│   │   │   │   └── README.md
+│   │   │   ├── orders/
+│   │   │   │   └── README.md
+│   │   │   ├── providers/
+│   │   │   │   └── README.md
+│   │   │   ├── quotes/
+│   │   │   │   └── README.md
+│   │   │   ├── reports/
+│   │   │   │   └── README.md
+│   │   │   ├── reviews/
+│   │   │   │   └── README.md
+│   │   │   ├── settings/
+│   │   │   │   └── README.md
+│   │   │   └── workforce/
+│   │   │       ├── workforce.controller.js
+│   │   │       ├── workforce.repository.js
+│   │   │       ├── workforce.routes.js
+│   │   │       └── workforce.service.js
+│   │   ├── app.js
+│   │   └── server.js
+│   ├── tests/
+│   │   ├── audit.test.js
+│   │   ├── auth.test.js
+│   │   ├── authorization.test.js
+│   │   └── workforce.test.js
+│   └── README.md
+├── database/
+│   ├── migrations/
+│   │   └── README.md
+│   ├── policies/
+│   │   ├── access-matrix.md
+│   │   └── data-access-policy.md
+│   ├── schema/
+│   │   ├── accounts.schema.js
+│   │   ├── audit-events.schema.js
+│   │   ├── complaints.schema.js
+│   │   ├── customers.schema.js
+│   │   ├── departments.schema.js
+│   │   ├── employees.schema.js
+│   │   ├── notifications.schema.js
+│   │   ├── orders.schema.js
+│   │   ├── permissions.schema.js
+│   │   ├── providers.schema.js
+│   │   ├── quotes.schema.js
+│   │   ├── roles.schema.js
+│   │   ├── services.schema.js
+│   │   └── transactions.schema.js
+│   ├── seeds/
+│   │   └── README.md
+│   └── README.md
+├── docs/
+│   ├── AI_CONTEXT/
+│   │   ├── DOMAIN_MAPS/
+│   │   │   ├── ADMIN.md
+│   │   │   ├── CUSTOMER.md
+│   │   │   ├── FRONTEND_RUNTIME.md
+│   │   │   ├── FUTURE_BACKEND_BOUNDARY.md
+│   │   │   ├── PROVIDER.md
+│   │   │   ├── SHARED_AND_SERVICES.md
+│   │   │   └── TESTING.md
+│   │   ├── FILE_INDEX.json
+│   │   ├── README.md
+│   │   ├── START_HERE.md
+│   │   └── WORKFLOW.md
+│   ├── DECISIONS/
+│   │   ├── 2026-11-09-audit-log-demo-assumptions.md
+│   │   ├── 2026-11-09-quotes-demo-assumptions.md
+│   │   ├── 2026-11-09-reports-demo-assumptions.md
+│   │   ├── 2026-11-09-security-demo-assumptions.md
+│   │   ├── 2026-11-09-settlements-demo-assumptions.md
+│   │   ├── 2026-11-09-system-settings-demo-assumptions.md
+│   │   └── 2026-11-10-super-dashboard-demo-assumptions.md
+│   ├── ADMIN_MODULES.md
+│   ├── AI_AGENT_CONTINUATION_PROTOCOL.md
+│   ├── AI_NEXT_IMPLEMENTATION_ORDER.md
+│   ├── AI_PROJECT_MAP.csv
+│   ├── AI_PROJECT_MAP.json
+│   ├── AI_PROJECT_MAP.md
+│   ├── API_CONTRACTS.md
+│   ├── ARCHITECTURE_BLUEPRINT_V1.md
+│   ├── ARCHITECTURE.md
+│   ├── AUTHENTICATION.md
+│   ├── DATA_MODEL.md
+│   ├── DEPENDENCY_GRAPH.md
+│   ├── DESIGN_SYSTEM_AUDIT.md
+│   ├── DEVELOPMENT_PROGRESS.md
+│   ├── EMPTY_PLACEHOLDERS.md
+│   ├── ENGINEERING_ENVIRONMENT_REPORT.md
+│   ├── FILE_MAP.md
+│   ├── FINAL_AUDIT.md
+│   ├── FRONTEND_ARCHITECTURE.md
+│   ├── FRONTEND_COMPONENT_CATALOG.md
+│   ├── FRONTEND_DESIGN_SYSTEM.md
+│   ├── FRONTEND_FILE_CATALOG.md
+│   ├── FRONTEND_INTERACTION_SPEC.md
+│   ├── FRONTEND_PAGE_CATALOG.md
+│   ├── FRONTEND_QA_ACCEPTANCE.md
+│   ├── FRONTEND_TEAM_AI_PROTOCOL.md
+│   ├── HANDOFF_NEXT_AI.md
+│   ├── HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md
+│   ├── HANSALHLAK_V8_PROGRESS.md
+│   ├── ICON_ASSET_AUDIT.md
+│   ├── ICON_SYSTEM_REPORT.md
+│   ├── IMPLEMENTATION_STATUS.md
+│   ├── INTRO_V2_REPORT.md
+│   ├── KEYBOARD_ACCESSIBILITY_AUDIT.md
+│   ├── MIGRATION_PLAN.md
+│   ├── MIGRATION_REPORT.md
+│   ├── NEW_FILES_REPORT.md
+│   ├── P1_PROVIDER_AUDIT.md
+│   ├── PERMISSIONS.md
+│   ├── PROJECT_CONTROL_CENTER_GUIDE.md
+│   ├── PROJECT_TREE.md
+│   ├── PROMPT_LOG_V8.md
+│   ├── REMOVED_FILES_REPORT.md
+│   ├── RESPONSIVE_AUDIT.md
+│   ├── SECURITY_MODEL.md
+│   ├── TEST_RESULTS.md
+│   └── TESTING_STRATEGY.md
+├── scripts/
+│   ├── refresh-project-inventory.mjs
+│   └── verify-project-inventory.mjs
+├── services/
+│   ├── admin-api.js
+│   ├── api-client.js
+│   ├── auth-api.js
+│   ├── catalog-api.js
+│   ├── customer-api.js
+│   ├── finance-api.js
+│   ├── local-attachments.js
+│   ├── local-catalog.js
+│   ├── local-market-store.js
+│   ├── notifications-api.js
+│   ├── orders-api.js
+│   ├── provider-api.js
+│   ├── quotes-api.js
+│   ├── README.md
+│   ├── realtime-client.js
+│   ├── support-api.js
+│   └── uploads-api.js
+├── shared/
+│   ├── components/
+│   │   ├── accessible-tabs.js
+│   │   ├── buttons.js
+│   │   ├── data-grid.js
+│   │   ├── dialogs.js
+│   │   ├── forms.js
+│   │   ├── notification-center.js
+│   │   ├── status-badge.js
+│   │   ├── tables.js
+│   │   └── ui-kit.js
+│   ├── config/
+│   │   ├── app-config.js
+│   │   ├── feature-flags.js
+│   │   ├── legacy-data.js
+│   │   └── routes.js
+│   ├── design-system/
+│   │   ├── components.css
+│   │   ├── design-system.css
+│   │   ├── layout.css
+│   │   ├── tokens.css
+│   │   └── typography.css
+│   ├── icons/
+│   │   └── icon-registry.js
+│   ├── types/
+│   │   ├── account.types.js
+│   │   ├── order.types.js
+│   │   ├── permission.types.js
+│   │   └── provider.types.js
+│   ├── utils/
+│   │   ├── dates.js
+│   │   ├── errors.js
+│   │   ├── formatting.js
+│   │   ├── money.js
+│   │   ├── sanitization.js
+│   │   ├── tree.js
+│   │   └── validation.js
+│   └── README.md
+├── tests/
+│   ├── e2e/
+│   │   ├── audit-log.browser.js
+│   │   ├── customer-request-wizard-accessibility.browser.py
+│   │   ├── customer-search-keyboard.browser.py
+│   │   ├── customer-sheet-focus.browser.py
+│   │   ├── quotes-management.browser.js
+│   │   ├── README.md
+│   │   ├── reports.browser.js
+│   │   ├── responsive-sweep.browser.js
+│   │   ├── security.browser.js
+│   │   ├── super-dashboard.browser.js
+│   │   └── system-settings.browser.js
+│   ├── fixtures/
+│   │   └── README.md
+│   ├── helpers/
+│   │   └── design-token-audit.js
+│   ├── integration/
+│   │   └── README.md
+│   ├── security/
+│   │   └── README.md
+│   └── unit/
+│       ├── accessible-tabs-contract.test.js
+│       ├── accessible-tabs.test.js
+│       ├── admin-dashboard.test.js
+│       ├── admin-shell.test.js
+│       ├── audit-log.test.js
+│       ├── catalog-wizard.test.js
+│       ├── categories-management.test.js
+│       ├── commissions.test.js
+│       ├── complaints-management.test.js
+│       ├── customer-page-renderers.test.js
+│       ├── customer-workflow.test.js
+│       ├── customers-management.test.js
+│       ├── data-grid.test.js
+│       ├── departments.test.js
+│       ├── design-system.test.js
+│       ├── design-token-audit.test.js
+│       ├── dialogs.test.js
+│       ├── discover.test.js
+│       ├── finance-dashboard.test.js
+│       ├── frontend-contracts.test.js
+│       ├── home.test.js
+│       ├── icon-asset-audit.test.js
+│       ├── notifications-management.test.js
+│       ├── orders-management.test.js
+│       ├── provider-domain.test.js
+│       ├── provider-pages.test.js
+│       ├── provider-request-domain.test.js
+│       ├── provider-workspace.test.js
+│       ├── providers-management.test.js
+│       ├── quotes-management.test.js
+│       ├── rbac-pages.test.js
+│       ├── rbac-store.test.js
+│       ├── README.md
+│       ├── reports.test.js
+│       ├── responsive-audit.test.js
+│       ├── responsive-sweep-regression.test.js
+│       ├── reviews-management.test.js
+│       ├── security.test.js
+│       ├── services-management.test.js
+│       ├── settlements-edge-cases.test.js
+│       ├── settlements.test.js
+│       ├── shared-components.test.js
+│       ├── shared-foundations.test.js
+│       ├── static-audit.test.js
+│       ├── status-badge.test.js
+│       ├── super-dashboard.test.js
+│       ├── system-settings.test.js
+│       ├── tree.test.js
+│       ├── ui-kit.test.js
+│       └── workforce.test.js
+├── _redirects
+├── .editorconfig
+├── .gitignore
+├── AGENTS.md
+├── CLAUDE.md
+├── index.html
+├── manifest.json
+├── package.json
+├── PROJECT_CONTROL_CENTER.html
+├── README.md
+├── service-worker.js
+└── test-write.tmp
+```

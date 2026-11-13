@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0B080D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>هنصلحلك — اطلب متخصصًا</title>
+<link rel="manifest" href="../../manifest.json">
+<link rel="icon" href="../../assets/icon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/customer.css">
+<link rel="stylesheet" href="../../shared/design-system/design-system.css">
+<script>
+/* الافتتاحية السينمائية: مرة واحدة لكل جلسة. الفحص مبكر لمنع أي وميض عند الدخول الداخلي المتكرر. */
+(function(){try{var d=document.documentElement;if(sessionStorage.getItem('hs_intro_v1')){d.classList.add('no-intro');}else{sessionStorage.setItem('hs_intro_v1','1');['logo-mark','logo-word'].forEach(function(n){var l=document.createElement('link');l.rel='preload';l.as='image';l.href='../../assets/'+n+'.webp';document.head.appendChild(l);});}}catch(e){}})();
+</script>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+  <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f1f7"/><stop offset=".5" stop-color="#bdb7c6"/><stop offset="1" stop-color="#7b7487"/></linearGradient>
+  <linearGradient id="metal2" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#8d8698"/><stop offset=".5" stop-color="#e6e2ea"/><stop offset="1" stop-color="#a39cae"/></linearGradient>
+  <radialGradient id="glass" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#6b5873"/><stop offset=".45" stop-color="#241a2a"/><stop offset="1" stop-color="#0a070c"/></radialGradient>
+  <linearGradient id="pinkg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff86c0"/><stop offset="1" stop-color="#ff2d7e"/></linearGradient>
+  <linearGradient id="screeng" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1b0f1d"/><stop offset=".6" stop-color="#4a1738"/><stop offset="1" stop-color="#ff3d8f" stop-opacity=".75"/></linearGradient>
+  <filter id="gb6" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+  <filter id="gb10" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>
+</defs></svg>
+
+<div id="app">
+  <div class="bg-blob b1"></div><div class="bg-blob b2"></div>
+  <main id="view"></main>
+  <nav id="tabbar"></nav>
+  <div id="sheet-backdrop"></div>
+  <section id="sheet" role="dialog" aria-modal="true" tabindex="-1"></section>
+  <div id="toast" role="status"></div>
+</div>
+
+<!-- الافتتاحية خارج #app عمدًا: #app عليه transform أثناء الحركة (appIn) فكان يحتجز position:fixed داخل عمود 480px بدل الشاشة كلها.
+     V2: الشعار المرفق (assets/logo-mark.webp + logo-word.webp) مقسوم لجزأين من نفس الصورة الأصلية بلا إعادة رسم؛ يُعاد تركيبهما بنفس النسب.
+     الطبقات الديناميكية (خطوط/جسيمات) تُولَّد من app.js (Intro) ولا تُكتب هنا. -->
+<div id="intro" role="group" aria-label="هنصلحلك — خدماتك.. في إيد أمينة.">
+  <div class="in-fx">
+    <div class="in-radial" aria-hidden="true"></div>
+    <div class="in-lines" aria-hidden="true"></div>
+    <div class="in-dust" aria-hidden="true"></div>
+    <div class="in-world" aria-hidden="true">
+      <div class="ring r1"><svg viewBox="0 0 400 400" focusable="false"><defs>
+        <linearGradient id="inRg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9ccb"/><stop offset=".55" stop-color="#ff2d7e"/><stop offset="1" stop-color="#3b82f6"/></linearGradient>
+        <linearGradient id="inRg2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb347"/><stop offset=".5" stop-color="#ff2d7e"/><stop offset="1" stop-color="#ff9ccb"/></linearGradient></defs>
+        <circle class="halo" cx="200" cy="200" r="190"/><circle class="line" cx="200" cy="200" r="190"/><circle class="tail" cx="200" cy="200" r="190" pathLength="100"/><circle class="comet" cx="200" cy="200" r="190" pathLength="100"/></svg></div>
+      <div class="ring r2"><svg viewBox="0 0 400 400" focusable="false"><circle class="halo" cx="200" cy="200" r="190"/><circle class="line" cx="200" cy="200" r="190" style="stroke:url(#inRg2)"/><circle class="tail" cx="200" cy="200" r="190" pathLength="100"/><circle class="comet" cx="200" cy="200" r="190" pathLength="100"/></svg></div>
+      <div class="ring r3"><svg viewBox="0 0 400 400" focusable="false"><circle class="halo" cx="200" cy="200" r="190"/><circle class="line" cx="200" cy="200" r="190"/><circle class="tail" cx="200" cy="200" r="190" pathLength="100"/><circle class="comet" cx="200" cy="200" r="190" pathLength="100"/></svg></div>
+    </div>
+    <div class="in-core" aria-hidden="true"></div>
+  </div>
+  <div class="in-stage">
+    <div class="in-logo">
+      <div class="in-aura" aria-hidden="true"></div>
+      <div class="in-mark">
+        <img class="rim" src="../../assets/logo-mark.webp" alt="" aria-hidden="true" decoding="async" draggable="false">
+        <img class="main" src="../../assets/logo-mark.webp" alt="" decoding="async" draggable="false">
+        <div class="sheen" aria-hidden="true"><i class="o"></i><i class="b"></i></div>
+      </div>
+      <div class="in-word">
+        <img class="main" src="../../assets/logo-word.webp" alt="هنصلحلك HANSALHLAK" decoding="async" draggable="false">
+        <div class="sheen" aria-hidden="true"><i class="b"></i></div>
+      </div>
+      <div class="in-floor" aria-hidden="true"></div>
+    </div>
+    <p class="in-tag"><span>خدماتك..</span> <span>في</span> <span>إيد</span> <span>أمينة.</span><i class="in-sweep" aria-hidden="true"></i></p>
+  </div>
+  <div class="in-fx">
+    <div class="in-shock" aria-hidden="true"></div>
+    <div class="in-flare" aria-hidden="true"></div>
+    <div class="in-bloom" aria-hidden="true"></div>
+  </div>
+  <button type="button" class="in-skip" id="introSkip">تخطي</button>
+</div>
+<input type="file" id="cam" accept="image/*" capture="environment" hidden>
+
+<!-- ═════════ تحميل السكربتات — الترتيب حرج ═════════
+     كل ملف يعتمد على ما قبله:
+     1) icons.js       — نظام الأيقونات (يستخدمه كل شيء)
+     2) data.js        — محتوى data.js القديم (توافق خلفي)
+     3) catalog.js     — CAT (كتالوج هرمي) — يعتمد على icons.js
+     4) market.js      — MP (طبقة بيانات) — يعتمد على data.js (DEVICES)
+     5) app.js         — الواجهة الأساسية — يعتمد على كل ما سبق
+     5b) ui-kit.js     — حالات UI موحدة (V8-C2) — يعتمد على app.js
+     6) market-ui.js   — واجهة العميل — يعتمد على MP + app.js
+     7) wizard.js      — نموذج الطلب — يعتمد على CAT + AT + MP
+     8) portal.js      — بوابة المزود + الإدارة — يعتمد على MP
+     8b) provider-workspace.js — مساحة عمل الفني V8 (تعيد تعريف شاشة الفني فقط، ولا تمس الإدارة)
+     9) attachments.js — مرفقات IndexedDB — مستقلة
+    10) search.js      — بحث موحد على CAT — يعتمد على CAT + icons.js
+    11) addresses.js   — إدارة العناوين — يعتمد على MP
+    12) account.js     — حساب العميل — يعتمد على MP + addresses.js
+    13) support.js     — الدعم والشكاوى — يعتمد على MP + AT
+-->
+<script src="../../shared/icons/icon-registry.js"></script>
+<script src="../../shared/components/accessible-tabs.js"></script>
+<script src="../../shared/config/legacy-data.js"></script>
+<script src="../../services/local-catalog.js"></script>
+<script src="../../services/local-market-store.js"></script>
+<script src="pages/home.page.js"></script>
+<script src="app.js"></script>
+<script src="../../shared/components/ui-kit.js"></script>
+<script src="pages/orders.page.js"></script>
+<script src="pages/order-details.page.js"></script>
+<script src="pages/market-ui.page.js"></script>
+<script src="pages/request-wizard.page.js"></script>
+<script src="../provider/legacy/portal-compat.js"></script>
+<script src="../provider/provider-workspace.js"></script>
+<script src="../../services/local-attachments.js"></script>
+<script src="pages/search.page.js"></script>
+<script src="pages/discover.page.js"></script>
+<script src="pages/addresses.page.js"></script>
+<script src="pages/account.page.js"></script>
+<script src="pages/support.page.js"></script>
+</body>
+</html>

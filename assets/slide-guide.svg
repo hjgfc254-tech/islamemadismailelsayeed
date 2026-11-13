@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 432" preserveAspectRatio="xMidYMin slice">
+<defs>
+<linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f1f7"/><stop offset=".5" stop-color="#bdb7c6"/><stop offset="1" stop-color="#7b7487"/></linearGradient>
+<linearGradient id="metal2" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#8d8698"/><stop offset=".5" stop-color="#e6e2ea"/><stop offset="1" stop-color="#a39cae"/></linearGradient>
+<linearGradient id="pinkg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff86c0"/><stop offset="1" stop-color="#ff2d7e"/></linearGradient>
+<radialGradient id="glass" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#6b5873"/><stop offset=".45" stop-color="#241a2a"/><stop offset="1" stop-color="#0a070c"/></radialGradient>
+<linearGradient id="uni" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a2a42"/><stop offset="1" stop-color="#1c1321"/></linearGradient>
+<filter id="b8" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8"/></filter>
+<filter id="b20" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="20"/></filter>
+<radialGradient id="bg" cx=".62" cy=".3" r=".8"><stop offset="0" stop-color="#7d1550"/><stop offset=".55" stop-color="#26101f"/><stop offset="1" stop-color="#0e080f"/></radialGradient>
+</defs>
+<rect width="400" height="432" fill="url(#bg)"/>
+<circle cx="250" cy="150" r="130" fill="#ff3d8f" opacity=".35" filter="url(#b20)"/>
+<g stroke="#ff3d8f" stroke-opacity=".12" stroke-width="1"><path d="M0 300h400M0 320h400M0 340h400"/><path d="M60 290L-40 432M140 290L110 432M220 290L230 432M300 290L350 432M380 290L470 432"/></g>
+<ellipse cx="205" cy="288" rx="170" ry="14" fill="#ff3d8f" opacity=".5" filter="url(#b8)"/>
+<!-- washer -->
+<rect x="216" y="56" width="140" height="228" rx="15" fill="url(#metal)" stroke="rgba(255,255,255,.5)"/>
+<rect x="216" y="56" width="40" height="228" rx="15" fill="#fff" opacity=".1"/>
+<path d="M216 104h140" stroke="#000" stroke-opacity=".22" stroke-width="2"/>
+<rect x="228" y="68" width="50" height="26" rx="6" fill="#150d17" stroke="rgba(255,255,255,.25)"/><path d="M236 81h9M250 81h9M264 81h8" stroke="#ff3d8f" stroke-width="3.5" stroke-linecap="round"/>
+<circle cx="318" cy="81" r="15" fill="url(#metal2)" stroke="rgba(0,0,0,.3)"/><circle cx="318" cy="81" r="9" fill="#2b2230"/><path d="M318 81l5-7" stroke="#ff7ab8" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="338" cy="81" r="3.6" fill="#ff3d8f"/>
+<circle cx="286" cy="188" r="60" fill="url(#metal2)" stroke="rgba(0,0,0,.35)"/>
+<circle cx="286" cy="188" r="50" fill="#1a1420" stroke="rgba(255,255,255,.3)" stroke-width="2"/>
+<circle cx="286" cy="188" r="43" fill="url(#glass)"/>
+<ellipse cx="294" cy="202" rx="24" ry="12" fill="#ff3d8f" opacity=".42"/><ellipse cx="274" cy="184" rx="13" ry="9" fill="#ff7ab8" opacity=".3"/>
+<path d="M246 196q10-5 20 0t20 0 20 0 20 0" fill="none" stroke="#ff9ccb" stroke-opacity=".6" stroke-width="2"/>
+<path d="M252 170a36 36 0 0 1 30-19" stroke="#fff" stroke-opacity=".65" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+<!-- technician -->
+
+<g transform="translate(20 0)">
+  <rect x="104" y="200" width="24" height="76" rx="9" fill="#241a2b"/><rect x="134" y="200" width="24" height="76" rx="9" fill="#2d2133"/>
+  <path d="M98 270h36a4 4 0 0 1 4 4v6H96v-6a4 4 0 0 1 2-4z" fill="#15101a"/><path d="M96 280h42v5H96z" fill="#ff3d8f"/>
+  <path d="M130 270h36a4 4 0 0 1 4 4v6h-42v-6a4 4 0 0 1 2-4z" fill="#15101a"/><path d="M128 280h42v5h-42z" fill="#ff3d8f"/>
+  <rect x="90" y="114" width="80" height="98" rx="24" fill="url(#uni)" stroke="rgba(255,255,255,.14)"/>
+  <rect x="90" y="168" width="80" height="7" fill="#ff3d8f" opacity=".92"/><rect x="90" y="178" width="80" height="2.5" fill="#fff" opacity=".35"/>
+  <path d="M130 114v30" stroke="#000" stroke-opacity=".3" stroke-width="2"/>
+  <rect x="90" y="194" width="80" height="11" fill="#4a3a52"/><rect x="108" y="196" width="18" height="22" rx="4" fill="#33263b" stroke="rgba(255,255,255,.18)"/><rect x="136" y="196" width="18" height="18" rx="4" fill="#33263b" stroke="rgba(255,255,255,.18)"/>
+  <rect x="120" y="100" width="20" height="18" rx="6" fill="#e3b08f"/>
+  <circle cx="130" cy="86" r="24" fill="#f0c2a2"/>
+  <path d="M106 84a24 24 0 0 1 48 0z" fill="url(#pinkg)" stroke="rgba(255,255,255,.45)"/>
+  <rect x="100" y="82" width="62" height="8" rx="4" fill="#d6246f"/><rect x="123" y="58" width="14" height="26" rx="5" fill="#fff" opacity=".35"/>
+  <circle cx="142" cy="92" r="2.6" fill="#2b1e30"/><path d="M138 103q6 4 12 0" fill="none" stroke="#9a5b46" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="108" cy="94" r="4.5" fill="#e3b08f"/>
+</g>
+<!-- far arm with wrench, down -->
+<path d="M86 134C74 160 72 190 80 214" fill="none" stroke="#2d2133" stroke-width="22" stroke-linecap="round"/>
+<circle cx="80" cy="222" r="10" fill="#f0c2a2"/>
+<g transform="translate(66 226) rotate(14)"><rect x="-4" y="-2" width="8" height="52" rx="4" fill="url(#metal2)"/><circle cx="0" cy="54" r="11" fill="url(#metal)"/><rect x="-4" y="52" width="8" height="14" fill="#150b17"/></g>
+<!-- near arm with screwdriver at panel -->
+<path d="M170 132C196 132 214 118 232 98" fill="none" stroke="#3a2a42" stroke-width="22" stroke-linecap="round"/>
+<circle cx="238" cy="92" r="10.5" fill="#f0c2a2"/>
+<g transform="translate(236 92) rotate(52)"><rect x="-6" y="-44" width="12" height="38" rx="5" fill="url(#pinkg)"/><rect x="-2.2" y="-6" width="4.4" height="32" fill="url(#metal2)"/></g>
+<!-- diagnostic badge -->
+<g transform="translate(66 62)"><circle r="26" fill="#150b17" stroke="#ff3d8f" stroke-width="2"/><circle r="26" fill="#ff3d8f" opacity=".2" filter="url(#b8)"/><path d="M-11 0l7 8 14-16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></g>
+<g transform="translate(356 36)" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="2.6"><circle r="13"/><path d="M9 9l12 12" stroke-linecap="round" stroke-width="4"/></g>
+<path transform="translate(30 150) scale(1.4)" d="M0-6L1.5-1.5 6 0 1.5 1.5 0 6-1.5 1.5-6 0-1.5-1.5z" fill="#ff9ccb"/><path transform="translate(372 300) scale(1.2)" d="M0-6L1.5-1.5 6 0 1.5 1.5 0 6-1.5 1.5-6 0-1.5-1.5z" fill="#ff9ccb"/><path transform="translate(190 30) scale(1)" d="M0-6L1.5-1.5 6 0 1.5 1.5 0 6-1.5 1.5-6 0-1.5-1.5z" fill="#ff9ccb"/><path transform="translate(120 300) scale(0.9)" d="M0-6L1.5-1.5 6 0 1.5 1.5 0 6-1.5 1.5-6 0-1.5-1.5z" fill="#ff9ccb"/>
+</svg>

@@ -1,0 +1,2 @@
+/* Provider reviews page renderer. */
+(function(root){'use strict';root.HSProviderReviewsPage=Object.freeze({render(ctx){const rows=ctx.reviews.slice().sort((a,b)=>new Date(b.at||0)-new Date(a.at||0));return `<section class="pv-panel"><h1>تقييمات العملاء</h1>${rows.length?rows.map(x=>`<article class="pv-review"><b>${'★'.repeat(Math.max(0,Math.min(5,Number(x.stars)||0)))}</b><p>${ctx.esc(x.comment||x.quality||'لم يترك العميل تعليقًا.')}</p><small>${ctx.date(x.at)}</small></article>`).join(''):'<div class="pv-empty">لا توجد تقييمات بعد.</div>'}</section>`;}});})(globalThis);
