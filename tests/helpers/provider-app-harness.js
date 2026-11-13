@@ -49,10 +49,27 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
   const local = storage(store ? { [STORE_KEY]: store } : {}), sessionStore = storage(session ? { [SESSION_KEY]: session } : {});
   const listeners = { host: {}, window: {} };
   const fetchCalls = [];
-  const view = element(), nav = element(), toastEl = element(), logout = element({ hidden: true });
+  const focus = { current: null, history: [], scrollBehaviors: [] };
+  const setFocus = what => { focus.current = what; focus.history.push(what); };
+  const reducedMotion = { value: false };
+  const view = element({ focus: () => setFocus('view') }), nav = element(), toastEl = element(), logout = element({ hidden: true });
+  /* Supports '#id' (inline forms) and attribute selectors like '[data-pv-action="x"][data-id="y"]'. */
   view.querySelector = sel => {
     const id = /^#([\w-]+)$/.exec(sel);
-    if (id && view.innerHTML.includes(`id="${id[1]}"`)) return element({ querySelector: () => element() });
+    if (id) {
+      if (!view.innerHTML.includes(`id="${id[1]}"`)) return null;
+      return element({ id: id[1], scrollIntoView: opts => focus.scrollBehaviors.push(opts && opts.behavior),
+        querySelector: () => element({ focus: () => setFocus('field:' + id[1]) }) });
+    }
+    if (sel === '.pv-inline-form') {
+      if (!/<form class="pv-inline-form"/.test(view.innerHTML)) return null;
+      return element({ remove: () => { view.innerHTML = view.innerHTML.replace(/<form class="pv-inline-form"[\s\S]*?<\/form>/, ''); } });
+    }
+    const attrs = [...sel.matchAll(/\[([\w-]+)="([^"]*)"\]/g)];
+    if (attrs.length && attrs.map(m => m[0]).join('') === sel) {
+      const tag = findTag(view.innerHTML, Object.fromEntries(attrs.map(m => [m[1], m[2]])));
+      return tag ? element({ dataset: toDataset(tag), focus: () => setFocus(sel) }) : null;
+    }
     return null;
   };
   const host = element({
@@ -66,12 +83,12 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
     console, Date, Intl, Math, JSON, Number, String, Object, Array, Set, Map, Error, encodeURIComponent, decodeURIComponent,
     setTimeout: () => 0, clearTimeout() {}, setInterval: () => 0, clearInterval() {},
     localStorage: local, sessionStorage: sessionStore, location,
-    navigator: {}, matchMedia: () => ({ matches: false }),
+    navigator: {}, matchMedia: q => ({ matches: /prefers-reduced-motion:\s*reduce/.test(q) ? reducedMotion.value : false }),
     fetch: (...args) => { fetchCalls.push(args); return Promise.reject(new Error('network disabled in tests')); },
     FormData: function FormData() { return { get: k => (k in formValues ? formValues[k] : null) }; },
     addEventListener: (type, fn) => { (listeners.window[type] = listeners.window[type] || []).push(fn); },
     removeEventListener() {},
-    document: { readyState: 'complete', getElementById: id => (id === 'provider-app' ? host : null),
+    document: { title: '', readyState: 'complete', getElementById: id => (id === 'provider-app' ? host : null),
       querySelector: () => null, querySelectorAll: () => [], createElement: () => element(), addEventListener() {},
       documentElement: element(), body: element() }
   };
@@ -91,6 +108,7 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
 
   const api = {
     ctx, run, MP: run('MP'), view, nav, toast: toastEl, logout, location, local, session: sessionStore, fetchCalls, scripts,
+    focus, reducedMotion, title: () => ctx.document.title,
     html: () => view.innerHTML,
     navHtml: () => nav.innerHTML,
     has: attrs => !!findTag(allHtml(), attrs),
@@ -116,6 +134,13 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
       let prevented = false;
       const form = { id: formId, dataset: toDataset(tag), matches: sel => sel === '.pv-inline-form' };
       withHashSync(() => (listeners.host.submit || []).forEach(fn => fn({ target: form, preventDefault: () => { prevented = true; } })));
+      return { prevented };
+    },
+    /* Press a key with focus inside the open inline form (inForm) or elsewhere in the app. */
+    key(key, { inForm = true } = {}) {
+      const target = { closest: sel => (sel === '.pv-inline-form' && inForm && /<form class="pv-inline-form"/.test(view.innerHTML) ? {} : null) };
+      let prevented = false;
+      (listeners.host.keydown || []).forEach(fn => fn({ key, target, preventDefault: () => { prevented = true; } }));
       return { prevented };
     },
     go(hash) { location.hash = hash; fireHash(); },

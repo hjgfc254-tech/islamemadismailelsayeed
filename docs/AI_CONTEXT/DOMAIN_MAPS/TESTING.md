@@ -15,7 +15,7 @@
 - Accessibility: partial; a complete automated accessibility runner is not currently established.
 
 ## Current baseline
-- `npm test`: **216 passed, 0 failed** (51 files) after Provider P0 (2026-11-13).
+- `npm test`: **230 passed, 0 failed** (52 files) after Provider P1 (2026-11-13).
 - Provider app behavior harness: `tests/helpers/provider-app-harness.js` (see `DOMAIN_MAPS/PROVIDER.md` §6). Project skill: `.claude/skills/vm-script-test`.
 - Windows browser smoke without packages: serve with `python -m http.server 8099`, then headless Edge `--dump-dom` via `Start-Process ... -RedirectStandardOutput` (direct `& msedge` returns no output under PowerShell). This proves load/render only, not interaction or viewports.
 

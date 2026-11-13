@@ -390,6 +390,7 @@ hansalhlak/
 │       ├── icon-asset-audit.test.js
 │       ├── notifications-management.test.js
 │       ├── orders-management.test.js
+│       ├── provider-app-a11y.test.js
 │       ├── provider-app-actions.test.js
 │       ├── provider-app-routing.test.js
 │       ├── provider-domain.test.js

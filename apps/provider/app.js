@@ -14,6 +14,16 @@
   const providerGroups = p => domain.groupAssignments(MP.db(),p.id);
   const toast = message => { dom.toast.textContent=message; dom.toast.classList.add('is-visible'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>dom.toast.classList.remove('is-visible'),2400); };
   const STALE = 'تعذر تنفيذ الإجراء؛ تغيرت حالة الطلب. تم تحديث العرض.';
+  const BASE_TITLE = 'مساحة مقدم الخدمة | هنصلحلك';
+  let lastRouteKey = null, formTrigger = null;
+  const actionSel = (action,id) => `[data-pv-action="${action}"][data-id="${id}"]`;
+  const detailsSel = id => `[data-pv-route="request/${encodeURIComponent(id)}"]`;
+  const reduceMotion = () => typeof matchMedia==='function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* Focus the first matching control in the view, falling back to the view itself (tabindex="-1"). */
+  function focusIn(selectors) {
+    for (const sel of [].concat(selectors||[])) { const el=$(sel,dom.view); if(el){ el.focus({preventScroll:true}); return; } }
+    dom.view.focus({preventScroll:true});
+  }
   const tabs = [['home','الرئيسية'],['new','طلبات جديدة'],['accepted','مقبولة'],['progress','جارية'],['quote','عروض الأسعار'],['schedule','المواعيد'],['done','مكتملة'],['reviews','التقييمات'],['transactions','المعاملات'],['earnings','الأرباح'],['services','خدماتي'],['notifications','الإشعارات'],['profile','ملفي']];
 
   function accountPicker() {
@@ -68,28 +78,63 @@
     return (renderers[page]||renderers.home)();
   }
 
-  function render() {
+  /* render(focusTargets): a route change focuses the main view; a same-route re-render (after an action)
+     restores focus to the first matching selector so keyboard users are not dropped to <body>. */
+  function render(focusTargets) {
     const p=currentProvider();
-    if(!p){accountPicker();return;}
+    if(!p){accountPicker();settle('picker','اختيار حساب العرض',focusTargets);return;}
     $('[data-pv-action="logout"]',dom.host).hidden=false;
     if(p.status!=='approved') {
       dom.nav.hidden=true;
       dom.view.innerHTML=`<section class="pv-panel pv-gate"><span class="pv-eyebrow">حالة الحساب</span><h1>${p.status==='pending'?'طلب التسجيل قيد المراجعة':p.status==='suspended'?'الحساب معلّق':'الحساب غير مقبول'}</h1><p>لا يمكن إدارة الطلبات قبل اعتماد الحساب من الإدارة.</p><button class="pv-btn" data-pv-action="logout">تبديل الحساب</button></section>`;
+      settle('gate','حالة الحساب',focusTargets);
       return;
     }
-    const {page}=router.parse(location.hash), groups=providerGroups(p), tx=MP.db().transactions.filter(t=>t.providerId===p.id);
+    const {page,id}=router.parse(location.hash), groups=providerGroups(p), tx=MP.db().transactions.filter(t=>t.providerId===p.id);
     renderNav(page);
     dom.view.innerHTML=sectionFor(page,p,groups,tx);
+    settle(page+'/'+(page==='request'?id:''),titleFor(page),focusTargets);
+  }
+
+  const titleFor = page => page==='request' ? 'تفاصيل الطلب' : ((tabs.find(t=>t[0]===page)||[])[1] || domain.GROUPS[page] || 'الرئيسية');
+
+  function settle(routeKey,label,focusTargets) {
+    const first=lastRouteKey===null, changed=routeKey!==lastRouteKey;
+    lastRouteKey=routeKey;
+    document.title=`${label} | ${BASE_TITLE}`;
+    if(first) return; // never steal focus on initial load
+    if(changed) dom.view.focus({preventScroll:true});
+    else if(focusTargets) focusIn(focusTargets);
   }
 
   function openForm(kind,id) {
     const request=MP.get('serviceRequests',id); if(!request) return;
-    if(kind==='reject') dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-reject-form" data-id="${esc(id)}"><label>سبب الرفض<select name="reason" required><option>خارج نطاق تخصصي</option><option>خارج المنطقة</option><option>غير متاح في الموعد</option><option>أخرى</option></select></label><button class="pv-btn pv-btn-primary">تأكيد الرفض</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
-    if(kind==='propose') dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-propose-form" data-id="${esc(id)}"><label>الموعد المقترح<input type="datetime-local" name="at" required min="${new Date(Date.now()+60000).toISOString().slice(0,16)}"></label><button class="pv-btn pv-btn-primary">إرسال الاقتراح</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
-    if(kind==='quote') { const q=MP.currentQuote(id); dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-quote-form" data-id="${esc(id)}"><label>المصنعية<input name="labor" type="number" min="0" step="0.01" required value="${q?.labor??''}"></label><label>قطع الغيار<input name="parts" type="number" min="0" step="0.01" value="${q?.parts??0}"></label><label>رسوم المعاينة<input name="visitFee" type="number" min="0" step="0.01" value="${q?.visitFee??0}"></label><label>الخصم<input name="discount" type="number" min="0" step="0.01" value="${q?.discount??0}"></label><label>ملاحظة<textarea name="note" maxlength="300">${esc(q?.note||'')}</textarea></label><button class="pv-btn pv-btn-primary">إرسال عرض السعر</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`); }
-    if(kind==='complete') { const q=MP.currentQuote(id); const suggested=q?.status==='approved'?q.total:''; dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-complete-form" data-id="${esc(id)}"><label>القيمة النهائية (ج.م)<input name="value" type="number" min="1" step="0.01" required value="${suggested}"></label><label>خصومات معلنة<input name="deductions" type="number" min="0" step="0.01" value="0"></label><button class="pv-btn pv-btn-primary">تأكيد اكتمال الخدمة</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`); }
+    $('.pv-inline-form',dom.view)?.remove(); // one inline form at a time: avoids duplicate ids
+    formTrigger={kind,id};
+    const named=label=>`aria-label="${esc(label+' '+(request.no||request.id))}"`;
+    if(kind==='reject') dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-reject-form" data-id="${esc(id)}" ${named('رفض الطلب')}><label>سبب الرفض<select name="reason" required><option>خارج نطاق تخصصي</option><option>خارج المنطقة</option><option>غير متاح في الموعد</option><option>أخرى</option></select></label><button class="pv-btn pv-btn-primary">تأكيد الرفض</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
+    if(kind==='propose') dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-propose-form" data-id="${esc(id)}" ${named('اقتراح موعد للطلب')}><label>الموعد المقترح<input type="datetime-local" name="at" required min="${new Date(Date.now()+60000).toISOString().slice(0,16)}"></label><button class="pv-btn pv-btn-primary">إرسال الاقتراح</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
+    if(kind==='quote') { const q=MP.currentQuote(id); dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-quote-form" data-id="${esc(id)}" ${named('عرض سعر للطلب')}><label>المصنعية<input name="labor" type="number" min="0" step="0.01" required value="${q?.labor??''}"></label><label>قطع الغيار<input name="parts" type="number" min="0" step="0.01" value="${q?.parts??0}"></label><label>رسوم المعاينة<input name="visitFee" type="number" min="0" step="0.01" value="${q?.visitFee??0}"></label><label>الخصم<input name="discount" type="number" min="0" step="0.01" value="${q?.discount??0}"></label><label>ملاحظة<textarea name="note" maxlength="300">${esc(q?.note||'')}</textarea></label><button class="pv-btn pv-btn-primary">إرسال عرض السعر</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`); }
+    if(kind==='complete') { const q=MP.currentQuote(id); const suggested=q?.status==='approved'?q.total:''; dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-complete-form" data-id="${esc(id)}" ${named('تسجيل إكمال الطلب')}><label>القيمة النهائية (ج.م)<input name="value" type="number" min="1" step="0.01" required value="${suggested}"></label><label>خصومات معلنة<input name="deductions" type="number" min="0" step="0.01" value="0"></label><button class="pv-btn pv-btn-primary">تأكيد اكتمال الخدمة</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`); }
     const form=$('#'+({reject:'pv-reject-form',propose:'pv-propose-form',quote:'pv-quote-form',complete:'pv-complete-form'}[kind]),dom.view);
-    if(form) { form.scrollIntoView({behavior:'smooth',block:'center'}); form.querySelector('input,select')?.focus({preventScroll:true}); }
+    if(form) { form.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'center'}); form.querySelector('input,select')?.focus({preventScroll:true}); }
+  }
+
+  /* Close the open inline form and return focus to the control that opened it. */
+  function cancelForm() {
+    $('.pv-inline-form',dom.view)?.remove();
+    const trigger=formTrigger; formTrigger=null;
+    if(trigger) focusIn([actionSel(trigger.kind,trigger.id)]);
+  }
+
+  /* Validation failure: announce through the live toast and keep focus inside the form for correction. */
+  function invalid(form,message) {
+    toast(message);
+    $('#'+form.id,dom.view)?.querySelector('input,select,textarea')?.focus({preventScroll:true});
+  }
+
+  function onKeydown(event) {
+    if(event.key==='Escape'&&event.target.closest('.pv-inline-form')){event.preventDefault();cancelForm();}
   }
 
   function onClick(event) {
@@ -99,23 +144,27 @@
     if(action==='select') { const p=HSProviderAuth.resolveDemoAccount(MP,id); if(!p)return; session.select(id); router.navigate('home'); render(); toast('تم فتح حساب العرض التجريبي'); return; }
     if(action==='logout') { session.clear(); router.navigate('home'); render(); return; }
     const p=currentProvider(); if(!p)return;
-    if(action==='availability'){MP.updateProvider(p.id,{available:!p.available});render();return;}
-    if(action==='accept'){if(!MP.respond(id,true)){render();toast(STALE);return;}router.navigate('accepted');render();toast('تم قبول الطلب');return;}
+    const nearRequest=[actionSel('advance',id),detailsSel(id)];
+    if(action==='availability'){MP.updateProvider(p.id,{available:!p.available});render(['[data-pv-action="availability"]']);return;}
+    if(action==='accept'){if(!MP.respond(id,true)){render([detailsSel(id)]);toast(STALE);return;}router.navigate('accepted');render();toast('تم قبول الطلب');return;}
     if(action==='reject'||action==='propose'||action==='quote'||action==='complete'){openForm(action,id);return;}
-    if(action==='confirm'){if(!MP.confirmTime(id,'provider')){render();toast(STALE);return;}render();toast('تم تأكيد الموعد');return;}
-    if(action==='advance'){const ok=MP.advance(id,next);if(ok)followToGroup(id,p);render();toast(ok?'تم تحديث حالة الطلب':'تعذر تحديث الحالة؛ راجع تسلسل الطلب');return;}
-    if(action==='cancel-form'){button.closest('form')?.remove();return;}
+    if(action==='confirm'){if(!MP.confirmTime(id,'provider')){render([detailsSel(id)]);toast(STALE);return;}render(nearRequest);toast('تم تأكيد الموعد');return;}
+    if(action==='advance'){const ok=MP.advance(id,next);if(ok)followToGroup(id,p);render(nearRequest);toast(ok?'تم تحديث حالة الطلب':'تعذر تحديث الحالة؛ راجع تسلسل الطلب');return;}
+    if(action==='cancel-form'){cancelForm();return;}
   }
 
   function onSubmit(event) {
     const form=event.target;
     if(!form.matches('.pv-inline-form'))return;
     event.preventDefault(); const data=new FormData(form), id=form.dataset.id;
-    if(form.id==='pv-reject-form'){const reason=String(data.get('reason')||'').trim();if(!reason)return toast('اختر سبب الرفض');if(!MP.respond(id,false,reason)){render();return toast(STALE);}router.navigate('cancelled');toast('تم رفض الطلب');}
-    if(form.id==='pv-propose-form'){const value=data.get('at'),at=value?new Date(value):null;if(!at||Number.isNaN(at.getTime()))return toast('أدخل موعدًا صحيحًا');if(at.getTime()<=Date.now())return toast('اختر موعدًا مستقبليًا');if(!MP.propose(id,at.toISOString())){render();return toast(STALE);}toast('تم إرسال اقتراح الموعد');}
-    if(form.id==='pv-quote-form'){const amounts=quoteAmounts(data);if(!amounts)return toast('راجع مبالغ عرض السعر: المصنعية مطلوبة وكل المبالغ أرقام غير سالبة');const result=MP.createQuote(id,{...amounts,note:String(data.get('note')||'').trim()});if(!result.ok)return toast(result.msg||'تعذر إرسال العرض');router.navigate('quote');toast('تم إرسال عرض السعر');}
-    if(form.id==='pv-complete-form'){const value=Number(data.get('value')),deductions=Number(data.get('deductions'));if(!Number.isFinite(value)||!Number.isFinite(deductions)||!(value>0)||deductions<0||deductions>value)return toast('راجع قيمة الخدمة والخصم');if(!MP.complete(id,value,deductions))return toast('لا يمكن إكمال الطلب في حالته الحالية');router.navigate('done');toast('تم تسجيل اكتمال الخدمة');}
-    render();
+    const stale=()=>{formTrigger=null;render([detailsSel(id)]);toast(STALE);};
+    let focusAfter;
+    if(form.id==='pv-reject-form'){const reason=String(data.get('reason')||'').trim();if(!reason)return invalid(form,'اختر سبب الرفض');if(!MP.respond(id,false,reason))return stale();router.navigate('cancelled');toast('تم رفض الطلب');}
+    if(form.id==='pv-propose-form'){const value=data.get('at'),at=value?new Date(value):null;if(!at||Number.isNaN(at.getTime()))return invalid(form,'أدخل موعدًا صحيحًا');if(at.getTime()<=Date.now())return invalid(form,'اختر موعدًا مستقبليًا');if(!MP.propose(id,at.toISOString()))return stale();focusAfter=[detailsSel(id)];toast('تم إرسال اقتراح الموعد');}
+    if(form.id==='pv-quote-form'){const amounts=quoteAmounts(data);if(!amounts)return invalid(form,'راجع مبالغ عرض السعر: المصنعية مطلوبة وكل المبالغ أرقام غير سالبة');const result=MP.createQuote(id,{...amounts,note:String(data.get('note')||'').trim()});if(!result.ok)return invalid(form,result.msg||'تعذر إرسال العرض');router.navigate('quote');toast('تم إرسال عرض السعر');}
+    if(form.id==='pv-complete-form'){const value=Number(data.get('value')),deductions=Number(data.get('deductions'));if(!Number.isFinite(value)||!Number.isFinite(deductions)||!(value>0)||deductions<0||deductions>value)return invalid(form,'راجع قيمة الخدمة والخصم');if(!MP.complete(id,value,deductions))return invalid(form,'لا يمكن إكمال الطلب في حالته الحالية');router.navigate('done');toast('تم تسجيل اكتمال الخدمة');}
+    formTrigger=null;
+    render(focusAfter);
   }
 
   /* Mirrors the form's own constraints (labor required, all amounts >= 0) for submissions that bypass them. */
@@ -139,7 +188,8 @@
     dom=HSProviderShell.mount();
     dom.host.addEventListener('click',onClick);
     dom.host.addEventListener('submit',onSubmit);
-    root.addEventListener('hashchange',render);
+    dom.host.addEventListener('keydown',onKeydown);
+    root.addEventListener('hashchange',()=>render());
     if(!location.hash) router.navigate('home');
     render();
   }

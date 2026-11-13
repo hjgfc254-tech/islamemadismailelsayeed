@@ -80,6 +80,7 @@ No removal based only on static import search or apparent duplication.
 - `tests/unit/frontend-contracts.test.js` (shared app contracts; inspect current assertions)
 - `tests/unit/provider-app-actions.test.js` — P0 behavior: account select/logout, gate, availability, accept/reject (reason required), propose/confirm, advance (valid/invalid/final), quote validation, completion bounds, stale-action failures, local-only mutation invariant (25 tests).
 - `tests/unit/provider-app-routing.test.js` — P0 routes: every tab, unknown/query/legacy hash fallback, group routes, details deep link, missing/unknown/malformed/foreign IDs, reload persistence, no-session deep link (12 tests).
+- `tests/unit/provider-app-a11y.test.js` — P1 focus/semantics: route-change focus + titles, same-route focus restoration, inline form naming/focus/single instance/Escape/cancel focus return, reduced motion, live region, native labelled buttons (14 tests).
 - Harness: `tests/helpers/provider-app-harness.js` loads the real script list parsed from `index.html` into `node:vm` with a minimal DOM and dispatches through the app's delegated listeners, only on rendered controls (`force` simulates stale UI).
 - Full suite: `npm test`.
 
@@ -90,11 +91,17 @@ No removal based only on static import search or apparent duplication.
 - Completion additionally rejects non-finite values; bound remains `0 <= deductions <= value`, `value > 0`.
 - A successful `advance` on a group route follows the request to its new group (as accept/reject/quote/complete already route); details and home keep their route.
 
+### Focus and semantics contracts added in P1 (2026-11-13)
+- `render(focusTargets)`: a route change focuses `#provider-view` (never on initial load); a same-route re-render focuses the first matching selector, else the view. Availability keeps focus on its toggle; confirm/advance focus the request's next `advance` control, else its details control.
+- `document.title` = `<route label> | مساحة مقدم الخدمة | هنصلحلك` (picker: `اختيار حساب العرض`, gate: `حالة الحساب`, details: `تفاصيل الطلب`).
+- Inline forms: one at a time (previous removed — fixes duplicate ids), `aria-label` with the request number, first field focused, Escape or Cancel closes and returns focus to the opening control, validation errors keep focus in the form and are announced via the polite toast.
+- `scrollIntoView` uses `auto` under `prefers-reduced-motion: reduce`. Visible focus comes from `design-system.css` `:focus-visible`.
+
 Do not confuse source/script-order tests with end-to-end browser proof. Standalone Provider browser verification is pending if the environment blocks local navigation.
 
 ## 7. Next work — exact priority
 1. ✅ **P0 behavior tests — done 2026-11-13** (see §6). Known, deliberately unchanged: selecting an account after opening a deep link without a session lands on `#/home`, not the original link.
-2. **P1 accessibility:** keyboard navigation, visible focus, accessible names/labels, error associations, route-change focus and live feedback.
+2. ✅ **P1 accessibility — done 2026-11-13** (see §6). Not verified: real screen readers; per-field `aria-invalid`/`aria-describedby` (errors are announced via the live toast instead).
 3. **P2 browser QA:** 1280/768/430/390/320px; route refresh/deep links, overflow, console and local asset checks.
 4. **P3 legacy parity:** map bridge/workspace contracts and prove parity before any removal.
 

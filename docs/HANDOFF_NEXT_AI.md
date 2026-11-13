@@ -283,3 +283,22 @@ Frontend only. Do not touch `backend/`, `database/`, production auth/API, paymen
 **Browser:** headless Edge load smoke only (`--dump-dom`, local `python -m http.server`): Provider shell mounts and picker renders 7 accounts. No interactive, keyboard or viewport QA — Playwright is not installed.
 **Open decisions:** zero-total quotes allowed; deep link without session lands on home after account select.
 **Next:** Provider P1 accessibility (see `START_HERE.md`).
+---
+
+# AGENT HANDOFF — 2026-11-13 — Provider P1 accessibility (Claude Code)
+
+**Goal:** protocol §6 P1 for the standalone Provider app. **Baseline:** `npm test` 216/216 (commit `854e281`).
+**Created:** `tests/unit/provider-app-a11y.test.js` (14). **Modified:** `apps/provider/app.js`, `tests/helpers/provider-app-harness.js` (focus tracking, attribute/class selector lookup, `document.title`, `key()`), docs.
+
+**Defects found and fixed:**
+1. Every action re-render replaced `innerHTML` and dropped keyboard focus to `<body>` → same-route re-renders now restore focus (availability toggle; request's next step / details control; fallback `#provider-view`).
+2. Route changes did not move focus or change `document.title` → focus `#provider-view` (not on initial load) and per-route titles.
+3. Opening a second inline form duplicated element ids → previous form removed first.
+4. Inline forms had no accessible name; Cancel did not return focus → `aria-label` with request number; Cancel/Escape return focus to the opening control.
+5. Validation errors left focus on the submit button → focus first field; message announced via the polite toast.
+6. Smooth scrolling ignored `prefers-reduced-motion` → `auto` when reduced.
+
+**Preserved:** selectors, routes, storage keys, messages, script order. Service Worker cache bumped to `hansalhlak-v8-architecture-7` (precached `app.js` changed again; deployment state of the previous commit is unknown) and the four tests pinning it updated.
+**Tests:** a11y 14/14, Provider suites 56/56; `npm test` **230/230**.
+**Browser:** headless Edge load smoke only (picker + title). No screen reader, keyboard or viewport run.
+**Next:** Provider P2 real-browser QA (see `START_HERE.md`).
