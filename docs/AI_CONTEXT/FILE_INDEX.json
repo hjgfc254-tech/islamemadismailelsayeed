@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 359,
+  "file_count": 360,
   "files": [
     {
       "path": "_redirects",
@@ -1196,8 +1196,8 @@
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/FRONTEND_RUNTIME.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 2213,
-      "sha256": "5c37020d903be14aaa95287a23ce6004c7ca28bf8259e127b238c8c2a4415755"
+      "bytes": 3175,
+      "sha256": "19ac0820650109457e8766ac0b742e8c06645bd34be42cdcacba5f8763ad2348"
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/FUTURE_BACKEND_BOUNDARY.md",
@@ -1224,21 +1224,21 @@
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/TESTING.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 3762,
-      "sha256": "83f6c26cbb9fce3c80d7b61feb24fcd8774d9d9784ed1ca21d3d8ccc1c83eeb9"
+      "bytes": 3780,
+      "sha256": "7e3a55c111c0a30f9b5d6a59e8dda24465b8951f1bcf7f7c07098966bc70deaf"
     },
     {
       "path": "docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 1759,
-      "sha256": "4116932a5319d60d4e2cae6c2b4d012d21ad055d3a48beb82c0f4a427dbbabeb"
+      "bytes": 1821,
+      "sha256": "624cb9cef601e47e96b761476c2ed9e4ebbe1a102b5c72d5a1a88d653f0751e6"
     },
     {
       "path": "docs/AI_CONTEXT/FILE_INDEX.json",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 80645,
+      "bytes": 80869,
       "sha256": null
     },
     {
@@ -1252,8 +1252,8 @@
       "path": "docs/AI_CONTEXT/START_HERE.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 3120,
-      "sha256": "e519c257477a63fa2fbce87d6dc96c434b26161213a69075632682d836cb59bd"
+      "bytes": 3196,
+      "sha256": "e600abcb59c636051bd49d112a964f54072c4aa9865f8770ef90c826acddb84b"
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -1273,22 +1273,22 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 228464,
-      "sha256": "c3ebf592cceac5a4a1b9be7179edc6d4af4c3cbff1223beaf76426114f535fa8"
+      "bytes": 228801,
+      "sha256": "079d1af211a2a0b4e4c043cab819979035022c8e8a9d7df01b42157934a011eb"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 1432965,
+      "bytes": 1433675,
       "sha256": null
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 92948,
-      "sha256": "22c9446130f6059db0dfbd971aaa5be244b7b86048f6842339f5c42bcc4a8531"
+      "bytes": 93252,
+      "sha256": "47b27865ded8d8f08d29a6228874e9fd58ccd4c184dc7946ce82b35d029e6f96"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -1483,8 +1483,8 @@
       "path": "docs/HANDOFF_NEXT_AI.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 66436,
-      "sha256": "191c9b0ba5d569f4af329d4bb30f40cba8877d6d1e15df359f932c7eee85cb74"
+      "bytes": 67981,
+      "sha256": "e743db473c174d5e170b37ea955475f1b16a43e394417d0bb71e9051f3acd5fa"
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -1581,8 +1581,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 17028,
-      "sha256": "8247690f702282df4b9b9bf80388ca995b120ab831b67f046d407e907efd7ffd"
+      "bytes": 17080,
+      "sha256": "c2109a62c848267ef4ae9c3e28e81503ed5c0ed3819b62e2627d1a2191bbee64"
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -1679,8 +1679,8 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 6722,
-      "sha256": "977efc124214f739a0900c209ad9d827a68efdef840d46dba300fe4fde6b7ec3"
+      "bytes": 6847,
+      "sha256": "948fa9b8cd47c69e68b13838caabebc5139b39b5f5e144cbb8a9241b8a834f4e"
     },
     {
       "path": "services/admin-api.js",
@@ -2149,7 +2149,7 @@
       "area": "tests",
       "status": "TEST",
       "bytes": 1341,
-      "sha256": "2feb1607641a9936a1e369e4ca0d71ee066959da1dfa9a4d423b6c40fa8c56f4"
+      "sha256": "e841ba98fb69c69a3104f2995380f6c0ac4502e10540a1190eeffe86e475ef44"
     },
     {
       "path": "tests/unit/accessible-tabs.test.js",
@@ -2247,7 +2247,7 @@
       "area": "tests",
       "status": "IMPLEMENTED",
       "bytes": 2222,
-      "sha256": "545498f62f870ad6d35f5101b6584f16f7833673b13ac03b157fa79a567910e7"
+      "sha256": "43072fe396d6c01499a95086571504d67d95729a753d8aa484c89f20582c87da"
     },
     {
       "path": "tests/unit/design-token-audit.test.js",
@@ -2345,7 +2345,7 @@
       "area": "tests",
       "status": "TEST",
       "bytes": 5768,
-      "sha256": "f479c41bbf967a3fb65aecaa104da000aebce774c4d7aec9805ef8defa96e31b"
+      "sha256": "3b282b08849dc16560a65b38dafea06fe83627d41d35ab635957ff071b3be979"
     },
     {
       "path": "tests/unit/provider-request-domain.test.js",
@@ -2432,6 +2432,13 @@
       "sha256": "1b3eb5fdcdd7cccb74c6d031357fc4e8698337698d8a2530c24e943ed7fe8f0a"
     },
     {
+      "path": "tests/unit/service-worker-precache.test.js",
+      "area": "tests",
+      "status": "TEST",
+      "bytes": 2791,
+      "sha256": "717c4e16370adf39da81367158bb0a3be41e7792875cb83a3cac3eac1211aaa6"
+    },
+    {
       "path": "tests/unit/services-management.test.js",
       "area": "tests",
       "status": "TEST",
@@ -2471,7 +2478,7 @@
       "area": "tests",
       "status": "IMPLEMENTED",
       "bytes": 2031,
-      "sha256": "85585568a1485fd973b2dc855b86f9a88f15002a60e2c33856c89731e1959ff6"
+      "sha256": "02c2feafbfa1e7c2324dba2682eb7b58b085e4b0412c9c458a610d16071c2f14"
     },
     {
       "path": "tests/unit/status-badge.test.js",

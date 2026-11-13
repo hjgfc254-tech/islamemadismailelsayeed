@@ -319,3 +319,15 @@ Frontend only. Do not touch `backend/`, `database/`, production auth/API, paymen
 
 **Tests:** `npm test` **232/232**. Browser: `provider-standalone.cdp.js` **170/170**, run twice, at 1280/768/430/390/320 (real Edge, fonts blocked, fresh profile, SW bypassed). Not covered: WebKit/Firefox, screen readers, Cairo webfont rendering.
 **Next:** Service Worker precache completeness (see `START_HERE.md`), then Provider P3 parity audit.
+---
+
+# AGENT HANDOFF — 2026-11-13 — Service Worker precache completeness (Claude Code)
+
+**Goal:** close the precache gap recorded in the checkpoint. **Baseline:** `npm test` 232/232 (`b2003ae`).
+**Created:** `tests/unit/service-worker-precache.test.js` (5) — derives every local script/stylesheet/icon/image from the Customer and Provider entry HTML and asserts it is precached; no duplicates; no stale paths; Admin boundary explicit.
+**Modified:** `service-worker.js` (added `apps/customer/pages/home.page.js`, `orders.page.js`, `order-details.page.js`; cache `hansalhlak-v8-architecture-9`), 4 cache-literal tests, `DOMAIN_MAPS/FRONTEND_RUNTIME.md` (stale Customer order and "Provider has no script chain" corrected; SW contract added), `DOMAIN_MAPS/TESTING.md`, START_HERE, checkpoint.
+
+**Defect and evidence:** the three page scripts extracted in the Customer batch were loaded by `index.html` but never precached. Because the worker does not control the first visit, they were never cached. Real Edge probe (first visit online, then python server stopped, HTTP cache disabled): before the fix the Customer home failed to render offline; after the fix it rendered. Note: CDP offline emulation alone is not sufficient evidence — it does not apply to the worker's own fetches.
+**Decision:** Admin is not precached — it has no manifest and never registers the worker.
+**Tests:** guard 5/5 (failed 1/5 before the fix on exactly the three files); `npm test` **237/237**.
+**Next:** Provider P3 legacy parity audit (see `START_HERE.md`).

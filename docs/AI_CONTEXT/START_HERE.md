@@ -1,7 +1,7 @@
 # HANSALEHLAK V8 — START HERE
 
 **Current phase:** FRONTEND ONLY  
-**Latest verified baseline:** `npm test` → 232/232 passed (2026-11-13, after Provider P2). Real-browser Provider QA: 170/170.  
+**Latest verified baseline:** `npm test` → 237/237 passed (2026-11-13, after Service Worker precache batch). Real-browser Provider QA: 170/170.  
 **Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md`  
 **Current handoff:** `docs/HANDOFF_NEXT_AI.md`  
 **Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`  
@@ -25,11 +25,12 @@
 - Shared: design system, local stores, UI primitives and shared components; reuse actual APIs rather than duplicating them.
 - `backend/` and `database/` are future scaffolding and OUT OF SCOPE.
 
-## Exact next task — Service Worker precache completeness
-Provider P0–P2 are done (`DOMAIN_MAPS/PROVIDER.md` §6–7). `service-worker.js` precaches runtime assets cache-first, but these entry-loaded files are not in its list:
-`apps/customer/pages/home.page.js`, `orders.page.js`, `order-details.page.js`, and the Admin entry `apps/admin/index.html` (verify the full Admin script list too).
-Verify how the worker handles uncached assets, add the missing entries, bump the cache version, and add a test that derives every
-`<script src>`/stylesheet from the Customer, Provider and Admin entry HTML and asserts each is precached. Then: Provider P3 legacy parity audit (no removal).
+## Exact next task — Provider P3 legacy parity audit (no removal)
+Provider P0–P2 and Service Worker precache completeness are done (`DOMAIN_MAPS/PROVIDER.md`, `DOMAIN_MAPS/FRONTEND_RUNTIME.md`).
+Inventory what the Customer-loaded legacy Provider path (`apps/provider/legacy/portal-compat.js`, `apps/provider/provider-workspace.js`) provides:
+globals, routes/screens, actions, storage keys, DOM hooks and every consumer in the Customer entry and tests. Build a behavior matrix
+legacy vs standalone (`apps/provider/app.js`) in a new doc under `docs/`, mark gaps, and add parity tests for shared `MP` workflows.
+Deliverable is evidence and a recommendation; **do not delete, rename or unload** either legacy file without explicit approval.
 
 ## Required finish gate
 Run targeted tests, then `npm test`; browser QA when available; update domain/page/status/handoff docs; run:
