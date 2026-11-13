@@ -1,7 +1,7 @@
 # HANSALEHLAK V8 — START HERE
 
 **Current phase:** FRONTEND ONLY  
-**Latest verified baseline:** `npm test` → 290/290 passed (2026-11-13, after Customer providers/request-create). Real-browser QA: Provider 231/231, Customer 75/75.  
+**Latest verified baseline:** `npm test` → 297/297 passed (2026-11-13, after Admin runtime). Real-browser QA: Provider 231/231, Customer 75/75, Admin 60/60.  
 **Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md`  
 **Current handoff:** `docs/HANDOFF_NEXT_AI.md`  
 **Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`  
@@ -20,16 +20,15 @@
 ## Project reality
 - Customer: most mature user journey; some responsibilities remain grouped in legacy modules. Home, Orders and Order Details have extracted renderers.
 - Provider: standalone frontend demo at `apps/provider/index.html` with its own runtime and 12 renderers. Legacy `portal-compat.js` and `provider-workspace.js` remain for Customer compatibility and must not be removed without a separate parity audit.
-- Admin: demo shell and registered demo pages exist; no real authentication, authorization enforcement or server-backed operations.
+- Admin: demo account picker → shell with role-filtered nav and denied state (presentation-only guard over the RBAC demo catalog); all pages registered. No real authentication, authorization enforcement or server-backed operations.
 - Guest: lightweight scaffold; inspect its domain map before implementation.
 - Shared: design system, local stores, UI primitives and shared components; reuse actual APIs rather than duplicating them.
 - `backend/` and `database/` are future scaffolding and OUT OF SCOPE.
 
-## Exact next task — Admin placeholders as real frontend modules (extraction, no duplication)
-All Customer and Guest placeholders are now real (`DOMAIN_MAPS/CUSTOMER.md`). Next: `apps/admin/admin-router.js`, `navigation-builder.js`,
-`permission-guard.js`, `admin-session.js`, `admin-auth.js`, `app.js`, `login.html`, `modules/*`. Most logic already lives in
-`admin-shell.js`/`rbac-store.js`/pages — first map what each placeholder should own, extract it with parity tests, and connect it in
-`apps/admin/index.html`; demo-only (no real auth/authorization). Read `DOMAIN_MAPS/ADMIN.md` first.
+## Exact next task — Admin `modules/*` (8 placeholders) as real modules extracted from pages
+Admin runtime is real (`DOMAIN_MAPS/ADMIN.md`). Remaining: `modules/access-control/{permission-matrix,permission-presets,role-editor}.js`,
+`modules/audit/{audit-details,audit-filters}.js`, `modules/workforce/{employee-form,employee-invitation,employee-status}.js`. Locate the matching logic in
+`pages/permissions|roles|audit-log|workforce.page.js` by symbol, extract it with parity tests, load each module before its page, keep page behavior identical.
 Out of scope / deferred: `services/*-api.js` (future backend HTTP), split design-system CSS (pinned by `design-token-audit.test.js`).
 
 ## Previous next task — Customer Addresses and Support keyboard & accessibility (Phase 5 item 4)

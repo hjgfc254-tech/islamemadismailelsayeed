@@ -415,3 +415,15 @@ Frontend only. Do not touch `backend/`, `database/`, production auth/API, paymen
 **Bug found in the real browser and fixed:** editing the address bar while a stacked screen (wizard) was open landed on home — Chromium fires `popstate` before `hashchange`; the popstate re-render synced `#/home` over the typed link. `hashchange` now reads `event.newURL`; unit test reproduces the browser event order and failed before the fix.
 **Tests:** `npm test` **290/290**. Browser: Customer runner **75/75**.
 **Next:** Admin placeholders (see `START_HERE.md`).
+---
+
+# AGENT HANDOFF — 2026-11-13 — Admin runtime: 7 placeholders → real modules (Claude Code)
+
+**Converted to real code and connected in `apps/admin/index.html`:** `admin-router.js` (extracted from the shell), `navigation-builder.js`, `permission-guard.js`, `admin-auth.js`, `admin-session.js`, `app.js` (bootstrap), `login.html` (hand-off).
+**Modified:** `admin-shell.js` (delegates parse/breadcrumbs/nav model; `setAccess`, `canView`, `setAccount`, denied state; auto-mount yields to `HSAdminApp`), `styles/admin-components.css` (picker/account, tokens only — literal count stays 161/163), docs (ADMIN map rewritten, START_HERE, testing, e2e README).
+**Created:** `tests/unit/admin-runtime.test.js` (7), `tests/e2e/admin-app.cdp.js`.
+**Behavior:** demo account picker (active roster) → shell for that employee; RBAC actor follows the employee; nav hides catalogued pages without `<module>.view`; guarded deep links render a denied state; switch account; session deep links; `/admin/login` hands off. Uncatalogued pages stay open (no invented rule).
+**Bug avoided:** first draft called `employeeEffective(roles, emp, overrides)`; actual signature is `(roles, overrides, emp)` — checked before use.
+**Tests:** `npm test` **297/297**. Browser (real Edge): Admin **60/60** at 1280/768/390.
+**Note:** the older manual Playwright admin scripts now start on the picker.
+**Next:** Admin `modules/*` (8).

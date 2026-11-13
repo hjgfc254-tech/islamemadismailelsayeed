@@ -2,8 +2,8 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 370,
-    "total_files": 370,
+    "file_count": 372,
+    "total_files": 372,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 50,
@@ -13,7 +13,7 @@
       "IMPLEMENTED (DEMO PRESENTATION)": 12,
       "IMPLEMENTED (DEMO)": 28,
       "IMPLEMENTED (DEMO) — PARTIAL (templates + read-only delivery log)": 1,
-      "IMPLEMENTED (FRONTEND DEMO)": 12,
+      "IMPLEMENTED (FRONTEND DEMO)": 19,
       "IMPLEMENTED (FRONTEND ROUTER)": 1,
       "IMPLEMENTED (FRONTEND SHELL)": 1,
       "IMPLEMENTED (RESPONSIVE FRONTEND)": 1,
@@ -24,8 +24,8 @@
       "LEGACY": 2,
       "NEEDS_REVIEW": 1,
       "PARTIALLY IMPLEMENTED": 2,
-      "PLACEHOLDER": 93,
-      "TEST": 66
+      "PLACEHOLDER": 86,
+      "TEST": 68
     },
     "status_semantics": {
       "IMPLEMENTED": "Implementation exists in the current source; still protect with tests.",
@@ -184,14 +184,14 @@
     {
       "path": "apps/admin/admin-auth.js",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
       "has_real_logic": false,
-      "current_responsibility": "Admin authentication adapter; requires backend identity verification.",
+      "current_responsibility": "HSAdminAuth: demo account list/resolve from the active RBAC roster. Not authentication.",
       "planned_responsibility": "Admin authentication adapter; requires backend identity verification.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented. Admin Center is not production-ready; no backend authorization.",
-      "sha256": "4905306f540a87388b03e5159f5943cb8b30e606c1795846ce44652a7ca9f15d",
+      "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
+      "sha256": "dbae887f43085718a3fc902000c6f342a63882bf151a40fc66ea41a5ffd3a510",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -228,19 +228,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 212
+      "bytes": 1434
     },
     {
       "path": "apps/admin/admin-router.js",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
       "has_real_logic": false,
-      "current_responsibility": "Admin route resolution and direct navigation; not implemented.",
+      "current_responsibility": "HSAdminRouter: hash parse/format and breadcrumbs (extracted from admin-shell).",
       "planned_responsibility": "Admin route resolution and direct navigation; not implemented.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented. Admin Center is not production-ready; no backend authorization.",
-      "sha256": "ee7da6c5c9472bc5a16c62a350f19c952e026a4c401d9c54aabd7d36d09e7a34",
+      "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
+      "sha256": "04b66be0026b62cc524dbf08e2a6a09bfc2788fa643a381b3967a3f3043ad795",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -277,19 +277,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 207
+      "bytes": 1998
     },
     {
       "path": "apps/admin/admin-session.js",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
       "has_real_logic": false,
-      "current_responsibility": "Admin session lifecycle and isolation; not implemented.",
+      "current_responsibility": "HSAdminSession: selected demo employee (sessionStorage) and RBAC actor sync. Not a secure session.",
       "planned_responsibility": "Admin session lifecycle and isolation; not implemented.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented. Admin Center is not production-ready; no backend authorization.",
-      "sha256": "06bc50a6c8bf5a627e3e777b8199d7c129e36bcc6e2ff96562cc8419151440c7",
+      "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
+      "sha256": "394cd497323c1dc759f740a9ee50c022b3182bebe503e5f0c821bd278575cc62",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -326,7 +326,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 201
+      "bytes": 1857
     },
     {
       "path": "apps/admin/admin-shell.js",
@@ -338,7 +338,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md).",
-      "sha256": "40d1af9df3336fe1b6b1e7098fa3c6d9478da0dcc6780e7d20b3042a22a1789e",
+      "sha256": "cbab3251e39dc0effb7afee0dee5c9a2af32a7b609dd6283a5f2b8ddb34b932d",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -375,19 +375,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 20037
+      "bytes": 21520
     },
     {
       "path": "apps/admin/app.js",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
       "has_real_logic": false,
-      "current_responsibility": "Admin application bootstrap; no production Admin Center runtime exists.",
+      "current_responsibility": "HSAdminApp: Admin bootstrap — demo account picker, shell mount, guard install, header account + switch.",
       "planned_responsibility": "Admin application bootstrap; no production Admin Center runtime exists.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented. Admin Center is not production-ready; no backend authorization.",
-      "sha256": "638842a3b4b4fc53e779d38df068cffccef66523947095d557724865a5fb1d68",
+      "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
+      "sha256": "0b6e1b6888b820212c2a07199da532528027b2603f62571d7104d8d60fe8049d",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -424,7 +424,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 207
+      "bytes": 3711
     },
     {
       "path": "apps/admin/index.html",
@@ -436,7 +436,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md). Loads orders-management.page.js after admin-dashboard.page.js.",
-      "sha256": "fac871b3047951aba64930c27ef814df3a41c3b48cf74079f96a962a224cdad1",
+      "sha256": "b01624906c09d97a4997a9e9d4b94ac1a69a7008581fc7ee18774b94879d514f",
       "resolved_dependencies": [
         "apps/admin/styles/admin.css",
         "shared/components/data-grid.js",
@@ -477,19 +477,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 2834
+      "bytes": 3074
     },
     {
       "path": "apps/admin/login.html",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
       "has_real_logic": false,
-      "current_responsibility": "Application route document.",
+      "current_responsibility": "/admin/login hand-off to the Admin demo account picker; states real auth is not implemented.",
       "planned_responsibility": "Application route document.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented. Admin Center is not production-ready; no backend authorization.",
-      "sha256": "a65c4dad8882d85a77139c3c4008939e15ab4e4bd81c9514780150bcfea9696e",
+      "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
+      "sha256": "69cdfa73f4c592049d9c82c78ee4388b552f4db89b0702a47b972fa040ec0c7a",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -526,7 +526,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 426
+      "bytes": 999
     },
     {
       "path": "apps/admin/modules/access-control/permission-matrix.js",
@@ -923,14 +923,14 @@
     {
       "path": "apps/admin/navigation-builder.js",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
       "has_real_logic": false,
-      "current_responsibility": "Builds navigation from server-provided permissions; no RBAC source exists yet.",
+      "current_responsibility": "HSAdminNavigationBuilder: sidebar model filtered by registration and the permission guard.",
       "planned_responsibility": "Builds navigation from server-provided permissions; no RBAC source exists yet.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented. Admin Center is not production-ready; no backend authorization.",
-      "sha256": "95f14db4fef43b0f99ee2ae48a160e68ba60a8defd2b7420a658de676e4236be",
+      "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
+      "sha256": "57d0ca5bbcf78d209ac8fc7ca87bc0ac9602794cf3aab9358bbdb907d62555e5",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -967,7 +967,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 229
+      "bytes": 1519
     },
     {
       "path": "apps/admin/pages/admin-dashboard.page.js",
@@ -2197,14 +2197,14 @@
     {
       "path": "apps/admin/permission-guard.js",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
       "has_real_logic": false,
-      "current_responsibility": "Client-side permission-aware presentation guard only; authoritative checks must live on the backend.",
+      "current_responsibility": "HSAdminPermissionGuard: presentation-only route visibility from the RBAC demo catalog (<module>.view).",
       "planned_responsibility": "Client-side permission-aware presentation guard only; authoritative checks must live on the backend.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented. Admin Center is not production-ready; no backend authorization.",
-      "sha256": "74f419f2b4418a200f184192ecf897ef1297e7437e277d71397160ee6cb43534",
+      "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
+      "sha256": "858679fa5efedde8a9f199e9a4412d9a17be73cffa61e0ba75d66cae0894c75f",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2241,7 +2241,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 249
+      "bytes": 2382
     },
     {
       "path": "apps/admin/rbac-store.js",
@@ -2332,7 +2332,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md). Also holds .hs-badge styles for shared/components/status-badge.js. Also holds .hs-grid styles for shared/components/data-grid.js.",
-      "sha256": "cc3c526373398e3c373119a33cb0050a4b760ba37fc73cb43f93376e6c849c67",
+      "sha256": "5fcd4a0186272e06310103fa10113b7e40d82ee9c16c3df9778398df77f27c3c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2369,7 +2369,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 26219
+      "bytes": 27123
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -8093,7 +8093,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "b5c63b5417f59bb3a83c63c04319fbfe98f05a35a7deac2960506a0cc380e840",
+      "sha256": "b963cfba8b1c213f429e29d12dfa31aaefcb6a349c8903eaf9af1c0d1436e720",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "ADMIN.md",
@@ -8102,7 +8102,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 1496
+      "bytes": 2397
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/CUSTOMER.md",
@@ -8219,7 +8219,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "a737e42ee38d4a7150902cf323c60bb14719d8aaae078885504e9927a5d99c70",
+      "sha256": "0c27eb3c867ff208edf751d8e8ce91c5cabeeb0bcee5dff4b6aee5b2d6b6685f",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "TESTING.md",
@@ -8228,7 +8228,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 4377
+      "bytes": 4370
     },
     {
       "path": "docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md",
@@ -8239,8 +8239,8 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "1ef7aca1be9e1be744fc0749821780656839d12bc7991d2c39244e2438123dec",
-      "bytes": 3367
+      "sha256": "e4ee747e41a4699ea943b9dee2f0be6caf3f1c70eeafbc6262f648bd5832902d",
+      "bytes": 3698
     },
     {
       "path": "docs/AI_CONTEXT/FILE_INDEX.json",
@@ -8261,7 +8261,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 83169
+      "bytes": 83613
     },
     {
       "path": "docs/AI_CONTEXT/README.md",
@@ -8294,7 +8294,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "bfde38cd919a4f20af0c8be7588ecfb9d8daec8bc3c4b3cba5b224d50ea54f0a",
+      "sha256": "2d7327cbf7edd6e945b10c6fff15d0761997d1bbfe445c6a28d23b8afd8efb62",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "START_HERE.md",
@@ -8303,7 +8303,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 4051
+      "bytes": 4099
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -8384,7 +8384,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "6c6b0133881d4cebc14475eb8d4e5e7871d950e1ee65f349ad838efa20be0952",
+      "sha256": "b5b947da5e743b439a7cd253b6980c1ec7214d7a5bc7acbd798e8577811afd8f",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8420,7 +8420,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 231462
+      "bytes": 231809
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -8468,7 +8468,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1440236
+      "bytes": 1440903
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
@@ -8480,7 +8480,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "839da9829675903175a5df08dfb391b670a21f74d0e98d62a91e63090ef436e1",
+      "sha256": "bb058d61e0d35f167c9643b510c4f76d60dfc6883822c49aabbdb2a42cb2902c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8516,7 +8516,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 95616
+      "bytes": 95916
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -9386,7 +9386,7 @@
       "next_action": "Review in the relevant task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added during the 2026-11-09 environment normalization pass.",
-      "sha256": "4f3cac041e0e0eee67e777094ab3508a61b65a5457d110b3a4b7ad548cd5571f",
+      "sha256": "1977d43ba3018c08021aa80332b676a59b17b16fd3b3251c5135fe058eb9b6fa",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "HANDOFF_NEXT_AI.md",
@@ -9395,7 +9395,7 @@
       "file_behavior": "Inventory entry only; inspect source for exact behavior.",
       "completion_definition": "File responsibility and actual behavior are verified and covered by appropriate checks.",
       "actual_status_ar": "مضاف إلى الجرد الحالي؛ يحتاج فحصًا بحسب المهمة.",
-      "bytes": 78198
+      "bytes": 79609
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -9956,7 +9956,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "82870e6e32c3567abf85be1a6b83cfc7b9a25d9b772d2129209727acd13759b9",
+      "sha256": "6db6cc89422b32606db9fba55023a5fde2f9c7f87967dc4d8b1a9e1206e84fb6",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -9993,7 +9993,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 17589
+      "bytes": 17670
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -12914,6 +12914,18 @@
       "bytes": 0
     },
     {
+      "path": "tests/e2e/admin-app.cdp.js",
+      "area": "tests",
+      "status": "TEST",
+      "functional_title": "admin-app.cdp.js",
+      "current_responsibility": "Manual dependency-free real-browser QA for the Admin runtime (picker, sign-in, role nav, denied, switch, deep links).",
+      "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
+      "explicit_references": [],
+      "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
+      "sha256": "4c9967532affeed5cc9597f32f0b9824ded5505522320d0898182fc4c26ee2f5",
+      "bytes": 5905
+    },
+    {
       "path": "tests/e2e/audit-log.browser.js",
       "area": "tests",
       "status": "TEST",
@@ -13053,7 +13065,7 @@
       "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
       "explicit_references": [],
       "notes": "File exists but its planned functionality is NOT implemented. Test source existence does not prove browser E2E coverage.",
-      "sha256": "269b874f41b620cc14015796ff4d31ca2719bd9afcb53dadf938a7ced4edd271",
+      "sha256": "de63fed18b834e623ae571fd0a226e1e752279ccd8f2b740a201d3ca62b4370b",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -13090,7 +13102,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 6604
+      "bytes": 6971
     },
     {
       "path": "tests/e2e/reports.browser.js",
@@ -13430,6 +13442,18 @@
       "completion_definition": "File responsibility and actual behavior are verified and covered by appropriate checks.",
       "actual_status_ar": "مضاف إلى الجرد الحالي؛ يحتاج فحصًا بحسب المهمة.",
       "bytes": 1708
+    },
+    {
+      "path": "tests/unit/admin-runtime.test.js",
+      "area": "tests",
+      "status": "TEST",
+      "functional_title": "admin-runtime.test.js",
+      "current_responsibility": "Admin runtime modules: wiring order, router parity with shell, nav builder, guard vs RBAC, auth/session, bootstrap escaping.",
+      "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
+      "explicit_references": [],
+      "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
+      "sha256": "342c49eadab5b2be604cc3cbdd2b8231c61d95a6e3d810ef175ae3ff2bf0bafd",
+      "bytes": 7605
     },
     {
       "path": "tests/unit/admin-shell.test.js",

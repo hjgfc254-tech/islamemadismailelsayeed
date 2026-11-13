@@ -62,28 +62,20 @@
   const STORE_KEY = 'hs_admin_sidebar_collapsed';
   const DESKTOP_MQ = '(min-width:1024px)';
 
-  /* ───────────── Pure helpers (also unit-tested in Node) ───────────── */
+  /* ───────────── Pure helpers (routing lives in admin-router.js; nav model in navigation-builder.js) ───────────── */
+  /* Browser: loaded before this file by index.html. Node tests: required next to this file. */
+  const load = (g, file) => root[g] || (typeof require === 'function' ? require(file) : null);
+  const Router = load('HSAdminRouter', './admin-router.js');
+  const NavBuilder = load('HSAdminNavigationBuilder', './navigation-builder.js');
+  if (!Router || !NavBuilder) throw new Error('admin-shell.js requires admin-router.js and navigation-builder.js to load first');
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const flatItems = () => NAV.reduce((a, g) => a.concat(g.items.map((i) => Object.assign({ group: g }, i))), []);
-  const findItem = (id) => flatItems().find((i) => i.id === id) || null;
-  const parseHash = (hash) => {
-    const m = /^#\/?([a-z0-9-]+)(?:\/.*)?$/i.exec(hash || '');
-    return m ? m[1].toLowerCase() : DEFAULT_ROUTE;
-  };
+  const flatItems = () => Router.flatItems(NAV);
+  const findItem = (id) => Router.findItem(NAV, id);
+  const parseHash = (hash) => Router.parse(hash);
   /** Breadcrumb trail as plain data: [{label, id?}] — last item is the current page. */
-  const breadcrumbsFor = (id, titleOverride) => {
-    const trail = [{ label: 'الإدارة', id: DEFAULT_ROUTE }];
-    const hidden = HIDDEN_PAGES[id];
-    const it = findItem(hidden ? hidden.parent : id);
-    if (it) {
-      trail.push({ label: it.group.label });
-      if (hidden) { trail.push({ label: it.label, id: it.id }); trail.push({ label: titleOverride || hidden.label }); }
-      else trail.push({ label: titleOverride || it.label });
-    } else {
-      trail.push({ label: titleOverride || 'صفحة غير معروفة' });
-    }
-    return trail;
-  };
+  const breadcrumbsFor = (id, titleOverride) => Router.breadcrumbs(NAV, HIDDEN_PAGES, id, titleOverride);
+  /* Presentation-only access check (set by apps/admin/app.js from permission-guard.js). Default: everything visible. */
+  let canViewRoute = () => true;
 
   /* ───────────── State ───────────── */
   const pages = Object.create(null);
@@ -102,14 +94,14 @@
 
   /* ───────────── Markup ───────────── */
   const navItemHtml = (it) => {
-    const ready = !!pages[it.id];
+    const ready = it.ready !== undefined ? it.ready : !!pages[it.id];
     const ico = `<span class="adm-ico" aria-hidden="true">${icon(it.icon)}</span>`;
     if (ready) {
       return `<li><a class="adm-link" href="#/${esc(it.id)}" data-nav="${esc(it.id)}">${ico}<span class="adm-lbl">${esc(it.label)}</span></a></li>`;
     }
     return `<li><span class="adm-link is-soon" role="link" aria-disabled="true" data-nav="${esc(it.id)}">${ico}<span class="adm-lbl">${esc(it.label)}</span><span class="adm-soon">قريبًا</span></span></li>`;
   };
-  const navHtml = () => NAV.map((g) =>
+  const navHtml = () => NavBuilder.build(NAV, { isRegistered: (id) => !!pages[id], canView: (id) => canViewRoute(id) }).map((g) =>
     `<section class="adm-group" aria-labelledby="adm-g-${esc(g.id)}"><h2 class="adm-group-t" id="adm-g-${esc(g.id)}">${esc(g.label)}</h2><ul class="adm-list">${g.items.map(navItemHtml).join('')}</ul></section>`
   ).join('');
 
@@ -120,6 +112,7 @@
     <button type="button" class="adm-btn adm-toggle" id="adm-toggle" aria-controls="adm-side" aria-expanded="false" aria-label="فتح القائمة">${icon('menu')}</button>
     <a class="adm-brand" href="#/${DEFAULT_ROUTE}" aria-label="مركز الإدارة — هنصلحلك"><span class="adm-brand-t">هنصلحلك</span><small>مركز الإدارة</small></a>
     <span class="adm-chip" role="note">واجهة تجريبية</span>
+    <div class="adm-account" id="adm-account" hidden></div>
     <a class="adm-btn adm-site" href="../customer/index.html">العودة للموقع</a>
   </header>
   <div class="adm-backdrop" id="adm-backdrop" hidden></div>
@@ -150,7 +143,8 @@
     loading: (t) => `<div class="adm-state is-loading" role="status"><div class="adm-spin" aria-hidden="true"></div><p>${esc(t || 'جارٍ التحميل…')}</p></div>`,
     soon: (label) => `<div class="adm-state is-soon">${icon('info')}<h2>${esc(label)} — غير منفذة بعد</h2><p>هذه الصفحة ما زالت قيد التنفيذ ولا تحتوي على وظائف حتى الآن.</p><a class="adm-btn adm-btn-p" href="#/${DEFAULT_ROUTE}" data-state-home>العودة للوحة الإدارة</a></div>`,
     unknown: () => `<div class="adm-state is-empty">${icon('search')}<h2>الصفحة غير موجودة</h2><p>الرابط الذي فتحته لا يطابق أي صفحة في مركز الإدارة.</p><a class="adm-btn adm-btn-p" href="#/${DEFAULT_ROUTE}">العودة للوحة الإدارة</a></div>`,
-    error: () => `<div class="adm-state is-error" role="alert">${icon('warn')}<h2>تعذّر عرض الصفحة</h2><p>حدث خطأ أثناء تحميل المحتوى. يمكنك المحاولة مرة أخرى.</p><button type="button" class="adm-btn adm-btn-p" data-retry>حاول مرة أخرى</button></div>`
+    error: () => `<div class="adm-state is-error" role="alert">${icon('warn')}<h2>تعذّر عرض الصفحة</h2><p>حدث خطأ أثناء تحميل المحتوى. يمكنك المحاولة مرة أخرى.</p><button type="button" class="adm-btn adm-btn-p" data-retry>حاول مرة أخرى</button></div>`,
+    denied: () => `<div class="adm-state is-denied" role="alert">${icon('shield')}<h2>لا تملك صلاحية عرض هذه الصفحة</h2><p>دور حساب العرض الحالي لا يتضمن صلاحية «عرض» لهذه الوحدة (تقييد تجريبي للعرض فقط، وليس حماية فعلية).</p><a class="adm-btn adm-btn-p" href="#/${DEFAULT_ROUTE}">العودة للوحة الإدارة</a></div>`
   };
 
   /* ───────────── Rendering ───────────── */
@@ -218,9 +212,11 @@
     els.desc.hidden = !desc;
     root.document.title = title + ' | مركز الإدارة | هنصلحلك';
     els.live.textContent = title;
-    setActions(page && page.actions, ctx);
+    const denied = !canViewRoute(id);
+    setActions(denied ? null : page && page.actions, ctx);
 
-    if (!page) { mountContent(meta || hidden ? stateView.soon(title) : stateView.unknown()); }
+    if (denied) { mountContent(stateView.denied()); }
+    else if (!page) { mountContent(meta || hidden ? stateView.soon(title) : stateView.unknown()); }
     else {
       els.content.setAttribute('aria-busy', 'true');
       mountContent(stateView.loading());
@@ -298,6 +294,11 @@
       if (els && current && current.id === id) renderRoute(id, { keepFocus: true });
     },
     isRegistered: (id) => !!pages[id],
+    /** Install a presentation-only route visibility check (id → boolean); refreshes the nav and current page. */
+    setAccess(fn) { canViewRoute = typeof fn === 'function' ? fn : () => true; refreshNav(); if (els && current) renderRoute(current.id, { keepFocus: true }); },
+    canView: (id) => canViewRoute(id),
+    /** Header slot for the signed-in demo account (markup supplied by apps/admin/app.js); empty string hides it. */
+    setAccount(html) { if (!els) return; const slot = els.host.querySelector('#adm-account'); if (slot) { slot.innerHTML = html || ''; slot.hidden = !html; } },
     navigate(id) { root.location.hash = '#/' + id; },
     refresh() { if (els) renderRoute(parseHash(root.location.hash), { keepFocus: true }); },
     openDrawer, closeDrawer: () => closeDrawer(), toggleSidebar,
@@ -335,7 +336,8 @@
   root.HSAdminShell = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (root.document) {
-    const auto = () => { const h = root.document.querySelector('#admin-app[data-admin-shell]'); if (h) api.mount(h); };
+    /* apps/admin/app.js (HSAdminApp) owns mounting when present: it shows the demo account picker first. */
+    const auto = () => { if (root.HSAdminApp) return; const h = root.document.querySelector('#admin-app[data-admin-shell]'); if (h) api.mount(h); };
     if (root.document.readyState === 'loading') root.document.addEventListener('DOMContentLoaded', auto); else auto();
   }
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -22,13 +22,16 @@ Compact resume state for autonomous sessions. Update after every committed batch
 10. Customer providers + request-create — placeholders converted: `apps/customer/pages/providers.page.js` (extracted from market-ui,
    78 renders byte-identical), `pages/request-create.page.js` (`#/request[/<catalogId>]` → existing wizard). Fixed: `hashchange` now reads
    `event.newURL` (Chromium popstate-before-hashchange clobbered typed links). Tests: `customer-providers-page` (6), `customer-request-create` (6),
-   +1 routing regression; SW cache `-14`. `npm test` 290/290; Customer browser 75/75.
+   +1 routing regression; SW cache `-14`. `npm test` 290/290; Customer browser 75/75. Commit `f0c57c4`.
+11. Admin runtime — 7 placeholders converted: `apps/admin/{admin-router,navigation-builder,permission-guard,admin-auth,admin-session,app}.js`,
+   `login.html`; shell delegates routing/nav, gains `setAccess`/`setAccount`/denied state. Tests: `admin-runtime.test.js` (7), browser
+   `tests/e2e/admin-app.cdp.js` 60/60. `npm test` 297/297.
 
 ## Current task
-Admin placeholders as real frontend modules (see `START_HERE.md`).
+Admin `modules/*` (8 placeholders) extracted from pages (see `START_HERE.md`).
 
 ## Remaining queue (priority order)
-1. Admin placeholders (`admin-router`/`navigation-builder`/`permission-guard`/`admin-session`/`login.html`, `modules/*`): extract from `admin-shell.js`/pages, no duplication.
+1. Admin `modules/*` (access-control ×3, audit ×2, workforce ×3): extract from pages with parity tests.
 2. Customer Addresses + Support a11y; console/network smoke; Admin keyboard traversal.
 3. Not implementable in this phase: `services/*-api.js` (backend HTTP); split design-system CSS (needs a migration decision).
 
@@ -39,4 +42,4 @@ Admin placeholders as real frontend modules (see `START_HERE.md`).
 - `test-write.tmp` is ignored locally but listed in the inventory (a clean clone reports it missing).
 
 ## Exact next action
-Read `docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md`, `apps/admin/admin-shell.js` (router/nav/RBAC parts) and `rbac-store.js`; map each Admin placeholder to the code it should own.
+Grep `pages/permissions.page.js`, `roles.page.js`, `audit-log.page.js`, `workforce.page.js` for the matrix/presets/editor/details/filters/form/invitation/status functions; extract one module at a time.

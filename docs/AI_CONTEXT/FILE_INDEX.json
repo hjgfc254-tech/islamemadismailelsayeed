@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 370,
+  "file_count": 372,
   "files": [
     {
       "path": "_redirects",
@@ -54,51 +54,51 @@
     {
       "path": "apps/admin/admin-auth.js",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
-      "bytes": 212,
-      "sha256": "4905306f540a87388b03e5159f5943cb8b30e606c1795846ce44652a7ca9f15d"
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
+      "bytes": 1434,
+      "sha256": "dbae887f43085718a3fc902000c6f342a63882bf151a40fc66ea41a5ffd3a510"
     },
     {
       "path": "apps/admin/admin-router.js",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
-      "bytes": 207,
-      "sha256": "ee7da6c5c9472bc5a16c62a350f19c952e026a4c401d9c54aabd7d36d09e7a34"
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
+      "bytes": 1998,
+      "sha256": "04b66be0026b62cc524dbf08e2a6a09bfc2788fa643a381b3967a3f3043ad795"
     },
     {
       "path": "apps/admin/admin-session.js",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
-      "bytes": 201,
-      "sha256": "06bc50a6c8bf5a627e3e777b8199d7c129e36bcc6e2ff96562cc8419151440c7"
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
+      "bytes": 1857,
+      "sha256": "394cd497323c1dc759f740a9ee50c022b3182bebe503e5f0c821bd278575cc62"
     },
     {
       "path": "apps/admin/admin-shell.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL, DEMO)",
-      "bytes": 20037,
-      "sha256": "40d1af9df3336fe1b6b1e7098fa3c6d9478da0dcc6780e7d20b3042a22a1789e"
+      "bytes": 21520,
+      "sha256": "cbab3251e39dc0effb7afee0dee5c9a2af32a7b609dd6283a5f2b8ddb34b932d"
     },
     {
       "path": "apps/admin/app.js",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
-      "bytes": 207,
-      "sha256": "638842a3b4b4fc53e779d38df068cffccef66523947095d557724865a5fb1d68"
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
+      "bytes": 3711,
+      "sha256": "0b6e1b6888b820212c2a07199da532528027b2603f62571d7104d8d60fe8049d"
     },
     {
       "path": "apps/admin/index.html",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL HOST)",
-      "bytes": 2834,
-      "sha256": "fac871b3047951aba64930c27ef814df3a41c3b48cf74079f96a962a224cdad1"
+      "bytes": 3074,
+      "sha256": "b01624906c09d97a4997a9e9d4b94ac1a69a7008581fc7ee18774b94879d514f"
     },
     {
       "path": "apps/admin/login.html",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
-      "bytes": 426,
-      "sha256": "a65c4dad8882d85a77139c3c4008939e15ab4e4bd81c9514780150bcfea9696e"
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
+      "bytes": 999,
+      "sha256": "69cdfa73f4c592049d9c82c78ee4388b552f4db89b0702a47b972fa040ec0c7a"
     },
     {
       "path": "apps/admin/modules/access-control/permission-matrix.js",
@@ -159,9 +159,9 @@
     {
       "path": "apps/admin/navigation-builder.js",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
-      "bytes": 229,
-      "sha256": "95f14db4fef43b0f99ee2ae48a160e68ba60a8defd2b7420a658de676e4236be"
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
+      "bytes": 1519,
+      "sha256": "57d0ca5bbcf78d209ac8fc7ca87bc0ac9602794cf3aab9358bbdb907d62555e5"
     },
     {
       "path": "apps/admin/pages/admin-dashboard.page.js",
@@ -327,9 +327,9 @@
     {
       "path": "apps/admin/permission-guard.js",
       "area": "apps/admin",
-      "status": "PLACEHOLDER",
-      "bytes": 249,
-      "sha256": "74f419f2b4418a200f184192ecf897ef1297e7437e277d71397160ee6cb43534"
+      "status": "IMPLEMENTED (FRONTEND DEMO)",
+      "bytes": 2382,
+      "sha256": "858679fa5efedde8a9f199e9a4412d9a17be73cffa61e0ba75d66cae0894c75f"
     },
     {
       "path": "apps/admin/rbac-store.js",
@@ -349,8 +349,8 @@
       "path": "apps/admin/styles/admin-components.css",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL PARTS)",
-      "bytes": 26219,
-      "sha256": "cc3c526373398e3c373119a33cb0050a4b760ba37fc73cb43f93376e6c849c67"
+      "bytes": 27123,
+      "sha256": "5fcd4a0186272e06310103fa10113b7e40d82ee9c16c3df9778398df77f27c3c"
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -1182,8 +1182,8 @@
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 1496,
-      "sha256": "b5c63b5417f59bb3a83c63c04319fbfe98f05a35a7deac2960506a0cc380e840"
+      "bytes": 2397,
+      "sha256": "b963cfba8b1c213f429e29d12dfa31aaefcb6a349c8903eaf9af1c0d1436e720"
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/CUSTOMER.md",
@@ -1224,21 +1224,21 @@
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/TESTING.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 4377,
-      "sha256": "a737e42ee38d4a7150902cf323c60bb14719d8aaae078885504e9927a5d99c70"
+      "bytes": 4370,
+      "sha256": "0c27eb3c867ff208edf751d8e8ce91c5cabeeb0bcee5dff4b6aee5b2d6b6685f"
     },
     {
       "path": "docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 3367,
-      "sha256": "1ef7aca1be9e1be744fc0749821780656839d12bc7991d2c39244e2438123dec"
+      "bytes": 3698,
+      "sha256": "e4ee747e41a4699ea943b9dee2f0be6caf3f1c70eeafbc6262f648bd5832902d"
     },
     {
       "path": "docs/AI_CONTEXT/FILE_INDEX.json",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 83169,
+      "bytes": 83613,
       "sha256": null
     },
     {
@@ -1252,8 +1252,8 @@
       "path": "docs/AI_CONTEXT/START_HERE.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 4051,
-      "sha256": "bfde38cd919a4f20af0c8be7588ecfb9d8daec8bc3c4b3cba5b224d50ea54f0a"
+      "bytes": 4099,
+      "sha256": "2d7327cbf7edd6e945b10c6fff15d0761997d1bbfe445c6a28d23b8afd8efb62"
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -1273,22 +1273,22 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 231462,
-      "sha256": "6c6b0133881d4cebc14475eb8d4e5e7871d950e1ee65f349ad838efa20be0952"
+      "bytes": 231809,
+      "sha256": "b5b947da5e743b439a7cd253b6980c1ec7214d7a5bc7acbd798e8577811afd8f"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 1440236,
+      "bytes": 1440903,
       "sha256": null
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 95616,
-      "sha256": "839da9829675903175a5df08dfb391b670a21f74d0e98d62a91e63090ef436e1"
+      "bytes": 95916,
+      "sha256": "bb058d61e0d35f167c9643b510c4f76d60dfc6883822c49aabbdb2a42cb2902c"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -1483,8 +1483,8 @@
       "path": "docs/HANDOFF_NEXT_AI.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 78198,
-      "sha256": "4f3cac041e0e0eee67e777094ab3508a61b65a5457d110b3a4b7ad548cd5571f"
+      "bytes": 79609,
+      "sha256": "1977d43ba3018c08021aa80332b676a59b17b16fd3b3251c5135fe058eb9b6fa"
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -1581,8 +1581,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 17589,
-      "sha256": "82870e6e32c3567abf85be1a6b83cfc7b9a25d9b772d2129209727acd13759b9"
+      "bytes": 17670,
+      "sha256": "6db6cc89422b32606db9fba55023a5fde2f9c7f87967dc4d8b1a9e1206e84fb6"
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -2033,6 +2033,13 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
+      "path": "tests/e2e/admin-app.cdp.js",
+      "area": "tests",
+      "status": "TEST",
+      "bytes": 5905,
+      "sha256": "4c9967532affeed5cc9597f32f0b9824ded5505522320d0898182fc4c26ee2f5"
+    },
+    {
       "path": "tests/e2e/audit-log.browser.js",
       "area": "tests",
       "status": "TEST",
@@ -2092,8 +2099,8 @@
       "path": "tests/e2e/README.md",
       "area": "tests",
       "status": "PLACEHOLDER",
-      "bytes": 6604,
-      "sha256": "269b874f41b620cc14015796ff4d31ca2719bd9afcb53dadf938a7ced4edd271"
+      "bytes": 6971,
+      "sha256": "de63fed18b834e623ae571fd0a226e1e752279ccd8f2b740a201d3ca62b4370b"
     },
     {
       "path": "tests/e2e/reports.browser.js",
@@ -2192,6 +2199,13 @@
       "status": "TEST",
       "bytes": 1708,
       "sha256": "d43adbc1ed84dfe8a8216005ea85fb89bb5bdf508912ea2a93ef82b64a034351"
+    },
+    {
+      "path": "tests/unit/admin-runtime.test.js",
+      "area": "tests",
+      "status": "TEST",
+      "bytes": 7605,
+      "sha256": "342c49eadab5b2be604cc3cbdd2b8231c61d95a6e3d810ef175ae3ff2bf0bafd"
     },
     {
       "path": "tests/unit/admin-shell.test.js",
