@@ -331,3 +331,19 @@ Frontend only. Do not touch `backend/`, `database/`, production auth/API, paymen
 **Decision:** Admin is not precached — it has no manifest and never registers the worker.
 **Tests:** guard 5/5 (failed 1/5 before the fix on exactly the three files); `npm test` **237/237**.
 **Next:** Provider P3 legacy parity audit (see `START_HERE.md`).
+---
+
+# AGENT HANDOFF — 2026-11-13 — Provider P3 legacy parity audit (Claude Code)
+
+**Goal:** protocol §6 P3 — evidence and recommendation; no removal. **Baseline:** `npm test` 237/237 (`c137eef`).
+**Created:** `docs/PROVIDER_LEGACY_PARITY_AUDIT.md`, `tests/unit/provider-legacy-parity.test.js` (6). **Runtime files unchanged.**
+
+**Findings:**
+- Legacy path = `portal-compat.js` (role mode + legacy Provider screen + **legacy Admin console**) and `provider-workspace.js` (replaces `screens.provider`). Entry points: Customer side menu (provider/admin) and home «انضم الآن».
+- Request grouping legacy vs standalone: identical across all 105 request × assignment status combinations (executable).
+- Same `MP` store (`hs_mp_db`); **separate demo identities** (legacy localStorage `hs_provId` vs standalone sessionStorage `hs_provider_demo_session`).
+- Every legacy request action has a standalone equivalent on the same `MP` method; standalone is stricter (P0 fixes not back-ported to legacy).
+- Gaps: G1 self-registration, G2 profile edit (disabled by decision), G3 commission preview on completion, G4 `login.html` placeholder.
+**Recommendation:** keep both legacy files loaded; implement G3/G4, then G1; record a decision before rerouting Customer entries; legacy Admin console parity is a separate audit.
+**Tests:** parity 6/6; `npm test` **243/243**. Browser: not applicable (no UI change).
+**Next:** G3 + G4 (see `START_HERE.md`).

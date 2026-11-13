@@ -231,6 +231,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | docs/PROJECT_CONTROL_CENTER_GUIDE.md | CONFIGURATION | دليل الدفتر السابق الذي كان يحفظ التقدم في Local Storage فقط. | احتفظ به كمرجع تاريخي؛ الدليل الجديد هو PROJECT_ENGINEER_GUIDE.md. |
 | docs/PROJECT_TREE.md | CONFIGURATION | Documentation for PROJECT_TREE | Update only when related implementation changes. |
 | docs/PROMPT_LOG_V8.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
+| docs/PROVIDER_LEGACY_PARITY_AUDIT.md | DOCUMENTATION | Provider P3 legacy parity audit: legacy path inventory, consumers, behavior matrix, gaps G1-G4, retirement recommendation. | Read when relevant; update with any legacy/standalone Provider change. |
 | docs/REMOVED_FILES_REPORT.md | CONFIGURATION | Documentation for REMOVED_FILES_REPORT | Update only when related implementation changes. |
 | docs/RESPONSIVE_AUDIT.md | DOCUMENTATION | Records the completed 2026-11-13 Chromium responsive browser sweep for Customer, Provider compatibility workspace and Admin pages at 1280/768/390/320px, including five confirmed fixes and environment limits. | Keep the completed browser sweep as the responsive baseline; re-run after relevant layout changes. |
 | docs/SECURITY_MODEL.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
@@ -338,6 +339,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | tests/unit/provider-app-actions.test.js | TEST | Provider P0 action behavior tests (session, gate, availability, accept/reject, propose/confirm, advance, quote, completion, local-only invariant). | Read when relevant; keep tests and docs aligned with behavior changes. |
 | tests/unit/provider-app-routing.test.js | TEST | Provider P0 route/deep-link behavior tests (tabs, fallbacks, details IDs, reload, no-session deep link). | Read when relevant; keep tests and docs aligned with behavior changes. |
 | tests/unit/provider-domain.test.js | TEST | Tests for the HSProviderDomain adapter (groups, grouping parity, totals). | Read when relevant; keep tests and docs aligned with behavior changes. |
+| tests/unit/provider-legacy-parity.test.js | TEST | Provider P3 executable parity evidence: legacy vs standalone grouping (105 combos), shared MP store, separate identities, action/MP-method mapping, documented gaps. | Read when relevant; update with any legacy/standalone Provider change. |
 | tests/unit/provider-pages.test.js | TEST | Provider renderer registration, router parse, script order, escaping and Service Worker precache contracts. | Read when relevant; keep tests and docs aligned with behavior changes. |
 | tests/unit/provider-request-domain.test.js | TEST | Tests for HSProviderRequestDomain grouping, stats, financial/rating summaries, appointments, priority and filters. | Read when relevant; keep tests and docs aligned with behavior changes. |
 | tests/unit/provider-workspace.test.js | IMPLEMENTED | Existing unit/static regression test. | Protect with regression tests; do not rewrite unnecessarily. |

@@ -279,6 +279,7 @@ hansalhlak/
 │   ├── PROJECT_CONTROL_CENTER_GUIDE.md
 │   ├── PROJECT_TREE.md
 │   ├── PROMPT_LOG_V8.md
+│   ├── PROVIDER_LEGACY_PARITY_AUDIT.md
 │   ├── REMOVED_FILES_REPORT.md
 │   ├── RESPONSIVE_AUDIT.md
 │   ├── SECURITY_MODEL.md
@@ -395,6 +396,7 @@ hansalhlak/
 │       ├── provider-app-actions.test.js
 │       ├── provider-app-routing.test.js
 │       ├── provider-domain.test.js
+│       ├── provider-legacy-parity.test.js
 │       ├── provider-pages.test.js
 │       ├── provider-request-domain.test.js
 │       ├── provider-workspace.test.js

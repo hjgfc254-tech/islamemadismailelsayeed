@@ -2,13 +2,13 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 360,
-    "total_files": 360,
+    "file_count": 362,
+    "total_files": 362,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 50,
       "DECISION": 7,
-      "DOCUMENTATION": 34,
+      "DOCUMENTATION": 35,
       "IMPLEMENTED": 51,
       "IMPLEMENTED (DEMO PRESENTATION)": 12,
       "IMPLEMENTED (DEMO)": 28,
@@ -25,7 +25,7 @@
       "NEEDS_REVIEW": 1,
       "PARTIALLY IMPLEMENTED": 2,
       "PLACEHOLDER": 101,
-      "TEST": 57
+      "TEST": 58
     },
     "status_semantics": {
       "IMPLEMENTED": "Implementation exists in the current source; still protect with tests.",
@@ -8177,7 +8177,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "dcf01634c6e7d8124a391a2a9e22bdbc4f96b0ad6d15802417060253ade1f914",
+      "sha256": "d8a89fd07c23ff08ac6a10bb234b5251fa49405016ccbd70d1ade905af351603",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "PROVIDER.md",
@@ -8186,7 +8186,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 8313
+      "bytes": 8839
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/SHARED_AND_SERVICES.md",
@@ -8219,7 +8219,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "7e3a55c111c0a30f9b5d6a59e8dda24465b8951f1bcf7f7c07098966bc70deaf",
+      "sha256": "57c5cc0c0c7f4a9c8d1cccb5a7ff4d0dc6f351dd0ef1276719bad7eccdfb15db",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "TESTING.md",
@@ -8228,7 +8228,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 3780
+      "bytes": 3775
     },
     {
       "path": "docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md",
@@ -8239,8 +8239,8 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "624cb9cef601e47e96b761476c2ed9e4ebbe1a102b5c72d5a1a88d653f0751e6",
-      "bytes": 1821
+      "sha256": "32afc73aef285dfeb825fbab66d2ac8986e840950c59b610b7dd11f89fe107d8",
+      "bytes": 1884
     },
     {
       "path": "docs/AI_CONTEXT/FILE_INDEX.json",
@@ -8261,7 +8261,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 80869
+      "bytes": 81317
     },
     {
       "path": "docs/AI_CONTEXT/README.md",
@@ -8294,7 +8294,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "e600abcb59c636051bd49d112a964f54072c4aa9865f8770ef90c826acddb84b",
+      "sha256": "37f991d47cb2cc22dacb20fbd0e5478b6e5393658db9ed8e205c58392caac2a0",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "START_HERE.md",
@@ -8303,7 +8303,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 3196
+      "bytes": 3170
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -8336,7 +8336,7 @@
       "next_action": "استخدمه مرجعًا مساعدًا؛ ترتيب المراحل التفصيلي الحالي موجود في لوحة المهندس.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "62ff9b3c5c878f19cadc23233468cdeeca3fd4961cc9e9d9db827ae048be7218",
+      "sha256": "540f5c667311a64c3da6b779d150c654185beb233a42b1abeb67e24dd5daaf6e",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8372,7 +8372,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 12872
+      "bytes": 13083
     },
     {
       "path": "docs/AI_PROJECT_MAP.csv",
@@ -8384,7 +8384,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "079d1af211a2a0b4e4c043cab819979035022c8e8a9d7df01b42157934a011eb",
+      "sha256": "3ac5c90bceaaa73be4371ebc38904d03b94800b7c589a4d61ca100dec657ba46",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8420,7 +8420,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 228801
+      "bytes": 229417
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -8468,7 +8468,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1433675
+      "bytes": 1435033
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
@@ -8480,7 +8480,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "47b27865ded8d8f08d29a6228874e9fd58ccd4c184dc7946ce82b35d029e6f96",
+      "sha256": "1f5ad13ab035a711469a7ea0f30943df266b03acd241c9576ac3430f41811094",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8516,7 +8516,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 93252
+      "bytes": 93800
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -9386,7 +9386,7 @@
       "next_action": "Review in the relevant task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added during the 2026-11-09 environment normalization pass.",
-      "sha256": "e743db473c174d5e170b37ea955475f1b16a43e394417d0bb71e9051f3acd5fa",
+      "sha256": "a51e4a857364c6e0d4aee1f0287d13fbcd73edfadf3a7ddbff6412942a0bdca9",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "HANDOFF_NEXT_AI.md",
@@ -9395,7 +9395,7 @@
       "file_behavior": "Inventory entry only; inspect source for exact behavior.",
       "completion_definition": "File responsibility and actual behavior are verified and covered by appropriate checks.",
       "actual_status_ar": "مضاف إلى الجرد الحالي؛ يحتاج فحصًا بحسب المهمة.",
-      "bytes": 67981
+      "bytes": 69432
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -9555,7 +9555,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "011f124f06743993b6d49adbfb4caad1910b91677a7e5090849215800ffe2c96",
+      "sha256": "203ed5c1b85e10ace60405cb31faf438ba32b16ca1969f05646b1a9d6db59a0c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -9592,7 +9592,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 28842
+      "bytes": 29031
     },
     {
       "path": "docs/INTRO_V2_REPORT.md",
@@ -9956,7 +9956,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "c2109a62c848267ef4ae9c3e28e81503ed5c0ed3819b62e2627d1a2191bbee64",
+      "sha256": "b4f6247c794d91fdb7ee64d9c185b7d063ef61449c7611e4788ad837037babeb",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -9993,7 +9993,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 17080
+      "bytes": 17179
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -10043,6 +10043,18 @@
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
       "bytes": 30100
+    },
+    {
+      "path": "docs/PROVIDER_LEGACY_PARITY_AUDIT.md",
+      "area": "docs",
+      "status": "DOCUMENTATION",
+      "functional_title": "PROVIDER_LEGACY_PARITY_AUDIT.md",
+      "current_responsibility": "Provider P3 legacy parity audit: legacy path inventory, consumers, behavior matrix, gaps G1-G4, retirement recommendation.",
+      "next_action": "Read when relevant; update with any legacy/standalone Provider change.",
+      "explicit_references": [],
+      "notes": "Classified 2026-11-13 after inspecting the file (Provider P3 batch).",
+      "sha256": "2a5d154eb50115b874e75dd89342b3e81c559f6c46a605f99428e969e1771bc9",
+      "bytes": 5604
     },
     {
       "path": "docs/REMOVED_FILES_REPORT.md",
@@ -14012,6 +14024,18 @@
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
       "sha256": "7a53318195359d944454f85b81582cb78470a846f3ef3112240683d64ef4f529",
       "bytes": 8366
+    },
+    {
+      "path": "tests/unit/provider-legacy-parity.test.js",
+      "area": "tests",
+      "status": "TEST",
+      "functional_title": "provider-legacy-parity.test.js",
+      "current_responsibility": "Provider P3 executable parity evidence: legacy vs standalone grouping (105 combos), shared MP store, separate identities, action/MP-method mapping, documented gaps.",
+      "next_action": "Read when relevant; update with any legacy/standalone Provider change.",
+      "explicit_references": [],
+      "notes": "Classified 2026-11-13 after inspecting the file (Provider P3 batch).",
+      "sha256": "bdcecb79f495eacaf7bdc6674fe60acf43946f6fc240d97715d9264351ddc271",
+      "bytes": 6597
     },
     {
       "path": "tests/unit/provider-pages.test.js",

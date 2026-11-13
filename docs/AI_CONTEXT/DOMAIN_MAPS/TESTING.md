@@ -15,7 +15,7 @@
 - Accessibility: partial; a complete automated accessibility runner is not currently established.
 
 ## Current baseline
-- `npm test`: **237 passed, 0 failed** (53 files) after Service Worker precache batch (2026-11-13).
+- `npm test`: **243 passed, 0 failed** (54 files) after Provider P3 parity audit (2026-11-13).
 - Real-browser QA without packages: `tests/e2e/provider-standalone.cdp.js` (Edge over DevTools Protocol, Node built-in `WebSocket`); see `tests/e2e/README.md`. Last run 170/170.
 - Provider app behavior harness: `tests/helpers/provider-app-harness.js` (see `DOMAIN_MAPS/PROVIDER.md` §6). Project skill: `.claude/skills/vm-script-test`.
 - Windows browser smoke without packages: serve with `python -m http.server 8099`, then headless Edge `--dump-dom` via `Start-Process ... -RedirectStandardOutput` (direct `& msedge` returns no output under PowerShell). This proves load/render only, not interaction or viewports.

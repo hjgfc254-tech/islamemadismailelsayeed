@@ -6,23 +6,25 @@ Compact resume state for autonomous sessions. Update after every committed batch
 1. Provider P0 behavior tests + stale-action fixes — `854e281`.
 2. Provider P1 accessibility — `5b25c44`.
 3. Provider P2 real-browser QA + visual fixes — `b2003ae` (runner `tests/e2e/provider-standalone.cdp.js`, 170/170).
-4. Service Worker precache completeness — `service-worker.js` (+`home.page.js`, `orders.page.js`, `order-details.page.js`; cache `-9`),
-   `tests/unit/service-worker-precache.test.js` (new, 5), 4 cache-literal tests, `DOMAIN_MAPS/FRONTEND_RUNTIME.md` (corrected stale
-   Customer/Provider wiring + SW contract), docs. `npm test` 237/237. Real-browser evidence (Edge, server actually stopped):
-   before the fix the Customer home failed to render offline after one visit; after, it renders.
+4. Service Worker precache completeness — `c137eef` (offline Customer home proven broken before / working after).
+5. Provider P3 legacy parity audit — `docs/PROVIDER_LEGACY_PARITY_AUDIT.md` (new), `tests/unit/provider-legacy-parity.test.js` (new, 6), docs.
+   No runtime change. `npm test` 243/243.
 
 ## Current task
-Provider P3 legacy parity audit (see `START_HERE.md`) — audit, matrix and parity tests only; no removal.
+Provider parity gaps G3 (commission preview on completion) + G4 (`login.html` placeholder) — see `START_HERE.md`.
 
 ## Remaining queue (priority order)
-1. Provider P3 legacy parity audit.
-2. Then `docs/AI_NEXT_IMPLEMENTATION_ORDER.md` phases (Customer extraction, Admin modules, design-system split, Guest) — verify each target is still incomplete first.
+1. G3 + G4.
+2. G1 standalone self-registration (field set/validation in audit §4).
+3. Decision needed before acting: reroute Customer «بوابة مقدم الخدمة»/«انضم الآن» to the standalone app; legacy Admin console in `portal-compat.js` vs `apps/admin/`.
+4. Then `docs/AI_NEXT_IMPLEMENTATION_ORDER.md` phases (Customer extraction, Admin modules, design-system split, Guest) — verify each target first.
 
 ## Open decisions
 - Zero-total Provider quotes are accepted (no documented rule).
 - Deep link opened without a session lands on `#/home` after account selection.
+- Standalone profile editing stays disabled (G2) until a product decision.
 - `test-write.tmp` is ignored locally but listed in the inventory (a clean clone reports it missing).
-- Admin is not an offline/PWA entry (no manifest, no SW registration) and is not precached.
+- Admin is not an offline/PWA entry and is not precached.
 
 ## Exact next action
-Grep the Customer entry, `apps/customer/*.js` and tests for globals/functions defined in `portal-compat.js` and `provider-workspace.js`; list consumers before writing the matrix.
+In `apps/provider/app.js`, extend `openForm('complete')` with a preview element and an `input` listener on the host for `#pv-complete-form`; test via harness.
