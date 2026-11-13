@@ -13,7 +13,7 @@ body.adm-body{margin:0}
 .adm-brand{display:flex;align-items:baseline;gap:8px;color:var(--text-primary);text-decoration:none;font-weight:900;min-width:0}
 .adm-brand-t{font-size:var(--fs-lg);color:var(--brand-primary-hover)}
 .adm-brand small{font-size:var(--fs-sm);color:var(--text-secondary);font-weight:600;white-space:nowrap}
-.adm-chip{margin-inline-start:auto;padding:3px 10px;border:1px solid rgba(243,185,79,.45);border-radius:999px;background:rgba(243,185,79,.08);color:var(--warning);font-size:var(--fs-xs);font-weight:700;white-space:nowrap}
+.adm-chip{margin-inline-start:auto;padding:3px 10px;border:1px solid rgba(251,191,36,.45);border-radius:999px;background:rgba(251,191,36,.08);color:var(--warning);font-size:var(--fs-xs);font-weight:700;white-space:nowrap}
 
 /* Sidebar */
 .adm-side{position:fixed;inset-block:calc(var(--adm-h) + env(safe-area-inset-top)) 0;inset-inline-start:0;z-index:var(--z-overlay);display:flex;flex-direction:column;width:var(--adm-side-w);border-inline-end:1px solid var(--border-default);background:var(--surface-primary);overflow:hidden;transition:width var(--motion-base) ease}
@@ -33,7 +33,7 @@ a.adm-link:hover{background:rgba(255,255,255,.05);color:var(--text-primary)}
 .adm svg.i{--ic-a:var(--brand-primary-hover);width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .adm svg.i .if{fill:var(--ic-a);fill-opacity:.13;stroke:none}
 .adm svg.i .ib{stroke:currentColor}
-.adm svg.i .im{stroke:#d6cfdd;stroke-opacity:.9}
+.adm svg.i .im{stroke:#cbd2e1;stroke-opacity:.9}
 .adm svg.i .ia{stroke:var(--ic-a)}
 .adm-collapse{display:flex;align-items:center;gap:var(--sp-3);margin:0 var(--sp-3) var(--sp-3);padding-inline:var(--sp-3);justify-content:flex-start}
 .adm-collapse .adm-ico svg{transform:scaleX(var(--adm-dir))}           /* chevron points toward the sidebar edge */

@@ -237,6 +237,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | docs/SECURITY_MODEL.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
 | docs/TEST_RESULTS.md | CONFIGURATION | Documentation for TEST_RESULTS | Update only when related implementation changes. |
 | docs/TESTING_STRATEGY.md | DOCUMENTATION | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
+| HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md | DOCUMENTATION | Arabic master frontend handover report (state, classification, tests, continuation guide) as of b719d9a. | Update at the next documentation checkpoint. |
 | index.html | CONFIGURATION | Root route redirect to the Customer application entry. | Verify root redirect behavior on the selected host and preserve query/hash forwarding. |
 | manifest.json | CONFIGURATION | PWA metadata, launch path and icon declaration. | Update only when related implementation changes. |
 | package.json | CONFIGURATION | Configuration or metadata for package | Update only when related implementation changes. |

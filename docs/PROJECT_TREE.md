@@ -440,6 +440,7 @@ hansalhlak/
 ├── .gitignore
 ├── AGENTS.md
 ├── CLAUDE.md
+├── HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md
 ├── index.html
 ├── manifest.json
 ├── package.json

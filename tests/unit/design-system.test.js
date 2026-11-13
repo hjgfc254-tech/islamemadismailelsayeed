@@ -13,6 +13,6 @@ test('desktop layouts are explicitly composed at 700/1024/1280px',()=>{for(const
 test('small viewport support starts at 320px without fixed phone shell',()=>{assert(css.includes('min-width:320px'));assert(/#app\{width:100%;max-width:none/.test(css))});
 test('reduced motion is respected',()=>assert(css.includes('prefers-reduced-motion:reduce')));
 test('design system is loaded after legacy stylesheet',()=>assert(html.indexOf('href="styles/customer.css"')<html.indexOf('href="../../shared/design-system/design-system.css"')));
-test('new stylesheet is precached and cache version is bumped',()=>{assert(sw.includes("'hansalhlak-v8-architecture-14'"));assert(sw.includes("'shared/design-system/design-system.css'"));assert(sw.includes("'apps/provider/provider-workspace.js'"))});
+test('new stylesheet is precached and cache version is bumped',()=>{assert(sw.includes("'hansalhlak-v8-architecture-15'"));assert(sw.includes("'shared/design-system/design-system.css'"));assert(sw.includes("'apps/provider/provider-workspace.js'"))});
 test('legacy account screen delegates to the dedicated Account module',()=>{assert(app.includes('Account.render()'));assert(!app.includes('حسابي — V7 (يعرض الطلبات الحقيقية)'))});
 console.log(`\n${passed} passed, 0 failed`);

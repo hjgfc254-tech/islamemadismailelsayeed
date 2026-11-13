@@ -22,17 +22,17 @@
 'use strict';
 
 /* ───────── رسومات الخدمات (SVG) — كما في V6 ───────── */
-const GEAR = (x,y,s=1) => `<g transform="translate(${x} ${y}) scale(${s})"><circle r="19" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="5" stroke-dasharray="5 8.35"/><circle r="14" fill="rgba(255,61,143,.25)" stroke="#fff" stroke-opacity=".9" stroke-width="4"/><circle r="6" fill="#140b18" stroke="#ff7ab8" stroke-width="1.5"/></g>`;
-const SPARK = (x,y,s=1) => `<path transform="translate(${x} ${y}) scale(${s})" d="M0-6L1.5-1.5 6 0 1.5 1.5 0 6-1.5 1.5-6 0-1.5-1.5z" fill="#ff9ccb"/>`;
+const GEAR = (x,y,s=1) => `<g transform="translate(${x} ${y}) scale(${s})"><circle r="19" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="5" stroke-dasharray="5 8.35"/><circle r="14" fill="rgba(59,130,246,.25)" stroke="#fff" stroke-opacity=".9" stroke-width="4"/><circle r="6" fill="#140b18" stroke="#60a5fa" stroke-width="1.5"/></g>`;
+const SPARK = (x,y,s=1) => `<path transform="translate(${x} ${y}) scale(${s})" d="M0-6L1.5-1.5 6 0 1.5 1.5 0 6-1.5 1.5-6 0-1.5-1.5z" fill="#bfdbfe"/>`;
 const ART = {
   hero:`<svg viewBox="0 0 220 240" preserveAspectRatio="xMidYMid meet">
     <defs>
       <linearGradient id="hBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6a5a74"/><stop offset=".45" stop-color="#1c1521"/><stop offset="1" stop-color="#0c080e"/></linearGradient>
-      <radialGradient id="hScr" cx=".5" cy=".9" r=".95"><stop offset="0" stop-color="#ff3d8f" stop-opacity=".95"/><stop offset=".5" stop-color="#5a1642"/><stop offset="1" stop-color="#140b18"/></radialGradient>
+      <radialGradient id="hScr" cx=".5" cy=".9" r=".95"><stop offset="0" stop-color="#3b82f6" stop-opacity=".95"/><stop offset=".5" stop-color="#5a1642"/><stop offset="1" stop-color="#140b18"/></radialGradient>
     </defs>
-    <ellipse cx="108" cy="132" rx="78" ry="92" fill="#ff3d8f" opacity=".32" filter="url(#gb10)"/>
-    <ellipse cx="108" cy="150" rx="100" ry="30" fill="none" stroke="#ff3d8f" stroke-width="2.2" opacity=".85" transform="rotate(-18 108 150)"/>
-    <ellipse cx="108" cy="150" rx="82" ry="22" fill="none" stroke="#ff7ab8" stroke-width="1.2" opacity=".5" transform="rotate(-18 108 150)"/>
+    <ellipse cx="108" cy="132" rx="78" ry="92" fill="#3b82f6" opacity=".32" filter="url(#gb10)"/>
+    <ellipse cx="108" cy="150" rx="100" ry="30" fill="none" stroke="#3b82f6" stroke-width="2.2" opacity=".85" transform="rotate(-18 108 150)"/>
+    <ellipse cx="108" cy="150" rx="82" ry="22" fill="none" stroke="#60a5fa" stroke-width="1.2" opacity=".5" transform="rotate(-18 108 150)"/>
     <g transform="rotate(-12 100 125)">
       <rect x="53" y="27" width="88" height="182" rx="17" fill="#2b1e30"/>
       <rect x="46" y="20" width="88" height="182" rx="17" fill="url(#hBody)" stroke="url(#metal)" stroke-width="2.5"/>
@@ -41,7 +41,7 @@ const ART = {
       <rect x="79" y="32" width="22" height="5" rx="2.5" fill="#000"/>
       <path d="M60 44h10M110 44h10" stroke="#fff" stroke-opacity=".6" stroke-width="2" stroke-linecap="round"/>
       ${GEAR(90,100,1.1)}
-      <g fill="#fff" fill-opacity=".2"><rect x="60" y="150" width="12" height="12" rx="3.5"/><rect x="78" y="150" width="12" height="12" rx="3.5"/><rect x="96" y="150" width="12" height="12" rx="3.5"/><rect x="114" y="150" width="8" height="12" rx="3.5" fill="#ff7ab8" fill-opacity=".5"/><rect x="60" y="170" width="12" height="12" rx="3.5"/><rect x="78" y="170" width="12" height="12" rx="3.5" fill="#ff7ab8" fill-opacity=".5"/><rect x="96" y="170" width="12" height="12" rx="3.5"/></g>
+      <g fill="#fff" fill-opacity=".2"><rect x="60" y="150" width="12" height="12" rx="3.5"/><rect x="78" y="150" width="12" height="12" rx="3.5"/><rect x="96" y="150" width="12" height="12" rx="3.5"/><rect x="114" y="150" width="8" height="12" rx="3.5" fill="#60a5fa" fill-opacity=".5"/><rect x="60" y="170" width="12" height="12" rx="3.5"/><rect x="78" y="170" width="12" height="12" rx="3.5" fill="#60a5fa" fill-opacity=".5"/><rect x="96" y="170" width="12" height="12" rx="3.5"/></g>
       <path d="M52 30h44L58 150z" fill="#fff" opacity=".07"/>
     </g>
     <g transform="translate(166 66) rotate(38)">
@@ -54,8 +54,8 @@ const ART = {
   </svg>`,
 
   electric:`<svg viewBox="0 0 160 150">
-    <ellipse cx="80" cy="142" rx="56" ry="6" fill="#ff3d8f" opacity=".5" filter="url(#gb6)"/>
-    <ellipse cx="76" cy="84" rx="62" ry="58" fill="#ff3d8f" opacity=".2" filter="url(#gb10)"/>
+    <ellipse cx="80" cy="142" rx="56" ry="6" fill="#3b82f6" opacity=".5" filter="url(#gb6)"/>
+    <ellipse cx="76" cy="84" rx="62" ry="58" fill="#3b82f6" opacity=".2" filter="url(#gb10)"/>
     <rect x="22" y="26" width="88" height="110" rx="11" fill="#1c1521" stroke="url(#metal)" stroke-width="3"/>
     <rect x="31" y="36" width="70" height="90" rx="6" fill="url(#glass)" stroke="rgba(255,255,255,.22)"/>
     <g stroke="rgba(255,255,255,.28)" fill="#2b2230">
@@ -66,7 +66,7 @@ const ART = {
     <g fill="url(#pinkg)"><rect x="43" y="50" width="16" height="9" rx="2.5"/><rect x="73" y="76" width="16" height="9" rx="2.5"/><rect x="43" y="102" width="16" height="9" rx="2.5"/></g>
     <g fill="#8d8698"><rect x="43" y="59" width="16" height="3.5" rx="1.7"/><rect x="73" y="53" width="16" height="3.5" rx="1.7"/><rect x="43" y="85" width="16" height="3.5" rx="1.7"/><rect x="73" y="111" width="16" height="3.5" rx="1.7"/></g>
     <g transform="translate(98 2) scale(.46) translate(-28 -8)">
-      <path d="M92 8L28 108h46l-12 74 70-104H86z" fill="#ff3d8f" opacity=".6" filter="url(#gb6)"/>
+      <path d="M92 8L28 108h46l-12 74 70-104H86z" fill="#3b82f6" opacity=".6" filter="url(#gb6)"/>
       <path d="M92 8L28 108h46l-12 74 70-104H86z" fill="url(#pinkg)" stroke="#fff" stroke-opacity=".7" stroke-width="4" stroke-linejoin="round"/>
       <path d="M90 22L48 98h30" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="5" stroke-linecap="round"/>
     </g>
@@ -76,8 +76,8 @@ const ART = {
   </svg>`,
 
   plumbing:`<svg viewBox="0 0 160 150">
-    <ellipse cx="86" cy="146" rx="52" ry="5" fill="#ff3d8f" opacity=".5" filter="url(#gb6)"/>
-    <ellipse cx="86" cy="78" rx="62" ry="56" fill="#ff3d8f" opacity=".16" filter="url(#gb10)"/>
+    <ellipse cx="86" cy="146" rx="52" ry="5" fill="#3b82f6" opacity=".5" filter="url(#gb6)"/>
+    <ellipse cx="86" cy="78" rx="62" ry="56" fill="#3b82f6" opacity=".16" filter="url(#gb10)"/>
     <rect x="6" y="34" width="14" height="48" rx="4" fill="url(#metal2)" stroke="rgba(0,0,0,.3)"/>
     <rect x="18" y="46" width="94" height="24" rx="9" fill="url(#metal)" stroke="rgba(0,0,0,.3)"/>
     <rect x="94" y="46" width="26" height="52" rx="10" fill="url(#metal)" stroke="rgba(0,0,0,.3)"/>
@@ -86,18 +86,18 @@ const ART = {
     <rect x="52" y="30" width="11" height="18" rx="3" fill="url(#metal2)"/>
     <rect x="34" y="20" width="48" height="12" rx="6" fill="url(#pinkg)" stroke="rgba(255,255,255,.5)"/>
     <rect x="40" y="23" width="36" height="3" rx="1.5" fill="#fff" opacity=".45"/>
-    <path d="M107 114c-5 8-8 12-8 16a8 8 0 0 0 16 0c0-4-3-8-8-14z" fill="#ff9ccb" opacity=".95"/>
+    <path d="M107 114c-5 8-8 12-8 16a8 8 0 0 0 16 0c0-4-3-8-8-14z" fill="#bfdbfe" opacity=".95"/>
     <path d="M104 126a4 4 0 0 0 3 4" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".7"/>
-    <path d="M107 134c-2 3-3 5-3 6.5a3 3 0 0 0 6 0c0-1.5-1-3.5-3-6.5z" fill="#ff7ab8" opacity=".8"/>
-    <ellipse cx="107" cy="145" rx="22" ry="3.5" fill="none" stroke="#ff7ab8" stroke-width="1.6" opacity=".8"/>
+    <path d="M107 134c-2 3-3 5-3 6.5a3 3 0 0 0 6 0c0-1.5-1-3.5-3-6.5z" fill="#60a5fa" opacity=".8"/>
+    <ellipse cx="107" cy="145" rx="22" ry="3.5" fill="none" stroke="#60a5fa" stroke-width="1.6" opacity=".8"/>
     <rect x="10" y="108" width="46" height="16" rx="5" fill="url(#metal)" stroke="rgba(0,0,0,.3)"/>
     <rect x="22" y="104" width="7" height="24" rx="2" fill="url(#metal2)"/><rect x="40" y="104" width="7" height="24" rx="2" fill="url(#metal2)"/>
     ${SPARK(142,40,1.1)}${SPARK(18,98,.8)}${SPARK(140,70,.8)}
   </svg>`,
 
   carpentry:`<svg viewBox="0 0 160 150">
-    <ellipse cx="80" cy="142" rx="64" ry="5" fill="#ff3d8f" opacity=".45" filter="url(#gb6)"/>
-    <ellipse cx="82" cy="80" rx="62" ry="54" fill="#ff3d8f" opacity=".16" filter="url(#gb10)"/>
+    <ellipse cx="80" cy="142" rx="64" ry="5" fill="#3b82f6" opacity=".45" filter="url(#gb6)"/>
+    <ellipse cx="82" cy="80" rx="62" ry="54" fill="#3b82f6" opacity=".16" filter="url(#gb10)"/>
     <path d="M14 16v62h10V26h40V16z" fill="url(#metal)" stroke="rgba(0,0,0,.3)"/>
     <path d="M14 34h6M14 46h6M14 58h6M34 16v6M46 16v6M58 16v6" stroke="#2b2230" stroke-width="1.6"/>
     <rect x="12" y="108" width="136" height="28" rx="5" fill="url(#pinkg)" stroke="rgba(255,255,255,.4)"/>
@@ -115,10 +115,10 @@ const ART = {
   </svg>`,
 
   painting:`<svg viewBox="0 0 160 150">
-    <ellipse cx="78" cy="144" rx="54" ry="5" fill="#ff3d8f" opacity=".45" filter="url(#gb6)"/>
-    <ellipse cx="80" cy="76" rx="62" ry="54" fill="#ff3d8f" opacity=".16" filter="url(#gb10)"/>
+    <ellipse cx="78" cy="144" rx="54" ry="5" fill="#3b82f6" opacity=".45" filter="url(#gb6)"/>
+    <ellipse cx="80" cy="76" rx="62" ry="54" fill="#3b82f6" opacity=".16" filter="url(#gb10)"/>
     <rect x="12" y="62" width="96" height="16" rx="8" fill="url(#pinkg)" opacity=".55"/>
-    <path d="M30 76v14a4 4 0 0 0 8 0V76M62 76v22a4 4 0 0 0 8 0V76M88 76v10a4 4 0 0 0 8 0V76" fill="#ff5aa5" opacity=".55"/>
+    <path d="M30 76v14a4 4 0 0 0 8 0V76M62 76v22a4 4 0 0 0 8 0V76M88 76v10a4 4 0 0 0 8 0V76" fill="#2f6fed" opacity=".55"/>
     <rect x="14" y="20" width="96" height="32" rx="12" fill="url(#pinkg)" stroke="rgba(255,255,255,.55)" stroke-width="1.5"/>
     <path d="M24 30h72" stroke="#fff" stroke-opacity=".5" stroke-width="3.5" stroke-linecap="round"/>
     <path d="M110 36h16a8 8 0 0 1 8 8v22a8 8 0 0 1-8 8H72v12" fill="none" stroke="url(#metal)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
@@ -129,13 +129,13 @@ const ART = {
       <rect x="-9" y="-14" width="18" height="18" rx="3" fill="url(#metal)" stroke="rgba(0,0,0,.3)"/>
       <path d="M-9-14C-8-34 8-34 9-14z" fill="url(#pinkg)" stroke="rgba(255,255,255,.4)"/>
     </g>
-    <circle cx="138" cy="44" r="3.5" fill="#ff7ab8"/><circle cx="148" cy="58" r="2.4" fill="#ff3d8f"/><circle cx="20" cy="108" r="3" fill="#ff9ccb"/>
+    <circle cx="138" cy="44" r="3.5" fill="#60a5fa"/><circle cx="148" cy="58" r="2.4" fill="#3b82f6"/><circle cx="20" cy="108" r="3" fill="#bfdbfe"/>
     ${SPARK(26,92,1)}${SPARK(144,20,1)}
   </svg>`,
 
   cleaning:`<svg viewBox="0 0 160 150">
-    <ellipse cx="80" cy="144" rx="62" ry="5" fill="#ff3d8f" opacity=".45" filter="url(#gb6)"/>
-    <ellipse cx="80" cy="76" rx="62" ry="56" fill="#ff3d8f" opacity=".16" filter="url(#gb10)"/>
+    <ellipse cx="80" cy="144" rx="62" ry="5" fill="#3b82f6" opacity=".45" filter="url(#gb6)"/>
+    <ellipse cx="80" cy="76" rx="62" ry="56" fill="#3b82f6" opacity=".16" filter="url(#gb10)"/>
     <g transform="translate(112 12) rotate(16)">
       <rect x="-4" y="0" width="8" height="74" rx="4" fill="url(#metal2)" stroke="rgba(0,0,0,.3)"/>
       <rect x="-12" y="70" width="24" height="9" rx="3" fill="url(#metal)"/>
@@ -143,8 +143,8 @@ const ART = {
       <path d="M-8 90l-6 36M0 90v36M8 90l6 36" stroke="#000" stroke-opacity=".25" stroke-width="2" stroke-linecap="round"/>
     </g>
     <rect x="22" y="70" width="46" height="62" rx="11" fill="url(#glass)" stroke="url(#metal)" stroke-width="2.5"/>
-    <rect x="27" y="92" width="36" height="35" rx="7" fill="#ff3d8f" opacity=".5"/>
-    <path d="M27 100c9-4 14 3 22 0s10-3 14 0" fill="none" stroke="#ff9ccb" stroke-width="2" opacity=".8"/>
+    <rect x="27" y="92" width="36" height="35" rx="7" fill="#3b82f6" opacity=".5"/>
+    <path d="M27 100c9-4 14 3 22 0s10-3 14 0" fill="none" stroke="#bfdbfe" stroke-width="2" opacity=".8"/>
     <rect x="36" y="54" width="18" height="18" rx="3" fill="url(#metal)"/>
     <path d="M30 54h36a6 6 0 0 1 6 6v7H30z" fill="url(#pinkg)" stroke="rgba(255,255,255,.4)"/>
     <path d="M66 58h10v7H66z" fill="url(#metal2)"/>
@@ -154,28 +154,28 @@ const ART = {
   </svg>`,
 
   appliances:`<svg viewBox="0 0 160 196">
-    <ellipse cx="80" cy="190" rx="62" ry="5" fill="#ff3d8f" opacity=".55" filter="url(#gb6)"/>
+    <ellipse cx="80" cy="190" rx="62" ry="5" fill="#3b82f6" opacity=".55" filter="url(#gb6)"/>
     <rect x="26" y="184" width="14" height="8" rx="2" fill="#2b2230"/><rect x="120" y="184" width="14" height="8" rx="2" fill="#2b2230"/>
     <rect x="14" y="4" width="132" height="182" rx="13" fill="url(#metal)" stroke="rgba(255,255,255,.5)"/>
     <rect x="14" y="4" width="38" height="182" rx="13" fill="#fff" opacity=".1"/>
     <path d="M14 46h132" stroke="#000" stroke-opacity=".22" stroke-width="2"/>
     <rect x="24" y="14" width="46" height="24" rx="5" fill="#150d17" stroke="rgba(255,255,255,.25)"/>
-    <path d="M31 26h8M44 26h8M57 26h8" stroke="#ff3d8f" stroke-width="3.2" stroke-linecap="round"/>
-    <circle cx="104" cy="26" r="14" fill="url(#metal2)" stroke="rgba(0,0,0,.3)"/><circle cx="104" cy="26" r="9" fill="#2b2230"/><path d="M104 26l4-6" stroke="#ff7ab8" stroke-width="2" stroke-linecap="round"/>
-    <circle cx="134" cy="26" r="7" fill="#ff3d8f" opacity=".3"/><circle cx="134" cy="26" r="3.6" fill="#ff3d8f"/>
+    <path d="M31 26h8M44 26h8M57 26h8" stroke="#3b82f6" stroke-width="3.2" stroke-linecap="round"/>
+    <circle cx="104" cy="26" r="14" fill="url(#metal2)" stroke="rgba(0,0,0,.3)"/><circle cx="104" cy="26" r="9" fill="#2b2230"/><path d="M104 26l4-6" stroke="#60a5fa" stroke-width="2" stroke-linecap="round"/>
+    <circle cx="134" cy="26" r="7" fill="#3b82f6" opacity=".3"/><circle cx="134" cy="26" r="3.6" fill="#3b82f6"/>
     <rect x="9" y="102" width="7" height="16" rx="2" fill="#8d8698"/>
     <circle cx="80" cy="120" r="57" fill="url(#metal2)" stroke="rgba(0,0,0,.35)"/>
     <circle cx="80" cy="120" r="47" fill="#1a1420" stroke="rgba(255,255,255,.3)" stroke-width="2"/>
     <circle cx="80" cy="120" r="40" fill="url(#glass)"/>
     <circle cx="80" cy="120" r="27" fill="none" stroke="#000" stroke-opacity=".35" stroke-width="8"/>
-    <ellipse cx="86" cy="130" rx="21" ry="11" fill="#ff3d8f" opacity=".38"/><ellipse cx="70" cy="117" rx="12" ry="8" fill="#ff7ab8" opacity=".28"/>
-    <path d="M42 126q9-5 19 0t19 0 19 0 19 0" fill="none" stroke="#ff9ccb" stroke-opacity=".55" stroke-width="2"/>
+    <ellipse cx="86" cy="130" rx="21" ry="11" fill="#3b82f6" opacity=".38"/><ellipse cx="70" cy="117" rx="12" ry="8" fill="#60a5fa" opacity=".28"/>
+    <path d="M42 126q9-5 19 0t19 0 19 0 19 0" fill="none" stroke="#bfdbfe" stroke-opacity=".55" stroke-width="2"/>
     <path d="M50 102a34 34 0 0 1 28-17" stroke="#fff" stroke-opacity=".6" stroke-width="3" fill="none" stroke-linecap="round"/>
     <circle cx="106" cy="142" r="3" fill="#fff" opacity=".25"/>
   </svg>`,
 
   car:`<svg viewBox="0 0 240 130">
-    <ellipse cx="120" cy="120" rx="104" ry="7" fill="#ff3d8f" opacity=".5" filter="url(#gb6)"/>
+    <ellipse cx="120" cy="120" rx="104" ry="7" fill="#3b82f6" opacity=".5" filter="url(#gb6)"/>
     <path d="M10 94c0-14 16-18 34-22l26-27c6-6 14-9 24-9h56c12 0 20 4 28 14l18 20c18 4 32 8 32 24v8H10z" fill="url(#pinkg)"/>
     <path d="M10 94h218v8H10z" fill="#000" opacity=".28"/>
     <path d="M80 50l14-6h24v28H58zM126 44h28c6 0 10 3 14 8l12 20h-54z" fill="#18101c" opacity=".94"/>
@@ -1048,12 +1048,12 @@ const Intro = (() => {
     if(!lines || !dust) return;
     const vw = innerWidth, vh = innerHeight, vmin = Math.min(vw, vh), vmax = Math.max(vw, vh), small = vw < 600, r = Math.random;
     const lw = (logo && logo.getBoundingClientRect().width) || vmin * .6;
-    const pick = () => { const q = r(); return q < .62 ? '#ff7ab8' : q < .81 ? '#5b9bff' : '#ffa040'; };
+    const pick = () => { const q = r(); return q < .62 ? '#60a5fa' : q < .84 ? '#fb923c' : '#fbbf24'; };   /* logo palette: blue · orange · amber */
     const px = n => n.toFixed(0) + 'px', sec = n => n.toFixed(2) + 's';
     const nl = small ? 10 : 16, fl = document.createDocumentFragment();
     for(let i=0;i<nl;i++){
       const e = document.createElement('i'), q = r();
-      e.style.cssText = `--a:${(i/nl*360 + (r()*16-8)).toFixed(1)}deg;--L:${px(vmin*(.16+r()*.2))};--f:${px(vmax*(.55+r()*.15))};--n:${px(lw*(.62+r()*.14))};--z:${px(lw*.16)};--d:${sec(1+r()*.5)};--l:${sec(.2+r()*.8)};--c:${q<.7?'rgba(255,61,143,.6)':q<.85?'rgba(59,130,246,.6)':'rgba(255,150,40,.6)'}`;
+      e.style.cssText = `--a:${(i/nl*360 + (r()*16-8)).toFixed(1)}deg;--L:${px(vmin*(.16+r()*.2))};--f:${px(vmax*(.55+r()*.15))};--n:${px(lw*(.62+r()*.14))};--z:${px(lw*.16)};--d:${sec(.78+r()*.39)};--l:${sec(.16+r()*.62)};--c:${q<.7?'rgba(59,130,246,.55)':q<.88?'rgba(251,146,60,.5)':'rgba(251,191,36,.45)'}`;
       fl.appendChild(e);
     }
     lines.appendChild(fl);
@@ -1063,7 +1063,7 @@ const Intro = (() => {
       const a = r()*TAU, a2 = r()*TAU, rr = lw*(.5+r()*.25), br = vmax*(.4+r()*.5);
       const sx = r()<.5?-1:1, sy = r()<.5?-1:1;
       if(big) e.className = 'dof';
-      e.style.cssText = `--s:${sz.toFixed(1)}px;--o:${(.3+r()*.55).toFixed(2)};--c:${pick()};--d:3.6s;--l:${sec(.08+r()*.42)};--x0:${px(sx*vw*(.08+r()*.46))};--y0:${px(sy*vh*(.08+r()*.46))};--rx:${px(Math.cos(a)*rr)};--ry:${px(Math.sin(a)*rr)};--bx:${px(Math.cos(a2)*br)};--by:${px(Math.sin(a2)*br)}`;
+      e.style.cssText = `--s:${sz.toFixed(1)}px;--o:${(.3+r()*.55).toFixed(2)};--c:${pick()};--d:2.8s;--l:${sec(.06+r()*.33)};--x0:${px(sx*vw*(.08+r()*.46))};--y0:${px(sy*vh*(.08+r()*.46))};--rx:${px(Math.cos(a)*rr)};--ry:${px(Math.sin(a)*rr)};--bx:${px(Math.cos(a2)*br)};--by:${px(Math.sin(a2)*br)}`;
       fd.appendChild(e);
     }
     dust.appendChild(fd);
@@ -1073,7 +1073,7 @@ const Intro = (() => {
     clearTimeout(timer);
     root.classList.add('intro-go');
     node.classList.add('go');
-    timer = setTimeout(finish, reduced() ? 2600 : 6400);
+    timer = setTimeout(finish, reduced() ? 2600 : 5000);   /* CSS hand-off ends ≈4.1s (introOut 3.51s + .55s); this is the safety removal */
   }
   function init(){
     try{
