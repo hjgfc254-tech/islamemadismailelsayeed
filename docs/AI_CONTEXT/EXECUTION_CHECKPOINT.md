@@ -8,16 +8,17 @@ Compact resume state for autonomous sessions. Update after every committed batch
 3. Provider P2 real-browser QA + visual fixes — `b2003ae` (runner `tests/e2e/provider-standalone.cdp.js`, 170/170).
 4. Service Worker precache completeness — `c137eef` (offline Customer home proven broken before / working after).
 5. Provider P3 legacy parity audit — `docs/PROVIDER_LEGACY_PARITY_AUDIT.md` (new), `tests/unit/provider-legacy-parity.test.js` (new, 6), docs.
-   No runtime change. `npm test` 243/243.
+   No runtime change. `npm test` 243/243. Commit `7bbe4c8`.
+6. Provider G3 + G4 — `apps/provider/app.js` (completion preview), `styles/provider.css` (`.pv-calc`), `login.html` (demo hand-off),
+   harness `input()`, tests (+3 unit), CDP runner (+16 checks), SW cache `-10`, docs. `npm test` 246/246; browser 186/186.
 
 ## Current task
-Provider parity gaps G3 (commission preview on completion) + G4 (`login.html` placeholder) — see `START_HERE.md`.
+Provider G1 standalone self-registration (see `START_HERE.md`).
 
 ## Remaining queue (priority order)
-1. G3 + G4.
-2. G1 standalone self-registration (field set/validation in audit §4).
-3. Decision needed before acting: reroute Customer «بوابة مقدم الخدمة»/«انضم الآن» to the standalone app; legacy Admin console in `portal-compat.js` vs `apps/admin/`.
-4. Then `docs/AI_NEXT_IMPLEMENTATION_ORDER.md` phases (Customer extraction, Admin modules, design-system split, Guest) — verify each target first.
+1. G1 standalone self-registration (field set/validation in audit §4).
+2. Decision needed before acting: reroute Customer «بوابة مقدم الخدمة»/«انضم الآن» to the standalone app; legacy Admin console in `portal-compat.js` vs `apps/admin/`.
+3. Then `docs/AI_NEXT_IMPLEMENTATION_ORDER.md` phases (Customer extraction, Admin modules, design-system split, Guest) — verify each target first.
 
 ## Open decisions
 - Zero-total Provider quotes are accepted (no documented rule).
@@ -27,4 +28,4 @@ Provider parity gaps G3 (commission preview on completion) + G4 (`login.html` pl
 - Admin is not an offline/PWA entry and is not precached.
 
 ## Exact next action
-In `apps/provider/app.js`, extend `openForm('complete')` with a preview element and an `input` listener on the host for `#pv-complete-form`; test via harness.
+Read legacy `providerForm`/`pvForm` and `MP.registerProvider`; add a `register` action + inline form to the standalone account picker; tests first.

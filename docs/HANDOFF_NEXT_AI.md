@@ -347,3 +347,14 @@ Frontend only. Do not touch `backend/`, `database/`, production auth/API, paymen
 **Recommendation:** keep both legacy files loaded; implement G3/G4, then G1; record a decision before rerouting Customer entries; legacy Admin console parity is a separate audit.
 **Tests:** parity 6/6; `npm test` **243/243**. Browser: not applicable (no UI change).
 **Next:** G3 + G4 (see `START_HERE.md`).
+---
+
+# AGENT HANDOFF — 2026-11-13 — Provider parity gaps G3 + G4 (Claude Code)
+
+**Goal:** close audit gaps G3 and G4. **Baseline:** `npm test` 243/243 (`7bbe4c8`).
+**Modified:** `apps/provider/app.js` (`completionPreview`, `onInput`, `data-rate` + `#pv-complete-preview` in the completion form), `apps/provider/styles/provider.css` (`.pv-calc`), `apps/provider/login.html` (demo hand-off), `tests/helpers/provider-app-harness.js` (`input()`, stable id stubs), `provider-app-actions.test.js` (+1), `provider-pages.test.js` (+1 login, allowlist id), `provider-legacy-parity.test.js` (G3 now closed), `tests/e2e/provider-standalone.cdp.js` (+login hand-off, +typing preview per viewport), `service-worker.js` cache `-10` + 4 cache-literal tests, docs.
+
+**Behavior:** completion form shows platform commission, deductions and net for the typed value using `MP.rateFor(category, provider)` (special rate wins) and `MP.calc`, same as legacy `#finPrev`; invalid deductions show a hint; preview never mutates. `/provider/login` now hands off to the standalone demo picker with a "no real authentication" notice and no credential fields.
+**Caught by guards:** the class-coverage test flagged the new `.pv-calc` before its CSS existed.
+**Tests:** `npm test` **246/246**. Browser (real Edge, CDP runner): **186/186** at 1280/768/430/390/320, including typing into the completion form.
+**Next:** G1 standalone self-registration (see `START_HERE.md`).

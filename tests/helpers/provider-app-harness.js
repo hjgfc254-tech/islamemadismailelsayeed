@@ -50,6 +50,7 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
   const listeners = { host: {}, window: {} };
   const fetchCalls = [];
   const focus = { current: null, history: [], scrollBehaviors: [] };
+  const idEls = {};
   const setFocus = what => { focus.current = what; focus.history.push(what); };
   const reducedMotion = { value: false };
   const view = element({ focus: () => setFocus('view') }), nav = element(), toastEl = element(), logout = element({ hidden: true });
@@ -58,6 +59,7 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
     const id = /^#([\w-]+)$/.exec(sel);
     if (id) {
       if (!view.innerHTML.includes(`id="${id[1]}"`)) return null;
+      if (!id[1].endsWith('-form')) return idEls[id[1]] || (idEls[id[1]] = element({ id: id[1] })); // stable stub so tests can read textContent
       return element({ id: id[1], scrollIntoView: opts => focus.scrollBehaviors.push(opts && opts.behavior),
         querySelector: () => element({ focus: () => setFocus('field:' + id[1]) }) });
     }
@@ -136,6 +138,15 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
       withHashSync(() => (listeners.host.submit || []).forEach(fn => fn({ target: form, preventDefault: () => { prevented = true; } })));
       return { prevented };
     },
+    /* Type into an open inline form: sets field values and dispatches the app's delegated `input` listener. */
+    input(formId, values) {
+      const tag = findTag(view.innerHTML, { id: formId });
+      if (!tag) throw new Error('Form not rendered: ' + formId);
+      formValues = values;
+      const form = { id: formId, dataset: toDataset(tag) };
+      (listeners.host.input || []).forEach(fn => fn({ target: { closest: sel => (sel === '#' + formId ? form : null) } }));
+    },
+    el: id => idEls[id],
     /* Press a key with focus inside the open inline form (inForm) or elsewhere in the app. */
     key(key, { inForm = true } = {}) {
       const target = { closest: sel => (sel === '.pv-inline-form' && inForm && /<form class="pv-inline-form"/.test(view.innerHTML) ? {} : null) };

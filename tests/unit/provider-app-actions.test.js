@@ -315,6 +315,30 @@ test('valid completion records one local demo transaction and cannot be repeated
   assert.equal(app.MP.db().transactions.filter(t => t.reqId === rid).length, 1);
 });
 
+test('completion form previews platform commission and net live, using the provider/category rate (G3 parity)', () => {
+  const { app, rid } = withOffer(MP => { MP.db().settings.rates.electric = 12; });
+  walkTo(app, rid, 'started');
+  app.click({ 'data-pv-action': 'complete', 'data-id': rid });
+  const rate = app.MP.rateFor('electric', PROVIDER);
+  assert.equal(rate, 12);
+  assert.match(app.html(), /id="pv-complete-form" data-id="[^"]+" data-rate="12"/);
+  assert.match(app.html(), /<p class="pv-calc" id="pv-complete-preview" aria-live="polite">أدخل القيمة لمعاينة عمولة المنصة \(12%\)/);
+  const money = n => n.toLocaleString('ar-EG', { maximumFractionDigits: 2 }) + ' ج.م';
+  app.input('pv-complete-form', { value: '500', deductions: '20' });
+  const x = app.MP.calc(500, 12, 20);
+  assert.equal(x.commission, 60); assert.equal(x.net, 420);
+  assert.equal(app.el('pv-complete-preview').textContent, `عمولة المنصة (12%): ${money(60)} • الخصومات: ${money(20)} • صافي مستحقك التجريبي: ${money(420)}`);
+  app.input('pv-complete-form', { value: '100', deductions: '150' });
+  assert.equal(app.el('pv-complete-preview').textContent, 'الخصم يجب أن يكون بين صفر وقيمة الخدمة.');
+  app.input('pv-complete-form', { value: '', deductions: '0' });
+  assert.match(app.el('pv-complete-preview').textContent, /^أدخل القيمة/);
+  const special = withOffer(MP => { MP.updateProvider(PROVIDER, { specialRate: 7 }); });
+  walkTo(special.app, special.rid, 'started');
+  special.app.click({ 'data-pv-action': 'complete', 'data-id': special.rid });
+  assert.match(special.app.html(), /data-rate="7"/, 'provider special rate wins, as in MP.rateFor');
+  assert.equal(app.request(rid).status, 'started', 'preview never mutates');
+});
+
 test('completion form suggests the approved quote total', () => {
   const { app, rid } = withOffer();
   walkTo(app, rid, 'started');

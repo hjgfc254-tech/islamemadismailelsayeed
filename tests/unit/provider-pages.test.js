@@ -60,8 +60,8 @@ test('provider stylesheet sizes ic() icons and the entry declares a favicon (P2 
 test('every pv-* class emitted by the Provider runtime has a rule in provider.css', () => {
   const css=fs.readFileSync(path.join(ROOT,'apps/provider/styles/provider.css'),'utf8');
   const sources=['apps/provider/app.js','apps/provider/provider-shell.js',...fs.readdirSync(path.join(ROOT,'apps/provider/pages')).map(f=>`apps/provider/pages/${f}`)];
-  /* Not classes: inline form ids (styled via .pv-inline-form). Modifier styled by its base class: pv-finance-kpis (+ .pv-kpis). */
-  const notStyledByOwnRule=new Set(['pv-reject-form','pv-propose-form','pv-quote-form','pv-complete-form','pv-finance-kpis']);
+  /* Not classes: inline form ids (styled via .pv-inline-form) and the preview id (styled via .pv-calc). Modifier styled by its base class: pv-finance-kpis (+ .pv-kpis). */
+  const notStyledByOwnRule=new Set(['pv-reject-form','pv-propose-form','pv-quote-form','pv-complete-form','pv-complete-preview','pv-finance-kpis']);
   const missing=new Set();
   for(const file of sources){
     const js=fs.readFileSync(path.join(ROOT,file),'utf8');
@@ -74,8 +74,19 @@ test('every pv-* class emitted by the Provider runtime has a rule in provider.cs
   assert.match(css,/\.pv-availability\.is-on\{/,'availability on-state is visually distinct');
 });
 
+test('provider login route hands off to the standalone demo picker and collects no credentials (G4)', () => {
+  const html=fs.readFileSync(path.join(ROOT,'apps/provider/login.html'),'utf8');
+  assert.match(html,/<html lang="ar" dir="rtl">/);
+  assert.match(html,/http-equiv="refresh" content="0;url=index\.html"/);
+  assert.match(html,/location\.replace\('index\.html'\+location\.hash\)/);
+  assert.match(html,/<a href="index\.html">/,'no-JS fallback link');
+  assert.match(html,/لا توجد مصادقة فعلية/,'demo notice');
+  assert.doesNotMatch(html,/<input|<form|password/i,'must not imitate a real login');
+  assert.match(fs.readFileSync(path.join(ROOT,'_redirects'),'utf8'),/^\/provider\/login \/apps\/provider\/login\.html 200$/m);
+});
+
 test('service worker precaches standalone Provider entry, renderer modules and bumps cache version', () => {
   const sw=fs.readFileSync(path.join(ROOT,'service-worker.js'),'utf8');
-  assert.match(sw,/hansalhlak-v8-architecture-9/);
+  assert.match(sw,/hansalhlak-v8-architecture-10/);
   for(const file of ['apps/provider/index.html','apps/provider/styles/provider.css','apps/provider/app.js',...fs.readdirSync(path.join(ROOT,'apps/provider/pages')).filter(x=>x.endsWith('.js')).map(x=>`apps/provider/pages/${x}`)]) assert.ok(sw.includes(`'${file}'`),`${file} should be precached`);
 });

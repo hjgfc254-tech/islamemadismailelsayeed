@@ -115,7 +115,7 @@
     if(kind==='reject') dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-reject-form" data-id="${esc(id)}" ${named('رفض الطلب')}><label>سبب الرفض<select name="reason" required><option>خارج نطاق تخصصي</option><option>خارج المنطقة</option><option>غير متاح في الموعد</option><option>أخرى</option></select></label><button class="pv-btn pv-btn-primary">تأكيد الرفض</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
     if(kind==='propose') dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-propose-form" data-id="${esc(id)}" ${named('اقتراح موعد للطلب')}><label>الموعد المقترح<input type="datetime-local" name="at" required min="${new Date(Date.now()+60000).toISOString().slice(0,16)}"></label><button class="pv-btn pv-btn-primary">إرسال الاقتراح</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
     if(kind==='quote') { const q=MP.currentQuote(id); dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-quote-form" data-id="${esc(id)}" ${named('عرض سعر للطلب')}><label>المصنعية<input name="labor" type="number" min="0" step="0.01" required value="${q?.labor??''}"></label><label>قطع الغيار<input name="parts" type="number" min="0" step="0.01" value="${q?.parts??0}"></label><label>رسوم المعاينة<input name="visitFee" type="number" min="0" step="0.01" value="${q?.visitFee??0}"></label><label>الخصم<input name="discount" type="number" min="0" step="0.01" value="${q?.discount??0}"></label><label>ملاحظة<textarea name="note" maxlength="300">${esc(q?.note||'')}</textarea></label><button class="pv-btn pv-btn-primary">إرسال عرض السعر</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`); }
-    if(kind==='complete') { const q=MP.currentQuote(id); const suggested=q?.status==='approved'?q.total:''; dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-complete-form" data-id="${esc(id)}" ${named('تسجيل إكمال الطلب')}><label>القيمة النهائية (ج.م)<input name="value" type="number" min="1" step="0.01" required value="${suggested}"></label><label>خصومات معلنة<input name="deductions" type="number" min="0" step="0.01" value="0"></label><button class="pv-btn pv-btn-primary">تأكيد اكتمال الخدمة</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`); }
+    if(kind==='complete') { const q=MP.currentQuote(id); const suggested=q?.status==='approved'?q.total:''; const p=currentProvider(); const rate=p?Number(MP.rateFor(request.cat,p.id))||0:0; dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-complete-form" data-id="${esc(id)}" data-rate="${rate}" ${named('تسجيل إكمال الطلب')}><label>القيمة النهائية (ج.م)<input name="value" type="number" min="1" step="0.01" required value="${suggested}"></label><label>خصومات معلنة<input name="deductions" type="number" min="0" step="0.01" value="0"></label><p class="pv-calc" id="pv-complete-preview" aria-live="polite">${completionPreview(rate,suggested,0)}</p><button class="pv-btn pv-btn-primary">تأكيد اكتمال الخدمة</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`); }
     const form=$('#'+({reject:'pv-reject-form',propose:'pv-propose-form',quote:'pv-quote-form',complete:'pv-complete-form'}[kind]),dom.view);
     if(form) { form.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'center'}); form.querySelector('input,select')?.focus({preventScroll:true}); }
   }
@@ -131,6 +131,21 @@
   function invalid(form,message) {
     toast(message);
     $('#'+form.id,dom.view)?.querySelector('input,select,textarea')?.focus({preventScroll:true});
+  }
+
+  /* Live commission/net preview while completing a job (parity with legacy #finPrev; local demo figures only). */
+  function completionPreview(rate,value,deductions) {
+    const v=Number(value), d=Number(deductions||0);
+    if(!(v>0)) return `أدخل القيمة لمعاينة عمولة المنصة (${rate}%) وصافي مستحقك التجريبي.`;
+    if(!Number.isFinite(d)||d<0||d>v) return 'الخصم يجب أن يكون بين صفر وقيمة الخدمة.';
+    const x=MP.calc(v,rate,d);
+    return `عمولة المنصة (${rate}%): ${money(x.commission)} • الخصومات: ${money(x.deductions)} • صافي مستحقك التجريبي: ${money(x.net)}`;
+  }
+
+  function onInput(event) {
+    const form=event.target.closest('#pv-complete-form'); if(!form) return;
+    const data=new FormData(form), out=$('#pv-complete-preview',dom.view);
+    if(out) out.textContent=completionPreview(Number(form.dataset.rate)||0,data.get('value'),data.get('deductions'));
   }
 
   function onKeydown(event) {
@@ -189,6 +204,7 @@
     dom.host.addEventListener('click',onClick);
     dom.host.addEventListener('submit',onSubmit);
     dom.host.addEventListener('keydown',onKeydown);
+    dom.host.addEventListener('input',onInput);
     root.addEventListener('hashchange',()=>render());
     if(!location.hash) router.navigate('home');
     render();

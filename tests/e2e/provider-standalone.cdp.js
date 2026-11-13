@@ -99,6 +99,10 @@ async function run({ exe, wsUrl }) {
     return found;
   };
 
+  // G4: the login route hands off to the standalone demo picker.
+  await cdp.send('Page.navigate', { url: BASE + '/apps/provider/login.html' });
+  ok(await waitFor('/\\/apps\\/provider\\/index\\.html/.test(location.pathname) && !!document.querySelector("#provider-view")', 5000), 'login.html hands off to the standalone Provider entry');
+
   for (const [w, h] of VIEWPORTS) {
     const tag = `${w}px`;
     errors.length = 0;
@@ -161,6 +165,17 @@ async function run({ exe, wsUrl }) {
     const after = await evaluate(`[${avail}.getAttribute('aria-pressed'),getComputedStyle(${avail}).color,document.activeElement===${avail}]`);
     ok(before[0] !== after[0] && before[1] !== after[1] && after[2], `${tag} availability toggle: aria-pressed and colour change, focus kept`);
     await evaluate(`${avail}.click()`); await sleep(50);
+
+    // G3: typing into the completion form updates the commission/net preview live.
+    await evaluate(`MP.confirmTime('${rid}','provider');['enroute','arrived','started'].forEach(s=>MP.advance('${rid}',s));location.hash='#/progress';true`); await sleep(120);
+    if (await focusEl(`[data-pv-action="complete"][data-id="${rid}"]`, `${tag} complete`)) {
+      await ENTER();
+      ok(await waitFor('document.activeElement?.name === "value"'), `${tag} completion form focuses the value field`);
+      await cdp.send('Input.insertText', { text: '500' });
+      ok(await waitFor(`/صافي مستحقك التجريبي/.test(document.querySelector('#pv-complete-preview')?.textContent||'')`), `${tag} typing a value updates the commission/net preview`);
+      ok(await noOverflow(), `${tag} completion form with preview: no horizontal overflow`);
+      await ESC();
+    }
 
     // Deep link + reload keeps the demo session and shows the request.
     await evaluate(`location.hash='#/request/${rid}'`); await sleep(80);

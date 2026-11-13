@@ -1,7 +1,7 @@
 # HANSALEHLAK V8 — START HERE
 
 **Current phase:** FRONTEND ONLY  
-**Latest verified baseline:** `npm test` → 243/243 passed (2026-11-13, after Provider P3 parity audit). Real-browser Provider QA: 170/170.  
+**Latest verified baseline:** `npm test` → 246/246 passed (2026-11-13, after Provider G3+G4). Real-browser Provider QA: 186/186.  
 **Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md`  
 **Current handoff:** `docs/HANDOFF_NEXT_AI.md`  
 **Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`  
@@ -25,12 +25,13 @@
 - Shared: design system, local stores, UI primitives and shared components; reuse actual APIs rather than duplicating them.
 - `backend/` and `database/` are future scaffolding and OUT OF SCOPE.
 
-## Exact next task — Provider parity gaps G3 + G4
-P0–P3 are done; see `docs/PROVIDER_LEGACY_PARITY_AUDIT.md` §4.
-- **G3:** in the standalone completion form (`apps/provider/app.js` `openForm('complete')`), add a live commission/net preview using
-  `MP.rateFor(request.cat, provider.id)` and `MP.calc(value, rate, deductions)`, matching legacy `#finPrev`; polite live text; tests with the existing harness.
-- **G4:** replace the `apps/provider/login.html` placeholder with a demo-labelled page that leads to `apps/provider/index.html` (picker). Keep `_redirects`.
-Then **G1** standalone self-registration (field set and validation in the audit §4). Do not reroute Customer menu entries or unload the legacy bridge.
+## Exact next task — Provider G1 standalone self-registration
+P0–P3, G3 and G4 are done (`docs/PROVIDER_LEGACY_PARITY_AUDIT.md`). Add a demo-labelled "register as a new provider" flow to the
+standalone account picker (`apps/provider/app.js`), reusing the legacy field set and validation (`portal-compat.js` `providerForm` + `pvForm`
+submit): name, phone `[0-9+ ]{8,15}`, type, ≥1 specialty (`SERVICE_TYPES` keys / `MP.catName`), ≥1 governorate (`MP.GOVS`), optional areas
+(split on `،`/`,`), years 0–60, bio ≤300, docs names. Submit → `MP.registerProvider(v)` (status `pending`) → select the new demo identity →
+existing gate screen. Accessible form (labels, focus, Escape), behavior tests with the harness, real-browser check with the CDP runner.
+Do not reroute Customer menu entries or unload the legacy bridge.
 
 ## Required finish gate
 Run targeted tests, then `npm test`; browser QA when available; update domain/page/status/handoff docs; run:

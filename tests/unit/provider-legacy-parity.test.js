@@ -101,7 +101,11 @@ test('documented gaps: legacy-only Provider capabilities not present in the stan
   // Profile editing (provider-workspace data-pw-edit-profile → providerForm).
   assert.ok(read('apps/provider/provider-workspace.js').includes('providerForm(p, false)'));
   assert.match(read('apps/provider/pages/profile.page.js'), /تعديل الملف .* غير متاحين/, 'standalone profile is read-only by explicit decision (gap G2)');
-  // Live commission/net preview while completing a job.
-  assert.ok(legacy.includes('id="finPrev"'));
-  assert.ok(!standalone.includes('rateFor('), 'standalone completion form has no commission preview (gap G3)');
+});
+
+test('closed gap G3: both paths preview commission/net with the same MP.rateFor + MP.calc while completing', () => {
+  const legacy = read('apps/provider/legacy/portal-compat.js');
+  const standalone = read('apps/provider/app.js');
+  assert.ok(legacy.includes('id="finPrev"') && legacy.includes('MP.rateFor(') && legacy.includes('MP.calc('));
+  assert.ok(standalone.includes('id="pv-complete-preview"') && standalone.includes('MP.rateFor(') && standalone.includes('MP.calc('));
 });
