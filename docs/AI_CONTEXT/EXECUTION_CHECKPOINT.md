@@ -18,16 +18,19 @@ Compact resume state for autonomous sessions. Update after every committed batch
 9. Customer routing/session/guest — placeholders converted to real modules: `apps/customer/customer-session.js`, `customer-router.js`,
    `apps/guest/guest-policy.js`, `guest-entry.js` (+ `apps/guest/README.md`); wired into `index.html`, `app.js`, `account.page.js`, `market-ui.page.js`,
    `request-wizard.page.js`; SW cache `-13`. Tests: `customer-routing-session.test.js` (12; 0/12 on placeholders), shared `customer-app-harness.js`.
-   `npm test` 277/277; Customer browser 68/68.
+   `npm test` 277/277; Customer browser 68/68. Commit `e4c2f99`.
+10. Customer providers + request-create — placeholders converted: `apps/customer/pages/providers.page.js` (extracted from market-ui,
+   78 renders byte-identical), `pages/request-create.page.js` (`#/request[/<catalogId>]` → existing wizard). Fixed: `hashchange` now reads
+   `event.newURL` (Chromium popstate-before-hashchange clobbered typed links). Tests: `customer-providers-page` (6), `customer-request-create` (6),
+   +1 routing regression; SW cache `-14`. `npm test` 290/290; Customer browser 75/75.
 
 ## Current task
-Customer `providers.page.js` extraction and `request-create.page.js` route entry (see `START_HERE.md`).
+Admin placeholders as real frontend modules (see `START_HERE.md`).
 
 ## Remaining queue (priority order)
-1. `providers.page.js` + `request-create.page.js` (real implementations).
-2. Admin placeholders (`admin-router`/`navigation-builder`/`permission-guard`/`admin-session`/`login.html`, `modules/*`): extract from `admin-shell.js`/pages, no duplication.
-3. Customer Addresses + Support a11y; console/network smoke; Admin keyboard traversal.
-4. Not implementable in this phase: `services/*-api.js` (backend HTTP); split design-system CSS (needs a migration decision).
+1. Admin placeholders (`admin-router`/`navigation-builder`/`permission-guard`/`admin-session`/`login.html`, `modules/*`): extract from `admin-shell.js`/pages, no duplication.
+2. Customer Addresses + Support a11y; console/network smoke; Admin keyboard traversal.
+3. Not implementable in this phase: `services/*-api.js` (backend HTTP); split design-system CSS (needs a migration decision).
 
 ## Pending user decisions
 - Reroute Customer «بوابة مقدم الخدمة»/«انضم الآن» to the standalone Provider app (separate demo identities).
@@ -36,5 +39,4 @@ Customer `providers.page.js` extraction and `request-create.page.js` route entry
 - `test-write.tmp` is ignored locally but listed in the inventory (a clean clone reports it missing).
 
 ## Exact next action
-Read `apps/customer/pages/addresses.page.js` and `support.page.js` (event handlers, sheets, forms); extend the
-`customer-screen-focus.test.js` harness approach to those flows before changing code.
+Read `docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md`, `apps/admin/admin-shell.js` (router/nav/RBAC parts) and `rbac-store.js`; map each Admin placeholder to the code it should own.

@@ -44,7 +44,8 @@ test('router parses and formats every supported deep link and rejects everything
   for (const bad of ['', '#', '#/', '#/admin', '#/track', '#/track/', '#/track/a/b', '#/orders/x', '#/track/%E0%A4%A', '#/track/<script>', '#/track/' + 'x'.repeat(65)]) {
     assert.equal(R.parse(bad), null, bad);
   }
-  for (const [screen, id] of [['wizard'], ['details', 'electric'], ['tracking'], ['tracking', 'bad id'], ['providerDetails', '']]) assert.equal(R.format(screen, id), '', `${screen} has no deep link`);
+  for (const [screen, id] of [['details', 'electric'], ['tracking'], ['tracking', 'bad id'], ['providerDetails', '']]) assert.equal(R.format(screen, id), '', `${screen} has no deep link`);
+  assert.equal(R.format('wizard'), '#/request', 'the wizard screen is the request-create route');
 });
 
 test('router sync mirrors the screen with replaceState only when the hash changes', () => {
@@ -56,7 +57,7 @@ test('router sync mirrors the screen with replaceState only when the hash change
   assert.deepEqual(calls, [[{ tab: 'x' }, '#/orders']], 'keeps history.state');
   R.sync('orders');
   assert.equal(calls.length, 1, 'no write when unchanged');
-  assert.equal(R.sync('wizard'), '');
+  assert.equal(R.sync('details', 'electric'), '');
   assert.equal(calls.length, 1, 'non-routable screens leave the URL alone');
 });
 
@@ -180,6 +181,15 @@ test('app: editing the address bar (hashchange) navigates; sign-in validation us
   guest.submitDoc('loginFormAcc', { name: 'سارة', phone: '12' });
   assert.match(guest.toast(), /رقم الهاتف غير صحيح/);
   assert.equal(guest.local._map.get('hs_user') ?? null, null);
+});
+
+test('app: editing the address bar while a stacked screen is open still opens the typed link (popstate fires first)', () => {
+  const app = boot();
+  app.run("startRequest()");                       // wizard open → state.stack = ['wizard']
+  assert.equal(app.location.hash, '#/request');
+  app.navigate('#/provider/p_demo1');              // popstate pops the wizard and re-renders home before hashchange
+  assert.match(app.html(), /تفاصيل مقدم الخدمة/, 'the typed provider link wins');
+  assert.equal(app.location.hash, '#/provider/p_demo1');
 });
 
 test('app: logout and account deletion clear the demo identity through the session module', () => {

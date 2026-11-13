@@ -6,7 +6,8 @@
  */
 'use strict';
 (function (root) {
-  const PUBLIC = Object.freeze(['home', 'sections', 'search', 'account', 'providerDetails']);
+  /* requestCreate is public: the wizard itself collects contact details and signs the visitor in on submit */
+  const PUBLIC = Object.freeze(['home', 'sections', 'search', 'account', 'providerDetails', 'requestCreate']);
   const CUSTOMER_ONLY = Object.freeze(['orders', 'tracking']);
 
   /**

@@ -13,7 +13,7 @@ test('accessible tabs helper is loaded before Customer and Admin page code and p
   assert(customer.indexOf('accessible-tabs.js') < customer.indexOf('<script src="app.js">'));
   assert(admin.indexOf('accessible-tabs.js') < admin.indexOf('<script src="admin-shell.js">'));
   assert(sw.includes("'shared/components/accessible-tabs.js'"));
-  assert(sw.includes("'hansalhlak-v8-architecture-13'"));
+  assert(sw.includes("'hansalhlak-v8-architecture-14'"));
 });
 
 test('all multi-panel Admin tablists opt into shared keyboard navigation', () => {

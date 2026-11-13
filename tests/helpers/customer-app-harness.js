@@ -7,7 +7,9 @@ const vm = require('node:vm');
 
 const ROOT = path.resolve(__dirname, '../..');
 const ENTRY = 'apps/customer/index.html';
-const scripts = () => [...fs.readFileSync(path.join(ROOT, ENTRY), 'utf8').matchAll(/<script src="([^"]+)"><\/script>/g)]
+/* `override` maps repo-relative paths to source text (e.g. a previous git revision) — used for extraction parity checks. */
+const readSrc = (f, override = {}) => (f in override ? override[f] : fs.readFileSync(path.join(ROOT, f), 'utf8'));
+const scripts = (override = {}) => [...readSrc(ENTRY, override).matchAll(/<script src="([^"]+)"><\/script>/g)]
   .map(m => path.posix.normalize(path.posix.join('apps/customer', m[1])));
 
 function storage(seed = {}) {
@@ -16,7 +18,7 @@ function storage(seed = {}) {
 }
 
 /* boot({hash, local, session}) — `local`/`session` seed storage before scripts load (MP reads localStorage at load). */
-function boot({ hash = '', local = {}, session = {} } = {}) {
+function boot({ hash = '', local = {}, session = {}, override = {} } = {}) {
   const docListeners = {}, winListeners = {}, focus = { current: null, history: [] };
   const historyLog = [];
   const connected = new Set();
@@ -60,12 +62,12 @@ function boot({ hash = '', local = {}, session = {} } = {}) {
   const win = { addEventListener: (t, f) => (winListeners[t] = winListeners[t] || []).push(f), removeEventListener() {} };
   const ctx = { console, setTimeout: () => 0, clearTimeout() {}, setInterval: () => 0, clearInterval() {},
     localStorage: local$, sessionStorage: session$, document: doc, window: win, history, navigator: {}, location,
-    matchMedia: () => ({ matches: false, addEventListener() {} }), innerWidth: 390, innerHeight: 800, Image: function () {}, URL: {}, File: function () {},
+    matchMedia: () => ({ matches: false, addEventListener() {} }), innerWidth: 390, innerHeight: 800, Image: function () {}, URL, File: function () {},
     Blob: function () {}, requestAnimationFrame: () => 0, indexedDB: undefined, Event: function () {}, CustomEvent: function () {},
     MutationObserver: function () { return { observe() {}, disconnect() {} }; }, confirm: () => true };
   ctx.globalThis = ctx; ctx.self = ctx;
   vm.createContext(ctx);
-  for (const f of scripts()) vm.runInContext(fs.readFileSync(path.join(ROOT, f), 'utf8'), ctx, { filename: f });
+  for (const f of scripts(override)) vm.runInContext(readSrc(f, override), ctx, { filename: f });
   const run = code => vm.runInContext(code, ctx);
   (docListeners.DOMContentLoaded || []).forEach(f => f());
   const clickDoc = dataset => {
@@ -78,8 +80,15 @@ function boot({ hash = '', local = {}, session = {} } = {}) {
     ctx.FormData = function () { return { get: k => (k in values ? values[k] : null), getAll: k => [].concat(values[k] ?? []) }; };
     (docListeners.submit || []).forEach(f => f({ target: form, preventDefault() {} }));
   };
-  /* Simulate the user editing the address bar: change the hash and fire hashchange. */
-  const navigate = h => { location.hash = h; (winListeners.hashchange || []).forEach(f => f({})); };
+  /* Simulate the user editing the address bar like Chromium does: the hash changes, `popstate` fires first, then
+     `hashchange` with oldURL/newURL. Handlers that run on popstate may rewrite location.hash before hashchange runs. */
+  const navigate = h => {
+    const oldURL = 'http://localhost/apps/customer/index.html' + location.hash;
+    location.hash = h;
+    const newURL = 'http://localhost/apps/customer/index.html' + h;
+    (winListeners.popstate || []).forEach(f => f({ state: history.state }));
+    (winListeners.hashchange || []).forEach(f => f({ oldURL, newURL }));
+  };
   return { run, view, focus, doc, body, tabEl, clickDoc, submitDoc, navigate, location, history, historyLog, local: local$, session: session$,
     toast: () => getEl('#toast').textContent,
     html: () => view.innerHTML,

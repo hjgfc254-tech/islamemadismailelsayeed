@@ -106,6 +106,20 @@ async function run({ exe, wsUrl }) {
     // Signed-in deep link on a fresh load.
     await cdp.send('Page.navigate', { url: `${ENTRY}#/orders` }); await sleep(100); await cdp.send('Page.reload', { ignoreCache: true });
     ok(await waitFor('!!document.querySelector("#view .order-filter")', 6000), `${tag} signed-in reload of #/orders opens Orders`);
+    // request-create route: opens the existing wizard preselected at the problem step; provider deep link uses providers.page.js.
+    // Fresh document loads (via about:blank): Page.navigate to a fragment-only change is same-document and the router rewrites the URL.
+    const freshLoad = async url => { await cdp.send('Page.navigate', { url: 'about:blank' }); await sleep(150); await cdp.send('Page.navigate', { url }); await waitFor('document.readyState==="complete"', 6000); };
+    await freshLoad(`${ENTRY}#/request/${encodeURIComponent('appliances/ac/no-cooling')}`);
+    ok(await waitFor('typeof WZ!=="undefined" && WZ && WZ.step===3 && WZ.problem==="appliances/ac/no-cooling"', 6000), `${tag} #/request/<problem> opens the wizard at the problem step`);
+    ok(await waitFor('!!document.querySelector("#view [data-wz-heading]")'), `${tag} wizard screen is rendered`);
+    ok(await evaluate(`location.hash === '#/request'`), `${tag} URL mirrors the wizard route`);
+    ok(await noOverflow(), `${tag} wizard: no horizontal overflow`);
+    // Same-document address-bar edit while the wizard is open: Chromium fires popstate before hashchange (regression check).
+    await evaluate(`location.hash='#/provider/p_demo1'; true`);
+    ok(await waitFor('/تفاصيل مقدم الخدمة/.test(document.querySelector("#view .dhead h2")?.textContent||"")'), `${tag} editing the hash from the open wizard opens the typed provider link`);
+    await freshLoad(`${ENTRY}#/provider/p_demo1`);
+    ok(await waitFor('/تفاصيل مقدم الخدمة/.test(document.querySelector("#view .dhead h2")?.textContent||"") && !!document.querySelector("#view .provider-hero")', 6000), `${tag} #/provider/<id> renders provider details`);
+    ok(await noOverflow(), `${tag} provider details: no horizontal overflow`);
     ok(errors.length === 0, `${tag} no JS errors or failed local requests${errors.length ? ' — ' + errors.slice(0, 3).join(' | ') : ''}`);
   }
 

@@ -4,7 +4,7 @@
 
 ### Customer
 - Entry: `apps/customer/index.html`
-- Ordered classic scripts (verified against `index.html` 2026-11-13): icon registry → accessible tabs → legacy data → local catalog → local market store → `customer-session.js` → `customer-router.js` → `../guest/guest-policy.js` → `../guest/guest-entry.js` → `pages/home.page.js` → `apps/customer/app.js` → UI kit → `pages/orders.page.js` → `pages/order-details.page.js` → market UI → request wizard → Provider legacy compatibility bridge → Provider workspace → local attachments → search → discover → addresses → account → support. Registers the Service Worker from `app.js`.
+- Ordered classic scripts (verified against `index.html` 2026-11-13): icon registry → accessible tabs → legacy data → local catalog → local market store → `customer-session.js` → `customer-router.js` → `../guest/guest-policy.js` → `../guest/guest-entry.js` → `pages/home.page.js` → `apps/customer/app.js` → UI kit → `pages/orders.page.js` → `pages/order-details.page.js` → `pages/providers.page.js` → market UI → request wizard → `pages/request-create.page.js` → Provider legacy compatibility bridge → Provider workspace → local attachments → search → discover → addresses → account → support. Registers the Service Worker from `app.js`.
 - Main concentration points: `apps/customer/app.js`, `apps/customer/pages/market-ui.page.js`, `apps/customer/pages/request-wizard.page.js`, `apps/customer/styles/customer.css`.
 - Several customer page files are placeholders or planned extraction targets; behavior may still live in the large legacy modules.
 

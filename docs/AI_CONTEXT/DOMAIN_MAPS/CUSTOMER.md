@@ -40,3 +40,6 @@
 - `app.js`: `openRoute`, `applyEntry(hash)` (boot + `hashchange`), `afterSignIn()` (returns to a remembered link). Guest rules: `apps/guest/README.md`.
 - Script order: `local-market-store.js` → `customer-session.js` → `customer-router.js` → `../guest/guest-policy.js` → `../guest/guest-entry.js` → `pages/home.page.js` → `app.js`.
 - Gotcha: `MP`/`store` are top-level `const` (global lexical bindings), **not** `globalThis` properties — reference them directly (`typeof MP`), never `window.MP`.
+- `pages/providers.page.js` → `HSCustomerProvidersPage.card/details/matches` (extracted verbatim from `market-ui.page.js`; 78 renders byte-identical at extraction). `market-ui` keeps `providerCard()` and the `providerDetails`/`matchProviders` screens as thin wrappers.
+- `pages/request-create.page.js` → `HSCustomerRequestCreate.resolve/open`: `#/request[/<categoryId|itemId|problemId>]` opens the existing wizard via `startRequest()` (problem → step 3). The wizard screen mirrors to `#/request`.
+- `hashchange` reads `event.newURL`: Chromium fires `popstate` before `hashchange`, and the popstate re-render + URL sync would otherwise overwrite the typed link.

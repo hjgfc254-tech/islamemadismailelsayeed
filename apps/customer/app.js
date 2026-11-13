@@ -730,6 +730,11 @@ function go(tab, arg){
    تفتح الشاشة بنفس مسار النقر داخل التطبيق: التبويب أولًا، ثم شاشة الطلب/المزود فوق المكدس حتى يعمل زر الرجوع. */
 function openRoute(r){
   if (!r) { go('home'); return; }
+  if (r.screen === 'requestCreate' && typeof HSCustomerRequestCreate !== 'undefined') {
+    go('home');   /* الرجوع من المعالج يعود إلى الرئيسية كما عند البدء من داخل التطبيق */
+    HSCustomerRequestCreate.open(r.target, { CAT, startRequest, getWizard: () => WZ, show });
+    return;
+  }
   if (r.screen === 'tracking' || r.screen === 'providerDetails') {
     go(r.tab);
     state.stack.push((r.screen === 'tracking' ? 'track:' : 'provider:') + r.id);
@@ -754,7 +759,13 @@ function afterSignIn(){
   const back = typeof HSGuestEntry !== 'undefined' ? HSGuestEntry.consumeReturn() : '';
   return back ? applyEntry(back) : false;
 }
-window.addEventListener('hashchange', () => { applyEntry(location.hash); });
+/* اقرأ الهدف من newURL للحدث وليس من location.hash: في Chromium يُطلق popstate قبل hashchange، ومعالج popstate
+   قد يعيد الرسم ويزامن الرابط (#/home) فيمحو الرابط الذي كتبه المستخدم قبل وصول hashchange. */
+window.addEventListener('hashchange', e => {
+  let hash = location.hash;
+  try { if (e && e.newURL) hash = new URL(e.newURL).hash; } catch {}
+  applyEntry(hash);
+});
 function openDevice(k){
   if (!DEVICES[k]) return;
   closeSheet(true); state.stack.push(k); history.pushState({dev:k},''); show('details',k);

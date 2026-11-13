@@ -382,6 +382,8 @@ hansalhlak/
 │       ├── commissions.test.js
 │       ├── complaints-management.test.js
 │       ├── customer-page-renderers.test.js
+│       ├── customer-providers-page.test.js
+│       ├── customer-request-create.test.js
 │       ├── customer-routing-session.test.js
 │       ├── customer-screen-focus.test.js
 │       ├── customer-workflow.test.js

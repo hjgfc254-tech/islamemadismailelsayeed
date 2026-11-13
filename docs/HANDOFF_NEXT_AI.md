@@ -403,3 +403,15 @@ Frontend only. Do not touch `backend/`, `database/`, production auth/API, paymen
 **Regression caught during the batch:** the session first read `globalThis.MP` — `MP` is a top-level `const`, not a global property — so every user looked signed out; fixed before commit.
 **Tests:** 12/12 (0/12 against the placeholder files); `npm test` **277/277**. Browser (real Edge): Customer runner **68/68** incl. typed sign-in-and-return.
 **Next:** `providers.page.js` extraction + `request-create.page.js` route entry.
+---
+
+# AGENT HANDOFF — 2026-11-13 — Customer providers page + request-create route: placeholders → real (Claude Code)
+
+**Converted to real code:** `apps/customer/pages/providers.page.js` (`HSCustomerProvidersPage.card/details/matches`, extracted verbatim from `market-ui.page.js`), `apps/customer/pages/request-create.page.js` (`HSCustomerRequestCreate.resolve/open`).
+**Created:** `tests/unit/customer-providers-page.test.js` (6), `tests/unit/customer-request-create.test.js` (6).
+**Modified:** `market-ui.page.js` (thin wrappers, global `providerCard` kept), `customer-router.js` (`#/request[/<catalogId>]`, wizard ↔ `#/request`), `guest-policy.js` (request-create public), `app.js` (`openRoute` request-create; `hashchange` uses `event.newURL`), `index.html` (2 scripts), `service-worker.js` (precache + cache `-14`), 4 cache-literal tests, harness (`override`, real `URL`, Chromium-order `navigate`), routing test, Customer CDP runner, docs.
+
+**Evidence:** extraction parity HEAD vs new — 78 renders (7 providers × details/cards ×4 variants, 3 match states, signed in/out), 0 differences. Real Edge: `#/request/<problem>` opens the wizard at «الخطوة 4 من 10» with the problem preselected; `#/provider/<id>` renders details.
+**Bug found in the real browser and fixed:** editing the address bar while a stacked screen (wizard) was open landed on home — Chromium fires `popstate` before `hashchange`; the popstate re-render synced `#/home` over the typed link. `hashchange` now reads `event.newURL`; unit test reproduces the browser event order and failed before the fix.
+**Tests:** `npm test` **290/290**. Browser: Customer runner **75/75**.
+**Next:** Admin placeholders (see `START_HERE.md`).
