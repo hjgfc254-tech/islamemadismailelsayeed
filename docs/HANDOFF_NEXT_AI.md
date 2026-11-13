@@ -258,3 +258,28 @@ Acceptance:
 ## Scope and finish gate
 Frontend only. Do not touch `backend/`, `database/`, production auth/API, payments or real money movement. After changes update docs and run `npm run audit:refresh` then `npm run audit:inventory`. Report browser checks only if actually executed.
 
+
+---
+
+# AGENT HANDOFF — 2026-11-13 — Provider P0 behavior tests (Claude Code)
+
+**Goal:** P0 from protocol §6 — behavioral coverage of standalone Provider actions and routes.
+**Baseline before work:** `npm test` 179/179; `audit:inventory` 353/353, 0/0/0. Git repo initialized locally (`main`).
+
+**Created:** `tests/helpers/provider-app-harness.js`, `tests/unit/provider-app-actions.test.js` (25), `tests/unit/provider-app-routing.test.js` (12), `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md`.
+**Modified:** `apps/provider/app.js`; `service-worker.js` (cache `hansalhlak-v8-architecture-6`, required because `app.js` is precached cache-first); cache literal in `design-system.test.js`, `accessible-tabs-contract.test.js`, `provider-pages.test.js`, `static-audit.test.js`; docs (Provider/Testing maps, START_HERE, implementation order/status, this handoff).
+
+**Defects found by the new tests and fixed in `app.js`:**
+1. accept/confirm/reject/propose ignored `MP` returning `false` and showed a success toast on stale views (e.g. offer withdrawn by customer). Now: re-render + `تعذر تنفيذ الإجراء…`, no route change.
+2. Reject accepted an empty reason → now required (`select[required]` + runtime check).
+3. Propose accepted past times when the input `min` was bypassed → refused.
+4. Quote accepted empty/negative amounts when form constraints were bypassed → validated (labor required, all amounts finite and >= 0).
+5. Completion let non-finite deductions through → refused.
+6. `advance` left the card disappearing from the current group list → now follows the request to its new group (group routes only).
+
+**Preserved:** all `data-pv-*` selectors, routes, storage keys (`hs_mp_db`, `hs_provider_demo_session`), script order, renderer contracts, existing success messages. Legacy `portal-compat.js` / `provider-workspace.js` untouched.
+
+**Tests:** targeted 37/37 (3 repeated runs); `npm test` **216/216**.
+**Browser:** headless Edge load smoke only (`--dump-dom`, local `python -m http.server`): Provider shell mounts and picker renders 7 accounts. No interactive, keyboard or viewport QA — Playwright is not installed.
+**Open decisions:** zero-total quotes allowed; deep link without session lands on home after account select.
+**Next:** Provider P1 accessibility (see `START_HERE.md`).

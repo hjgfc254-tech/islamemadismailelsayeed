@@ -14,8 +14,13 @@
 - Responsive QA: partly manual; do not call it automated E2E.
 - Accessibility: partial; a complete automated accessibility runner is not currently established.
 
-## Baseline verified after Shared Foundation batch
-- Current `npm test`: 174 tests (48 files) passed, 0 failed (2026-11-13).
+## Current baseline
+- `npm test`: **216 passed, 0 failed** (51 files) after Provider P0 (2026-11-13).
+- Provider app behavior harness: `tests/helpers/provider-app-harness.js` (see `DOMAIN_MAPS/PROVIDER.md` §6). Project skill: `.claude/skills/vm-script-test`.
+- Windows browser smoke without packages: serve with `python -m http.server 8099`, then headless Edge `--dump-dom` via `Start-Process ... -RedirectStandardOutput` (direct `& msedge` returns no output under PowerShell). This proves load/render only, not interaction or viewports.
+
+## Historical baseline (Shared Foundation batch)
+- `npm test`: 174 tests (48 files) passed, 0 failed (2026-11-13).
 - `npm run test:coverage`: passed.
 - Coverage report includes test files in the all-files aggregate. Use application-only rows when discussing product-code coverage; do not quote the all-files percentage as product-code coverage.
 

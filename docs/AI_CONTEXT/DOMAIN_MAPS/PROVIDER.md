@@ -78,12 +78,22 @@ No removal based only on static import search or apparent duplication.
 - `tests/unit/provider-request-domain.test.js`
 - `tests/unit/provider-workspace.test.js`
 - `tests/unit/frontend-contracts.test.js` (shared app contracts; inspect current assertions)
+- `tests/unit/provider-app-actions.test.js` — P0 behavior: account select/logout, gate, availability, accept/reject (reason required), propose/confirm, advance (valid/invalid/final), quote validation, completion bounds, stale-action failures, local-only mutation invariant (25 tests).
+- `tests/unit/provider-app-routing.test.js` — P0 routes: every tab, unknown/query/legacy hash fallback, group routes, details deep link, missing/unknown/malformed/foreign IDs, reload persistence, no-session deep link (12 tests).
+- Harness: `tests/helpers/provider-app-harness.js` loads the real script list parsed from `index.html` into `node:vm` with a minimal DOM and dispatches through the app's delegated listeners, only on rendered controls (`force` simulates stale UI).
 - Full suite: `npm test`.
+
+### Runtime behavior contracts added in P0 (2026-11-13)
+- `accept`, `confirm`, reject submit and propose submit check the `MP` result; on `false` (stale view, e.g. customer cancelled) the view re-renders and shows `تعذر تنفيذ الإجراء…` instead of a success toast, and no route change happens.
+- Reject requires a non-empty reason (`select[required]` + runtime check). Propose refuses past times (mirrors the input `min`).
+- Quote submit requires labor and non-negative finite amounts (mirrors the form constraints). A zero total is still accepted — no documented product rule; open decision.
+- Completion additionally rejects non-finite values; bound remains `0 <= deductions <= value`, `value > 0`.
+- A successful `advance` on a group route follows the request to its new group (as accept/reject/quote/complete already route); details and home keep their route.
 
 Do not confuse source/script-order tests with end-to-end browser proof. Standalone Provider browser verification is pending if the environment blocks local navigation.
 
 ## 7. Next work — exact priority
-1. **P0 behavior tests:** account select/session clear, availability, accept/reject, propose/confirm time, quote validation, status advancement valid/invalid, completion and deductions boundaries, route/deep-link behavior, unknown IDs/routes, and local-only mutation invariant.
+1. ✅ **P0 behavior tests — done 2026-11-13** (see §6). Known, deliberately unchanged: selecting an account after opening a deep link without a session lands on `#/home`, not the original link.
 2. **P1 accessibility:** keyboard navigation, visible focus, accessible names/labels, error associations, route-change focus and live feedback.
 3. **P2 browser QA:** 1280/768/430/390/320px; route refresh/deep links, overflow, console and local asset checks.
 4. **P3 legacy parity:** map bridge/workspace contracts and prove parity before any removal.

@@ -82,8 +82,8 @@ A focused shared keyboard-tabs helper is now implemented and tested: `shared/com
 ## تحديث 2026-11-13 — Provider standalone frontend
 
 - أُنجز standalone demo entry/runtime والـ shell/router و12 renderer. هذا لا يثبت تكافؤ legacy bridge ولا يبرر حذف `portal-compat.js` أو `provider-workspace.js`.
-- **P0 التالي:** اختبارات سلوكية لأفعال الطلبات ومسارات deep-link في `apps/provider/app.js` و`provider-router.js` و`provider-session.js`، مع تغطية الحدود والحالات غير الصالحة. ابدأ بقراءة `docs/AI_CONTEXT/DOMAIN_MAPS/PROVIDER.md`.
-- **P1:** keyboard/focus/accessibility sweep للـ Provider standalone.
+- ✅ **P0 (منجز 2026-11-13):** `provider-app-actions.test.js` (25) و`provider-app-routing.test.js` (12) عبر `tests/helpers/provider-app-harness.js`؛ أُصلحت رسائل النجاح الكاذبة عند الإجراءات القديمة (stale)، وإلزام سبب الرفض، ورفض المواعيد الماضية، والتحقق من مبالغ عرض السعر، وانتقال `advance` لمجموعة الطلب الجديدة. التفاصيل في `DOMAIN_MAPS/PROVIDER.md` §6.
+- **P1 (التالي):** keyboard/focus/accessibility sweep للـ Provider standalone.
 - **P2:** Browser QA للـ Provider standalone عند 1280/768/430/390/320px؛ لا تستخدم نتيجة Responsive Sweep القديمة عبر legacy bridge كدليل على standalone.
 - **P3:** parity audit منفصل لـ`legacy/portal-compat.js` و`provider-workspace.js` قبل أي إزالة أو دمج.
 - البروتوكول الإلزامي لاستلام أي وكيل جديد: `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`.

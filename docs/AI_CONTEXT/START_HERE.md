@@ -1,9 +1,11 @@
 # HANSALEHLAK V8 — START HERE
 
 **Current phase:** FRONTEND ONLY  
-**Latest verified baseline:** `npm test` → 179/179 passed (2026-11-13).  
+**Latest verified baseline:** `npm test` → 216/216 passed (2026-11-13, after Provider P0).  
+**Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md`  
 **Current handoff:** `docs/HANDOFF_NEXT_AI.md`  
-**Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`
+**Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`  
+**Project skills:** `.claude/skills/` — `finish-gate`, `vm-script-test`, `browser-qa`
 
 ## Mandatory first steps
 1. Read `CLAUDE.md`.
@@ -23,19 +25,14 @@
 - Shared: design system, local stores, UI primitives and shared components; reuse actual APIs rather than duplicating them.
 - `backend/` and `database/` are future scaffolding and OUT OF SCOPE.
 
-## Exact next task — Provider P0
-Add behavior-focused tests for Provider request actions and deep-link routing before further UI work:
-- demo account selection and session clearing;
-- availability toggle;
-- accept/reject (including required rejection reason);
-- propose/confirm appointment;
-- quote validation/submission;
-- valid/invalid status advancement;
-- completion value/deduction boundaries;
-- all supported routes, unknown route fallback and request-details IDs;
-- ensure all mutations remain in the local demo store and do not break Customer legacy behavior.
-
-Read `docs/AI_CONTEXT/DOMAIN_MAPS/PROVIDER.md` and section 6 of `docs/AI_AGENT_CONTINUATION_PROTOCOL.md` for the full task order and contracts.
+## Exact next task — Provider P1 (accessibility)
+P0 behavior coverage is done (`provider-app-actions.test.js`, `provider-app-routing.test.js`; harness `tests/helpers/provider-app-harness.js`).
+Next, for the standalone Provider app:
+- focus moves to the main view (`#provider-view`, already `tabindex="-1"`) after route changes;
+- inline forms: focus on open, focus return on cancel/submit, errors associated and announced;
+- accessible names for icon-only controls; `aria-current` already on nav;
+- keyboard operation of every action; preserve RTL and existing `data-pv-*` selectors.
+Add behavior tests with the existing harness. Read `docs/AI_CONTEXT/DOMAIN_MAPS/PROVIDER.md` §6–7.
 
 ## Required finish gate
 Run targeted tests, then `npm test`; browser QA when available; update domain/page/status/handoff docs; run:

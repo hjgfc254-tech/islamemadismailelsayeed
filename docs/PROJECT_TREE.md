@@ -224,6 +224,7 @@ hansalhlak/
 │   │   │   ├── PROVIDER.md
 │   │   │   ├── SHARED_AND_SERVICES.md
 │   │   │   └── TESTING.md
+│   │   ├── EXECUTION_CHECKPOINT.md
 │   │   ├── FILE_INDEX.json
 │   │   ├── README.md
 │   │   ├── START_HERE.md
@@ -358,7 +359,8 @@ hansalhlak/
 │   ├── fixtures/
 │   │   └── README.md
 │   ├── helpers/
-│   │   └── design-token-audit.js
+│   │   ├── design-token-audit.js
+│   │   └── provider-app-harness.js
 │   ├── integration/
 │   │   └── README.md
 │   ├── security/
@@ -388,6 +390,8 @@ hansalhlak/
 │       ├── icon-asset-audit.test.js
 │       ├── notifications-management.test.js
 │       ├── orders-management.test.js
+│       ├── provider-app-actions.test.js
+│       ├── provider-app-routing.test.js
 │       ├── provider-domain.test.js
 │       ├── provider-pages.test.js
 │       ├── provider-request-domain.test.js
