@@ -15,7 +15,7 @@
 - Accessibility: partial; a complete automated accessibility runner is not currently established.
 
 ## Current baseline
-- `npm test`: **297 passed, 0 failed** (60 files) after Admin runtime batch (2026-11-13). CDP runners: Provider 231/231, Customer 75/75, Admin 60/60 (shared `tests/e2e/lib/cdp.js`).
+- `npm test`: **305 passed, 0 failed** (61 files) after Admin modules batch (2026-11-13). CDP runners: Provider 231/231, Customer 75/75, Admin 69/69 (shared `tests/e2e/lib/cdp.js`).
 - CDP lesson: `Page.navigate` to a fragment-only change is same-document — use `about:blank` first for a true fresh deep-link load.
 - Customer full-app harness: `tests/helpers/customer-app-harness.js` (`boot({hash, local, session})`, `clickDoc`, `submitDoc`, `navigate`, history/focus recording).
 - CDP lesson: assert what is *rendered*, not DOM state — `el.hidden === true` passed while CSS still displayed the element; use `getComputedStyle(...).display` and `document.elementFromPoint` for occlusion.

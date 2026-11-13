@@ -44,6 +44,29 @@ async function run({ exe, wsUrl }) {
     ok(ownerNav.includes('roles') && ownerNav.includes('permissions') && ownerNav.includes('orders'), `${tag} owner nav includes team & operations pages`);
     ok(await noOverflow(), `${tag} shell: no horizontal overflow`);
 
+    // Extracted modules/* working inside their pages (owner, desktop).
+    if (w === 1280) {
+      await evaluate('location.hash = "#/roles"; true');
+      ok(await waitFor('!!document.querySelector("#adm-content tr[data-row] [data-act=\\"details\\"]")', 5000), `${tag} roles page renders its grid`);
+      const customId = await evaluate('HSAdminRbac.state.roles.find(r=>!r.system).id');
+      await evaluate(`document.querySelector('#adm-content tr[data-row="${customId}"] [data-act="details"]').click(); true`);
+      ok(await waitFor('!!document.querySelector("#rl-preset")'), `${tag} role editor (modules/access-control/role-editor.js) shows the preset picker`);
+      await evaluate(`(()=>{const s=document.querySelector('#rl-preset');s.value='view-all';s.dispatchEvent(new Event('change',{bubbles:true}));return true;})()`);
+      ok(await waitFor('/طُبّق القالب/.test(document.querySelector("#ord-dlg [role=status]")?.textContent||"")'), `${tag} applying a preset announces the change`);
+      ok(await evaluate(`Object.keys(HSAdminRbac.MODULES).every(m=>{const c=document.querySelector('#rl-p-'+m+'-view');return c&&c.checked;})`), `${tag} the view-all preset checks every module's view permission`);
+      await evaluate('document.querySelector("#ord-dlg [data-ord-close]").click(); true');
+      await evaluate('location.hash = "#/permissions"; true');
+      ok(await waitFor('!!document.querySelector("#adm-content table.rl-table")'), `${tag} permissions page renders the matrix (permission-matrix.js)`);
+      await evaluate('location.hash = "#/audit"; true');
+      ok(await waitFor('!!document.querySelector("#adm-content [data-act=\\"open\\"]")', 5000), `${tag} audit page renders with its filters (audit-filters.js)`);
+      await evaluate('document.querySelector("#adm-content [data-act=\\"open\\"]").click(); true');
+      ok(await waitFor('/تفاصيل الحدث/.test(document.querySelector("#aud-dlg")?.textContent||"")'), `${tag} audit details dialog (audit-details.js) opens`);
+      await evaluate('document.querySelector("#aud-dlg [data-ord-close]").click(); true');
+      await evaluate('location.hash = "#/workforce"; true');
+      ok(await waitFor('document.querySelectorAll("#adm-content tr[data-row]").length > 0', 5000), `${tag} workforce page renders employees (employee-* modules)`);
+      ok(await noOverflow(), `${tag} module pages: no horizontal overflow`);
+    }
+
     // Switch account → picker; sign in as a support employee: guarded pages leave the nav and deep links are denied.
     await evaluate('document.querySelector("[data-adm-switch]").click(); true');
     ok(await waitFor('!!document.querySelector("#adm-login")', 6000), `${tag} switch account returns to the picker`);

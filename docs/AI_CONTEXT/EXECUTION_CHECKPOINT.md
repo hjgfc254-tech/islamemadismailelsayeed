@@ -25,15 +25,17 @@ Compact resume state for autonomous sessions. Update after every committed batch
    +1 routing regression; SW cache `-14`. `npm test` 290/290; Customer browser 75/75. Commit `f0c57c4`.
 11. Admin runtime — 7 placeholders converted: `apps/admin/{admin-router,navigation-builder,permission-guard,admin-auth,admin-session,app}.js`,
    `login.html`; shell delegates routing/nav, gains `setAccess`/`setAccount`/denied state. Tests: `admin-runtime.test.js` (7), browser
-   `tests/e2e/admin-app.cdp.js` 60/60. `npm test` 297/297.
+   `tests/e2e/admin-app.cdp.js` 60/60. `npm test` 297/297. Commit `85c1cb3`.
+12. Admin modules — 8 placeholders converted (workforce ×3, audit ×2, access-control ×3) by extraction from pages (42-point HEAD parity, 0 diffs)
+   + permission presets wired into the role editor. Tests: `admin-modules.test.js` (8); Admin browser 69/69. `npm test` 305/305.
 
 ## Current task
-Admin `modules/*` (8 placeholders) extracted from pages (see `START_HERE.md`).
+Customer Addresses + Support keyboard & accessibility (Phase 5 item 4). All implementable placeholders are done.
 
 ## Remaining queue (priority order)
-1. Admin `modules/*` (access-control ×3, audit ×2, workforce ×3): extract from pages with parity tests.
-2. Customer Addresses + Support a11y; console/network smoke; Admin keyboard traversal.
-3. Not implementable in this phase: `services/*-api.js` (backend HTTP); split design-system CSS (needs a migration decision).
+1. Customer Addresses + Support a11y.
+2. Console/network smoke across entries; Admin keyboard traversal.
+3. Deferred by scope/decision: `services/*-api.js` + `realtime-client.js` (backend HTTP); split design-system CSS (migration decision).
 
 ## Pending user decisions
 - Reroute Customer «بوابة مقدم الخدمة»/«انضم الآن» to the standalone Provider app (separate demo identities).
@@ -42,4 +44,4 @@ Admin `modules/*` (8 placeholders) extracted from pages (see `START_HERE.md`).
 - `test-write.tmp` is ignored locally but listed in the inventory (a clean clone reports it missing).
 
 ## Exact next action
-Grep `pages/permissions.page.js`, `roles.page.js`, `audit-log.page.js`, `workforce.page.js` for the matrix/presets/editor/details/filters/form/invitation/status functions; extract one module at a time.
+Read `apps/customer/pages/addresses.page.js` and `support.page.js` handlers/forms; reuse `tests/helpers/customer-app-harness.js`.

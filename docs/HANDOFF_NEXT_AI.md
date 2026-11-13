@@ -427,3 +427,13 @@ Frontend only. Do not touch `backend/`, `database/`, production auth/API, paymen
 **Tests:** `npm test` **297/297**. Browser (real Edge): Admin **60/60** at 1280/768/390.
 **Note:** the older manual Playwright admin scripts now start on the picker.
 **Next:** Admin `modules/*` (8).
+---
+
+# AGENT HANDOFF — 2026-11-13 — Admin modules/*: 8 placeholders → real modules (Claude Code)
+
+**Converted (extracted from pages, connected in `apps/admin/index.html` before the pages):** `modules/workforce/employee-status.js`, `employee-form.js`, `employee-invitation.js` (from `workforce.page.js`); `modules/audit/audit-filters.js`, `audit-details.js` (from `audit-log.page.js`); `modules/access-control/permission-matrix.js` (from `permissions.page.js`), `role-editor.js` (from `roles.page.js`), `permission-presets.js` (new, derived from seed roles + view-only; wired as «ابدأ من قالب صلاحيات» in the role editor, clamped to the actor's authority).
+**Modified:** the 4 pages (now thin over the modules; public `api` objects unchanged), `index.html`, docs. **Created:** `tests/unit/admin-modules.test.js` (8).
+**Evidence:** HEAD vs new parity — 42 comparisons (matrix markup, audit grid config, workforce validate/create/update/status/invite incl. errors), 0 differences. Real Edge: preset applied in the real role editor, matrix, audit details, workforce grid — Admin runner **69/69**.
+**Tests:** `npm test` **305/305**.
+**Result:** no implementable placeholder remains. Deferred: `services/*-api.js`, `realtime-client.js` (backend), split design-system CSS (decision).
+**Next:** Customer Addresses + Support a11y.

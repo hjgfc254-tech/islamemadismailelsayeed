@@ -1,7 +1,7 @@
 # HANSALEHLAK V8 — START HERE
 
 **Current phase:** FRONTEND ONLY  
-**Latest verified baseline:** `npm test` → 297/297 passed (2026-11-13, after Admin runtime). Real-browser QA: Provider 231/231, Customer 75/75, Admin 60/60.  
+**Latest verified baseline:** `npm test` → 305/305 passed (2026-11-13, after Admin modules). Real-browser QA: Provider 231/231, Customer 75/75, Admin 69/69.  
 **Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md`  
 **Current handoff:** `docs/HANDOFF_NEXT_AI.md`  
 **Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`  
@@ -25,13 +25,12 @@
 - Shared: design system, local stores, UI primitives and shared components; reuse actual APIs rather than duplicating them.
 - `backend/` and `database/` are future scaffolding and OUT OF SCOPE.
 
-## Exact next task — Admin `modules/*` (8 placeholders) as real modules extracted from pages
-Admin runtime is real (`DOMAIN_MAPS/ADMIN.md`). Remaining: `modules/access-control/{permission-matrix,permission-presets,role-editor}.js`,
-`modules/audit/{audit-details,audit-filters}.js`, `modules/workforce/{employee-form,employee-invitation,employee-status}.js`. Locate the matching logic in
-`pages/permissions|roles|audit-log|workforce.page.js` by symbol, extract it with parity tests, load each module before its page, keep page behavior identical.
-Out of scope / deferred: `services/*-api.js` (future backend HTTP), split design-system CSS (pinned by `design-token-audit.test.js`).
+## Exact next task — Customer Addresses and Support keyboard & accessibility (Phase 5 item 4)
+Every implementable placeholder is now real code (Customer, Guest, Admin runtime + modules). Deferred by scope/decision only: `services/*-api.js` +
+`realtime-client.js` (future backend HTTP), split design-system CSS (pinned empty by `design-token-audit.test.js`). Next per the implementation order: the
+Addresses and Support a11y task below. Pending user decisions are listed in `EXECUTION_CHECKPOINT.md`.
 
-## Previous next task — Customer Addresses and Support keyboard & accessibility (Phase 5 item 4)
+### Task details
 Done: standalone Provider (P0–P3, G1, G3, G4) and Customer Orders/Tracking focus (`DOMAIN_MAPS/CUSTOMER.md` "Screen focus contract").
 **Pending user decision:** reroute Customer «بوابة مقدم الخدمة»/«انضم الآن» to `apps/provider/index.html` — do not do it unasked.
 Next: audit `apps/customer/pages/addresses.page.js` and `support.page.js` (forms, sheets, list actions) for keyboard operation, labels,

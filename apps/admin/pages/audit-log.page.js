@@ -21,6 +21,9 @@
     failed: { label: 'فشلت', tone: 'danger', icon: 'cancel' }
   };
   const MODULES = { orders: 'الطلبات', providers: 'مقدمو الخدمة', finance: 'الماليات', roles: 'الأدوار والصلاحيات', workforce: 'فريق العمل', reports: 'التقارير', settings: 'الإعدادات', auth: 'الدخول' };
+  const load = (g, file) => root[g] || (typeof require === 'function' ? require(file) : null);
+  const AF = load('HSAdminAuditFilters', '../modules/audit/audit-filters.js'), AD = load('HSAdminAuditDetails', '../modules/audit/audit-details.js');
+  if (!AF || !AD) throw new Error('audit-log.page.js requires modules/audit/* to load first');
   const B = root.HSStatusBadge;
   if (B && B.domains().indexOf('auditresult') === -1) B.register('auditresult', RESULT);
   const badge = (s) => (B ? B.render('auditresult', s) : esc((RESULT[s] || {}).label || 'غير محدد'));
@@ -76,27 +79,14 @@
     { key: 'record', label: 'السجل', html: (r) => `<span dir="ltr">${esc(r.record)}</span>` },
     { key: 'result', label: 'النتيجة', type: 'status', statusDomain: 'auditresult' }
   ];
-  const FILTERS = [
-    { key: 'moduleLabel', label: 'الوحدة' }, { key: 'result', label: 'النتيجة', options: Object.keys(RESULT).map((k) => ({ value: k, label: RESULT[k].label })) }, { key: 'actor', label: 'المنفّذ' }
-  ];
-  const GRID_CFG = { columns: COLUMNS, searchKeys: ['actor', 'action', 'record', 'summary', 'moduleLabel'], filters: FILTERS };
+  const GRID_CFG = AF.gridConfig(COLUMNS, RESULT);   /* search + filters: modules/audit/audit-filters.js */
 
   /* ───── Rendering ───── */
   const summaryHtml = () => {
     const c = counts(events), s = (l, v) => `<div class="ord-stat"><span>${l}</span><b>${esc(nf(v))}</b></div>`;
     return `<section class="ord-sum" aria-label="ملخص الأحداث التجريبية">${s('إجمالي الأحداث', c.total)}${s('نجحت', c.success)}${s('مرفوضة', c.denied)}${s('فشلت', c.failed)}</section>`;
   };
-  const detailHtml = (e) => `<div class="ord-dlg-in">
-    <header class="ord-dlg-h"><div><h2 id="ord-dlg-t">تفاصيل الحدث</h2><p><span dir="ltr">${esc(e.id)}</span> — ${esc(e.action)}</p></div>
-      <button type="button" class="adm-btn" data-ord-close aria-label="إغلاق التفاصيل">${icon('close')}</button></header>
-    <p class="ord-sim" role="note">${icon('info')}<span>بيانات تجريبية للعرض فقط: هذا الحدث ليس سجلًا حقيقيًا ولا يمكن تعديله أو حذفه أو تصديره من هنا.</span></p>
-    <dl class="ord-facts">
-      <div><dt>الوقت (UTC)</dt><dd>${esc(dt(e.at))}</dd></div><div><dt>النتيجة</dt><dd>${badge(e.result)}</dd></div>
-      <div><dt>المنفّذ</dt><dd>${esc(e.actor)}</dd></div><div><dt>الوحدة</dt><dd>${esc(e.moduleLabel)}</dd></div>
-      <div><dt>الإجراء</dt><dd>${esc(e.action)}</dd></div><div><dt>السجل المتأثر</dt><dd dir="ltr">${esc(e.record)}</dd></div>
-      <div><dt>الملخص</dt><dd>${esc(e.summary)}</dd></div>${e.reason ? `<div><dt>السبب</dt><dd>${esc(e.reason)}</dd></div>` : ''}
-      <div><dt>عنوان الشبكة (مثال)</dt><dd dir="ltr">${esc(e.ip || '—')}</dd></div></dl>
-    <div class="ord-act"><button type="button" class="adm-btn" data-ord-close>إغلاق</button></div></div>`;
+  const detailHtml = (e) => AD.render(e, { esc, icon, dt, badge });   /* modules/audit/audit-details.js */
 
   const render = () => {
     const wrap = root.document.createElement('div'); wrap.className = 'ord aud';

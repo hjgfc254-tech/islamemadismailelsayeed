@@ -15,13 +15,10 @@
   const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium' }).format(t); } catch (e) { return iso; } };
   const R = root.HSAdminRbac;
 
-  const matrixHtml = () => {
-    const roles = R.state.roles, eff = {}; roles.forEach((r) => { eff[r.id] = new Set(R.effective(roles, r.id)); });
-    return `<div class="rl-scroll" tabindex="0" role="region" aria-label="مصفوفة الصلاحيات الفعلية حسب الدور"><table class="rl-table"><caption>الصلاحيات الفعلية (المباشرة والموروثة) لكل دور حسب الوحدة</caption>
-      <thead><tr><th scope="col">الوحدة</th>${roles.map((r) => `<th scope="col">${esc(r.name)}</th>`).join('')}</tr></thead>
-      <tbody>${Object.keys(R.MODULES).map((m) => `<tr><th scope="row">${esc(R.MODULES[m])}</th>${roles.map((r) => { const a = Object.keys(R.ACTIONS).filter((x) => eff[r.id].has(R.key(m, x))); return `<td>${a.length ? esc(a.map((x) => R.ACTIONS[x]).join('، ')) : '<span aria-label="لا توجد صلاحيات">—</span>'}</td>`; }).join('')}</tr>`).join('')}</tbody></table></div>
-      <p class="ord-muted">لتعديل صلاحيات دور افتح صفحة «الأدوار». هذه المصفوفة للعرض فقط.</p>`;
-  };
+  /* matrix → modules/access-control/permission-matrix.js (browser: loaded before this page; Node: required) */
+  const PM = root.HSAdminPermissionMatrix || (typeof require === 'function' ? require('../modules/access-control/permission-matrix.js') : null);
+  if (!PM) throw new Error('permissions.page.js requires modules/access-control/permission-matrix.js to load first');
+  const matrixHtml = () => PM.render(R, { esc });
   const employeeHtml = (st) => {
     const S = R.state, emp = S.roster.find((e) => e.id === (S.selectedEmployee || S.roster[0].id)) || S.roster[0];
     const roleHas = new Set(R.effective(S.roles, emp.role)), extra = new Set(st.values || S.overrides[emp.id] || []), held = new Set(R.effective(S.roles, S.actor)), errs = st.errors || {};
