@@ -95,12 +95,21 @@ test('every legacy provider request action has a standalone equivalent backed by
 test('documented gaps: legacy-only Provider capabilities not present in the standalone app', () => {
   const legacy = read('apps/provider/legacy/portal-compat.js');
   const standalone = read('apps/provider/app.js') + read('apps/provider/pages/profile.page.js');
-  // Self-registration (form → MP.registerProvider, pending status).
-  assert.ok(legacy.includes(`data-pa="register"`) && legacy.includes('MP.registerProvider('));
-  assert.ok(!standalone.includes('registerProvider'), 'standalone has no self-registration (gap G1)');
   // Profile editing (provider-workspace data-pw-edit-profile → providerForm).
   assert.ok(read('apps/provider/provider-workspace.js').includes('providerForm(p, false)'));
   assert.match(read('apps/provider/pages/profile.page.js'), /تعديل الملف .* غير متاحين/, 'standalone profile is read-only by explicit decision (gap G2)');
+});
+
+test('closed gap G1: both paths offer demo self-registration through MP.registerProvider with the same required fields', () => {
+  const legacy = read('apps/provider/legacy/portal-compat.js');
+  const standalone = read('apps/provider/app.js');
+  assert.ok(legacy.includes(`data-pa="register"`) && legacy.includes('MP.registerProvider('));
+  assert.ok(standalone.includes(`data-pv-action="register"`) && standalone.includes('MP.registerProvider('));
+  for (const field of ['name="name"', 'name="phone"', 'name="type"', 'name="cats"', 'name="govs"', 'name="areas"', 'name="years"', 'name="bio"', 'name="docs"', 'pattern="[0-9+ ]{8,15}"']) {
+    const group = /^name="(cats|govs)"$/.exec(field); // standalone renders checkbox groups via checks('cats'|'govs', …)
+    assert.ok(legacy.includes(field), `legacy has ${field}`);
+    assert.ok(standalone.includes(field) || (group && standalone.includes(`checks('${group[1]}',`)), `standalone has ${field}`);
+  }
 });
 
 test('closed gap G3: both paths preview commission/net with the same MP.rateFor + MP.calc while completing', () => {

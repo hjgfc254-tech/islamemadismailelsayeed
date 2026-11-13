@@ -30,7 +30,7 @@ Loaded by the **Customer** entry (`apps/customer/index.html`), after the Custome
 | Enroute / arrived / started | `MP.advance` | `advance` + group routing | ✅ |
 | Quote | `MP.createQuote` (`+x||0`, no validation) | same + amount validation | ✅ standalone stricter |
 | Complete | `MP.complete` + **live commission/net preview** (`#finPrev`) | `MP.complete`, bounds validated, live preview `#pv-complete-preview` (same `MP.rateFor`/`MP.calc`) | ✅ **G3 closed 2026-11-13** |
-| **Self-registration** | `register` → `providerForm` → `MP.registerProvider` (status `pending`) | none (account picker only; `login.html` is a placeholder) | ❌ **G1** |
+| **Self-registration** | `register` → `providerForm` → `MP.registerProvider` (status `pending`) | `register` on the picker → inline form (same fields + stricter validation) → `MP.registerProvider` → pending gate | ✅ **G1 closed 2026-11-13** |
 | **Profile edit** | `data-pw-edit-profile` → `providerForm(p)` | read-only by explicit decision ("تعديل الملف … غير متاحين") | ❌ **G2** (decision) |
 | Schedule / reviews / earnings / transactions / notifications | workspace tabs | dedicated renderers | ✅ (standalone broader) |
 | Accessibility | none audited | P1 focus/titles/forms + real-browser QA (170/170) | ✅ standalone ahead |
@@ -43,10 +43,12 @@ Legacy also contains the defects fixed in the standalone app by P0 (success toas
 ## 4. Gaps and recommendation
 | Id | Gap | Recommendation |
 |---|---|---|
-| G1 | No self-registration in standalone; Customer «انضم الآن» still leads into legacy | Implement a standalone registration form reusing the legacy field set and validation (name, phone `[0-9+ ]{8,15}`, ≥1 specialty, ≥1 governorate, optional areas/years/bio/docs) → `MP.registerProvider` (status `pending`) → select the new demo identity → existing gate screen. Demo-labelled. |
+| G1 | ~~No self-registration in standalone~~ | ✅ Closed 2026-11-13: demo registration on the standalone picker (9 unit tests, real-browser typed submission at 5 viewports). Customer «انضم الآن» still leads into legacy — see the reroute decision below. |
 | G2 | Profile editing disabled in standalone | Keep as is until a product decision; recorded. |
 | G3 | ~~No commission/net preview when completing~~ | ✅ Closed 2026-11-13: live preview in the standalone completion form (unit + real-browser typing check). |
 | G4 | ~~`apps/provider/login.html` placeholder~~ | ✅ Closed 2026-11-13: demo-labelled hand-off to `index.html` (no credential fields; real-browser check). |
 | — | Customer menu/CTA still enter legacy role mode | **Do not switch or remove** until G1 (and G3) exist and a decision is recorded; then route the Customer entries to `apps/provider/index.html` and keep the bridge loaded until the legacy Admin console decision (§3) is made. |
 
-**Retirement of `portal-compat.js` / `provider-workspace.js` is not recommended yet**: G1 is a real user-facing gap, and `portal-compat.js` also hosts the legacy Admin console.
+**Status after G1/G3/G4 (2026-11-13):** the standalone Provider app now covers every legacy Provider capability except profile editing (G2, disabled by decision).
+**Decision required (not taken autonomously):** reroute the Customer menu «بوابة مقدم الخدمة» and home «انضم الآن» to `apps/provider/index.html`. Note the separate demo identities (§2) — a provider selected in one path is not selected in the other.
+**Retirement of `portal-compat.js` / `provider-workspace.js` is still not recommended**: `portal-compat.js` also hosts the legacy Admin console (§3), and `home.test.js` / `responsive-sweep.browser.js` exercise the legacy path.

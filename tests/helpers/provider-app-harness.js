@@ -64,8 +64,8 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
         querySelector: () => element({ focus: () => setFocus('field:' + id[1]) }) });
     }
     if (sel === '.pv-inline-form') {
-      if (!/<form class="pv-inline-form"/.test(view.innerHTML)) return null;
-      return element({ remove: () => { view.innerHTML = view.innerHTML.replace(/<form class="pv-inline-form"[\s\S]*?<\/form>/, ''); } });
+      if (!/<form class="pv-inline-form[^"]*"/.test(view.innerHTML)) return null;
+      return element({ remove: () => { view.innerHTML = view.innerHTML.replace(/<form class="pv-inline-form[^"]*"[\s\S]*?<\/form>/, ''); } });
     }
     const attrs = [...sel.matchAll(/\[([\w-]+)="([^"]*)"\]/g)];
     if (attrs.length && attrs.map(m => m[0]).join('') === sel) {
@@ -87,7 +87,10 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
     localStorage: local, sessionStorage: sessionStore, location,
     navigator: {}, matchMedia: q => ({ matches: /prefers-reduced-motion:\s*reduce/.test(q) ? reducedMotion.value : false }),
     fetch: (...args) => { fetchCalls.push(args); return Promise.reject(new Error('network disabled in tests')); },
-    FormData: function FormData() { return { get: k => (k in formValues ? formValues[k] : null) }; },
+    FormData: function FormData() { return {
+      get: k => (k in formValues ? (Array.isArray(formValues[k]) ? (formValues[k][0] ?? null) : formValues[k]) : null),
+      getAll: k => (k in formValues ? [].concat(formValues[k]) : [])
+    }; },
     addEventListener: (type, fn) => { (listeners.window[type] = listeners.window[type] || []).push(fn); },
     removeEventListener() {},
     document: { title: '', readyState: 'complete', getElementById: id => (id === 'provider-app' ? host : null),
@@ -122,10 +125,10 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
         closest(sel) {
           if (sel === '[data-pv-route]') return 'data-pv-route' in tag ? target : null;
           if (sel === '[data-pv-action]') return 'data-pv-action' in tag ? target : null;
-          if (sel === 'form') return api._openForm ? { remove: () => { view.innerHTML = view.innerHTML.replace(/<form class="pv-inline-form"[\s\S]*?<\/form>/, ''); } } : null;
+          if (sel === 'form') return api._openForm ? { remove: () => { view.innerHTML = view.innerHTML.replace(/<form class="pv-inline-form[^"]*"[\s\S]*?<\/form>/, ''); } } : null;
           return null;
         } };
-      api._openForm = /<form class="pv-inline-form"/.test(view.innerHTML);
+      api._openForm = /<form class="pv-inline-form[^"]*"/.test(view.innerHTML);
       withHashSync(() => (listeners.host.click || []).forEach(fn => fn({ target })));
     },
     /* Submit an open inline form by id with field values. */
@@ -149,7 +152,7 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
     el: id => idEls[id],
     /* Press a key with focus inside the open inline form (inForm) or elsewhere in the app. */
     key(key, { inForm = true } = {}) {
-      const target = { closest: sel => (sel === '.pv-inline-form' && inForm && /<form class="pv-inline-form"/.test(view.innerHTML) ? {} : null) };
+      const target = { closest: sel => (sel === '.pv-inline-form' && inForm && /<form class="pv-inline-form[^"]*"/.test(view.innerHTML) ? {} : null) };
       let prevented = false;
       (listeners.host.keydown || []).forEach(fn => fn({ key, target, preventDefault: () => { prevented = true; } }));
       return { prevented };

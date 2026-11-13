@@ -358,3 +358,20 @@ Frontend only. Do not touch `backend/`, `database/`, production auth/API, paymen
 **Caught by guards:** the class-coverage test flagged the new `.pv-calc` before its CSS existed.
 **Tests:** `npm test` **246/246**. Browser (real Edge, CDP runner): **186/186** at 1280/768/430/390/320, including typing into the completion form.
 **Next:** G1 standalone self-registration (see `START_HERE.md`).
+---
+
+# AGENT HANDOFF — 2026-11-13 — Provider G1 demo self-registration (Claude Code)
+
+**Goal:** close audit gap G1. **Baseline:** `npm test` 246/246 (`b85425c`).
+**Created:** `tests/unit/provider-app-register.test.js` (9).
+**Modified:** `apps/provider/app.js`, `apps/provider/styles/provider.css`, `tests/helpers/provider-app-harness.js`, `provider-pages.test.js`, `provider-legacy-parity.test.js`, `tests/e2e/provider-standalone.cdp.js`, `service-worker.js` (cache `-11`) + 4 cache-literal tests, docs.
+
+**Behavior:** the standalone account picker offers "تسجيل مقدم خدمة جديد". The inline form mirrors legacy `providerForm` (name, phone `[0-9+ ]{8,15}`, type, specialties from `SERVICE_TYPES`, governorates from `MP.GOVS`, areas, years, bio, docs) with fieldset/legend groups and a described phone hint; validation also rejects tampered specialties/governorates, years outside 0–60 and bio > 300. Submit → `MP.registerProvider` (pending, admin notified locally) → selects the new demo identity → pending gate. Escape/Cancel return focus to the register control.
+**Defects found and fixed along the way:**
+1. `.pv-nav{display:flex}` overrode the `hidden` attribute — the workspace nav was visible on the account picker and the pending gate (found from a screenshot; the earlier check read `.hidden`, not rendered style). Fixed with `.pv-app [hidden]{display:none!important}`; CDP now checks computed display.
+2. Inline forms scrolled under the sticky top bar/nav — `scroll-margin-top`; CDP now checks occlusion via `elementFromPoint`.
+3. Cancel did nothing on the picker (handler sat behind the "provider selected" guard).
+4. Harness: form regexes did not match multi-class forms.
+**Tests:** `npm test` **256/256**. Browser (real Edge): **231/231** at 1280/768/430/390/320.
+**Pending user decision:** reroute Customer Provider entry points to the standalone app.
+**Next:** Customer orders/details/tracking keyboard & accessibility (see `START_HERE.md`).

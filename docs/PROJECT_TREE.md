@@ -394,6 +394,7 @@ hansalhlak/
 │       ├── orders-management.test.js
 │       ├── provider-app-a11y.test.js
 │       ├── provider-app-actions.test.js
+│       ├── provider-app-register.test.js
 │       ├── provider-app-routing.test.js
 │       ├── provider-domain.test.js
 │       ├── provider-legacy-parity.test.js

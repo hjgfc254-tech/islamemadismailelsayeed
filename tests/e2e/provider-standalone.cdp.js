@@ -116,6 +116,8 @@ async function run({ exe, wsUrl }) {
     ok(await waitFor('!!document.querySelector(".pv-account-list")'), `${tag} account picker renders`);
     ok(await noOverflow(), `${tag} picker: no horizontal overflow`);
     ok(await badIcons() === 0, `${tag} picker: icons glyph-sized`);
+    const navShown = () => evaluate(`getComputedStyle(document.querySelector('#provider-nav')).display !== 'none'`);
+    ok(!await navShown(), `${tag} picker: workspace nav is not displayed`);
 
     // Keyboard: Tab reaches an account button with a visible focus indicator; Enter opens the workspace.
     let reached = false;
@@ -190,6 +192,26 @@ async function run({ exe, wsUrl }) {
         fs.writeFileSync(path.join(process.env.QA_SHOTS, `provider-${route}-${w}.png`), Buffer.from(shot.data, 'base64'));
       }
     }
+    // G1: demo self-registration from the picker, typed for real, ends on the pending-review gate.
+    await evaluate(`document.querySelector('.pv-topbar [data-pv-action="logout"]').click(); true`);
+    ok(await waitFor('!!document.querySelector(".pv-account-list")'), `${tag} logout returns to the picker`);
+    if (await focusEl('[data-pv-action="register"]', `${tag} register`)) {
+      await ENTER();
+      ok(await waitFor('!!document.querySelector("#pv-register-form") && document.activeElement?.name === "name"'), `${tag} register form opens with focus on the name field`);
+      // Not just inside the viewport: the field must not be covered by the sticky top bar / nav (topmost element at its top edge).
+      ok(await waitFor(`(()=>{const f=document.querySelector('#pv-register-form [name="name"]'),r=f.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight&&document.elementFromPoint(r.left+r.width/2,r.top+3)===f;})()`, 2500), `${tag} register form scrolls the focused field into view, clear of sticky chrome`);
+      ok(await noOverflow() && await clipped() === '', `${tag} register form (27 governorates): no overflow/clipping`);
+      if (process.env.QA_SHOTS) { const shot = await cdp.send('Page.captureScreenshot', { format: 'png' }); fs.writeFileSync(path.join(process.env.QA_SHOTS, `provider-register-${w}.png`), Buffer.from(shot.data, 'base64')); }
+      await cdp.send('Input.insertText', { text: 'مقدم QA' });
+      await evaluate(`document.querySelector('#pv-register-form [name="phone"]').focus()`); await cdp.send('Input.insertText', { text: '01012345678' });
+      await evaluate(`document.querySelector('#pv-register-form [name="cats"][value="electric"]').click(); document.querySelector('#pv-register-form [name="govs"]').click(); document.querySelector('#pv-register-form .pv-btn-primary').focus(); true`);
+      await ENTER();
+      ok(await waitFor('/قيد المراجعة/.test(document.querySelector(".pv-gate")?.textContent||"") && document.title.startsWith("حالة الحساب |") && document.activeElement?.id === "provider-view"'), `${tag} registration submits to the pending gate (title + focus)`);
+      ok(await evaluate(`MP.db().providers.some(p=>p.name==='مقدم QA'&&p.status==='pending'&&p.phone==='01012345678')`), `${tag} pending provider stored locally`);
+      ok(await noOverflow(), `${tag} pending gate: no horizontal overflow`);
+      ok(!await navShown(), `${tag} pending gate: workspace nav is not displayed`);
+    }
+
     ok(errors.length === 0, `${tag} no JS errors or failed local requests${errors.length ? ' — ' + errors.slice(0, 3).join(' | ') : ''}`);
   }
 

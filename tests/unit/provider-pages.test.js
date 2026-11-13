@@ -61,7 +61,7 @@ test('every pv-* class emitted by the Provider runtime has a rule in provider.cs
   const css=fs.readFileSync(path.join(ROOT,'apps/provider/styles/provider.css'),'utf8');
   const sources=['apps/provider/app.js','apps/provider/provider-shell.js',...fs.readdirSync(path.join(ROOT,'apps/provider/pages')).map(f=>`apps/provider/pages/${f}`)];
   /* Not classes: inline form ids (styled via .pv-inline-form) and the preview id (styled via .pv-calc). Modifier styled by its base class: pv-finance-kpis (+ .pv-kpis). */
-  const notStyledByOwnRule=new Set(['pv-reject-form','pv-propose-form','pv-quote-form','pv-complete-form','pv-complete-preview','pv-finance-kpis']);
+  const notStyledByOwnRule=new Set(['pv-reject-form','pv-propose-form','pv-quote-form','pv-complete-form','pv-complete-preview','pv-reg-phone-hint','pv-finance-kpis']);
   const missing=new Set();
   for(const file of sources){
     const js=fs.readFileSync(path.join(ROOT,file),'utf8');
@@ -72,6 +72,7 @@ test('every pv-* class emitted by the Provider runtime has a rule in provider.cs
   assert.match(css,/\.pv-toast\.is-visible\{[^}]*opacity:1/);
   assert.doesNotMatch(css,/\.pv-toast\{[^}]*(visibility:hidden|display:none)/,'live region must stay in the accessibility tree');
   assert.match(css,/\.pv-availability\.is-on\{/,'availability on-state is visually distinct');
+  assert.match(css,/\.pv-app \[hidden\]\{display:none!important\}/,'the hidden attribute must beat component display rules (nav on picker/gate)');
 });
 
 test('provider login route hands off to the standalone demo picker and collects no credentials (G4)', () => {
@@ -87,6 +88,6 @@ test('provider login route hands off to the standalone demo picker and collects 
 
 test('service worker precaches standalone Provider entry, renderer modules and bumps cache version', () => {
   const sw=fs.readFileSync(path.join(ROOT,'service-worker.js'),'utf8');
-  assert.match(sw,/hansalhlak-v8-architecture-10/);
+  assert.match(sw,/hansalhlak-v8-architecture-11/);
   for(const file of ['apps/provider/index.html','apps/provider/styles/provider.css','apps/provider/app.js',...fs.readdirSync(path.join(ROOT,'apps/provider/pages')).filter(x=>x.endsWith('.js')).map(x=>`apps/provider/pages/${x}`)]) assert.ok(sw.includes(`'${file}'`),`${file} should be precached`);
 });

@@ -29,7 +29,31 @@
   function accountPicker() {
     const accounts=HSProviderAuth.listDemoAccounts(MP);
     dom.nav.hidden=true; $('[data-pv-action="logout"]',dom.host).hidden=true;
-    dom.view.innerHTML=`<section class="pv-welcome"><span class="pv-eyebrow">HANSALEHLAK · PROVIDER PORTAL</span><h1>مساحة عمل مقدم الخدمة</h1><p>اختر حسابًا تجريبيًا لفتح مساحة العمل. هذا الاختيار لا يمثل تسجيل دخول حقيقيًا ولا يمنح صلاحيات إنتاجية.</p></section><section class="pv-panel"><div class="pv-section-head"><h2>حسابات العرض</h2><span>${accounts.length} حساب</span></div><div class="pv-account-list">${accounts.map(p=>`<button class="pv-account" type="button" data-pv-action="select" data-id="${esc(p.id)}"><span class="pv-avatar">${esc(p.name.slice(0,1))}</span><span class="pv-account-copy"><b>${esc(p.name)}</b><small>${p.demo?'حساب تجريبي':'حساب مسجل'} · ${p.status==='approved'?'مقبول':p.status==='pending'?'قيد المراجعة':p.status==='suspended'?'معلّق':'مرفوض'}</small></span><span class="pv-arrow">${icon('chev')}</span></button>`).join('')}</div></section><p class="pv-disclaimer">لا توجد مصادقة فعلية في هذه النسخة. لا تستخدم بيانات حقيقية أو تعتبر هذه الشاشة حماية للحساب.</p>`;
+    dom.view.innerHTML=`<section class="pv-welcome"><span class="pv-eyebrow">HANSALEHLAK · PROVIDER PORTAL</span><h1>مساحة عمل مقدم الخدمة</h1><p>اختر حسابًا تجريبيًا لفتح مساحة العمل. هذا الاختيار لا يمثل تسجيل دخول حقيقيًا ولا يمنح صلاحيات إنتاجية.</p></section><section class="pv-panel"><div class="pv-section-head"><h2>حسابات العرض</h2><span>${accounts.length} حساب</span></div><div class="pv-account-list">${accounts.map(p=>`<button class="pv-account" type="button" data-pv-action="select" data-id="${esc(p.id)}"><span class="pv-avatar">${esc(p.name.slice(0,1))}</span><span class="pv-account-copy"><b>${esc(p.name)}</b><small>${p.demo?'حساب تجريبي':'حساب مسجل'} · ${p.status==='approved'?'مقبول':p.status==='pending'?'قيد المراجعة':p.status==='suspended'?'معلّق':'مرفوض'}</small></span><span class="pv-arrow">${icon('chev')}</span></button>`).join('')}</div></section><section class="pv-panel"><div class="pv-section-head"><h2>مقدم خدمة جديد؟</h2></div><p class="pv-hint">سجّل حسابًا تجريبيًا محليًا؛ يظهر بحالة «قيد المراجعة» حتى تعتمده الإدارة.</p><button class="pv-btn pv-btn-primary" type="button" data-pv-action="register">تسجيل مقدم خدمة جديد</button></section><p class="pv-disclaimer">لا توجد مصادقة فعلية في هذه النسخة. لا تستخدم بيانات حقيقية أو تعتبر هذه الشاشة حماية للحساب.</p>`;
+  }
+
+  /* Demo self-registration (parity with legacy providerForm). Local only: MP.registerProvider → status "pending". */
+  function openRegisterForm() {
+    $('.pv-inline-form',dom.view)?.remove();
+    formTrigger={kind:'register',id:''};
+    const checks=(name,items)=>items.map(([value,label])=>`<label class="pv-check"><input type="checkbox" name="${name}" value="${esc(value)}"> ${esc(label)}</label>`).join('');
+    const cats=Object.keys(SERVICE_TYPES).map(c=>[c,MP.catName(c)]), govs=MP.GOVS.map(g=>[g,g]);
+    dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form pv-register-form" id="pv-register-form" aria-label="تسجيل مقدم خدمة جديد"><label>الاسم *<input name="name" required maxlength="80" autocomplete="name"></label><label>رقم الهاتف *<input name="phone" type="tel" inputmode="tel" required pattern="[0-9+ ]{8,15}" aria-describedby="pv-reg-phone-hint" autocomplete="tel"><small class="pv-hint" id="pv-reg-phone-hint">من 8 إلى 15 خانة: أرقام ومسافات و+ فقط.</small></label><label>النوع<select name="type"><option value="individual">فرد</option><option value="company">شركة</option></select></label><label>سنوات الخبرة<input name="years" type="number" min="0" max="60" step="1" value="0"></label><fieldset class="pv-wide"><legend>التخصصات *</legend>${checks('cats',cats)}</fieldset><fieldset class="pv-wide"><legend>المحافظات *</legend>${checks('govs',govs)}</fieldset><label class="pv-wide">المناطق المفضلة (اختياري)<input name="areas" placeholder="مثل: مدينة نصر، المعادي"></label><label class="pv-wide">نبذة قصيرة<textarea name="bio" maxlength="300"></textarea></label><label class="pv-wide">أسماء المستندات (اختياري)<input name="docs" maxlength="200"><small class="pv-hint">في العرض التجريبي تُحفظ الأسماء فقط، ولا يتم التحقق من الهوية أو المستندات.</small></label><button class="pv-btn pv-btn-primary">إرسال طلب التسجيل</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
+    const form=$('#pv-register-form',dom.view);
+    if(form){ form.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'start'}); form.querySelector('input,select')?.focus({preventScroll:true}); }
+  }
+
+  /* Validation mirrors legacy pvForm (name, phone pattern, >=1 specialty, >=1 governorate) and also rejects tampered values. */
+  function registrationFrom(data) {
+    const text=k=>String(data.get(k)??'').trim();
+    const name=text('name'); if(!name||name.length>80) return {error:'أدخل الاسم (حتى 80 حرفًا)',field:'name'};
+    const phone=text('phone'); if(!/^[0-9+ ]{8,15}$/.test(phone)) return {error:'أدخل رقم الهاتف بشكل صحيح: من 8 إلى 15 خانة (أرقام ومسافات و+)',field:'phone'};
+    const cats=data.getAll('cats').map(String); if(!cats.length||!cats.every(c=>Object.prototype.hasOwnProperty.call(SERVICE_TYPES,c))) return {error:'اختر تخصصًا واحدًا على الأقل من القائمة',field:'cats'};
+    const govs=data.getAll('govs').map(String); if(!govs.length||!govs.every(g=>MP.GOVS.includes(g))) return {error:'اختر محافظة واحدة على الأقل من القائمة',field:'govs'};
+    const yearsRaw=text('years'), years=yearsRaw===''?0:Number(yearsRaw); if(!Number.isInteger(years)||years<0||years>60) return {error:'سنوات الخبرة رقم صحيح من 0 إلى 60',field:'years'};
+    const bio=text('bio'); if(bio.length>300) return {error:'النبذة حتى 300 حرف',field:'bio'};
+    return {value:{name,phone,type:text('type')==='company'?'company':'individual',cats,govs,
+      areas:text('areas').split(/[،,]/).map(s=>s.trim()).filter(Boolean),years,bio,docs:text('docs').slice(0,200)}};
   }
 
   function renderNav(active) {
@@ -124,13 +148,14 @@
   function cancelForm() {
     $('.pv-inline-form',dom.view)?.remove();
     const trigger=formTrigger; formTrigger=null;
-    if(trigger) focusIn([actionSel(trigger.kind,trigger.id)]);
+    if(trigger) focusIn([trigger.id?actionSel(trigger.kind,trigger.id):`[data-pv-action="${trigger.kind}"]`]);
   }
 
   /* Validation failure: announce through the live toast and keep focus inside the form for correction. */
-  function invalid(form,message) {
+  function invalid(form,message,field) {
     toast(message);
-    $('#'+form.id,dom.view)?.querySelector('input,select,textarea')?.focus({preventScroll:true});
+    const el=$('#'+form.id,dom.view);
+    (field&&el?.querySelector(`[name="${field}"]`)||el?.querySelector('input,select,textarea'))?.focus({preventScroll:true});
   }
 
   /* Live commission/net preview while completing a job (parity with legacy #finPrev; local demo figures only). */
@@ -158,6 +183,8 @@
     const {pvAction:action,id,next}=button.dataset;
     if(action==='select') { const p=HSProviderAuth.resolveDemoAccount(MP,id); if(!p)return; session.select(id); router.navigate('home'); render(); toast('تم فتح حساب العرض التجريبي'); return; }
     if(action==='logout') { session.clear(); router.navigate('home'); render(); return; }
+    if(action==='register') { openRegisterForm(); return; }
+    if(action==='cancel-form') { cancelForm(); return; } // also needed on the picker, where no provider is selected
     const p=currentProvider(); if(!p)return;
     const nearRequest=[actionSel('advance',id),detailsSel(id)];
     if(action==='availability'){MP.updateProvider(p.id,{available:!p.available});render(['[data-pv-action="availability"]']);return;}
@@ -165,7 +192,6 @@
     if(action==='reject'||action==='propose'||action==='quote'||action==='complete'){openForm(action,id);return;}
     if(action==='confirm'){if(!MP.confirmTime(id,'provider')){render([detailsSel(id)]);toast(STALE);return;}render(nearRequest);toast('تم تأكيد الموعد');return;}
     if(action==='advance'){const ok=MP.advance(id,next);if(ok)followToGroup(id,p);render(nearRequest);toast(ok?'تم تحديث حالة الطلب':'تعذر تحديث الحالة؛ راجع تسلسل الطلب');return;}
-    if(action==='cancel-form'){cancelForm();return;}
   }
 
   function onSubmit(event) {
@@ -174,6 +200,12 @@
     event.preventDefault(); const data=new FormData(form), id=form.dataset.id;
     const stale=()=>{formTrigger=null;render([detailsSel(id)]);toast(STALE);};
     let focusAfter;
+    if(form.id==='pv-register-form'){
+      const result=registrationFrom(data); if(result.error) return invalid(form,result.error,result.field);
+      const created=MP.registerProvider(result.value);
+      session.select(created.id); formTrigger=null; router.navigate('home'); render();
+      toast('تم إرسال طلب التسجيل (تجريبي) — بانتظار اعتماد الإدارة'); return;
+    }
     if(form.id==='pv-reject-form'){const reason=String(data.get('reason')||'').trim();if(!reason)return invalid(form,'اختر سبب الرفض');if(!MP.respond(id,false,reason))return stale();router.navigate('cancelled');toast('تم رفض الطلب');}
     if(form.id==='pv-propose-form'){const value=data.get('at'),at=value?new Date(value):null;if(!at||Number.isNaN(at.getTime()))return invalid(form,'أدخل موعدًا صحيحًا');if(at.getTime()<=Date.now())return invalid(form,'اختر موعدًا مستقبليًا');if(!MP.propose(id,at.toISOString()))return stale();focusAfter=[detailsSel(id)];toast('تم إرسال اقتراح الموعد');}
     if(form.id==='pv-quote-form'){const amounts=quoteAmounts(data);if(!amounts)return invalid(form,'راجع مبالغ عرض السعر: المصنعية مطلوبة وكل المبالغ أرقام غير سالبة');const result=MP.createQuote(id,{...amounts,note:String(data.get('note')||'').trim()});if(!result.ok)return invalid(form,result.msg||'تعذر إرسال العرض');router.navigate('quote');toast('تم إرسال عرض السعر');}
