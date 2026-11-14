@@ -32,7 +32,7 @@
   ${renderFavorites()}
   ${discover()}
   ${renderServiceAreas()}
-  <div class="join glass neon">${ic('user')}<div><b>أنت فني أو مقدم خدمة؟</b><small>انضم للمنصة واستقبل طلبات جديدة</small></div><button class="tag" data-act="role" data-r="provider">انضم الآن</button></div>
+  <div class="join glass neon">${ic('user')}<div><b>عايز تقدم خدماتك؟</b><small>انضم كمقدم خدمة — التسجيل يُراجَع من الإدارة قبل استقبال الطلبات</small></div><a class="tag" href="../provider/index.html#/join">انضم كمقدم خدمة</a></div>
   </div>`;
   };
   root.HSCustomerHomePage=Object.freeze({render,dependencies:REQUIRED.slice()});

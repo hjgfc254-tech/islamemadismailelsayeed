@@ -156,6 +156,14 @@ document.addEventListener('click', e => {
     case 'complain': openComplainSheet(d.id); break;
     case 'approveQuote':
       if (MP.approveQuote(d.id)) { show('tracking', d.id); toast('تمت الموافقة على السعر'); }
+      else toast('تعذرت الموافقة على عرض السعر');
+      break;
+    /* الخدمة المجانية: مسار مستقل عن عروض الأسعار (لا عرض سعر بقيمة صفر) */
+    case 'acceptFree':
+      if (MP.respondFree(d.id, true)) { show('tracking', d.id); toast('وافقت على تنفيذ الخدمة مجانًا'); } else toast('تعذر تنفيذ الإجراء؛ تغيّرت حالة الطلب');
+      break;
+    case 'declineFree':
+      if (MP.respondFree(d.id, false)) { show('tracking', d.id); toast('تم رفض الخدمة المجانية — يمكن لمقدم الخدمة إرسال عرض سعر'); } else toast('تعذر تنفيذ الإجراء؛ تغيّرت حالة الطلب');
       break;
     case 'rejectQuote':
       if (confirm('هل تريد رفض عرض السعر؟')) {

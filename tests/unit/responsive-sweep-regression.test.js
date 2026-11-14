@@ -33,6 +33,7 @@ test('fmtDT never renders "Invalid Date" for empty/invalid input (flexible reque
   const fmtDT=new Function(m[0].replace('const fmtDT = ','return ')+';')();
   assert.strictEqual(fmtDT(''),'');assert.strictEqual(fmtDT(undefined),'');assert.strictEqual(fmtDT('not-a-date'),'');
   assert(fmtDT('2026-11-11T10:00:00Z').length>3);
-  assert(/fmtDT\(r\.agreedAt \|\| r\.when\) \|\| 'مرن/.test(rd('apps/provider/legacy/portal-compat.js')));
+  /* the legacy provider card (portal-compat.js) was removed 2026-11-14; the standalone Provider app renders missing dates as «لم يحدد» */
+  assert(/if\(!value\) return 'لم يحدد'/.test(rd('apps/provider/app.js')));
 });
 console.log(passed+' checks passed');

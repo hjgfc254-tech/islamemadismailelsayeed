@@ -22,7 +22,7 @@ const ctx={console,setTimeout:(f)=>0,clearTimeout(){},setInterval(){return 0},cl
 ctx.globalThis=ctx; vm.createContext(ctx);
 const load=f=>vm.runInContext(fs.readFileSync(path.join(dir,f),'utf8').replace(/^'use strict';/m,''),ctx,{filename:f});
 const run=c=>vm.runInContext(c,ctx);
-['shared/icons/icon-registry.js','shared/config/legacy-data.js','services/local-catalog.js','services/local-market-store.js','apps/customer/pages/home.page.js','apps/customer/app.js','shared/components/ui-kit.js','apps/customer/pages/order-details.page.js','apps/customer/pages/market-ui.page.js','apps/customer/pages/request-wizard.page.js','apps/customer/pages/search.page.js','apps/customer/pages/addresses.page.js','apps/customer/pages/account.page.js','apps/provider/legacy/portal-compat.js','apps/provider/provider-workspace.js'].forEach(load);
+['shared/icons/icon-registry.js','shared/config/legacy-data.js','services/local-catalog.js','services/local-market-store.js','apps/customer/pages/home.page.js','apps/customer/app.js','shared/components/ui-kit.js','apps/customer/pages/order-details.page.js','apps/customer/pages/market-ui.page.js','apps/customer/pages/request-wizard.page.js','apps/customer/pages/search.page.js','apps/customer/pages/addresses.page.js','apps/customer/pages/account.page.js'].forEach(load);
 const view=()=>els['#view'].innerHTML;
 
 /* 1) البدء المؤجل: لا عرض قبل DOMContentLoaded، ثم عرض الرئيسية */
@@ -101,12 +101,7 @@ ok(run('WZ')&&run('WZ.step')===0,'newReq opens wizard from start');
 ok(run("typeof screens.details('electric')")==='string','legacy details screen still renders');
 ok(run("screens.sections().includes('data-wz-hit')"),'sections tab tiles route to CAT');
 
-/* 10) Provider workspace runtime render uses the existing demo provider records */
-run("globalThis.__provider = MP.db().providers.find(p=>p.status==='approved'); store.set('provId',__provider.id); PV.tab='home'; show('provider')");
-ok(view().includes('ماذا تحتاج أن تفعل الآن؟')&&view().includes('المواعيد القادمة'),'provider dashboard renders from existing provider data');
-ok(view().includes('بيانات مالية')||view().includes('تجريبية ومحلية'),'provider demo data is disclosed');
-run("PV.tab='schedule'; show('provider')"); ok(view().includes('المواعيد المسجلة'),'provider schedule tab renders');
-run("PV.tab='profile'; show('provider')"); ok(view().includes('تعديل بيانات الملف'),'provider profile tab renders edit action');
+/* 10) (removed 2026-11-14) the legacy Provider workspace no longer loads in the Customer app — see tests/unit/legacy-migration.test.js */
 /* 11) C5 — مسودة الطلب تظهر على الرئيسية بعد العودة */
 run("WZ=null; const __c=MP.db().customers.find(c=>c.phone==='01000000000'); MP.saveDraft(__c.id,{step:4,data:{cat:'appliances',item:'appliances/ac',desc:'مسودة من الرئيسية'}}); show('home')");
 ok(view().includes('عندك طلب لم يكتمل')&&view().includes('data-act="wzResume"'),'home exposes saved draft resume action');

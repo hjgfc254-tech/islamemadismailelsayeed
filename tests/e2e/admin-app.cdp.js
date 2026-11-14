@@ -6,7 +6,7 @@ const { connect, driver, setupPage, withBrowser, reporter, sleep } = require('./
 
 const BASE = (process.argv[2] || 'http://127.0.0.1:8099').replace(/\/$/, '');
 const ENTRY = BASE + '/apps/admin/index.html';
-const VIEWPORTS = [[1280, 800], [768, 1024], [390, 844]];
+const VIEWPORTS = [[1280, 800], [768, 1024], [430, 932], [390, 844], [320, 640]];
 const { ok, failures } = reporter();
 
 async function run({ exe, wsUrl }) {
@@ -66,6 +66,14 @@ async function run({ exe, wsUrl }) {
       ok(await waitFor('document.querySelectorAll("#adm-content tr[data-row]").length > 0', 5000), `${tag} workforce page renders employees (employee-* modules)`);
       ok(await noOverflow(), `${tag} module pages: no horizontal overflow`);
     }
+
+    // Live marketplace operations (shared MP store): approve a provider registered through onboarding.
+    const pend = await evaluate(`MP.registerProvider({name:'فني QA ${w}',phone:'0105555${String(w).padStart(4,'0')}',type:'individual',cats:['plumbing'],govs:['الجيزة'],areas:[],years:2,bio:'',docs:''}).id`);
+    await evaluate('location.hash = "#/marketplace"; true');
+    ok(await waitFor(`!!document.querySelector('#adm-content [data-mk="padmit"][data-id="${pend}"]')`, 5000), `${tag} «تشغيل السوق» lists the pending registration from the shared store`);
+    await evaluate(`document.querySelector('#adm-content [data-mk="padmit"][data-id="${pend}"]').focus(); true`); await ENTER();
+    ok(await waitFor(`MP.get('providers','${pend}').status==='approved' && /تم قبول مقدم الخدمة/.test(document.querySelector('#mk-live').textContent)`), `${tag} Enter on «قبول التسجيل» approves the provider (announced)`);
+    ok(await noOverflow(), `${tag} marketplace page: no horizontal overflow`);
 
     // Switch account → picker; sign in as a support employee: guarded pages leave the nav and deep links are denied.
     await evaluate('document.querySelector("[data-adm-switch]").click(); true');

@@ -36,6 +36,7 @@ hansalhlak/
 │   │   │   ├── departments.page.js
 │   │   │   ├── employee-details.page.js
 │   │   │   ├── finance-dashboard.page.js
+│   │   │   ├── marketplace.page.js
 │   │   │   ├── notifications-management.page.js
 │   │   │   ├── orders-management.page.js
 │   │   │   ├── permissions.page.js
@@ -91,8 +92,6 @@ hansalhlak/
 │   │   ├── guest-policy.js
 │   │   └── README.md
 │   └── provider/
-│       ├── legacy/
-│       │   └── portal-compat.js
 │       ├── pages/
 │       │   ├── active-jobs.page.js
 │       │   ├── dashboard.page.js
@@ -117,7 +116,6 @@ hansalhlak/
 │       ├── provider-router.js
 │       ├── provider-session.js
 │       ├── provider-shell.js
-│       ├── provider-workspace.js
 │       └── README.md
 ├── assets/
 │   ├── icon.svg
@@ -401,6 +399,8 @@ hansalhlak/
 │       ├── frontend-contracts.test.js
 │       ├── home.test.js
 │       ├── icon-asset-audit.test.js
+│       ├── legacy-migration.test.js
+│       ├── marketplace-rules.test.js
 │       ├── notifications-management.test.js
 │       ├── orders-management.test.js
 │       ├── provider-app-a11y.test.js
@@ -408,10 +408,8 @@ hansalhlak/
 │       ├── provider-app-register.test.js
 │       ├── provider-app-routing.test.js
 │       ├── provider-domain.test.js
-│       ├── provider-legacy-parity.test.js
 │       ├── provider-pages.test.js
 │       ├── provider-request-domain.test.js
-│       ├── provider-workspace.test.js
 │       ├── providers-management.test.js
 │       ├── quotes-management.test.js
 │       ├── rbac-pages.test.js

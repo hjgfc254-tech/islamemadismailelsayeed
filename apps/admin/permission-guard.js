@@ -13,6 +13,7 @@
 (function (root) {
   /* route id → RBAC module (HSAdminRbac.MODULES keys) */
   const ROUTE_MODULE = Object.freeze({
+    marketplace: 'providers',   /* live marketplace operations; each tab additionally gates its actions by its own module */
     orders: 'orders', customers: 'customers', providers: 'providers', services: 'services', categories: 'categories',
     complaints: 'complaints', reviews: 'reviews', notifications: 'notifications',
     workforce: 'workforce', 'employee-details': 'workforce', departments: 'departments', roles: 'roles', permissions: 'permissions'

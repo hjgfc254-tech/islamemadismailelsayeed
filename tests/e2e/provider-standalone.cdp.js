@@ -132,6 +132,26 @@ async function run({ exe, wsUrl }) {
         fs.writeFileSync(path.join(process.env.QA_SHOTS, `provider-${route}-${w}.png`), Buffer.from(shot.data, 'base64'));
       }
     }
+    // Free-service flow entry (distinct from quotes) and profile editing.
+    await evaluate(`location.hash='#/progress'; true`); await sleep(120);
+    if (await focusEl(`[data-pv-action="free"][data-id="${rid}"]`, `${tag} free`)) {
+      await ENTER();
+      ok(await waitFor('!!document.querySelector("#pv-free-form select[name=reason][required]") && document.activeElement?.name === "reason"'), `${tag} «تنفيذ كخدمة مجانية» opens its own form (reason required, focused)`);
+      ok(await noOverflow(), `${tag} free-service form: no horizontal overflow`);
+      await ESC();
+    }
+    await evaluate(`location.hash='#/profile'; true`); await sleep(120);
+    if (await focusEl('[data-pv-action="edit-profile"]', `${tag} edit profile`)) {
+      await ENTER();
+      ok(await waitFor('!!document.querySelector("#pv-profile-form") && document.querySelector("#pv-profile-form [name=name]").value.length > 0'), `${tag} profile editing opens a prefilled form`);
+      // The seeded demo provider has no phone; the required field must block saving until a valid one is entered.
+      ok(await evaluate(`(()=>{const f=document.querySelector('#pv-profile-form'),p=f.querySelector('[name=phone]');return p.value!=='' || !f.checkValidity();})()`), `${tag} profile form enforces a phone number`);
+      await evaluate(`(()=>{const p=document.querySelector('#pv-profile-form [name=phone]');if(!p.value)p.value='01012345678';return true;})()`);
+      await evaluate(`(()=>{const n=document.querySelector('#pv-profile-form [name=bio]');n.value='نبذة من اختبار المتصفح';document.querySelector('#pv-profile-form .pv-btn-primary').focus();return true;})()`); await ENTER();
+      ok(await waitFor(`/نبذة من اختبار المتصفح/.test(document.querySelector('#provider-view').textContent) && /تم حفظ ملفك/.test(document.querySelector('#provider-toast').textContent)`), `${tag} saving the profile updates it in place`);
+      ok(await noOverflow(), `${tag} profile: no horizontal overflow`);
+    }
+
     // G1: demo self-registration from the picker, typed for real, ends on the pending-review gate.
     await evaluate(`document.querySelector('.pv-topbar [data-pv-action="logout"]').click(); true`);
     ok(await waitFor('!!document.querySelector(".pv-account-list")'), `${tag} logout returns to the picker`);

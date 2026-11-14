@@ -30,6 +30,7 @@
       { id: 'dashboard', label: 'لوحة الإدارة', icon: 'grid' },
       { id: 'super-dashboard', label: 'لوحة المالك', icon: 'star' } ] },
     { id: 'operations', label: 'العمليات', items: [
+      { id: 'marketplace', label: 'تشغيل السوق', icon: 'grid' },
       { id: 'orders', label: 'الطلبات', icon: 'list' },
       { id: 'providers', label: 'مقدمو الخدمة', icon: 'provider' },
       { id: 'customers', label: 'العملاء', icon: 'user' },

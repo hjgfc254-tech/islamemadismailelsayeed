@@ -33,15 +33,24 @@
   }
 
   /* Demo self-registration (parity with legacy providerForm). Local only: MP.registerProvider → status "pending". */
-  function openRegisterForm() {
-    $('.pv-inline-form',dom.view)?.remove();
-    formTrigger={kind:'register',id:''};
-    const checks=(name,items)=>items.map(([value,label])=>`<label class="pv-check"><input type="checkbox" name="${name}" value="${esc(value)}"> ${esc(label)}</label>`).join('');
+  /* One provider-details form for onboarding (register) and profile editing (same fields, same validator). */
+  function providerFormHtml(o) {
+    const v=o.values||{}, cs=new Set(v.cats||[]), gs=new Set(v.govs||[]);
+    const checks=(name,items,sel)=>items.map(([value,label])=>`<label class="pv-check"><input type="checkbox" name="${name}" value="${esc(value)}"${sel.has(value)?' checked':''}> ${esc(label)}</label>`).join('');
     const cats=Object.keys(SERVICE_TYPES).map(c=>[c,MP.catName(c)]), govs=MP.GOVS.map(g=>[g,g]);
-    dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form pv-register-form" id="pv-register-form" aria-label="تسجيل مقدم خدمة جديد"><label>الاسم *<input name="name" required maxlength="80" autocomplete="name"></label><label>رقم الهاتف *<input name="phone" type="tel" inputmode="tel" required pattern="[0-9+ ]{8,15}" aria-describedby="pv-reg-phone-hint" autocomplete="tel"><small class="pv-hint" id="pv-reg-phone-hint">من 8 إلى 15 خانة: أرقام ومسافات و+ فقط.</small></label><label>النوع<select name="type"><option value="individual">فرد</option><option value="company">شركة</option></select></label><label>سنوات الخبرة<input name="years" type="number" min="0" max="60" step="1" value="0"></label><fieldset class="pv-wide"><legend>التخصصات *</legend>${checks('cats',cats)}</fieldset><fieldset class="pv-wide"><legend>المحافظات *</legend>${checks('govs',govs)}</fieldset><label class="pv-wide">المناطق المفضلة (اختياري)<input name="areas" placeholder="مثل: مدينة نصر، المعادي"></label><label class="pv-wide">نبذة قصيرة<textarea name="bio" maxlength="300"></textarea></label><label class="pv-wide">أسماء المستندات (اختياري)<input name="docs" maxlength="200"><small class="pv-hint">في العرض التجريبي تُحفظ الأسماء فقط، ولا يتم التحقق من الهوية أو المستندات.</small></label><button class="pv-btn pv-btn-primary">إرسال طلب التسجيل</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
-    const form=$('#pv-register-form',dom.view);
+    const val=k=>v[k]!=null&&v[k]!==''?` value="${esc(v[k])}"`:'';
+    return `<form class="pv-inline-form pv-register-form" id="${o.id}" aria-label="${esc(o.label)}"><label>الاسم *<input name="name" required maxlength="80" autocomplete="name"${val('name')}></label><label>رقم الهاتف *<input name="phone" type="tel" inputmode="tel" required pattern="[0-9+ ]{8,15}" aria-describedby="pv-reg-phone-hint" autocomplete="tel"${val('phone')}><small class="pv-hint" id="pv-reg-phone-hint">من 8 إلى 15 خانة: أرقام ومسافات و+ فقط.</small></label><label>النوع<select name="type"><option value="individual">فرد</option><option value="company"${v.type==='company'?' selected':''}>شركة</option></select></label><label>سنوات الخبرة<input name="years" type="number" min="0" max="60" step="1" value="${esc(v.years!=null?v.years:0)}"></label><fieldset class="pv-wide"><legend>التخصصات *</legend>${checks('cats',cats,cs)}</fieldset><fieldset class="pv-wide"><legend>المحافظات *</legend>${checks('govs',govs,gs)}</fieldset><label class="pv-wide">المناطق المفضلة (اختياري)<input name="areas" placeholder="مثل: مدينة نصر، المعادي"${v.areas&&v.areas.length?` value="${esc(v.areas.join('، '))}"`:''}></label><label class="pv-wide">نبذة قصيرة<textarea name="bio" maxlength="300">${esc(v.bio||'')}</textarea></label><label class="pv-wide">أسماء المستندات (اختياري)<input name="docs" maxlength="200"${val('docs')}><small class="pv-hint">في العرض التجريبي تُحفظ الأسماء فقط، ولا يتم التحقق من الهوية أو المستندات.</small></label><button class="pv-btn pv-btn-primary">${esc(o.submit)}</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`;
+  }
+  function openProviderForm(kind,id,html) {
+    $('.pv-inline-form',dom.view)?.remove();
+    formTrigger={kind,id:''};
+    dom.view.insertAdjacentHTML('afterbegin',html);
+    const form=$('#'+id,dom.view);
     if(form){ form.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'start'}); form.querySelector('input,select')?.focus({preventScroll:true}); }
   }
+  function openRegisterForm() { openProviderForm('register', 'pv-register-form', providerFormHtml({ id:'pv-register-form', label:'تسجيل مقدم خدمة جديد', submit:'إرسال طلب التسجيل' })); }
+  /* Profile editing (enabled 2026-11-14): same fields/validation as onboarding; status and approval are not editable here. */
+  function openProfileForm(p) { openProviderForm('edit-profile', 'pv-profile-form', providerFormHtml({ id:'pv-profile-form', label:'تعديل ملف مقدم الخدمة', submit:'حفظ التعديلات', values:p })); }
 
   /* Validation mirrors legacy pvForm (name, phone pattern, >=1 specialty, >=1 governorate) and also rejects tampered values. */
   function registrationFrom(data) {
@@ -76,10 +85,16 @@
       if(r.status==='scheduled') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="enroute" data-id="${esc(r.id)}">أنا في الطريق</button>`);
       if(r.status==='enroute') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="arrived" data-id="${esc(r.id)}">وصلت</button>`);
       if(r.status==='arrived') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="started" data-id="${esc(r.id)}">بدأت الخدمة</button>`);
-      if(['started','quote'].includes(r.status)) actions.push(`<button class="pv-btn" data-pv-action="quote" data-id="${esc(r.id)}">${quote?'تحديث عرض السعر':'إرسال عرض سعر'}</button>`,`<button class="pv-btn pv-btn-primary" data-pv-action="complete" data-id="${esc(r.id)}">تسجيل الإكمال</button>`);
+      const fs=r.freeService&&r.freeService.status;
+      if(fs==='accepted'&&['scheduled','enroute','arrived','started'].includes(r.status)) actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="complete-free" data-id="${esc(r.id)}">تسجيل إكمال الخدمة المجانية</button>`);
+      else if(fs!=='proposed'&&['started','quote'].includes(r.status)) {
+        actions.push(`<button class="pv-btn" data-pv-action="quote" data-id="${esc(r.id)}">${quote?'تحديث عرض السعر':'إرسال عرض سعر'}</button>`,`<button class="pv-btn pv-btn-primary" data-pv-action="complete" data-id="${esc(r.id)}">تسجيل الإكمال</button>`);
+        if(r.status==='started'&&!(quote&&['pending','approved'].includes(quote.status))&&fs!=='declined') actions.push(`<button class="pv-btn" data-pv-action="free" data-id="${esc(r.id)}">تنفيذ كخدمة مجانية</button>`);
+      }
     }
+    const freeNote=r.freeService?`<p class="pv-note">خدمة مجانية (${esc((MP.FREE_REASONS||{})[r.freeService.reason]||'')}): ${({proposed:'بانتظار موافقة العميل',accepted:'وافق العميل — نفّذ وسجّل الإكمال',declined:'رفض العميل؛ يمكن إرسال عرض سعر',completed:'اكتملت بلا مقابل'})[r.freeService.status]||''}</p>`:'';
     const address=a.status==='accepted'?`${esc(r.gov)} · ${esc(r.area)} · ${esc(r.addr)}`:`${esc(r.gov)} · ${esc(r.area)} — يظهر العنوان التفصيلي بعد قبول الطلب`;
-    return `<article class="pv-request"><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header><p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}<div class="pv-actions"><button class="pv-btn" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">عرض التفاصيل</button>${actions.join('')}</div></article>`;
+    return `<article class="pv-request"><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header><p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}<div class="pv-actions"><button class="pv-btn" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">عرض التفاصيل</button>${actions.join('')}</div></article>`;
   }
 
   function sectionFor(page,p,groups,transactions) {
@@ -106,7 +121,7 @@
      restores focus to the first matching selector so keyboard users are not dropped to <body>. */
   function render(focusTargets) {
     const p=currentProvider();
-    if(!p){accountPicker();settle('picker','اختيار حساب العرض',focusTargets);return;}
+    if(!p){accountPicker();const joining=router.parse(location.hash).page==='join';if(joining)openRegisterForm();settle(joining?'join':'picker',joining?'الانضمام كمقدم خدمة':'اختيار حساب العرض',focusTargets);return;}
     $('[data-pv-action="logout"]',dom.host).hidden=false;
     if(p.status!=='approved') {
       dom.nav.hidden=true;
@@ -140,7 +155,8 @@
     if(kind==='propose') dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-propose-form" data-id="${esc(id)}" ${named('اقتراح موعد للطلب')}><label>الموعد المقترح<input type="datetime-local" name="at" required min="${new Date(Date.now()+60000).toISOString().slice(0,16)}"></label><button class="pv-btn pv-btn-primary">إرسال الاقتراح</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
     if(kind==='quote') { const q=MP.currentQuote(id); dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-quote-form" data-id="${esc(id)}" ${named('عرض سعر للطلب')}><label>المصنعية<input name="labor" type="number" min="0" step="0.01" required value="${q?.labor??''}"></label><label>قطع الغيار<input name="parts" type="number" min="0" step="0.01" value="${q?.parts??0}"></label><label>رسوم المعاينة<input name="visitFee" type="number" min="0" step="0.01" value="${q?.visitFee??0}"></label><label>الخصم<input name="discount" type="number" min="0" step="0.01" value="${q?.discount??0}"></label><label>ملاحظة<textarea name="note" maxlength="300">${esc(q?.note||'')}</textarea></label><button class="pv-btn pv-btn-primary">إرسال عرض السعر</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`); }
     if(kind==='complete') { const q=MP.currentQuote(id); const suggested=q?.status==='approved'?q.total:''; const p=currentProvider(); const rate=p?Number(MP.rateFor(request.cat,p.id))||0:0; dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-complete-form" data-id="${esc(id)}" data-rate="${rate}" ${named('تسجيل إكمال الطلب')}><label>القيمة النهائية (ج.م)<input name="value" type="number" min="1" step="0.01" required value="${suggested}"></label><label>خصومات معلنة<input name="deductions" type="number" min="0" step="0.01" value="0"></label><p class="pv-calc" id="pv-complete-preview" aria-live="polite">${completionPreview(rate,suggested,0)}</p><button class="pv-btn pv-btn-primary">تأكيد اكتمال الخدمة</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`); }
-    const form=$('#'+({reject:'pv-reject-form',propose:'pv-propose-form',quote:'pv-quote-form',complete:'pv-complete-form'}[kind]),dom.view);
+    if(kind==='free') dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-free-form" data-id="${esc(id)}" ${named('خدمة مجانية للطلب')}><label>سبب تنفيذ الخدمة مجانًا<select name="reason" required><option value="">اختر السبب</option>${Object.entries(MP.FREE_REASONS||{}).map(([k,l])=>`<option value="${esc(k)}">${esc(l)}</option>`).join('')}</select></label><p class="pv-hint pv-wide">لا يُسجَّل أي مبلغ ولا عمولة؛ يتطلب موافقة العميل قبل التنفيذ. الخدمة المجانية ليست عرض سعر بقيمة صفر.</p><button class="pv-btn pv-btn-primary">إرسال الاقتراح للعميل</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
+    const form=$('#'+({reject:'pv-reject-form',propose:'pv-propose-form',quote:'pv-quote-form',complete:'pv-complete-form',free:'pv-free-form'}[kind]),dom.view);
     if(form) { form.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'center'}); form.querySelector('input,select')?.focus({preventScroll:true}); }
   }
 
@@ -189,7 +205,9 @@
     const nearRequest=[actionSel('advance',id),detailsSel(id)];
     if(action==='availability'){MP.updateProvider(p.id,{available:!p.available});render(['[data-pv-action="availability"]']);return;}
     if(action==='accept'){if(!MP.respond(id,true)){render([detailsSel(id)]);toast(STALE);return;}router.navigate('accepted');render();toast('تم قبول الطلب');return;}
-    if(action==='reject'||action==='propose'||action==='quote'||action==='complete'){openForm(action,id);return;}
+    if(action==='reject'||action==='propose'||action==='quote'||action==='complete'||action==='free'){openForm(action,id);return;}
+    if(action==='complete-free'){if(!MP.completeFree(id)){render([detailsSel(id)]);toast(STALE);return;}router.navigate('done');render();toast('تم تسجيل إكمال الخدمة المجانية (بلا مقابل)');return;}
+    if(action==='edit-profile'){openProfileForm(p);return;}
     if(action==='confirm'){if(!MP.confirmTime(id,'provider')){render([detailsSel(id)]);toast(STALE);return;}render(nearRequest);toast('تم تأكيد الموعد');return;}
     if(action==='advance'){const ok=MP.advance(id,next);if(ok)followToGroup(id,p);render(nearRequest);toast(ok?'تم تحديث حالة الطلب':'تعذر تحديث الحالة؛ راجع تسلسل الطلب');return;}
   }
@@ -208,7 +226,9 @@
     }
     if(form.id==='pv-reject-form'){const reason=String(data.get('reason')||'').trim();if(!reason)return invalid(form,'اختر سبب الرفض');if(!MP.respond(id,false,reason))return stale();router.navigate('cancelled');toast('تم رفض الطلب');}
     if(form.id==='pv-propose-form'){const value=data.get('at'),at=value?new Date(value):null;if(!at||Number.isNaN(at.getTime()))return invalid(form,'أدخل موعدًا صحيحًا');if(at.getTime()<=Date.now())return invalid(form,'اختر موعدًا مستقبليًا');if(!MP.propose(id,at.toISOString()))return stale();focusAfter=[detailsSel(id)];toast('تم إرسال اقتراح الموعد');}
-    if(form.id==='pv-quote-form'){const amounts=quoteAmounts(data);if(!amounts)return invalid(form,'راجع مبالغ عرض السعر: المصنعية مطلوبة وكل المبالغ أرقام غير سالبة');const result=MP.createQuote(id,{...amounts,note:String(data.get('note')||'').trim()});if(!result.ok)return invalid(form,result.msg||'تعذر إرسال العرض');router.navigate('quote');toast('تم إرسال عرض السعر');}
+    if(form.id==='pv-free-form'){const reason=String(data.get('reason')||'');if(!reason)return invalid(form,'اختر سبب الخدمة المجانية','reason');const res=MP.proposeFree(id,reason);if(!res.ok)return invalid(form,res.msg||'تعذر اقتراح الخدمة المجانية');formTrigger=null;render([detailsSel(id)]);return toast('أُرسل اقتراح الخدمة المجانية للعميل');}
+    if(form.id==='pv-profile-form'){const result=registrationFrom(data);if(result.error)return invalid(form,result.error,result.field);const me=currentProvider();if(!me)return;const{name,phone,type,cats,govs,areas,years,bio,docs}=result.value;MP.updateProvider(me.id,{name,phone,type,cats,govs,areas,years,bio,docs});formTrigger=null;render(['[data-pv-action="edit-profile"]']);return toast('تم حفظ ملفك (محليًا)');}
+    if(form.id==='pv-quote-form'){const amounts=quoteAmounts(data);if(!amounts)return invalid(form,'راجع مبالغ عرض السعر: المصنعية مطلوبة وكل المبالغ أرقام غير سالبة');if(amounts.labor+amounts.parts+amounts.visitFee-amounts.discount<=0)return invalid(form,'لا يُسمح بعرض سعر بقيمة صفر. إن كانت الخدمة بلا مقابل استخدم «تنفيذ كخدمة مجانية».','labor');const result=MP.createQuote(id,{...amounts,note:String(data.get('note')||'').trim()});if(!result.ok)return invalid(form,result.msg||'تعذر إرسال العرض');router.navigate('quote');toast('تم إرسال عرض السعر');}
     if(form.id==='pv-complete-form'){const value=Number(data.get('value')),deductions=Number(data.get('deductions'));if(!Number.isFinite(value)||!Number.isFinite(deductions)||!(value>0)||deductions<0||deductions>value)return invalid(form,'راجع قيمة الخدمة والخصم');if(!MP.complete(id,value,deductions))return invalid(form,'لا يمكن إكمال الطلب في حالته الحالية');router.navigate('done');toast('تم تسجيل اكتمال الخدمة');}
     formTrigger=null;
     render(focusAfter);

@@ -332,7 +332,10 @@ const MP = (() => {
     createQuote(reqId, q){
       const r = get('serviceRequests',reqId); const p = api.providerOf(reqId);
       if(!r || !p) return {ok:false,msg:'لا يوجد مزود معين'};
+      if (r.freeService && ['proposed','accepted'].includes(r.freeService.status)) return {ok:false,msg:'هذا الطلب في مسار «خدمة مجانية»؛ لا يمكن إرسال عرض سعر معه'};
       const total = Math.max(0, (+q.labor||0) + (+q.parts||0) + (+q.visitFee||0) - (+q.discount||0));
+      /* قاعدة عمل: عروض الأسعار بقيمة صفر ممنوعة — الخدمة بلا مقابل لها مسار «خدمة مجانية» مستقل */
+      if (!(total > 0)) return {ok:false,msg:'لا يُسمح بعرض سعر بقيمة صفر. إن كانت الخدمة بلا مقابل استخدم «خدمة مجانية».'};
       const quote = {
         id:uid('q'), reqId, providerId:p.id,
         labor:+q.labor||0, parts:+q.parts||0, visitFee:+q.visitFee||0, discount:+q.discount||0,
@@ -350,7 +353,7 @@ const MP = (() => {
     approveQuote(reqId){
       const r = get('serviceRequests',reqId); if(!r) return false;
       const q = db.quotes.find(x=>x.id===r.quoteId);
-      if(!q) return false;
+      if(!q || !(+q.total > 0)) return false;   /* لا موافقة على عرض بقيمة صفر (بيانات قديمة) */
       q.status = 'approved'; q.approvedAt = now();
       if (r.status === 'quote') log(r,'completed','العميل وافق على السعر');
       r.finalValue = q.total;
@@ -383,9 +386,48 @@ const MP = (() => {
     /* ═════════ اكتمال الخدمة + المعاملة المالية (متوافق مع V6) ═════════
        V6 signature: complete(reqId, value, deductions) — محفوظ.
        إن كان هناك عرض سعر معتمد، يمكن استدعاء complete بدون value لاستخدامه. */
+    /* ═════════ الخدمة المجانية — مسار مستقل (ليست عرض سعر بقيمة صفر) ═════════
+       proposed (من المزود، بسبب مطلوب) → accepted | declined (من العميل) → completed (من المزود، بلا مقابل).
+       قواعد: لا مع عرض سعر معلّق/معتمد؛ لا إكمال مدفوع أثناء المسار؛ معاملة الإكمال value=0 بلا عمولة وموسومة free. */
+    FREE_REASONS: { inspection:'معاينة/تشخيص مجاني', warranty:'ضمان على خدمة سابقة', goodwill:'مبادرة مجانية من مقدم الخدمة', other:'سبب آخر' },
+    proposeFree(reqId, reason){
+      const r = get('serviceRequests',reqId), p = api.providerOf(reqId);
+      if(!r || !p) return {ok:false,msg:'لا يوجد مزود معين'};
+      if(!api.FREE_REASONS[reason]) return {ok:false,msg:'اختر سبب الخدمة المجانية'};
+      if(!['scheduled','enroute','arrived','started'].includes(r.status)) return {ok:false,msg:'لا يمكن تحويل الطلب إلى خدمة مجانية في حالته الحالية'};
+      const q = api.currentQuote(reqId);
+      if(q && ['pending','approved'].includes(q.status)) return {ok:false,msg:'يوجد عرض سعر قائم لهذا الطلب'};
+      if(r.freeService && ['proposed','accepted','completed'].includes(r.freeService.status)) return {ok:false,msg:'سبق اقتراح خدمة مجانية لهذا الطلب'};
+      r.freeService = { status:'proposed', reason, by:p.id, at:now() };
+      r.history.push({s:r.status, at:now(), note:'اقتراح خدمة مجانية: '+api.FREE_REASONS[reason]});
+      notify('customer:'+r.customerId,'مقدم الخدمة يقترح تنفيذ الطلب '+r.no+' مجانًا — بانتظار موافقتك',r.id);
+      save(); return {ok:true};
+    },
+    respondFree(reqId, accept){
+      const r = get('serviceRequests',reqId);
+      if(!r || !r.freeService || r.freeService.status!=='proposed') return false;
+      r.freeService.status = accept ? 'accepted' : 'declined'; r.freeService.respondedAt = now();
+      r.history.push({s:r.status, at:now(), note: accept ? 'وافق العميل على الخدمة المجانية' : 'رفض العميل الخدمة المجانية'});
+      notify('provider:'+(api.providerOf(reqId)||{}).id, (accept?'وافق':'رفض')+' العميل على الخدمة المجانية — الطلب '+r.no, r.id);
+      save(); return true;
+    },
+    completeFree(reqId){
+      const r = get('serviceRequests',reqId), p = api.providerOf(reqId);
+      if(!r || !p || !r.freeService || r.freeService.status!=='accepted') return false;
+      if(!['scheduled','enroute','arrived','started'].includes(r.status)) return false;
+      r.finalValue = 0; r.freeService.status = 'completed'; r.freeService.completedAt = now();
+      log(r,'completed','خدمة مجانية — بدون مقابل ('+api.FREE_REASONS[r.freeService.reason]+')');
+      if (!db.transactions.some(t => t.reqId===reqId)) {
+        db.transactions.push({id:uid('t'),reqId,providerId:p.id,customerId:r.customerId,cat:r.cat,value:0,rate:0,commission:0,deductions:0,net:0,free:true,model:'free',collection:'none',demo:true,at:now()});
+      }
+      notify('customer:'+r.customerId,'اكتملت الخدمة المجانية — أكّد الإتمام وقيّم الفني (الطلب '+r.no+')',r.id);
+      save(); return true;
+    },
+
     complete(reqId, value, deductions){
       const r = get('serviceRequests',reqId), p = api.providerOf(reqId);
       if(!r || !p) return false;
+      if (r.freeService && ['proposed','accepted'].includes(r.freeService.status)) return false;   /* المسار المجاني يُكمَل عبر completeFree */
       if (![ 'started','arrived','enroute','quote','scheduled','accepted' ].includes(r.status)) return false;
       let v = +value;
       if (!v || v <= 0) {

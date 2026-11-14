@@ -82,24 +82,12 @@
 </div>
 <input type="file" id="cam" accept="image/*" capture="environment" hidden>
 
-<!-- ═════════ تحميل السكربتات — الترتيب حرج ═════════
-     كل ملف يعتمد على ما قبله:
-     1) icons.js       — نظام الأيقونات (يستخدمه كل شيء)
-     2) data.js        — محتوى data.js القديم (توافق خلفي)
-     3) catalog.js     — CAT (كتالوج هرمي) — يعتمد على icons.js
-     4) market.js      — MP (طبقة بيانات) — يعتمد على data.js (DEVICES)
-     5) app.js         — الواجهة الأساسية — يعتمد على كل ما سبق
-     5b) ui-kit.js     — حالات UI موحدة (V8-C2) — يعتمد على app.js
-     6) market-ui.js   — واجهة العميل — يعتمد على MP + app.js
-     7) wizard.js      — نموذج الطلب — يعتمد على CAT + AT + MP
-     8) portal.js      — بوابة المزود + الإدارة — يعتمد على MP
-     8b) provider-workspace.js — مساحة عمل الفني V8 (تعيد تعريف شاشة الفني فقط، ولا تمس الإدارة)
-     9) attachments.js — مرفقات IndexedDB — مستقلة
-    10) search.js      — بحث موحد على CAT — يعتمد على CAT + icons.js
-    11) addresses.js   — إدارة العناوين — يعتمد على MP
-    12) account.js     — حساب العميل — يعتمد على MP + addresses.js
-    13) support.js     — الدعم والشكاوى — يعتمد على MP + AT
--->
+<!-- ═════════ تحميل السكربتات — الترتيب حرج (سكربتات كلاسيكية تعتمد على ما قبلها) ═════════
+     الأيقونات والتبويبات ← البيانات القديمة ← الكتالوج (CAT) ← مخزن السوق المشترك (MP — نفس بيانات تطبيق مقدم الخدمة والإدارة)
+     ← جلسة العميل والموجّه وسياسة/مدخل الزائر ← الرئيسية ← app.js ← ui-kit ← الطلبات/التتبع/مقدمو الخدمة ← market-ui ← المعالج
+     ← مدخل إنشاء الطلب ← المرفقات ← البحث/الاكتشاف/العناوين/الحساب/الدعم.
+     لا تُحمَّل هنا أي واجهة لمقدم الخدمة أو الإدارة: مقدم الخدمة في apps/provider/ (الانضمام عبر ../provider/index.html#/join)
+     والإدارة تطبيق مستقل بمدخل مقيد خاص به، ولا يُربط من هنا. -->
 <script src="../../shared/icons/icon-registry.js"></script>
 <script src="../../shared/components/accessible-tabs.js"></script>
 <script src="../../shared/config/legacy-data.js"></script>
@@ -118,8 +106,6 @@
 <script src="pages/market-ui.page.js"></script>
 <script src="pages/request-wizard.page.js"></script>
 <script src="pages/request-create.page.js"></script>
-<script src="../provider/legacy/portal-compat.js"></script>
-<script src="../provider/provider-workspace.js"></script>
 <script src="../../services/local-attachments.js"></script>
 <script src="pages/search.page.js"></script>
 <script src="pages/discover.page.js"></script>

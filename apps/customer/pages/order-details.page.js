@@ -78,6 +78,22 @@
       ? `<div class="need" style="color:#6ee7b7">${ic('check')}<span>تمت الموافقة على عرض السعر — ${money(quote.total)}</span></div>`
       : '';
 
+    /* الخدمة المجانية — مسار مستقل: اقتراح من مقدم الخدمة ← موافقة/رفض العميل ← إكمال بلا مقابل */
+    const fsv = r.freeService, freeReason = fsv ? ((MP.FREE_REASONS || {})[fsv.reason] || '') : '';
+    const freeBlock = !fsv ? ''
+      : fsv.status === 'proposed'
+      ? `<div class="card2 glass neon">
+          <div class="top"><b>${ic('medal')} عرض تنفيذ الخدمة مجانًا</b><span class="tag">بانتظار موافقتك</span></div>
+          <small>السبب: ${esc(freeReason)}. لن يُطلب منك أي مبلغ مقابل هذه الخدمة، ولن يُرسل عرض سعر.</small>
+          <div class="acts">
+            <button class="pri" data-act="acceptFree" data-id="${id}">${ic('check')} موافقة</button>
+            <button class="bad" data-act="declineFree" data-id="${id}">${ic('cancel')} رفض</button>
+          </div>
+        </div>`
+      : fsv.status === 'accepted' ? `<div class="need" style="color:#6ee7b7">${ic('check')}<span>تم الاتفاق على تنفيذ الخدمة مجانًا (${esc(freeReason)})</span></div>`
+      : fsv.status === 'completed' ? `<div class="need">${ic('check')}<span>خدمة مجانية — اكتملت بدون مقابل</span></div>`
+      : `<div class="need">${ic('info')}<span>رفضت الخدمة المجانية؛ قد يرسل مقدم الخدمة عرض سعر.</span></div>`;
+
     /* الموعد المقترح */
     const proposalBlock = r.status === 'accepted' && r.proposal
       ? `<div class="need warn">${ic('clock')}<span>مقدم الخدمة اقترح الموعد: <b>${fmtDT(r.proposal.at)}</b></span></div>
@@ -137,6 +153,7 @@
       <h2 class="sec-title">${ic('clock')}مسار الطلب</h2>
       ${statusTimeline(r)}
       ${proposalBlock}
+      ${freeBlock}
       ${quoteBlock}
       <h2 class="sec-title">${ic('info')}التفاصيل</h2>
       ${sum}

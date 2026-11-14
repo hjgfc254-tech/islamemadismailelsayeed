@@ -10,7 +10,7 @@ const { connect, driver, setupPage, withBrowser, reporter, sleep } = require('./
 
 const BASE = (process.argv[2] || 'http://127.0.0.1:8099').replace(/\/$/, '');
 const ENTRY = BASE + '/apps/customer/index.html';
-const VIEWPORTS = [[1280, 800], [768, 1024], [390, 844], [320, 640]];
+const VIEWPORTS = [[1280, 800], [768, 1024], [430, 932], [390, 844], [320, 640]];
 const { ok, failures } = reporter();
 
 async function run({ exe, wsUrl }) {
@@ -120,6 +120,39 @@ async function run({ exe, wsUrl }) {
     await freshLoad(`${ENTRY}#/provider/p_demo1`);
     ok(await waitFor('/تفاصيل مقدم الخدمة/.test(document.querySelector("#view .dhead h2")?.textContent||"") && !!document.querySelector("#view .provider-hero")', 6000), `${tag} #/provider/<id> renders provider details`);
     ok(await noOverflow(), `${tag} provider details: no horizontal overflow`);
+    ok(errors.length === 0, `${tag} no JS errors or failed local requests${errors.length ? ' — ' + errors.slice(0, 3).join(' | ') : ''}`);
+  }
+
+  // Role isolation + onboarding + free service, per viewport.
+  for (const [w, h] of VIEWPORTS) {
+    const tag = `isolation ${w}px`;
+    errors.length = 0;
+    await cdp.send('Emulation.setDeviceMetricsOverride', { width: w, height: h, deviceScaleFactor: 1, mobile: w < 768 });
+    const fresh = async url => { await cdp.send('Page.navigate', { url: 'about:blank' }); await sleep(120); await cdp.send('Page.navigate', { url }); await waitFor('document.readyState==="complete"', 6000); await sleep(150); };
+    await fresh(ENTRY + '#/home');
+    const rid = await evaluate(`(()=>{localStorage.clear();sessionStorage.clear();sessionStorage.setItem('hs_intro_v1','1');MP.reset();
+      localStorage.setItem('hs_user',JSON.stringify({name:'سارة QA',phone:'01011112222'}));MP.customerFor('سارة QA','01011112222');MP.db().settings.autoAssign=false;
+      const r=MP.createRequest({name:'سارة QA',phone:'01011112222',cat:'electric',serviceId:'s1',serviceName:'فحص كهرباء',desc:'وصف',gov:'القاهرة',area:'مدينة نصر',addr:'ش 1'});
+      MP.assign(r.id,'p_demo1');MP.respond(r.id,true);MP.confirmTime(r.id,'provider');['enroute','arrived','started'].forEach(s=>MP.advance(r.id,s));MP.proposeFree(r.id,'warranty');return r.id;})()`);
+    await fresh(ENTRY + '#/home');
+    ok(await waitFor('!!document.querySelector("#view .hero")', 6000), `${tag} home renders`);
+    ok(await evaluate('!/لوحة الإدارة|مركز الإدارة|apps\\/admin/.test(document.body.innerHTML)'), `${tag} no Admin link or text anywhere in the Customer page`);
+    await evaluate(`document.querySelector('[data-act="menu"]').click(); true`);
+    ok(await waitFor('!!document.querySelector(\'#sheet a.menu-item[href="../provider/index.html#/join"]\')'), `${tag} menu offers «انضم كمقدم خدمة» (onboarding link, not a role switch)`);
+    ok(await evaluate('!document.querySelector(\'#sheet [data-act="role"]\') && !/لوحة الإدارة/.test(document.querySelector("#sheet").textContent)'), `${tag} menu has no role switch and no Admin entry`);
+    ok(await noOverflow(), `${tag} menu: no horizontal overflow`);
+    await evaluate('closeSheet(true); true');
+    // Free service offered by the provider → customer accepts from tracking.
+    await fresh(`${ENTRY}#/track/${rid}`);
+    ok(await waitFor(`!!document.querySelector('[data-act="acceptFree"][data-id="${rid}"]')`, 6000), `${tag} tracking shows the free-service offer with accept/decline`);
+    await evaluate(`document.querySelector('[data-act="acceptFree"][data-id="${rid}"]').focus(); true`); await ENTER();
+    ok(await waitFor(`MP.get('serviceRequests','${rid}').freeService.status==='accepted' && /تم الاتفاق على تنفيذ الخدمة مجانًا/.test(document.querySelector('#view').textContent)`), `${tag} Enter on «موافقة» accepts the free service`);
+    ok(await noOverflow(), `${tag} tracking with free service: no horizontal overflow`);
+    // Onboarding hop into the Provider app.
+    await fresh(ENTRY + '#/home');
+    await evaluate(`sessionStorage.removeItem('hs_provider_demo_session'); document.querySelector('a.tag[href="../provider/index.html#/join"]').click(); true`);
+    ok(await waitFor('/\\/apps\\/provider\\/index\\.html/.test(location.pathname) && !!document.querySelector("#pv-register-form")', 6000), `${tag} home «انضم كمقدم خدمة» opens Provider registration`);
+    ok(await noOverflow(), `${tag} provider registration: no horizontal overflow`);
     ok(errors.length === 0, `${tag} no JS errors or failed local requests${errors.length ? ' — ' + errors.slice(0, 3).join(' | ') : ''}`);
   }
 

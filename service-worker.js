@@ -18,7 +18,7 @@
    • CLEAR_CACHE  — مسح كل الكاش (لأدوات العرض التجريبي).
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'hansalhlak-v8-architecture-15';
+const CACHE = 'hansalhlak-v8-architecture-16';
 
 /* الملفات الأساسية — يجب أن تعمل offline بعد أول زيارة */
 const FILES = [
@@ -66,8 +66,6 @@ const FILES = [
   'apps/provider/pages/services.page.js',
   'apps/provider/pages/notifications.page.js',
   'apps/provider/pages/request-details.page.js',
-  'apps/provider/legacy/portal-compat.js',
-  'apps/provider/provider-workspace.js',
   'services/local-attachments.js',
   'apps/customer/pages/search.page.js',
   'apps/customer/pages/discover.page.js',

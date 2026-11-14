@@ -6,7 +6,7 @@
 .adm-skip{position:absolute;inset-inline-start:12px;top:-60px;z-index:calc(var(--z-toast) + 1);padding:10px 16px;border-radius:var(--r-sm);background:var(--brand-primary);color:#fff;font-weight:700;text-decoration:none}
 .adm-skip:focus{top:12px}
 html.adm-lock{overflow:hidden}
-body.adm-body{margin:0}
+body,body.adm-body{margin:0}
 
 /* Header */
 .adm-head{position:sticky;top:0;z-index:var(--z-nav);display:flex;align-items:center;gap:var(--sp-3);height:var(--adm-h);padding-inline:clamp(12px,2vw,24px);padding-top:env(safe-area-inset-top);box-sizing:content-box;border-bottom:1px solid var(--border-default);background:var(--bg-secondary)}

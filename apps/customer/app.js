@@ -926,9 +926,8 @@ function openMenu(){
     <button class="menu-item" data-act="slide" data-s="guide">${ic('book')}دليل الصيانة</button>
     <button class="menu-item" data-act="slide" data-s="popular">${ic('medal')}أشهر الحلول</button>
     <button class="menu-item" data-act="slide" data-s="latest">${ic('list')}أحدث المشاكل</button>
-    <div class="lbl">أدوات العرض التجريبي</div>
-    <button class="menu-item" data-act="role" data-r="provider">${ic('wrench')}بوابة مقدم الخدمة</button>
-    <button class="menu-item" data-act="role" data-r="admin">${ic('shield')}لوحة الإدارة</button>
+    <div class="lbl">للمتخصصين</div>
+    <a class="menu-item" href="../provider/index.html#/join">${ic('wrench')}عايز تقدم خدماتك؟ انضم كمقدم خدمة</a>
     <button class="menu-item" data-act="about">${ic('info')}عن هنصلحلك</button></div>`);
 }
 
@@ -1011,7 +1010,6 @@ document.addEventListener('click', e => {
     case 'newReq': startRequest(); break;
     case 'homeSearchAll': { const qv = ($('#q')||{}).value; go('search', (qv||'').trim()); break; }
     case 'scrollTiles': { const e2 = document.getElementById('tilesT'); if (e2) e2.scrollIntoView({behavior:'smooth', block:'start'}); break; }
-    case 'role': closeSheet(true); enterRole(d.r); break;
     case 'tech': openTech(d.key); break;
     case 'solved': closeSheet(); toast('تمام! سعداء إننا ساعدنا'); break;
     case 'logout': HSCustomerSession.signOut(); show('account'); toast('تم تسجيل الخروج'); break;
