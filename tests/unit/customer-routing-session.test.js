@@ -195,7 +195,11 @@ test('app: editing the address bar while a stacked screen is open still opens th
 test('app: logout and account deletion clear the demo identity through the session module', async () => {
   const app = boot({ local: SIGNED_IN });
   app.run("MP.customerFor('سارة أحمد','01011112222'); go('account')");
+  app.run('globalThis.HTMLElement = globalThis.HTMLElement || function HTMLElement() {}');
   await app.clickDoc({ accountLogout: '' });
+  assert.match(app.run("document.getElementById('sheet').innerHTML"), /id="askForm"[^>]*data-kind="logout"/, 'confirmation sheet, not native confirm()');
+  assert.ok(app.run('HSCustomerSession.current()'), 'nothing happens until confirmed');
+  await app.submitDoc('askForm', {}, { kind: 'logout', id: 'session' });
   assert.equal(app.run('HSCustomerSession.current()'), null);
   assert.equal(app.local._map.get('hs_user'), 'null', 'same stored shape as before (store.set(user,null))');
 });

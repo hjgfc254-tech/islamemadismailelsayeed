@@ -353,6 +353,7 @@ hansalhlak/
 │   │   ├── customer-request-wizard-accessibility.browser.py
 │   │   ├── customer-search-keyboard.browser.py
 │   │   ├── customer-sheet-focus.browser.py
+│   │   ├── guest.cdp.js
 │   │   ├── provider-standalone.cdp.js
 │   │   ├── quotes-management.browser.js
 │   │   ├── README.md

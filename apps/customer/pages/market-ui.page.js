@@ -332,6 +332,7 @@ document.addEventListener('submit', e => {
     e.preventDefault();
     const id = f.dataset.id, reason = String(new FormData(f).get('reason') || '').trim(), btn = f.querySelector('[type=submit]');
     if (f.dataset.kind === 'cancel') apiCall('cancel:' + id, btn, () => HSOrdersApi.cancel(id, reason || 'ألغاه العميل'), () => { closeSheet(true); show('tracking', id); toast('تم إلغاء الطلب'); });
+    if (f.dataset.kind === 'logout') { HSCustomerSession.signOut(); closeSheet(true); if (typeof state !== 'undefined') state.accountTab = 'orders'; show('account'); toast('تم تسجيل الخروج'); return; }
     if (f.dataset.kind === 'addrRemove') apiCall('addr-rm:' + id, btn, () => HSCustomerApi.removeAddress(id), () => { closeSheet(true); show('addresses'); toast('تم حذف العنوان'); });
     if (f.dataset.kind === 'rejectQuote') apiCall('reject:' + id, btn, () => HSQuotesApi.reject(id, reason), () => { closeSheet(true); show('tracking', id); toast('تم رفض العرض — يمكن للفني إرسال عرض معدّل'); });
   }

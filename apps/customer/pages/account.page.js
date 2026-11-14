@@ -268,12 +268,8 @@ const Account = (() => {
     }
     if (d.accountProfileEdit !== undefined) return openProfile();
     if (d.accountLogout !== undefined) {
-      if (confirm('تسجيل الخروج؟')) {
-        HSCustomerSession.signOut();
-        if (typeof state !== 'undefined') state.accountTab = 'orders';
-        if (typeof show === 'function') show('account');
-        toast('تم تسجيل الخروج');
-      }
+      /* Accessible confirmation sheet instead of native confirm() (blocking, unstyled, not focus-managed). */
+      askSheet({ id: 'session', kind: 'logout', title: 'تسجيل الخروج', text: 'ستعود إلى وضع الزائر على هذا الجهاز.', reasonLabel: '', confirmLabel: 'تسجيل الخروج' });
       return;
     }
     if (d.accountDelete !== undefined) return openDelete();

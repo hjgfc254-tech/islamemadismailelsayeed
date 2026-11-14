@@ -78,8 +78,8 @@ function boot({ hash = '', local = {}, session = {}, override = {} } = {}) {
     return settle();
   };
   /* Dispatch a delegated document submit for a form id with field values. */
-  const submitDoc = (id, values) => {
-    const form = { id, dataset: {}, closest: () => null };
+  const submitDoc = (id, values, dataset = {}) => {
+    const form = { id, dataset, closest: () => null, querySelector: () => null };
     ctx.FormData = function () { return { get: k => (k in values ? values[k] : null), getAll: k => [].concat(values[k] ?? []) }; };
     (docListeners.submit || []).forEach(f => f({ target: form, preventDefault() {} }));
     return settle();
