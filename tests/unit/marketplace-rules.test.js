@@ -15,7 +15,7 @@ function started(MP) {
 }
 const providerAt = (prepare) => { let id; const app = bootProvider({ session: PROVIDER, setup: ({ MP }) => { id = started(MP); if (prepare) prepare(MP, id); } }); app.go('#/progress'); return { app, id }; };
 
-test('store: zero-value quotes are rejected; approval of a zero quote is refused', () => {
+test('store: zero-value quotes are rejected; approval of a zero quote is refused', async () => {
   const { app, id } = providerAt();
   const M = app.MP;
   for (const q of [{ labor: 0 }, { labor: 100, discount: 100 }, { labor: 50, discount: 80 }, {}]) {
@@ -28,15 +28,15 @@ test('store: zero-value quotes are rejected; approval of a zero quote is refused
   assert.equal(M.approveQuote(id), false, 'a zero quote can never be approved');
 });
 
-test('provider UI: a zero-total quote is refused with guidance to the free-service flow', () => {
+test('provider UI: a zero-total quote is refused with guidance to the free-service flow', async () => {
   const { app, id } = providerAt();
-  app.click({ 'data-pv-action': 'quote', 'data-id': id });
-  app.submit('pv-quote-form', { labor: '100', parts: '0', visitFee: '0', discount: '100', note: '' });
+  await app.click({ 'data-pv-action': 'quote', 'data-id': id });
+  await app.submit('pv-quote-form', { labor: '100', parts: '0', visitFee: '0', discount: '100', note: '' });
   assert.equal(app.MP.currentQuote(id), null);
   assert.match(app.toast.textContent, /قيمة صفر[\s\S]*خدمة مجانية/);
 });
 
-test('store: free-service workflow has its own states and validation', () => {
+test('store: free-service workflow has its own states and validation', async () => {
   const { app, id } = providerAt();
   const M = app.MP;
   assert.equal(M.proposeFree(id, '').ok, false, 'reason required');
@@ -58,7 +58,7 @@ test('store: free-service workflow has its own states and validation', () => {
   assert.equal(M.db().quotes.length, 0, 'a free service is never represented as a quote');
 });
 
-test('store: a free service cannot be proposed over an existing quote; a declined offer reopens quoting', () => {
+test('store: a free service cannot be proposed over an existing quote; a declined offer reopens quoting', async () => {
   const { app, id } = providerAt(M => {});
   const M = app.MP;
   assert.equal(M.createQuote(id, { labor: 200 }).ok, true);
@@ -72,15 +72,15 @@ test('store: a free service cannot be proposed over an existing quote; a decline
   assert.equal(second.app.MP.createQuote(second.id, { labor: 150 }).ok, true, 'quote allowed after the customer declines');
 });
 
-test('provider UI: propose free service (reason required) → waits for customer → completes without charge', () => {
+test('provider UI: propose free service (reason required) → waits for customer → completes without charge', async () => {
   const { app, id } = providerAt();
   assert.ok(app.has({ 'data-pv-action': 'free', 'data-id': id }), 'free-service action offered while the job is in progress');
-  app.click({ 'data-pv-action': 'free', 'data-id': id });
+  await app.click({ 'data-pv-action': 'free', 'data-id': id });
   assert.match(app.html(), /<form class="pv-inline-form" id="pv-free-form"[\s\S]*<select name="reason" required>/);
-  app.submit('pv-free-form', { reason: '' });
+  await app.submit('pv-free-form', { reason: '' });
   assert.match(app.toast.textContent, /سبب الخدمة المجانية/);
   assert.equal(app.MP.get('serviceRequests', id).freeService, undefined);
-  app.submit('pv-free-form', { reason: 'inspection' });
+  await app.submit('pv-free-form', { reason: 'inspection' });
   assert.equal(app.MP.get('serviceRequests', id).freeService.status, 'proposed');
   assert.match(app.html(), /بانتظار موافقة العميل/);
   assert.equal(app.has({ 'data-pv-action': 'quote', 'data-id': id }), false, 'no quote while awaiting the customer');
@@ -88,13 +88,13 @@ test('provider UI: propose free service (reason required) → waits for customer
   app.go('#/home'); app.go('#/progress');
   assert.ok(app.has({ 'data-pv-action': 'complete-free', 'data-id': id }));
   assert.equal(app.has({ 'data-pv-action': 'complete', 'data-id': id }), false, 'paid completion hidden in the free flow');
-  app.click({ 'data-pv-action': 'complete-free', 'data-id': id });
+  await app.click({ 'data-pv-action': 'complete-free', 'data-id': id });
   assert.equal(app.MP.get('serviceRequests', id).status, 'completed');
   assert.equal(app.location.hash, '#/done');
   assert.match(app.toast.textContent, /بلا مقابل/);
 });
 
-test('customer UI: the free-service offer can be accepted or declined from tracking', () => {
+test('customer UI: the free-service offer can be accepted or declined from tracking', async () => {
   const owner = { hs_user: JSON.stringify({ name: 'سارة أحمد', phone: '01011112222' }) };
   const first = bootCustomer({ local: owner });
   first.run("MP.customerFor('سارة أحمد','01011112222'); MP.db().settings.autoAssign=false");
@@ -103,25 +103,25 @@ test('customer UI: the free-service offer can be accepted or declined from track
   const app = bootCustomer({ hash: '#/track/' + id, local: { ...owner, hs_mp_db: first.local._map.get('hs_mp_db') } });
   assert.match(app.html(), /عرض تنفيذ الخدمة مجانًا[\s\S]*ضمان على خدمة سابقة/);
   assert.match(app.html(), new RegExp(`data-act="acceptFree" data-id="${id}"`));
-  app.clickDoc({ act: 'acceptFree', id });
+  await app.clickDoc({ act: 'acceptFree', id });
   assert.equal(app.run(`MP.get('serviceRequests', '${id}').freeService.status`), 'accepted');
   assert.match(app.html(), /تم الاتفاق على تنفيذ الخدمة مجانًا/);
   assert.match(app.toast(), /مجانًا/);
 });
 
-test('provider profile editing is enabled: prefilled form, shared validation, saved to the shared store', () => {
+test('provider profile editing is enabled: prefilled form, shared validation, saved to the shared store', async () => {
   const app = bootProvider({ session: PROVIDER });
   app.go('#/profile');
   assert.ok(app.has({ 'data-pv-action': 'edit-profile' }));
   assert.doesNotMatch(app.html(), /غير متاحين/, 'the old "editing unavailable" notice is gone');
-  app.click({ 'data-pv-action': 'edit-profile' });
+  await app.click({ 'data-pv-action': 'edit-profile' });
   const html = app.html();
   assert.match(html, /<form class="pv-inline-form pv-register-form" id="pv-profile-form" aria-label="تعديل ملف مقدم الخدمة"/);
   assert.match(html, /name="name" required maxlength="80" autocomplete="name" value="أحمد مصطفى"/);
   assert.match(html, /name="cats" value="electric" checked/);
-  app.submit('pv-profile-form', { name: 'أحمد', phone: '12', type: 'individual', cats: ['electric'], govs: ['القاهرة'], years: '12', bio: '', areas: '', docs: '' });
+  await app.submit('pv-profile-form', { name: 'أحمد', phone: '12', type: 'individual', cats: ['electric'], govs: ['القاهرة'], years: '12', bio: '', areas: '', docs: '' });
   assert.match(app.toast.textContent, /الهاتف/, 'same validation as onboarding');
-  app.submit('pv-profile-form', { name: 'أحمد مصطفى المعدّل', phone: '01099990000', type: 'individual', cats: ['electric', 'appliances'], govs: ['القاهرة'], years: '13', bio: 'نبذة جديدة', areas: 'مدينة نصر', docs: '' });
+  await app.submit('pv-profile-form', { name: 'أحمد مصطفى المعدّل', phone: '01099990000', type: 'individual', cats: ['electric', 'appliances'], govs: ['القاهرة'], years: '13', bio: 'نبذة جديدة', areas: 'مدينة نصر', docs: '' });
   const p = app.MP.get('providers', PROVIDER);
   assert.equal(p.name, 'أحمد مصطفى المعدّل'); assert.deepEqual([...p.cats], ['electric', 'appliances']); assert.equal(p.years, 13);
   assert.equal(p.status, 'approved', 'editing never changes the approval status');
@@ -129,11 +129,11 @@ test('provider profile editing is enabled: prefilled form, shared validation, sa
   assert.match(app.toast.textContent, /تم حفظ ملفك/);
 });
 
-test('onboarding entry: #/join opens registration without a session; registration grants no access until admin approval', () => {
+test('onboarding entry: #/join opens registration without a session; registration grants no access until admin approval', async () => {
   const app = bootProvider({ hash: '#/join' });
   assert.match(app.html(), /id="pv-register-form"/);
   assert.match(app.title(), /^الانضمام كمقدم خدمة \|/);
-  app.submit('pv-register-form', { name: 'فني جديد', phone: '01055554444', type: 'individual', cats: ['plumbing'], govs: ['الجيزة'], areas: '', years: '3', bio: '', docs: '' });
+  await app.submit('pv-register-form', { name: 'فني جديد', phone: '01055554444', type: 'individual', cats: ['plumbing'], govs: ['الجيزة'], areas: '', years: '3', bio: '', docs: '' });
   const p = app.MP.db().providers.at(-1);
   assert.equal(p.status, 'pending');
   assert.match(app.html(), /pv-gate[\s\S]*قيد المراجعة/);
@@ -145,15 +145,15 @@ test('onboarding entry: #/join opens registration without a session; registratio
   assert.doesNotMatch(signedIn.html(), /pv-register-form/, 'signed-in providers are not sent to registration');
 });
 
-test('provider: a screen change starts at the top (logout from a scrolled page → picker), #/join still focuses the form', () => {
+test('provider: a screen change starts at the top (logout from a scrolled page → picker), #/join still focuses the form', async () => {
   const app = bootProvider({ session: 'p_demo1', hash: '#/profile' });
   const calls = [];
   app.ctx.scrollTo = (x, y) => calls.push([x, y]);
-  app.click({ 'data-pv-action': 'logout' }, { force: true });
+  await app.click({ 'data-pv-action': 'logout' }, { force: true });
   assert.deepEqual(calls[0], [0, 0], 'scroll reset on the route change');
   assert.equal(app.focus.current, 'view');
   calls.length = 0;
-  app.click({ 'data-pv-action': 'register' });
+  await app.click({ 'data-pv-action': 'register' });
   assert.equal(calls.length, 0, 'opening a form on the same screen does not jump to the top');
   assert.equal(app.focus.current, 'field:pv-register-form');
   const join = bootProvider({ hash: '#/join' });

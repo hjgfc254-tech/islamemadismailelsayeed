@@ -12,8 +12,36 @@ table below.
 `shared/config/legacy-data.js` → `services/local-catalog.js` → `services/local-market-store.js` → `services/api-client.js`
 → `services/auth-api.js` → `services/orders-api.js` → `services/quotes-api.js` → (`catalog`, `provider`, `customer`,
 `notifications`, `support`, `finance`, `admin`, `uploads`)-api → `services/realtime-client.js`.
-Each file also works with CommonJS `require`. **No app entry loads these adapters yet.** The current screens call `MP`
-directly. Moving a screen onto an adapter is a per-screen refactor with its own regression tests.
+Each file also works with CommonJS `require`.
+
+## UI integration (2026-11-14): writes through adapters, reads from the local read model
+| Entry | Adapters loaded | Mutations routed through them |
+|---|---|---|
+| Customer `apps/customer/index.html` | api-client, auth, orders, quotes, customer, support, notifications, realtime | request creation (wizard), choose provider / expand search, confirm time, cancel, close, review, quote approve/reject, free-service accept/decline, favorites, addresses (add/edit/default/remove), complaints + provider reports, notifications mark-read |
+| Provider `apps/provider/index.html` | api-client, auth, orders, quotes, provider, realtime | registration, profile edit, availability, accept/decline, propose/confirm time, advance, quote, complete, free-service propose/complete |
+| Admin `apps/admin/index.html` | api-client, auth, orders, support, finance, admin, realtime | «تشغيل السوق»: provider approve/reject/suspend, special rate, assign/auto-match, cancel, customer suspend, complaint resolve, commission rates, collection status |
+
+- **Writes** are async. Each UI action allows one in-flight request per key (repeat clicks and double Enter are
+  ignored), marks the control `disabled` + `aria-busy`, and shows the envelope's `error.message`. A 401 maps to a
+  sign-in prompt.
+- **Reads** stay synchronous on `MP`, which acts as the client-side read model/cache. `realtime-client` re-reads the
+  store (`MP.reload()`) on cross-tab `storage` events and publishes `market:changed`.
+  - Customer refreshes the tracking and orders screens in place (scroll kept, focus not lost, polite toast), never
+    while a sheet is open.
+  - Provider re-renders unless an inline form is open.
+  - The Admin marketplace page repaints and announces.
+- **Backend hook-up:** `setTransport()` sends every write to a server unchanged. The single remaining integration point
+  is hydrating the read model from the `GET` routes after each `market:changed`; screens do not change.
+- **Documented direct-`MP` exceptions** (device-local or presentation-only, not marketplace entities), pinned by
+  `tests/unit/ui-adapter-integration.test.js`:
+  - wizard drafts (`saveDraft`/`clearDraft`) and the link to the device-local attachment store;
+  - recent searches (`addSearch`) and "repeat request" prefill;
+  - account UI preferences (`save`);
+  - review quality/photo extras on the local review record;
+  - the Admin «استعادة البيانات التجريبية» demo reset;
+  - `customerFor` inside the demo sign-in.
+- Actor: each app calls `HSAuthApi.useApp('customer'|'provider'|'admin')` at boot, so an actor never comes from another
+  app's session.
 
 ## Envelope (every call resolves, never throws)
 ```
@@ -79,6 +107,7 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `GET /requests` | customer, provider, admin | orders-api.js | List requests visible to the actor (?status=). |
 | `GET /requests/:id` | customer, provider, admin | orders-api.js | One request (with current quote). |
 | `POST /requests/:id/cancel` | customer, admin | orders-api.js | Cancel before work starts. |
+| `POST /requests/:id/provider` | customer | orders-api.js | Customer picks a provider for an own unassigned request {providerId}. |
 | `POST /requests/:id/respond` | provider | orders-api.js | Accept or decline an offered assignment. |
 | `POST /requests/:id/schedule` | provider, customer | orders-api.js | Provider proposes {at}; either side confirms. |
 | `POST /requests/:id/advance` | provider | orders-api.js | Move to the next FLOW status {to}. |
@@ -116,7 +145,7 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `GET /admin/transactions` | admin | finance-api.js | All transactions (?collection=). |
 | `POST /admin/transactions/:id/collection` | admin | finance-api.js | Set a commission collection status. |
 | `GET /admin/commission` | admin | finance-api.js | Commission settings. |
-| `POST /admin/commission` | admin | finance-api.js | Update default or per-category rate (0–50 %). |
+| `POST /admin/commission` | admin | finance-api.js | Update default or per-category rate (0–100 %). |
 | `GET /admin/summary` | admin | admin-api.js | Operations counts. |
 | `GET /admin/providers` | admin | admin-api.js | All providers (?status=). |
 | `POST /admin/providers/:id/status` | admin | admin-api.js | Approve / reject / suspend a provider. |

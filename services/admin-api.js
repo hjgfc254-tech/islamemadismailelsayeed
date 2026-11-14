@@ -7,7 +7,7 @@
  *   GET  /admin/summary                        counts for the operations dashboard
  *   GET  /admin/providers?status=              all providers (full record)
  *   POST /admin/providers/:id/status           {status: approved|rejected|suspended}      providers.decide
- *   POST /admin/providers/:id/rate             {specialRate: number|null (0–50)}          providers.edit
+ *   POST /admin/providers/:id/rate             {specialRate: number|null (0–100)}          providers.edit
  *   POST /admin/requests/:id/assign            {providerId?}  (omit = auto-match)         orders.decide
  *   GET  /admin/requests/:id/candidates        matching providers                         orders.view
  *   POST /admin/customers/:id/status           {status: active|suspended}                 customers.decide
@@ -29,7 +29,7 @@
   function permitted(actor, module, action) {
     const G = root.HSAdminPermissionGuard;
     if (!G || !actor.adminRole) return true;
-    return G.can({ id: actor.id, role: actor.adminRole, status: 'active' }, module, action);
+    return G.can(((((root.HSAdminRbac || {}).state || {}).roster || []).find((x) => x.id === actor.id) || { id: actor.id, role: actor.adminRole, status: 'active' }), module, action);
   }
   const guard = (actor, module, action) => (permitted(actor, module, action) ? null : fail('FORBIDDEN'));
 
@@ -62,7 +62,7 @@
     const denied = guard(actor, 'providers', 'edit'); if (denied) return denied;
     const p = store.get('providers', params.id); if (!p) return fail('NOT_FOUND', 'مقدم الخدمة غير موجود');
     const v = body.specialRate;
-    if (v !== null && v !== '' && !(Number.isFinite(+v) && +v >= 0 && +v <= 50)) return fail('VALIDATION', 'النسبة من 0 إلى 50', { specialRate: '0–50' });
+    if (v !== null && v !== '' && !(Number.isFinite(+v) && +v >= 0 && +v <= 100)) return fail('VALIDATION', 'النسبة من 0 إلى 100', { specialRate: '0–100' });
     store.updateProvider(p.id, { specialRate: v === null || v === '' ? null : +v });
     return store.get('providers', p.id);
   });

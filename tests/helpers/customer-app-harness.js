@@ -70,15 +70,19 @@ function boot({ hash = '', local = {}, session = {}, override = {} } = {}) {
   for (const f of scripts(override)) vm.runInContext(readSrc(f, override), ctx, { filename: f });
   const run = code => vm.runInContext(code, ctx);
   (docListeners.DOMContentLoaded || []).forEach(f => f());
+  /* UI mutations are async (API adapters): await clickDoc/submitDoc to let them finish (vm shares the microtask queue). */
+  const settle = async () => { for (let i = 0; i < 4; i++) await new Promise(r => setImmediate(r)); };
   const clickDoc = dataset => {
     const target = { dataset, closest: sel => (sel.split(',').some(s => { const m = /^\[data-([\w-]+)\]$/.exec(s.trim()); return m && m[1].replace(/-(\w)/g, (_, c) => c.toUpperCase()) in dataset; }) ? target : null) };
     (docListeners.click || []).forEach(f => f({ target, preventDefault() {}, stopPropagation() {} }));
+    return settle();
   };
   /* Dispatch a delegated document submit for a form id with field values. */
   const submitDoc = (id, values) => {
     const form = { id, dataset: {}, closest: () => null };
     ctx.FormData = function () { return { get: k => (k in values ? values[k] : null), getAll: k => [].concat(values[k] ?? []) }; };
     (docListeners.submit || []).forEach(f => f({ target: form, preventDefault() {} }));
+    return settle();
   };
   /* Simulate the user editing the address bar like Chromium does: the hash changes, `popstate` fires first, then
      `hashchange` with oldURL/newURL. Handlers that run on popstate may rewrite location.hash before hashchange runs. */
@@ -89,7 +93,7 @@ function boot({ hash = '', local = {}, session = {}, override = {} } = {}) {
     (winListeners.popstate || []).forEach(f => f({ state: history.state }));
     (winListeners.hashchange || []).forEach(f => f({ oldURL, newURL }));
   };
-  return { run, view, focus, doc, body, tabEl, clickDoc, submitDoc, navigate, location, history, historyLog, local: local$, session: session$,
+  return { run, view, focus, doc, body, tabEl, clickDoc, submitDoc, settle, navigate, location, history, historyLog, local: local$, session: session$,
     toast: () => getEl('#toast').textContent,
     html: () => view.innerHTML,
     signIn() { run("store.set('user',{name:'سارة أحمد',phone:'01011112222'}); MP.customerFor('سارة أحمد','01011112222')"); },

@@ -113,17 +113,12 @@ const Addresses = (() => {
     if (d.addrNew !== undefined) return openForm();
     if (d.addrEdit) return openForm(d.addrEdit);
     if (d.addrRemove) {
-      if (confirm('حذف هذا العنوان؟')) {
-        MP.removeAddress(d.addrRemove);
-        toast('تم حذف العنوان');
-        if (typeof show === 'function') show('addresses');
-      }
+      /* Accessible confirmation sheet (market-ui askSheet) instead of native confirm(); removal goes through customer-api. */
+      askSheet({ id: d.addrRemove, kind: 'addrRemove', title: 'حذف العنوان', text: 'سيُحذف هذا العنوان من عناويني المحفوظة.', reasonLabel: '', confirmLabel: 'تأكيد الحذف' });
       return;
     }
     if (d.addrDefault) {
-      MP.updateAddress(d.addrDefault, {default: true});
-      toast('تم تعيينه كعنوان افتراضي');
-      if (typeof show === 'function') show('addresses');
+      apiCall('addr-def:' + d.addrDefault, t, () => HSCustomerApi.updateAddress(d.addrDefault, {default: true}), () => { toast('تم تعيينه كعنوان افتراضي'); if (typeof show === 'function') show('addresses'); });
       return;
     }
     if (d.addrType) {
@@ -161,15 +156,12 @@ const Addresses = (() => {
     if (!area) return toast('اكتب المنطقة');
     if (addr.length < 5) return toast('اكتب العنوان بالتفصيل');
     const payload = { gov, area, addr, detail, label, type: window._addrType || 'home', default: isDefault };
-    if (f.dataset.id) {
-      MP.updateAddress(f.dataset.id, payload);
-      toast('تم حفظ التعديلات');
-    } else {
-      MP.addAddress(u.id, payload);
-      toast('تم إضافة العنوان');
-    }
-    if (typeof closeSheet === 'function') closeSheet();
-    if (typeof show === 'function') show('addresses');
+    const editing = !!f.dataset.id;
+    apiCall('addr-save', f.querySelector('[type=submit]'), () => editing ? HSCustomerApi.updateAddress(f.dataset.id, payload) : HSCustomerApi.addAddress(payload), () => {
+      toast(editing ? 'تم حفظ التعديلات' : 'تم إضافة العنوان');
+      if (typeof closeSheet === 'function') closeSheet();
+      if (typeof show === 'function') show('addresses');
+    });
   });
 
   return { openForm, renderScreen };

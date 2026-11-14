@@ -647,24 +647,23 @@ async function wzSubmit(){
       return;
     }
 
-    /* حفظ العنوان إن طُلب */
+    /* The contact step identifies the customer: sign in (demo session) so the API actor is this customer. */
+    if (typeof HSCustomerSession !== 'undefined') {
+      const si = HSCustomerSession.signIn(w.contact.name.trim(), w.contact.phone.trim());
+      if (!si.ok) { if (hasUI()) toast(si.error); return; }
+    }
+
+    /* حفظ العنوان إن طُلب — عبر واجهة العميل (customer-api) */
     let addressId = w.address.id || '';
     if (w.address.save) {
       try {
-        const c = MP.customerFor(w.contact.name.trim(), w.contact.phone.trim());
         const payload = {
           label: w.address.label || '',
           gov: w.address.gov, area: w.address.area, addr: w.address.addr, detail: w.address.detail,
           type: w.address.type, default: !!w.address.default
         };
-        if (w.address.id) {
-          MP.updateAddress(w.address.id, payload);
-          addressId = w.address.id;
-        } else {
-          const newA = MP.addAddress(c.id, payload);
-          addressId = newA.id;
-          w.address.id = newA.id;
-        }
+        const saved = w.address.id ? await HSCustomerApi.updateAddress(w.address.id, payload) : await HSCustomerApi.addAddress(payload);
+        if (saved.ok) { addressId = saved.data.id; w.address.id = saved.data.id; }
       } catch {}
     }
 
@@ -691,7 +690,10 @@ async function wzSubmit(){
       addressId: addressId
     };
 
-    const r = MP.createRequest(reqPayload);
+    const created = await HSOrdersApi.create(reqPayload);
+    if (!created.ok) { if (hasUI()) toast(apiErrorText(created)); return; }
+    /* Attachments live in the device-local attachment store (AT); link them on the local record (read model). */
+    const r = MP.get('serviceRequests', created.data.id) || created.data;
 
     /* ربط المرفقات بالطلب */
     try {

@@ -108,6 +108,9 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
   });
 
   const fireHash = () => (listeners.window.hashchange || []).forEach(fn => fn({}));
+  /* UI mutations are async (API adapters). settle() lets pending promises run (vm shares the host microtask queue),
+     then fires hashchange if the handler navigated after its await — as the browser would. */
+  const settle = async () => { const before = location.hash; for (let i = 0; i < 4; i++) await new Promise(r => setImmediate(r)); if (location.hash !== before) fireHash(); };
   const withHashSync = fn => { const before = location.hash; fn(); if (location.hash !== before) fireHash(); };
   const allHtml = () => nav.innerHTML + view.innerHTML;
 
@@ -130,6 +133,7 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
         } };
       api._openForm = /<form class="pv-inline-form[^"]*"/.test(view.innerHTML);
       withHashSync(() => (listeners.host.click || []).forEach(fn => fn({ target })));
+      return settle();
     },
     /* Submit an open inline form by id with field values. */
     submit(formId, values, { force = false } = {}) {
@@ -139,7 +143,8 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
       let prevented = false;
       const form = { id: formId, dataset: toDataset(tag), matches: sel => sel === '.pv-inline-form' };
       withHashSync(() => (listeners.host.submit || []).forEach(fn => fn({ target: form, preventDefault: () => { prevented = true; } })));
-      return { prevented };
+      const result = { prevented };
+      return Object.assign(settle().then(() => result), result);   // sync .prevented still works; await to let API calls finish
     },
     /* Type into an open inline form: sets field values and dispatches the app's delegated `input` listener. */
     input(formId, values) {
@@ -158,6 +163,7 @@ function boot({ session = '', hash = '', store = null, setup } = {}) {
       return { prevented };
     },
     go(hash) { location.hash = hash; fireHash(); },
+    settle,
     request: id => run('MP').get('serviceRequests', id),
     assignmentFor: (reqId, providerId) => run('MP').db().assignments.find(a => a.reqId === reqId && a.providerId === providerId)
   };

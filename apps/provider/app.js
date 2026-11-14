@@ -210,35 +210,53 @@
     if(action==='cancel-form') { cancelForm(); return; } // also needed on the picker, where no provider is selected
     const p=currentProvider(); if(!p)return;
     const nearRequest=[actionSel('advance',id),detailsSel(id)];
-    if(action==='availability'){MP.updateProvider(p.id,{available:!p.available});render(['[data-pv-action="availability"]']);return;}
-    if(action==='accept'){if(!MP.respond(id,true)){render([detailsSel(id)]);toast(STALE);return;}router.navigate('accepted');render();toast('تم قبول الطلب');return;}
     if(action==='reject'||action==='propose'||action==='quote'||action==='complete'||action==='free'){openForm(action,id);return;}
-    if(action==='complete-free'){if(!MP.completeFree(id)){render([detailsSel(id)]);toast(STALE);return;}router.navigate('done');render();toast('تم تسجيل إكمال الخدمة المجانية (بلا مقابل)');return;}
     if(action==='edit-profile'){openProfileForm(p);return;}
-    if(action==='confirm'){if(!MP.confirmTime(id,'provider')){render([detailsSel(id)]);toast(STALE);return;}render(nearRequest);toast('تم تأكيد الموعد');return;}
-    if(action==='advance'){const ok=MP.advance(id,next);if(ok)followToGroup(id,p);render(nearRequest);toast(ok?'تم تحديث حالة الطلب':'تعذر تحديث الحالة؛ راجع تسلسل الطلب');return;}
+    /* Mutations go through the API adapters (services/*-api.js); MP stays the local read model. */
+    const failedButton=res=>{render([detailsSel(id)]);toast(isStale(res)?STALE:errorText(res));};
+    if(action==='availability') return perform('availability',button,()=>api.provider.setAvailability(!p.available),()=>render(['[data-pv-action="availability"]']),res=>toast(errorText(res)));
+    if(action==='accept') return perform('accept:'+id,button,()=>api.orders.respond(id,true),()=>{router.navigate('accepted');render();toast('تم قبول الطلب');},failedButton);
+    if(action==='complete-free') return perform('complete-free:'+id,button,()=>api.quotes.completeFree(id),()=>{router.navigate('done');render();toast('تم تسجيل إكمال الخدمة المجانية (بلا مقابل)');},failedButton);
+    if(action==='confirm') return perform('confirm:'+id,button,()=>api.orders.schedule(id),()=>{render(nearRequest);toast('تم تأكيد الموعد');},failedButton);
+    if(action==='advance') return perform('advance:'+id,button,()=>api.orders.advance(id,next),()=>{followToGroup(id,p);render(nearRequest);toast('تم تحديث حالة الطلب');},()=>{render(nearRequest);toast('تعذر تحديث الحالة؛ راجع تسلسل الطلب');});
+  }
+
+  /* ── API adapter boundary ───────────────────────────────────────────────────────────────────────────
+     perform(key, control, request, onOk, onFail): one in-flight request per key (double clicks / double Enter are
+     ignored), the control is disabled + aria-busy while waiting, and the envelope decides success or failure. */
+  const api={ orders:root.HSOrdersApi, quotes:root.HSQuotesApi, provider:root.HSProviderApi };
+  const inFlight=new Set();
+  const isStale=res=>!!res&&(res.status===404||res.status===409);
+  const errorText=res=>(res&&res.error&&res.error.message)||'تعذر تنفيذ الإجراء. حاول مرة أخرى.';
+  function setBusy(control,busy){ if(!control||typeof control.setAttribute!=='function')return; try{ control.disabled=busy; if(busy)control.setAttribute('aria-busy','true'); else control.removeAttribute('aria-busy'); }catch{} }
+  async function perform(key,control,request,onOk,onFail){
+    if(inFlight.has(key)) return;
+    inFlight.add(key); setBusy(control,true);
+    try{ const res=await request(); if(res&&res.ok) onOk(res); else onFail(res); }
+    catch{ onFail(null); }
+    finally{ inFlight.delete(key); setBusy(control,false); }
   }
 
   function onSubmit(event) {
     const form=event.target;
     if(!form.matches('.pv-inline-form'))return;
     event.preventDefault(); const data=new FormData(form), id=form.dataset.id;
-    const stale=()=>{formTrigger=null;render([detailsSel(id)]);toast(STALE);};
-    let focusAfter;
+    const submitter=form.querySelector?form.querySelector('.pv-btn-primary'):null;
+    const stale=res=>{ if(res&&res.status===422) return invalid(form,errorText(res)); formTrigger=null;render([detailsSel(id)]);toast(STALE); };
+    const done=(focusAfter)=>{formTrigger=null;render(focusAfter);};
     if(form.id==='pv-register-form'){
       const result=registrationFrom(data); if(result.error) return invalid(form,result.error,result.field);
-      const created=MP.registerProvider(result.value);
-      session.select(created.id); formTrigger=null; router.navigate('home'); render();
-      toast('تم إرسال طلب التسجيل (تجريبي) — بانتظار اعتماد الإدارة'); return;
+      return perform('register',submitter,()=>api.provider.register(result.value),res=>{
+        session.select(res.data.id); formTrigger=null; router.navigate('home'); render();
+        toast('تم إرسال طلب التسجيل (تجريبي) — بانتظار اعتماد الإدارة');
+      },res=>invalid(form,errorText(res)));
     }
-    if(form.id==='pv-reject-form'){const reason=String(data.get('reason')||'').trim();if(!reason)return invalid(form,'اختر سبب الرفض');if(!MP.respond(id,false,reason))return stale();router.navigate('cancelled');toast('تم رفض الطلب');}
-    if(form.id==='pv-propose-form'){const value=data.get('at'),at=value?new Date(value):null;if(!at||Number.isNaN(at.getTime()))return invalid(form,'أدخل موعدًا صحيحًا');if(at.getTime()<=Date.now())return invalid(form,'اختر موعدًا مستقبليًا');if(!MP.propose(id,at.toISOString()))return stale();focusAfter=[detailsSel(id)];toast('تم إرسال اقتراح الموعد');}
-    if(form.id==='pv-free-form'){const reason=String(data.get('reason')||'');if(!reason)return invalid(form,'اختر سبب الخدمة المجانية','reason');const res=MP.proposeFree(id,reason);if(!res.ok)return invalid(form,res.msg||'تعذر اقتراح الخدمة المجانية');formTrigger=null;render([detailsSel(id)]);return toast('أُرسل اقتراح الخدمة المجانية للعميل');}
-    if(form.id==='pv-profile-form'){const result=registrationFrom(data);if(result.error)return invalid(form,result.error,result.field);const me=currentProvider();if(!me)return;const{name,phone,type,cats,govs,areas,years,bio,docs}=result.value;MP.updateProvider(me.id,{name,phone,type,cats,govs,areas,years,bio,docs});formTrigger=null;render(['[data-pv-action="edit-profile"]']);return toast('تم حفظ ملفك (محليًا)');}
-    if(form.id==='pv-quote-form'){const amounts=quoteAmounts(data);if(!amounts)return invalid(form,'راجع مبالغ عرض السعر: المصنعية مطلوبة وكل المبالغ أرقام غير سالبة');if(amounts.labor+amounts.parts+amounts.visitFee-amounts.discount<=0)return invalid(form,'لا يُسمح بعرض سعر بقيمة صفر. إن كانت الخدمة بلا مقابل استخدم «تنفيذ كخدمة مجانية».','labor');const result=MP.createQuote(id,{...amounts,note:String(data.get('note')||'').trim()});if(!result.ok)return invalid(form,result.msg||'تعذر إرسال العرض');router.navigate('quote');toast('تم إرسال عرض السعر');}
-    if(form.id==='pv-complete-form'){const value=Number(data.get('value')),deductions=Number(data.get('deductions'));if(!Number.isFinite(value)||!Number.isFinite(deductions)||!(value>0)||deductions<0||deductions>value)return invalid(form,'راجع قيمة الخدمة والخصم');if(!MP.complete(id,value,deductions))return invalid(form,'لا يمكن إكمال الطلب في حالته الحالية');router.navigate('done');toast('تم تسجيل اكتمال الخدمة');}
-    formTrigger=null;
-    render(focusAfter);
+    if(form.id==='pv-reject-form'){const reason=String(data.get('reason')||'').trim();if(!reason)return invalid(form,'اختر سبب الرفض');return perform('reject:'+id,submitter,()=>api.orders.respond(id,false,reason),()=>{router.navigate('cancelled');toast('تم رفض الطلب');done();},stale);}
+    if(form.id==='pv-propose-form'){const value=data.get('at'),at=value?new Date(value):null;if(!at||Number.isNaN(at.getTime()))return invalid(form,'أدخل موعدًا صحيحًا');if(at.getTime()<=Date.now())return invalid(form,'اختر موعدًا مستقبليًا');return perform('propose:'+id,submitter,()=>api.orders.schedule(id,at.toISOString()),()=>{toast('تم إرسال اقتراح الموعد');done([detailsSel(id)]);},stale);}
+    if(form.id==='pv-free-form'){const reason=String(data.get('reason')||'');if(!reason)return invalid(form,'اختر سبب الخدمة المجانية','reason');return perform('free:'+id,submitter,()=>api.quotes.proposeFree(id,reason),()=>{done([detailsSel(id)]);toast('أُرسل اقتراح الخدمة المجانية للعميل');},res=>invalid(form,errorText(res)));}
+    if(form.id==='pv-profile-form'){const result=registrationFrom(data);if(result.error)return invalid(form,result.error,result.field);if(!currentProvider())return;return perform('profile',submitter,()=>api.provider.update(result.value),()=>{done(['[data-pv-action="edit-profile"]']);toast('تم حفظ ملفك (محليًا)');},res=>invalid(form,errorText(res)));}
+    if(form.id==='pv-quote-form'){const amounts=quoteAmounts(data);if(!amounts)return invalid(form,'راجع مبالغ عرض السعر: المصنعية مطلوبة وكل المبالغ أرقام غير سالبة');if(amounts.labor+amounts.parts+amounts.visitFee-amounts.discount<=0)return invalid(form,'لا يُسمح بعرض سعر بقيمة صفر. إن كانت الخدمة بلا مقابل استخدم «تنفيذ كخدمة مجانية».','labor');return perform('quote:'+id,submitter,()=>api.quotes.submit(id,{...amounts,note:String(data.get('note')||'').trim()}),()=>{router.navigate('quote');toast('تم إرسال عرض السعر');done();},res=>invalid(form,errorText(res)));}
+    if(form.id==='pv-complete-form'){const value=Number(data.get('value')),deductions=Number(data.get('deductions'));if(!Number.isFinite(value)||!Number.isFinite(deductions)||!(value>0)||deductions<0||deductions>value)return invalid(form,'راجع قيمة الخدمة والخصم');return perform('complete:'+id,submitter,()=>api.orders.complete(id,value,deductions),()=>{router.navigate('done');toast('تم تسجيل اكتمال الخدمة');done();},res=>invalid(form,res&&res.status===422?errorText(res):'لا يمكن إكمال الطلب في حالته الحالية'));}
   }
 
   /* Mirrors the form's own constraints (labor required, all amounts >= 0) for submissions that bypass them. */
@@ -265,6 +283,9 @@
     dom.host.addEventListener('keydown',onKeydown);
     dom.host.addEventListener('input',onInput);
     root.addEventListener('hashchange',()=>render());
+    if(root.HSAuthApi) root.HSAuthApi.useApp('provider');                 // API actor = the selected demo provider
+    /* Another tab (e.g. Admin approving this provider, a customer approving a quote) changed the shared store. */
+    if(root.HSRealtimeClient) root.HSRealtimeClient.subscribe('market:changed',e=>{ if(e.source==='storage'&&!$('.pv-inline-form',dom.view)) render(); });
     if(!location.hash) router.navigate('home');
     render();
   }

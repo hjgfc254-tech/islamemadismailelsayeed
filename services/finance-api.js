@@ -6,9 +6,9 @@
  * ROUTES:
  *   GET  /providers/me/earnings              provider   own transactions + totals
  *   GET  /admin/transactions?collection=     admin      all transactions               finance.view
- *   POST /admin/transactions/:id/collection  admin      {status: pending|collected|waived}   finance.edit
+ *   POST /admin/transactions/:id/collection  admin      {status: pending|collected|settled}   finance.edit
  *   GET  /admin/commission                   admin      {defaultRate, rates{cat:%}}
- *   POST /admin/commission                   admin      {defaultRate?, cat?, rate?}    (0–50 %)
+ *   POST /admin/commission                   admin      {defaultRate?, cat?, rate?}    (0–100 %)
  * STATUS: IMPLEMENTED (MOCK ADAPTER — demo figures only, no payments, no network)
  */
 'use strict';
@@ -19,12 +19,12 @@
   root.HSFinanceApi = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this, function (root, client) {
   const { fail } = client;
-  const COLLECTION = ['pending', 'collected', 'waived'];
-  const rateOk = v => Number.isFinite(+v) && +v >= 0 && +v <= 50;
+  const COLLECTION = ['pending', 'collected', 'settled'];   // same states as the Admin marketplace page
+  const rateOk = v => Number.isFinite(+v) && +v >= 0 && +v <= 100;   // same bound as the Admin UI
   function permitted(actor, module, action) {
     const G = root.HSAdminPermissionGuard;
     if (!G || !actor.adminRole) return true;
-    return G.can({ id: actor.id, role: actor.adminRole, status: 'active' }, module, action);
+    return G.can(((((root.HSAdminRbac || {}).state || {}).roster || []).find((x) => x.id === actor.id) || { id: actor.id, role: actor.adminRole, status: 'active' }), module, action);
   }
 
   /** Totals over a transaction list (pure). Free jobs count as jobs but add nothing to value or commission. */
@@ -58,13 +58,13 @@
     return { defaultRate: s.defaultRate, rates: { ...s.rates }, collectionModel: s.collectionModel };
   });
 
-  client.define('POST', '/admin/commission', { roles: ['admin'], summary: 'Update default or per-category rate (0–50 %).' }, ({ body, store }) => {
+  client.define('POST', '/admin/commission', { roles: ['admin'], summary: 'Update default or per-category rate (0–100 %).' }, ({ body, store }) => {
     if (body.defaultRate !== undefined) {
-      if (!rateOk(body.defaultRate)) return fail('VALIDATION', 'النسبة من 0 إلى 50', { defaultRate: '0–50' });
+      if (!rateOk(body.defaultRate)) return fail('VALIDATION', 'النسبة من 0 إلى 100', { defaultRate: '0–100' });
       store.setSetting('defaultRate', +body.defaultRate);
     }
     if (body.cat) {
-      if (body.rate !== '' && body.rate !== null && !rateOk(body.rate)) return fail('VALIDATION', 'النسبة من 0 إلى 50', { rate: '0–50' });
+      if (body.rate !== '' && body.rate !== null && !rateOk(body.rate)) return fail('VALIDATION', 'النسبة من 0 إلى 100', { rate: '0–100' });
       store.setCatRate(String(body.cat), body.rate === null ? '' : body.rate);
     }
     const s = store.db().settings;

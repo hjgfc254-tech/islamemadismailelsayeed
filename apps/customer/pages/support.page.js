@@ -44,7 +44,7 @@ const Support = (() => {
   /* ═════════ الشاشة الرئيسية ═════════ */
   const render = () => {
     const u = meUser();
-    const complaints = u ? MP.db().complaints.filter(k => k.by === 'customer' && MP.reqs().some(r => r.customerId === u.id && r.id === k.reqId)) : [];
+    const complaints = u ? MP.db().complaints.filter(k => isMine(k, u)) : [];
     const openTickets = complaints.filter(k => k.status === 'open').length;
     return `<div class="screen">${typeof head === 'function' ? head('مركز الدعم', true) : ''}
       <div class="demo-banner">${safeIc('info')}<span>وضع العرض التجريبي — الشكاوى تُحفظ محليًا ولا تُرسل لفريق دعم حقيقي.</span></div>
@@ -175,7 +175,7 @@ const Support = (() => {
     const u = meUser();
     if (!u) { toast('سجّل بياناتك أولًا'); return; }
     const myReqIds = new Set(MP.reqs().filter(r => r.customerId === u.id).map(r => r.id));
-    const items = MP.db().complaints.filter(k => k.by === 'customer' && myReqIds.has(k.reqId));
+    const items = MP.db().complaints.filter(k => isMine(k, u));
     if (typeof sheet !== 'function') return;
     sheet(`<h4>${safeIc('list')} سجل الشكاوى (${items.length})</h4>
       ${items.length ? items.map(k => {
@@ -262,6 +262,13 @@ const Support = (() => {
     }
   });
 
+  /* Own complaints: filed through support-api (by = customer:<id>) or legacy records tied to own requests. */
+  function isMine(k, u) {
+    if (!u) return false;
+    if (k.by === 'customer:' + u.id) return true;
+    return k.by === 'customer' && MP.reqs().some(r => r.customerId === u.id && r.id === k.reqId);
+  }
+
   /* ═════════ حفظ النماذج ═════════ */
   document.addEventListener('submit', (e) => {
     const f = e.target;
@@ -272,12 +279,11 @@ const Support = (() => {
       const kind = d.get('kind');
       const text = (d.get('text') || '').trim();
       if (text.length < 10) return toast('اكتب تفاصيل أكثر (10 حروف على الأقل)');
-      try {
-        MP.complain(reqId, 'customer', text, {kind, attachments: _supPhotos.map(x => x.id)});
+      apiCall('sup-complaint', f.querySelector('[type=submit]'), () => HSSupportApi.file(text, reqId, kind, { attachments: _supPhotos.map(x => x.id) }), () => {
         toast('تم إرسال الشكوى — سيتواصل معك فريق الدعم');
         if (typeof closeSheet === 'function') closeSheet();
         _supPhotos = [];
-      } catch { toast('تعذّر حفظ الشكوى'); }
+      });
     }
     if (f.id === 'supReportForm') {
       e.preventDefault();
@@ -287,22 +293,11 @@ const Support = (() => {
       const text = (d.get('text') || '').trim();
       if (!pid) return toast('اختر مقدم الخدمة');
       if (text.length < 10) return toast('اكتب تفاصيل أكثر');
-      try {
-        /* نستخدم complaints بنوع report */
-        MP.db().complaints.unshift({
-          id: 'rpt_' + Date.now().toString(36),
-          reqId: '',
-          by: 'customer',
-          kind: 'report:' + kind,
-          text: text + ' | provider:' + pid,
-          status: 'open',
-          resolution: '',
-          at: new Date().toISOString()
-        });
-        MP.save();
+      /* A report is a complaint of kind report:* about a provider (support-api validates the provider). */
+      apiCall('sup-report', f.querySelector('[type=submit]'), () => HSSupportApi.file(text, '', 'report:' + kind, { providerId: pid }), () => {
         toast('تم إرسال البلاغ — سيتم مراجعته');
         if (typeof closeSheet === 'function') closeSheet();
-      } catch { toast('تعذّر حفظ البلاغ'); }
+      });
     }
   });
 

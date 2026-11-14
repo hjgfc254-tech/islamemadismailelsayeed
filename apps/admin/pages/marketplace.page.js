@@ -101,6 +101,7 @@
   const RENDER = { providers: providersTab, orders: ordersTab, customers: customersTab, complaints: complaintsTab, commissions: commissionsTab };
 
   function render() {
+    if (root.HSAuthApi) root.HSAuthApi.useApp('admin');   // API actor = the signed-in demo employee
     const M = mp();
     const wrap = root.document.createElement('div'); wrap.className = 'ord mk';
     if (!M) { wrap.innerHTML = '<div class="adm-state is-error" role="alert"><h2>بيانات السوق غير متاحة</h2><p>لم يُحمَّل مخزن السوق المحلي.</p></div>'; return wrap; }
@@ -118,38 +119,63 @@
     };
     const say = (msg, focusSel) => { paint(focusSel); const live = wrap.querySelector('#mk-live'); if (live) live.textContent = msg; };
 
+    /* Mutations go through the API adapters (admin-api / finance-api / support-api / orders-api), which re-check the
+       admin role and the demo RBAC; MP is only read here. One request per key; the control is busy while waiting. */
+    const A = { admin: root.HSAdminApi, finance: root.HSFinanceApi, support: root.HSSupportApi, orders: root.HSOrdersApi };
+    const inFlight = new Set();
+    const errText = (res) => (res && res.error && res.error.message) || 'تعذر تنفيذ الإجراء.';
+    async function run(key, control, request, okMsg, focusSel) {
+      if (inFlight.has(key)) return;
+      inFlight.add(key);
+      if (control) { control.disabled = true; control.setAttribute('aria-busy', 'true'); }
+      try {
+        const res = await request();
+        say(res && res.ok ? (typeof okMsg === 'function' ? okMsg(res) : okMsg) : errText(res), res && res.ok ? focusSel : undefined);
+      } finally { inFlight.delete(key); if (control && control.isConnected) { control.disabled = false; control.removeAttribute('aria-busy'); } }
+    }
+
     wrap.addEventListener('click', (e) => {
       const t = e.target.closest('[data-mk-tab],[data-mk]'); if (!t || t.disabled) return;
       if (t.dataset.mkTab) { tab = t.dataset.mkTab; paint('#mk-tab-' + tab); return; }
       const a = t.dataset.mk, id = t.dataset.id;
-      if (a === 'padmit') { M.updateProvider(id, { status: 'approved' }); return say('تم قبول مقدم الخدمة — يمكنه الآن استقبال الطلبات.', `tr[data-row="${id}"] button`); }
-      if (a === 'preject') { M.updateProvider(id, { status: 'rejected' }); return say('تم رفض طلب الانضمام.'); }
-      if (a === 'psusp') { const p = M.get('providers', id); M.updateProvider(id, { status: p.status === 'suspended' ? 'approved' : 'suspended' }); return say(p.status === 'approved' ? 'أُعيد تفعيل مقدم الخدمة.' : 'تم تعليق مقدم الخدمة.'); }
+      if (a === 'padmit') return run(a + id, t, () => A.admin.setProviderStatus(id, 'approved'), 'تم قبول مقدم الخدمة — يمكنه الآن استقبال الطلبات.', `tr[data-row="${id}"] button`);
+      if (a === 'preject') return run(a + id, t, () => A.admin.setProviderStatus(id, 'rejected'), 'تم رفض طلب الانضمام.');
+      if (a === 'psusp') { const was = (M.get('providers', id) || {}).status; return run(a + id, t, () => A.admin.setProviderStatus(id, was === 'suspended' ? 'approved' : 'suspended'), was === 'suspended' ? 'أُعيد تفعيل مقدم الخدمة.' : 'تم تعليق مقدم الخدمة.'); }
       if (a === 'prate') {
         const v = (wrap.querySelector(`[data-mk-rate="${id}"]`) || {}).value; const s = String(v == null ? '' : v).trim();
         if (s !== '' && (!Number.isFinite(+s) || +s < 0 || +s > 100)) return say('نسبة غير صحيحة: أدخل رقمًا من 0 إلى 100 أو اتركها فارغة.', `[data-mk-rate="${id}"]`);
-        M.updateProvider(id, { specialRate: s === '' ? null : +s }); return say(s === '' ? 'عادت العمولة للنسبة الافتراضية.' : 'تم حفظ العمولة الخاصة.');
+        return run(a + id, t, () => A.admin.setSpecialRate(id, s === '' ? null : +s), s === '' ? 'عادت العمولة للنسبة الافتراضية.' : 'تم حفظ العمولة الخاصة.');
       }
-      if (a === 'assign') { const pid = (wrap.querySelector(`[data-mk-pick="${id}"]`) || {}).value; if (!pid) return say('اختر مقدم خدمة أولًا.', `[data-mk-pick="${id}"]`); const x = M.assign(id, pid); return say(x.ok ? 'تم إرسال الطلب إلى ' + x.provider.name : x.msg); }
-      if (a === 'automatch') { const x = M.assign(id); return say(x.ok ? 'تمت المطابقة التلقائية — ' + x.provider.name : x.msg); }
-      if (a === 'cancel') { return say(M.cancel(id, 'إلغاء من الإدارة') ? 'تم إلغاء الطلب.' : 'لا يمكن إلغاء الطلب في حالته الحالية (بعد بدء التنفيذ).'); }
-      if (a === 'csusp') { const c = M.get('customers', id); if (c) { c.status = c.status === 'suspended' ? 'active' : 'suspended'; M.save(); } return say('تم تحديث حالة العميل.'); }
-      if (a === 'cresolve') { const note = String((wrap.querySelector(`[data-mk-res="${id}"]`) || {}).value || '').trim(); if (!note) return say('اكتب ملاحظة الحل أولًا.', `[data-mk-res="${id}"]`); M.resolveComplaint(id, note); return say('تم تسجيل الشكوى كمحلولة.'); }
+      if (a === 'assign') { const pid = (wrap.querySelector(`[data-mk-pick="${id}"]`) || {}).value; if (!pid) return say('اختر مقدم خدمة أولًا.', `[data-mk-pick="${id}"]`); return run(a + id, t, () => A.admin.assign(id, pid), () => 'تم إرسال الطلب إلى ' + ((M.get('providers', pid) || {}).name || '')); }
+      if (a === 'automatch') return run(a + id, t, () => A.admin.assign(id), (res) => 'تمت المطابقة التلقائية — ' + ((M.get('providers', res.data.providerId) || {}).name || ''));
+      if (a === 'cancel') return run(a + id, t, () => A.orders.cancel(id, 'إلغاء من الإدارة'), 'تم إلغاء الطلب.');
+      if (a === 'csusp') { const was = (M.get('customers', id) || {}).status; return run(a + id, t, () => A.admin.setCustomerStatus(id, was === 'suspended' ? 'active' : 'suspended'), 'تم تحديث حالة العميل.'); }
+      if (a === 'cresolve') { const note = String((wrap.querySelector(`[data-mk-res="${id}"]`) || {}).value || '').trim(); if (!note) return say('اكتب ملاحظة الحل أولًا.', `[data-mk-res="${id}"]`); return run(a + id, t, () => A.support.resolve(id, note), 'تم تسجيل الشكوى كمحلولة.'); }
       if (a === 'reset') { confirmReset = true; return paint('[data-mk="reset-yes"]'); }
       if (a === 'reset-no') { confirmReset = false; return paint('[data-mk="reset"]'); }
+      /* Restoring the seeded demo data is a local demo tool, not a marketplace operation: no API route by design. */
       if (a === 'reset-yes') { confirmReset = false; M.reset(); return say('تمت استعادة بيانات السوق التجريبية.'); }
     });
-    wrap.addEventListener('change', (e) => { const sel = e.target.closest('[data-mk-coll]'); if (sel && !sel.disabled) { M.setCollection(sel.dataset.mkColl, sel.value); say('تم تحديث حالة التحصيل.'); } });
+    wrap.addEventListener('change', (e) => { const sel = e.target.closest('[data-mk-coll]'); if (sel && !sel.disabled) run('coll' + sel.dataset.mkColl, sel, () => A.finance.setCollection(sel.dataset.mkColl, sel.value), 'تم تحديث حالة التحصيل.'); });
     wrap.addEventListener('submit', (e) => {
       const f = e.target.closest('[data-mk-form="rates"]'); if (!f) return; e.preventDefault();
       const fields = Array.from(f.querySelectorAll('input[type=number]')), bad = fields.find((i) => i.value.trim() !== '' && (!Number.isFinite(+i.value) || +i.value < 0 || +i.value > 100));
       const def = f.querySelector('[name=default]');
       if (bad || def.value.trim() === '') return say('راجع النسب: كل نسبة رقم من 0 إلى 100، والنسبة الافتراضية مطلوبة.', bad ? `[name="${bad.name}"]` : '[name=default]');
-      M.setSetting('defaultRate', +def.value);
-      fields.filter((i) => i.name.startsWith('cat:')).forEach((i) => M.setCatRate(i.name.slice(4), i.value.trim()));
-      say('تم حفظ نسب العمولة.');
+      run('rates', f.querySelector('[type=submit]'), async () => {
+        let res = await A.finance.setCommission({ defaultRate: +def.value });
+        for (const i of fields.filter((x) => x.name.startsWith('cat:'))) { if (!res.ok) break; res = await A.finance.setCommission({ cat: i.name.slice(4), rate: i.value.trim() === '' ? null : +i.value }); }
+        return res;
+      }, 'تم حفظ نسب العمولة.');
     });
     paint();
+    /* Another tab changed the shared store (e.g. a new provider registration): repaint and announce. */
+    if (root.HSRealtimeClient) {
+      const off = root.HSRealtimeClient.subscribe('market:changed', (ev) => {
+        if (!wrap.isConnected) { off(); return; }
+        if (ev.source === 'storage' && !inFlight.size) say('تم تحديث بيانات السوق من نافذة أخرى.');
+      });
+    }
     return wrap;
   }
 

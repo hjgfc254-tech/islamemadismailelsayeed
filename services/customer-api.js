@@ -5,7 +5,7 @@
  * ROUTES (customer):
  *   GET    /customers/me                    own profile
  *   GET    /customers/me/addresses          saved addresses
- *   POST   /customers/me/addresses          {label, gov, area, addr}
+ *   POST   /customers/me/addresses          {label, gov, area, addr, detail, type, default}
  *   PATCH  /customers/me/addresses/:id      partial address
  *   DELETE /customers/me/addresses/:id
  *   GET    /customers/me/favorites
@@ -30,7 +30,7 @@
     if (a.label && String(a.label).length > 40) errors.label = 'الاسم حتى 40 حرفًا';
     return errors;
   }
-  const pick = a => { const o = {}; for (const k of ['label', 'gov', 'area', 'addr', 'isDefault']) if (k in a) o[k] = a[k]; return o; };
+  const pick = a => { const o = {}; for (const k of ['label', 'gov', 'area', 'addr', 'detail', 'type', 'default']) if (k in a) o[k] = a[k]; return o; };
   const ownAddress = (store, actor, id) => store.addressesFor(actor.id).find(a => a.id === id) || null;
 
   client.define('GET', '/customers/me', { roles: C, summary: 'Own customer profile.' }, ({ actor, store }) => {

@@ -6,17 +6,17 @@ const { boot, SESSION_KEY, STORE_KEY } = require('../helpers/provider-app-harnes
 
 const VALID = { name: '  مقدم تجريبي جديد  ', phone: '010 1234 5678', type: 'company', cats: ['electric', 'plumbing'],
   govs: ['القاهرة', 'الجيزة'], areas: 'مدينة نصر، المعادي ,  الدقي ,', years: '7', bio: '  نبذة قصيرة  ', docs: ' بطاقة، شهادة ' };
-function openRegister() {
+async function openRegister() {
   const app = boot();
-  app.click({ 'data-pv-action': 'register' });
+  await app.click({ 'data-pv-action': 'register' });
   return app;
 }
 const providerCount = app => app.MP.db().providers.length;
 
-test('the account picker offers demo registration that opens an accessible inline form', () => {
+test('the account picker offers demo registration that opens an accessible inline form', async () => {
   const app = boot();
   assert.ok(app.has({ 'data-pv-action': 'register' }));
-  app.click({ 'data-pv-action': 'register' });
+  await app.click({ 'data-pv-action': 'register' });
   const html = app.html();
   assert.match(html, /<form class="pv-inline-form pv-register-form" id="pv-register-form" aria-label="تسجيل مقدم خدمة جديد"/);
   assert.equal(app.focus.current, 'field:pv-register-form', 'first field focused');
@@ -31,7 +31,7 @@ test('the account picker offers demo registration that opens an accessible inlin
   assert.match(html, /لا يتم التحقق من الهوية أو المستندات/, 'demo notice');
 });
 
-test('registration validates every field and creates nothing on failure', () => {
+test('registration validates every field and creates nothing on failure', async () => {
   const cases = [
     [{ name: '   ' }, /الاسم/], [{ name: 'x'.repeat(81) }, /الاسم/],
     [{ phone: '12' }, /الهاتف/], [{ phone: 'abc12345678' }, /الهاتف/], [{ phone: '0'.repeat(16) }, /الهاتف/],
@@ -41,10 +41,10 @@ test('registration validates every field and creates nothing on failure', () => 
     [{ bio: 'ن'.repeat(301) }, /النبذة/]
   ];
   for (const [patch, message] of cases) {
-    const app = openRegister();
+    const app = await openRegister();
     const before = providerCount(app);
     app.focus.current = null;
-    app.submit('pv-register-form', { ...VALID, ...patch });
+    await app.submit('pv-register-form', { ...VALID, ...patch });
     assert.equal(providerCount(app), before, JSON.stringify(patch));
     assert.match(app.toast.textContent, message, JSON.stringify(patch));
     assert.equal(app.session.getItem(SESSION_KEY), null, 'no identity selected on failure');
@@ -53,10 +53,10 @@ test('registration validates every field and creates nothing on failure', () => 
   }
 });
 
-test('a valid registration creates a pending local demo provider, selects it and shows the review gate', () => {
-  const app = openRegister();
+test('a valid registration creates a pending local demo provider, selects it and shows the review gate', async () => {
+  const app = await openRegister();
   const before = providerCount(app);
-  app.submit('pv-register-form', VALID);
+  await app.submit('pv-register-form', VALID);
   assert.equal(providerCount(app), before + 1);
   const p = app.MP.db().providers.at(-1);
   assert.equal(p.status, 'pending');
@@ -78,9 +78,9 @@ test('a valid registration creates a pending local demo provider, selects it and
   assert.equal(JSON.parse(app.local.getItem(STORE_KEY)).providers.at(-1).id, p.id, 'persisted locally');
 });
 
-test('defaults: optional fields may be empty and unknown type falls back to individual', () => {
-  const app = openRegister();
-  app.submit('pv-register-form', { ...VALID, type: 'agency', areas: '', years: '', bio: '', docs: '' });
+test('defaults: optional fields may be empty and unknown type falls back to individual', async () => {
+  const app = await openRegister();
+  await app.submit('pv-register-form', { ...VALID, type: 'agency', areas: '', years: '', bio: '', docs: '' });
   const p = app.MP.db().providers.at(-1);
   assert.equal(p.type, 'individual');
   assert.deepEqual([...p.areas], []);
@@ -88,9 +88,9 @@ test('defaults: optional fields may be empty and unknown type falls back to indi
   assert.equal(p.bio, '');
 });
 
-test('after admin approval the newly registered provider reaches the workspace', () => {
-  const app = openRegister();
-  app.submit('pv-register-form', VALID);
+test('after admin approval the newly registered provider reaches the workspace', async () => {
+  const app = await openRegister();
+  await app.submit('pv-register-form', VALID);
   const id = app.session.getItem(SESSION_KEY);
   app.MP.updateProvider(id, { status: 'approved' }); // done by Admin → providers management (local demo)
   app.go('#/profile');
@@ -98,39 +98,39 @@ test('after admin approval the newly registered provider reaches the workspace',
   assert.equal(app.nav.hidden, false);
 });
 
-test('the new account appears in the picker as pending after switching accounts', () => {
-  const app = openRegister();
-  app.submit('pv-register-form', VALID);
+test('the new account appears in the picker as pending after switching accounts', async () => {
+  const app = await openRegister();
+  await app.submit('pv-register-form', VALID);
   const id = app.session.getItem(SESSION_KEY);
-  app.click({ 'data-pv-action': 'logout' }, { force: true });
+  await app.click({ 'data-pv-action': 'logout' }, { force: true });
   assert.ok(app.has({ 'data-pv-action': 'select', 'data-id': id }));
   assert.match(app.html(), /حساب مسجل · قيد المراجعة/);
 });
 
-test('cancel and Escape close the registration form and return focus to the register control', () => {
-  const app = openRegister();
-  app.click({ 'data-pv-action': 'cancel-form' });
+test('cancel and Escape close the registration form and return focus to the register control', async () => {
+  const app = await openRegister();
+  await app.click({ 'data-pv-action': 'cancel-form' });
   assert.doesNotMatch(app.html(), /pv-register-form/);
   assert.equal(app.focus.current, '[data-pv-action="register"]');
-  app.click({ 'data-pv-action': 'register' });
+  await app.click({ 'data-pv-action': 'register' });
   assert.equal(app.key('Escape').prevented, true);
   assert.doesNotMatch(app.html(), /pv-register-form/);
   assert.equal(app.focus.current, '[data-pv-action="register"]');
   assert.equal(app.session.getItem(SESSION_KEY), null);
 });
 
-test('registration stays local: no network, only the demo store and demo session keys', () => {
-  const app = openRegister();
-  app.submit('pv-register-form', VALID);
+test('registration stays local: no network, only the demo store and demo session keys', async () => {
+  const app = await openRegister();
+  await app.submit('pv-register-form', VALID);
   assert.equal(app.fetchCalls.length, 0);
   assert.deepEqual(app.local.keys(), [STORE_KEY]);
   assert.deepEqual(app.session.keys(), [SESSION_KEY]);
 });
 
-test('registration text from the user is escaped when shown back', () => {
-  const app = openRegister();
-  app.submit('pv-register-form', { ...VALID, name: '<img src=x onerror=alert(1)>' });
-  app.click({ 'data-pv-action': 'logout' }, { force: true });
+test('registration text from the user is escaped when shown back', async () => {
+  const app = await openRegister();
+  await app.submit('pv-register-form', { ...VALID, name: '<img src=x onerror=alert(1)>' });
+  await app.click({ 'data-pv-action': 'logout' }, { force: true });
   assert.doesNotMatch(app.html(), /<img src=x/);
   assert.match(app.html(), /&lt;img src=x/);
 });

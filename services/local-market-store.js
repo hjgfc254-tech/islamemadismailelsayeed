@@ -218,7 +218,9 @@ const MP = (() => {
   const acceptRate = pid => { const as = db.assignments.filter(a=>a.providerId===pid && a.status!=='offered' && a.status!=='withdrawn'); return as.length ? Math.round(as.filter(a=>a.status!=='rejected').length/as.length*100) : 100; };
 
   const api = {
-    db: () => db, reset(){ db = seed(); buildServices(); save(); }, GOVS, AREA_HINTS, rateFor, calc, rating, acceptRate, candidates, get, catName, uid, now, year,
+    db: () => db, reset(){ db = seed(); buildServices(); save(); },
+    /* Re-read the shared store after another tab changed it (storage event) so this tab never renders or saves stale data. */
+    reload(){ load(); }, GOVS, AREA_HINTS, rateFor, calc, rating, acceptRate, candidates, get, catName, uid, now, year,
     reqs: () => db.serviceRequests, byStatus: f => db.serviceRequests.filter(f),
     FLOW, ALT_STATUS, STATUS_LABEL, FINAL_STATUSES,
 

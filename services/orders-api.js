@@ -9,6 +9,7 @@
  *   GET  /requests                     customer|provider|admin   list visible requests (?status=)
  *   GET  /requests/:id                 customer|provider|admin   one visible request (+ current quote)
  *   POST /requests/:id/cancel          customer|admin   cancel before work starts
+ *   POST /requests/:id/provider        customer   pick a provider for an own unassigned request {providerId}
  *   POST /requests/:id/respond         provider   accept/decline an offered assignment {accept, reason}
  *   POST /requests/:id/schedule        provider|customer   propose {at} (provider) / confirm the time
  *   POST /requests/:id/advance         provider   next FLOW step {to}
@@ -46,7 +47,7 @@
   const notFound = () => fail('NOT_FOUND', 'الطلب غير موجود');
   const view = (store, r) => ({ ...r, currentQuote: store.currentQuote(r.id) || null, statusLabel: (store.STATUS_LABEL && store.STATUS_LABEL[r.status]) || r.status });
 
-  const REQUIRED = ['cat', 'serviceName', 'desc', 'gov', 'addr'];
+  const REQUIRED = ['cat', 'serviceName', 'gov', 'addr'];   // desc is optional (diagnosis-by-visit requests), as in the store
   function validateCreate(b) {
     const errors = {};
     for (const k of REQUIRED) if (!String(b[k] || '').trim()) errors[k] = 'مطلوب';
@@ -77,6 +78,16 @@
     const r = load(store, actor, params.id); if (!r) return notFound();
     const reason = String(body.reason || (actor.role === 'admin' ? 'إلغاء من الإدارة' : 'إلغاء من العميل'));
     return store.cancel(r.id, reason) ? view(store, r) : fail('CONFLICT', 'لا يمكن إلغاء الطلب في حالته الحالية');
+  });
+
+  client.define('POST', '/requests/:id/provider', { roles: ['customer'], summary: 'Customer picks a provider for an own unassigned request {providerId}.' }, ({ params, body, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    if (!['received', 'searching'].includes(r.status)) return fail('CONFLICT', 'الطلب أُسند بالفعل أو لم يعد بانتظار الإسناد');
+    const p = store.get('providers', String(body.providerId || ''));
+    if (!p || p.status !== 'approved' || p.available === false) return fail('VALIDATION', 'مقدم الخدمة غير متاح', { providerId: 'approved & available' });
+    if (!(p.cats || []).includes(r.cat)) return fail('VALIDATION', 'مقدم الخدمة لا يقدّم هذا التخصص', { providerId: 'category' });
+    const res = store.assign(r.id, p.id);
+    return res && res.ok ? { ...view(store, r), providerName: p.name } : fail('CONFLICT', (res && res.msg) || 'تعذّر الإسناد');
   });
 
   client.define('POST', '/requests/:id/respond', { roles: ['provider'], summary: 'Accept or decline an offered assignment.' }, ({ params, body, actor, store }) => {
@@ -123,6 +134,7 @@
     list: (status) => client.get('/requests' + (status ? '?status=' + id(status) : '')),
     get: reqId => client.get('/requests/' + id(reqId)),
     cancel: (reqId, reason) => client.post('/requests/' + id(reqId) + '/cancel', { reason }),
+    chooseProvider: (reqId, providerId) => client.post('/requests/' + id(reqId) + '/provider', { providerId }),
     respond: (reqId, accept, reason) => client.post('/requests/' + id(reqId) + '/respond', { accept, reason }),
     schedule: (reqId, at) => client.post('/requests/' + id(reqId) + '/schedule', at ? { at } : {}),
     advance: (reqId, to) => client.post('/requests/' + id(reqId) + '/advance', { to }),

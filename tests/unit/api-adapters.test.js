@@ -100,8 +100,8 @@ test('every route declares roles and is documented in docs/API_CONTRACTS.md', ()
 test('ownership: customers see only their own requests; unassigned providers get 404 (no existence leak)', async () => {
   const t = boot();
   const id = await customerWithRequest(t);
-  const bad = await t.g.HSOrdersApi.create({ ...REQ, desc: '' });
-  assert.deepEqual([bad.status, bad.error.code, bad.error.details.desc], [422, 'VALIDATION', 'مطلوب']);
+  const bad = await t.g.HSOrdersApi.create({ ...REQ, gov: '' });
+  assert.deepEqual([bad.status, bad.error.code, bad.error.details.gov], [422, 'VALIDATION', 'مطلوب']);
   t.run("MP.customerFor('علي','01099998888')"); t.as('customer', { name: 'علي', phone: '01099998888' });
   assert.equal((await t.g.HSOrdersApi.list()).data.total, 0);
   assert.equal((await t.g.HSOrdersApi.get(id)).status, 404);
@@ -243,7 +243,7 @@ test('public catalogue never exposes private provider fields; admin RBAC is hono
   assert.equal((await t.g.HSAdminApi.providers()).ok, true, 'support can view');
   t.as('admin', 'e_owner');
   assert.equal((await t.g.HSAdminApi.setProviderStatus('p_demo1', 'rejected')).status, 409, 'reject only pending');
-  assert.equal((await t.g.HSAdminApi.setSpecialRate('p_demo1', 80)).status, 422);
+  assert.equal((await t.g.HSAdminApi.setSpecialRate('p_demo1', 120)).status, 422);
   assert.equal((await t.g.HSAdminApi.setSpecialRate('p_demo1', 10)).data.specialRate, 10);
   assert.equal((await t.g.HSFinanceApi.setCommission({ defaultRate: 12 })).data.defaultRate, 12);
   assert.equal((await t.g.HSAdminApi.summary()).data.providers, t.run('MP.db().providers.length'));

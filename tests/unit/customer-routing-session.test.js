@@ -19,7 +19,7 @@ function load(files, extra = {}) {
 const MODULES = ['apps/customer/customer-session.js', 'apps/customer/customer-router.js', 'apps/guest/guest-policy.js', 'apps/guest/guest-entry.js'];
 const plain = v => JSON.parse(JSON.stringify(v));
 
-test('the four modules are real code loaded by the Customer entry before the page scripts', () => {
+test('the four modules are real code loaded by the Customer entry before the page scripts', async () => {
   const list = scripts();
   for (const f of MODULES) {
     const src = fs.readFileSync(path.join(ROOT, f), 'utf8');
@@ -29,7 +29,7 @@ test('the four modules are real code loaded by the Customer entry before the pag
   }
 });
 
-test('router parses and formats every supported deep link and rejects everything else', () => {
+test('router parses and formats every supported deep link and rejects everything else', async () => {
   const R = load(['apps/customer/customer-router.js']).ctx.HSCustomerRouter;
   for (const tab of ['home', 'sections', 'search', 'orders', 'account']) {
     assert.deepEqual(plain(R.parse('#/' + tab)), { screen: tab, tab });
@@ -48,7 +48,7 @@ test('router parses and formats every supported deep link and rejects everything
   assert.equal(R.format('wizard'), '#/request', 'the wizard screen is the request-create route');
 });
 
-test('router sync mirrors the screen with replaceState only when the hash changes', () => {
+test('router sync mirrors the screen with replaceState only when the hash changes', async () => {
   const calls = [];
   const location = { hash: '' };
   const history = { state: { tab: 'x' }, replaceState: (s, t, url) => { calls.push([s, url]); location.hash = url; } };
@@ -61,7 +61,7 @@ test('router sync mirrors the screen with replaceState only when the hash change
   assert.equal(calls.length, 1, 'non-routable screens leave the URL alone');
 });
 
-test('session validates, signs in (creating the local customer), updates and signs out on the existing hs_user key', () => {
+test('session validates, signs in (creating the local customer), updates and signs out on the existing hs_user key', async () => {
   const { ctx, mem } = load(['shared/icons/icon-registry.js', 'shared/config/legacy-data.js', 'services/local-catalog.js', 'services/local-market-store.js', 'apps/customer/customer-session.js']);
   const S = ctx.HSCustomerSession;
   assert.equal(S.KEY, 'hs_user');
@@ -86,7 +86,7 @@ test('session validates, signs in (creating the local customer), updates and sig
   assert.equal(S.current(), null, 'malformed stored identity is treated as signed out');
 });
 
-test('guest policy: public screens open; orders/tracking need a customer; tracking needs ownership', () => {
+test('guest policy: public screens open; orders/tracking need a customer; tracking needs ownership', async () => {
   const P = load(['apps/guest/guest-policy.js']).ctx.HSGuestPolicy;
   const MP = { get: (col, id) => ({ r1: { id: 'r1', customerId: 'c1' } })[id] || null };
   const me = { id: 'c1' }, other = { id: 'c2' };
@@ -99,7 +99,7 @@ test('guest policy: public screens open; orders/tracking need a customer; tracki
   assert.deepEqual(plain(P.decide(null, me, MP)), { allow: false, reason: 'not-found' });
 });
 
-test('guest entry resolves links, remembers the sign-in return target once', () => {
+test('guest entry resolves links, remembers the sign-in return target once', async () => {
   const { ctx } = load(['apps/customer/customer-router.js', 'apps/guest/guest-policy.js', 'apps/guest/guest-entry.js']);
   const E = ctx.HSGuestEntry;
   const MP = { get: () => ({ customerId: 'c1' }) };
@@ -122,19 +122,19 @@ function withRequest(owner = SIGNED_IN) {
   return { id, store: first.local._map.get('hs_mp_db') };
 }
 
-test('app: the URL mirrors the current screen (tabs, tracking, provider details)', () => {
+test('app: the URL mirrors the current screen (tabs, tracking, provider details)', async () => {
   const app = boot({ local: SIGNED_IN });
   assert.equal(app.location.hash, '#/home');
   app.run("go('orders')");
   assert.equal(app.location.hash, '#/orders');
   const id = app.newRequest();
-  app.clickDoc({ track: id });
+  await app.clickDoc({ track: id });
   assert.equal(app.location.hash, '#/track/' + id);
   app.run("show('details','electric')");
   assert.equal(app.location.hash, '#/track/' + id, 'screens without a deep link keep the last URL');
 });
 
-test('app: deep links open the right screen on boot for a signed-in customer', () => {
+test('app: deep links open the right screen on boot for a signed-in customer', async () => {
   const { id, store } = withRequest();
   const orders = boot({ hash: '#/orders', local: { ...SIGNED_IN, hs_mp_db: store } });
   assert.match(orders.html(), /<h2 tabindex="-1">طلباتي<\/h2>/);
@@ -147,19 +147,19 @@ test('app: deep links open the right screen on boot for a signed-in customer', (
   assert.match(prov.html(), /أحمد مصطفى/);
 });
 
-test('app: a guest opening a customer-only link is asked to sign in, then returned to the link', () => {
+test('app: a guest opening a customer-only link is asked to sign in, then returned to the link', async () => {
   const { id, store } = withRequest();
   const app = boot({ hash: '#/track/' + id, local: { hs_mp_db: store } });
   assert.equal(app.run('state.tab'), 'account', 'sign-in screen shown instead of the request');
   assert.doesNotMatch(app.html(), /متابعة الطلب/);
   assert.match(app.toast(), /سجّل الدخول/);
   assert.equal(app.session._map.get('hs_return_to'), '#/track/' + id);
-  app.submitDoc('loginFormAcc', { name: 'سارة أحمد', phone: '01011112222' });
+  await app.submitDoc('loginFormAcc', { name: 'سارة أحمد', phone: '01011112222' });
   assert.match(app.html(), /متابعة الطلب #HS-/, 'returned to the requested tracking page');
   assert.equal(app.session._map.has('hs_return_to'), false);
 });
 
-test('app: another customer cannot open a tracking link that is not theirs; unknown links fall back to home', () => {
+test('app: another customer cannot open a tracking link that is not theirs; unknown links fall back to home', async () => {
   const { id, store } = withRequest();
   const other = { hs_user: JSON.stringify({ name: 'منى', phone: '01099998888' }), hs_mp_db: store };
   const app = boot({ hash: '#/track/' + id, local: other });
@@ -171,19 +171,19 @@ test('app: another customer cannot open a tracking link that is not theirs; unkn
   assert.equal(bad.location.hash, '#/home', 'URL corrected to the shown screen');
 });
 
-test('app: editing the address bar (hashchange) navigates; sign-in validation uses the session rules', () => {
+test('app: editing the address bar (hashchange) navigates; sign-in validation uses the session rules', async () => {
   const app = boot({ local: SIGNED_IN });
   app.navigate('#/account');
   assert.equal(app.run('state.tab'), 'account');
   app.navigate('#/search');
   assert.equal(app.run('state.tab'), 'search');
   const guest = boot({ hash: '#/account' });
-  guest.submitDoc('loginFormAcc', { name: 'سارة', phone: '12' });
+  await guest.submitDoc('loginFormAcc', { name: 'سارة', phone: '12' });
   assert.match(guest.toast(), /رقم الهاتف غير صحيح/);
   assert.equal(guest.local._map.get('hs_user') ?? null, null);
 });
 
-test('app: editing the address bar while a stacked screen is open still opens the typed link (popstate fires first)', () => {
+test('app: editing the address bar while a stacked screen is open still opens the typed link (popstate fires first)', async () => {
   const app = boot();
   app.run("startRequest()");                       // wizard open → state.stack = ['wizard']
   assert.equal(app.location.hash, '#/request');
@@ -192,10 +192,10 @@ test('app: editing the address bar while a stacked screen is open still opens th
   assert.equal(app.location.hash, '#/provider/p_demo1');
 });
 
-test('app: logout and account deletion clear the demo identity through the session module', () => {
+test('app: logout and account deletion clear the demo identity through the session module', async () => {
   const app = boot({ local: SIGNED_IN });
   app.run("MP.customerFor('سارة أحمد','01011112222'); go('account')");
-  app.clickDoc({ accountLogout: '' });
+  await app.clickDoc({ accountLogout: '' });
   assert.equal(app.run('HSCustomerSession.current()'), null);
   assert.equal(app.local._map.get('hs_user'), 'null', 'same stored shape as before (store.set(user,null))');
 });

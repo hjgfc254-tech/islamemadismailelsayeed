@@ -678,6 +678,7 @@ function restoreScreenFocus(name){
 
 function show(name, arg){
   clearInterval(carTimer);
+  state.lastShown = { name, arg };
   renderTabs();   /* V8-C3: يحدّث شارة الطلبات النشطة عند كل عرض */
   view.innerHTML = screens[name](arg);
   view.scrollTop = 0;
@@ -913,7 +914,8 @@ function openTech(key){
 
 function openNotes(){
   const c = me(); if (!c) { sheet(`<h4>${ic('bell')} الإشعارات</h4><div class="empty" style="padding:24px">${ic('bell')}<p>سجّل بياناتك أولاً لعرض إشعاراتك</p></div>`); return; }
-  try { MP.markRead('customer:'+c.id); } catch {}
+  /* Mark read through notifications-api (own inbox only); the header dot refreshes on the next screen render. */
+  try { if (typeof HSNotificationsApi !== 'undefined') HSNotificationsApi.markAllRead(); } catch {}
   const ns = MP.notesFor('customer:'+c.id).slice(0, 30);
   sheet(`<h4>${ic('bell')} الإشعارات</h4><div class="sub">تحديثات طلباتك</div>
     ${ns.length?ns.map(n=>`<div class="note">${ic('bell')}<div><b>${esc(n.text)}</b><small>${fmtDT(n.at)}</small></div></div>`).join(''):`<div class="empty" style="padding:24px">${ic('bell')}<p>لا توجد إشعارات بعد</p></div>`}`);
@@ -1097,7 +1099,21 @@ const Intro = (() => {
 /* ───────── البدء ───────── */
 /* V8-C3: البدء مؤجل حتى تُحمَّل كل السكربتات (market-ui.js يعرّف me/reqCard؛ ui-kit.js يعرّف UIK).
    قبلها كان أول عرض للرئيسية يجري قبل تعريفها فيفقد الترحيب والطلبات النشطة. */
+/* Another tab changed the shared store (e.g. the provider advanced this order): refresh live screens in place —
+   keep scroll, never drop focus to <body>, announce politely — but never while a sheet/form is open. */
+function liveRefresh(){
+  const s = state.lastShown;
+  if (!s || state.sheet || !['tracking','orders'].includes(s.name) || !screens[s.name]) return;
+  const hadFocus = view.contains(document.activeElement), y = view.scrollTop;
+  view.innerHTML = screens[s.name](s.arg);
+  view.scrollTop = y;
+  renderTabs();
+  if (hadFocus) { const h = view.querySelector('.dhead h2'); if (h) { try { h.focus({preventScroll:true}); } catch { h.focus(); } } }
+  toast('تم تحديث بيانات الطلب');
+}
 function boot(){
+  if (typeof HSAuthApi !== 'undefined') HSAuthApi.useApp('customer');   /* API actor = the signed-in demo customer */
+  if (typeof HSRealtimeClient !== 'undefined') HSRealtimeClient.subscribe('market:changed', e => { if (e.source === 'storage') liveRefresh(); });
   if (!applyEntry(location.hash)) go('home');   /* رابط عميق مثل #/orders أو #/track/<id>؛ وإلا الرئيسية */
   Intro.init();
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

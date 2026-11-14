@@ -435,6 +435,7 @@ hansalhlak/
 │       ├── super-dashboard.test.js
 │       ├── system-settings.test.js
 │       ├── tree.test.js
+│       ├── ui-adapter-integration.test.js
 │       ├── ui-kit.test.js
 │       └── workforce.test.js
 ├── _redirects

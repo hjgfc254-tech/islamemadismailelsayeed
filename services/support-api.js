@@ -4,7 +4,7 @@
  *   providers file complaints only about requests they can access (or a general one with no request); only Admin
  *   lists all complaints and resolves them.
  * ROUTES:
- *   POST /complaints                 customer|provider   {reqId?, text, kind?}
+ *   POST /complaints                 customer|provider   {reqId?, text, kind?, attachments?[], providerId?}
  *   GET  /complaints                 customer|provider|admin   own complaints (admin: all, ?status=)
  *   POST /complaints/:id/resolve     admin   {resolution}
  * STATUS: IMPLEMENTED (MOCK ADAPTER — local store only, no ticketing system, no network)
@@ -28,8 +28,17 @@
       const r = store.get('serviceRequests', body.reqId);
       if (!r || !orders.canAccess(actor, r, store)) return fail('NOT_FOUND', 'الطلب غير موجود');
     }
-    store.complain(body.reqId || '', byOf(actor), text, { kind: String(body.kind || '').slice(0, 40) });
-    return ok(store.db().complaints[0], 201);
+    let providerId = '';
+    if (body.providerId) {                                     // report about a provider (support «بلاغ»)
+      const p = store.get('providers', String(body.providerId));
+      if (!p) return fail('VALIDATION', 'مقدم الخدمة غير موجود', { providerId: 'unknown' });
+      providerId = p.id;
+    }
+    const attachments = (Array.isArray(body.attachments) ? body.attachments : []).map(String).slice(0, 6);
+    store.complain(body.reqId || '', byOf(actor), text, { kind: String(body.kind || '').slice(0, 40), attachments });
+    const k = store.db().complaints[0];
+    if (providerId) { k.providerId = providerId; store.save(); }
+    return ok(k, 201);
   });
 
   client.define('GET', '/complaints', { roles: ['customer', 'provider', 'admin'], summary: 'Own complaints; admin sees all (?status=).' }, ({ query, actor, store }) => {
@@ -40,7 +49,8 @@
 
   client.define('POST', '/complaints/:id/resolve', { roles: ['admin'], summary: 'Resolve a complaint {resolution}.' }, ({ params, body, actor, store }) => {
     const G = (typeof globalThis !== 'undefined' && globalThis.HSAdminPermissionGuard) || null;
-    const emp = actor.adminRole ? { id: actor.id, role: actor.adminRole, status: 'active' } : null;
+    const roster = (((globalThis.HSAdminRbac || {}).state || {}).roster || []);
+    const emp = actor.adminRole ? (roster.find((x) => x.id === actor.id) || { id: actor.id, role: actor.adminRole, status: 'active' }) : null;
     if (G && emp && !G.can(emp, 'complaints', 'decide')) return fail('FORBIDDEN');
     const k = store.get('complaints', params.id);
     if (!k) return fail('NOT_FOUND', 'الشكوى غير موجودة');
@@ -52,7 +62,7 @@
   });
 
   return {
-    file: (text, reqId, kind) => client.post('/complaints', { text, reqId, kind }),
+    file: (text, reqId, kind, extra = {}) => client.post('/complaints', { text, reqId, kind, ...extra }),
     list: status => client.get('/complaints' + (status ? '?status=' + encodeURIComponent(status) : '')),
     resolve: (id, resolution) => client.post('/complaints/' + encodeURIComponent(id) + '/resolve', { resolution })
   };

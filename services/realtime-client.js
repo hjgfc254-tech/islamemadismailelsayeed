@@ -37,7 +37,12 @@
     connected = true;
     if (client) offMutation = client.onMutation(e => publish('market:changed', 'local', { method: e.method, path: e.path }));
     if (root.addEventListener) {
-      onStorage = e => { if (e && e.key === STORE_KEY) publish('market:changed', 'storage', null); };
+      onStorage = e => {
+        if (!e || e.key !== STORE_KEY) return;
+        const s = client && client.store();                       // refresh the local read model first
+        if (s && typeof s.reload === 'function') { try { s.reload(); } catch {} }
+        publish('market:changed', 'storage', null);
+      };
       root.addEventListener('storage', onStorage);
     }
   }

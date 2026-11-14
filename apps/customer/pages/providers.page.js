@@ -12,7 +12,7 @@
   };
 
   /* ═════════ بطاقة مقدم الخدمة ═════════ */
-  function card(p, { compact=false, showFav=true } = {}, ctx = {}) {
+  function card(p, { compact=false, showFav=true, reqId='' } = {}, ctx = {}) {
     check(ctx);
     const { MP, me, esc, ic } = ctx;
     const u = me();
@@ -40,7 +40,7 @@
     </div>
     ${!compact?`<div class="acts">
       <button data-provider-details="${esc(p.id)}">${ic('info')} التفاصيل</button>
-      ${p.available?`<button class="pri" data-choose-provider="${esc(p.id)}">${ic('check')} اختيار</button>`:`<button disabled>${ic('clock')} غير متاح</button>`}
+      ${p.available?`<button class="pri" data-choose-provider="${esc(p.id)}"${reqId?` data-choose-req="${esc(reqId)}"`:''}>${ic('check')} اختيار</button>`:`<button disabled>${ic('clock')} غير متاح</button>`}
     </div>`:''}
   </div>`;
   }
@@ -128,7 +128,7 @@
       ${stillSearching ? `<div class="need">${ic('info')}<span>جارٍ البحث… سيتم إسناد الطلب تلقائيًا للمرشح الأول. يمكنك الاختيار يدويًا إذا أردت.</span></div>` : ''}
       ${p ? `<div class="need" style="color:#6ee7b7">${ic('check')}<span>تم قبول الطلب من ${esc(p.name)}</span></div>` : ''}
       <h2 class="sec-title">${ic('user')}مقدمو الخدمة المطابقون (${cands.length})</h2>
-      <div class="plist" style="gap:12px">${cands.map(x => card(x, {}, ctx)).join('')}</div>
+      <div class="plist" style="gap:12px">${cands.map(x => card(x, { reqId }, ctx)).join('')}</div>
       <div class="row2" style="margin-top:14px">
         <button class="cta ghost" style="margin:0" data-act="editReq" data-id="${reqId}">${ic('edit')} تعديل الطلب</button>
         <button class="cta ghost" style="margin:0" data-act="cancelReq" data-id="${reqId}">${ic('cancel')} إلغاء</button>

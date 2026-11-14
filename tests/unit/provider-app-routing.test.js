@@ -8,7 +8,7 @@ const PROVIDER = 'p_demo1';
 const TAB_ROUTES = ['home', 'new', 'accepted', 'progress', 'quote', 'schedule', 'done', 'reviews', 'transactions', 'earnings', 'services', 'notifications', 'profile'];
 const activeRoute = app => (/data-pv-route="([^"]+)" class="is-active" aria-current="page"/.exec(app.navHtml()) || [])[1];
 
-test('harness loads exactly the production script list of apps/provider/index.html, app.js last', () => {
+test('harness loads exactly the production script list of apps/provider/index.html, app.js last', async () => {
   const scripts = entryScripts();
   assert.equal(scripts.at(-1), 'apps/provider/app.js');
   assert.equal(scripts.filter(s => s.includes('/pages/')).length, 12);
@@ -16,13 +16,13 @@ test('harness loads exactly the production script list of apps/provider/index.ht
     'standalone entry must not load Customer scripts or the legacy bridge');
 });
 
-test('an empty hash boots to #/home', () => {
+test('an empty hash boots to #/home', async () => {
   const app = boot({ session: PROVIDER });
   assert.equal(app.location.hash, '#/home');
   assert.equal(activeRoute(app), 'home');
 });
 
-test('every navigation route renders and marks only its own tab as current', () => {
+test('every navigation route renders and marks only its own tab as current', async () => {
   const app = boot({ session: PROVIDER });
   for (const route of TAB_ROUTES) {
     app.go('#/' + route);
@@ -32,14 +32,14 @@ test('every navigation route renders and marks only its own tab as current', () 
   }
 });
 
-test('cancelled is a reachable group route without a nav tab', () => {
+test('cancelled is a reachable group route without a nav tab', async () => {
   const app = boot({ session: PROVIDER });
   app.go('#/cancelled');
   assert.match(app.html(), /ملغاة \/ مرفوضة/);
   assert.equal(activeRoute(app), undefined);
 });
 
-test('group routes render the group heading with an item count or an empty state', () => {
+test('group routes render the group heading with an item count or an empty state', async () => {
   let rid;
   const app = boot({ session: PROVIDER, setup: ({ MP }) => { rid = offerRequest(MP, PROVIDER).id; MP.respond(rid, true); } });
   app.go('#/accepted');
@@ -48,14 +48,14 @@ test('group routes render the group heading with an item count or an empty state
   assert.match(app.html(), /لا توجد طلبات في هذا القسم/);
 });
 
-test('nav clicks navigate through the hash router', () => {
+test('nav clicks navigate through the hash router', async () => {
   const app = boot({ session: PROVIDER });
-  app.click({ 'data-pv-route': 'earnings' });
+  await app.click({ 'data-pv-route': 'earnings' });
   assert.equal(app.location.hash, '#/earnings');
   assert.equal(activeRoute(app), 'earnings');
 });
 
-test('unknown routes and query strings fall back safely', () => {
+test('unknown routes and query strings fall back safely', async () => {
   const app = boot({ session: PROVIDER });
   app.go('#/does-not-exist');
   assert.equal(activeRoute(app), 'home');
@@ -67,7 +67,7 @@ test('unknown routes and query strings fall back safely', () => {
   assert.equal(app.location.hash, '#/home', 'navigate() never writes an unsupported route');
 });
 
-test('request details deep link renders the request card and a back control', () => {
+test('request details deep link renders the request card and a back control', async () => {
   let rid;
   const app = boot({ session: PROVIDER, setup: ({ MP }) => { rid = offerRequest(MP, PROVIDER).id; } });
   app.go('#/request/' + encodeURIComponent(rid));
@@ -76,16 +76,16 @@ test('request details deep link renders the request card and a back control', ()
   assert.ok(app.has({ 'data-pv-route': 'home' }));
 });
 
-test('the details control on a request card opens that request', () => {
+test('the details control on a request card opens that request', async () => {
   let rid;
   const app = boot({ session: PROVIDER, setup: ({ MP }) => { rid = offerRequest(MP, PROVIDER).id; } });
   app.go('#/new');
-  app.click({ 'data-pv-route': 'request/' + encodeURIComponent(rid) });
+  await app.click({ 'data-pv-route': 'request/' + encodeURIComponent(rid) });
   assert.equal(app.location.hash, '#/request/' + encodeURIComponent(rid));
   assert.match(app.html(), /تفاصيل الطلب/);
 });
 
-test('request details for a missing, unknown, malformed or foreign id shows not-found', () => {
+test('request details for a missing, unknown, malformed or foreign id shows not-found', async () => {
   let foreign;
   const app = boot({ session: PROVIDER, setup: ({ MP }) => {
     offerRequest(MP, PROVIDER);
@@ -98,7 +98,7 @@ test('request details for a missing, unknown, malformed or foreign id shows not-
   }
 });
 
-test('a deep link survives reload while the demo session exists', () => {
+test('a deep link survives reload while the demo session exists', async () => {
   let rid;
   const first = boot({ session: PROVIDER, setup: ({ MP }) => { rid = offerRequest(MP, PROVIDER).id; } });
   first.go('#/request/' + rid);
@@ -109,7 +109,7 @@ test('a deep link survives reload while the demo session exists', () => {
   assert.ok(reloaded.has({ 'data-pv-action': 'accept', 'data-id': rid }));
 });
 
-test('a deep link without a demo session shows the account picker, not request data', () => {
+test('a deep link without a demo session shows the account picker, not request data', async () => {
   let rid;
   const app = boot({ hash: '#/request/x', setup: ({ MP }) => { rid = offerRequest(MP, PROVIDER).id; } });
   app.go('#/request/' + rid);

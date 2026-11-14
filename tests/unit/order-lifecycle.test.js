@@ -27,7 +27,7 @@ function started(M) {
 const statuses = (M, id) => Array.from(M.get('serviceRequests', id).history, h => h.s);   // copy out of the vm realm
 const txCount = (M, id) => M.db().transactions.filter(t => t.reqId === id).length;
 
-test('happy path: quote → approve (in progress, agreed price) → provider completes → customer closes', () => {
+test('happy path: quote → approve (in progress, agreed price) → provider completes → customer closes', async () => {
   const M = store(), id = started(M);
   assert.equal(M.createQuote(id, { labor: 200, parts: 50 }).ok, true);
   assert.equal(M.get('serviceRequests', id).status, 'quote');
@@ -42,7 +42,7 @@ test('happy path: quote → approve (in progress, agreed price) → provider com
   assert.deepEqual(statuses(M, id).slice(-4), ['quote', 'started', 'completed', 'closed']);
 });
 
-test('invalid transitions are rejected', () => {
+test('invalid transitions are rejected', async () => {
   const M = store(), id = started(M);
   assert.equal(M.approveQuote(id), false, 'nothing to approve');
   assert.equal(M.rejectQuote(id), false, 'nothing to reject');
@@ -62,7 +62,7 @@ test('invalid transitions are rejected', () => {
   assert.equal(txCount(M, id), 1, 'no duplicate transaction');
 });
 
-test('reject → renegotiate; updating a pending quote supersedes it (one live quote, no duplicates)', () => {
+test('reject → renegotiate; updating a pending quote supersedes it (one live quote, no duplicates)', async () => {
   const M = store(), id = started(M);
   const q1 = M.createQuote(id, { labor: 300 }).quote;
   const q2 = M.createQuote(id, { labor: 280 }).quote;
@@ -77,7 +77,7 @@ test('reject → renegotiate; updating a pending quote supersedes it (one live q
   assert.equal(M.get('serviceRequests', id).agreedValue, 250);
 });
 
-test('zero quotes stay forbidden; quotes are refused before the job is scheduled', () => {
+test('zero quotes stay forbidden; quotes are refused before the job is scheduled', async () => {
   const M = store();
   const r = M.createRequest({ name: 'سارة', phone: '01011112222', cat: 'electric', serviceName: 'كهرباء', desc: 'عطل', gov: 'القاهرة', area: 'مدينة نصر', addr: 'ش 1' });
   M.assign(r.id, 'p_demo1'); M.respond(r.id, true);
@@ -86,7 +86,7 @@ test('zero quotes stay forbidden; quotes are refused before the job is scheduled
   assert.equal(M.createQuote(id, { labor: 0 }).ok, false);
 });
 
-test('direct-price path (no quote) still completes with a positive value; free path stays separate', () => {
+test('direct-price path (no quote) still completes with a positive value; free path stays separate', async () => {
   const M = store(), id = started(M);
   assert.equal(M.complete(id, 0), false);
   assert.equal(M.complete(id, 180, 10), true);
@@ -101,7 +101,7 @@ test('direct-price path (no quote) still completes with a positive value; free p
   assert.deepEqual([t.free, t.value, t.commission], [true, 0, 0]);
 });
 
-test('customer UI: approving a quote shows the agreed price and keeps the job in progress; confirm appears only after completion', () => {
+test('customer UI: approving a quote shows the agreed price and keeps the job in progress; confirm appears only after completion', async () => {
   const app = bootCustomer();
   app.signIn();
   const id = app.newRequest();
@@ -110,12 +110,12 @@ test('customer UI: approving a quote shows the agreed price and keeps the job in
   app.run(`show('tracking', ${q})`);
   assert.match(app.html(), /data-act="approveQuote"/);
   assert.doesNotMatch(app.html(), /data-act="custClose"/);
-  app.clickDoc({ act: 'approveQuote', id });
+  await app.clickDoc({ act: 'approveQuote', id });
   assert.equal(app.run(`MP.get('serviceRequests', ${q}).status`), 'started');
   assert.match(app.html(), /السعر المتفق عليه/);
   assert.doesNotMatch(app.html(), /data-act="custClose"/, 'customer cannot confirm before the provider completes');
   app.run(`MP.complete(${q}); show('tracking', ${q})`);
   assert.match(app.html(), /القيمة النهائية/);
-  app.clickDoc({ act: 'custClose', id });
+  await app.clickDoc({ act: 'custClose', id });
   assert.equal(app.run(`MP.get('serviceRequests', ${q}).status`), 'closed');
 });

@@ -11,7 +11,9 @@ const ctx={ console, setInterval(){}, setTimeout(){}, clearTimeout(){}, clearInt
   state:{stack:[],tab:'home'}, DEMO_NOTE:'demo', demoBanner:()=>'', fmtDT:s=>s, MPx:null, PENDING_PHOTO:null, pick(){}, shrink(){}, screens:{}, WZ:null };
 const fields={}, qfields={};
 vm.createContext(ctx);
-for(const f of ['services/local-catalog.js','services/local-market-store.js']) vm.runInContext(fs.readFileSync(path.join(dir,f),'utf8').replace(/^'use strict';/m,''),ctx,{filename:f});
+/* The wizard submits through the API adapters (2026-11-14): load them with the customer demo session. */
+ctx.sessionStorage={getItem:k=>mem['ss_'+k]||null,setItem:(k,v)=>mem['ss_'+k]=String(v),removeItem:k=>delete mem['ss_'+k]}; ctx.globalThis=ctx;
+for(const f of ['services/local-catalog.js','services/local-market-store.js','services/api-client.js','services/auth-api.js','services/orders-api.js','services/customer-api.js','apps/customer/customer-session.js']) vm.runInContext(fs.readFileSync(path.join(dir,f),'utf8').replace(/^'use strict';/m,''),ctx,{filename:f});
 vm.runInContext(fs.readFileSync(path.join(dir,'apps/customer/pages/request-wizard.page.js'),'utf8').replace(/^'use strict';/m,''),ctx,{filename:'apps/customer/pages/request-wizard.page.js'});
 const run=c=>vm.runInContext(c,ctx);
 let pass=0, fail=0; const ok=(c,m)=>{ if(c){pass++;} else {fail++; console.log('FAIL:',m);} };
@@ -39,6 +41,8 @@ const journeys=[
  ['plumbing','plumbing/faucets','plumbing/faucets/leak'],
  ['cars','cars/engine','cars/engine/strange-noise'],
  ['cleaning','cleaning/post-finishing','cleaning/post-finishing/full']];
+const settle=async()=>{ for(let k=0;k<4;k++) await new Promise(r=>setImmediate(r)); };
+(async()=>{
 for(const [c,i,p] of journeys){
   run('startRequest()'); click({wzCat:c}); ok(wz().step===1&&wz().cat===c,'cat step '+c);
   click({wzItem:i}); ok(wz().step===2&&wz().item===i,'item '+i);
@@ -53,7 +57,7 @@ for(const [c,i,p] of journeys){
   run("WZ.schedule.flexible=true"); click({act:'wzNext'}); ok(wz().step===8,'to contact');
   setf({'wz-name':'عميل تجريبي','wz-phone':'01012345678'}); run("WZ.contact.name='عميل تجريبي';WZ.contact.phone='01012345678'"); click({act:'wzNext'}); ok(wz().step===9,'to review');
   ok(run('screens.wizard()').includes('تأكيد وإرسال'),'review screen');
-  click({act:'wzSubmit'}); ok(wz().step===10&&wz().done,'submitted '+p);
+  click({act:'wzSubmit'}); await settle(); ok(wz().step===10&&wz().done,'submitted '+p);
   const r=run('MP.reqs()[0]'); ok(r&&r.itemId===i&&r.problemId===p&&r.cat===c&&r.catName&&r.itemName&&r.problemName,'request stores cat/item/problem '+p);
   ok(r.status!=='received','request moved');
 }
@@ -96,3 +100,4 @@ run("store.set('user',{name:'مسودة',phone:'01012345678'}); MP.customerFor('
 ok(run("screens.wizard().includes('data-act=\"wzResume\"')"), 'resume draft action is offered');
 click({act:'wzResume'}); ok(wz()&&wz().desc==='مسودة محفوظة', 'saved draft restores into wizard');
 console.log(`\n${pass} passed, ${fail} failed`); process.exit(fail?1:0);
+})().catch(e=>{ console.error(e); process.exit(1); });

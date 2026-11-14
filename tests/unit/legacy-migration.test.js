@@ -14,7 +14,7 @@ const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
 const allFiles = dir => fs.readdirSync(path.join(ROOT, dir), { withFileTypes: true }).flatMap(e => e.isDirectory() ? allFiles(path.join(dir, e.name)) : [path.join(dir, e.name).replace(/\\/g, '/')]);
 const ADMIN_TRACE = /apps\/admin|admin\/index\.html|\/admin\b|لوحة الإدارة|مركز الإدارة|data-r="admin"|enterRole|screens\.admin/;
 
-test('legacy bridge files are removed and no entry, worker or source references them', () => {
+test('legacy bridge files are removed and no entry, worker or source references them', async () => {
   assert.equal(fs.existsSync(path.join(ROOT, 'apps/provider/legacy/portal-compat.js')), false);
   assert.equal(fs.existsSync(path.join(ROOT, 'apps/provider/provider-workspace.js')), false);
   const runtime = ['apps/customer', 'apps/provider', 'apps/admin', 'apps/guest', 'shared', 'services'].flatMap(allFiles).filter(f => /\.(js|html)$/.test(f));
@@ -23,7 +23,7 @@ test('legacy bridge files are removed and no entry, worker or source references 
   assert.doesNotMatch(read('service-worker.js'), /portal-compat|provider-workspace/);
 });
 
-test('Customer app exposes no Admin navigation, controls, links or role switching', () => {
+test('Customer app exposes no Admin navigation, controls, links or role switching', async () => {
   const sources = allFiles('apps/customer').filter(f => /\.(js|html)$/.test(f));
   for (const f of sources) assert.doesNotMatch(read(f), ADMIN_TRACE, f);
   assert.ok(!customerScripts().some(s => s.startsWith('apps/admin/') || s.includes('legacy/')), 'Customer entry loads no Admin/legacy scripts');
@@ -38,7 +38,7 @@ test('Customer app exposes no Admin navigation, controls, links or role switchin
   assert.equal(app.run("typeof screens.provider"), 'undefined');
 });
 
-test('Provider app exposes no Admin navigation or controls', () => {
+test('Provider app exposes no Admin navigation or controls', async () => {
   for (const f of allFiles('apps/provider').filter(f => /\.(js|html)$/.test(f))) assert.doesNotMatch(read(f), ADMIN_TRACE, f);
   assert.ok(!providerScripts().some(s => s.startsWith('apps/admin/')));
   const app = bootProvider({ session: 'p_demo1' });
@@ -47,7 +47,7 @@ test('Provider app exposes no Admin navigation or controls', () => {
   assert.doesNotMatch(picker.html(), ADMIN_TRACE);
 });
 
-test('Customer offers a legitimate Provider onboarding invitation (menu + home), not a role switch', () => {
+test('Customer offers a legitimate Provider onboarding invitation (menu + home), not a role switch', async () => {
   const app = bootCustomer();
   assert.match(app.html(), /<a class="tag" href="\.\.\/provider\/index\.html#\/join">انضم كمقدم خدمة<\/a>/);
   assert.match(app.html(), /عايز تقدم خدماتك؟/);
@@ -55,7 +55,7 @@ test('Customer offers a legitimate Provider onboarding invitation (menu + home),
   assert.match(read('apps/provider/provider-router.js'), /'join'/);
 });
 
-test('Admin keeps its own restricted entry: picker + shell + guard; marketplace page is part of it', () => {
+test('Admin keeps its own restricted entry: picker + shell + guard; marketplace page is part of it', async () => {
   const html = read('apps/admin/index.html');
   for (const s of ['admin-session.js', 'permission-guard.js', 'app.js', 'pages/marketplace.page.js', '../../services/local-market-store.js']) assert.ok(html.includes(`src="${s}"`), s);
   assert.ok(html.indexOf('local-market-store.js') < html.indexOf('pages/marketplace.page.js'));
@@ -65,31 +65,32 @@ test('Admin keeps its own restricted entry: picker + shell + guard; marketplace 
   assert.equal(require(path.join(ROOT, 'apps/admin/permission-guard.js')).ROUTE_MODULE.marketplace, 'providers');
 });
 
-test('every legacy Admin console capability exists in the modern marketplace page on the shared store', () => {
+test('every legacy Admin console capability exists in the modern marketplace page on the shared store', async () => {
   const src = read('apps/admin/pages/marketplace.page.js');
+  // Each capability exists AND goes through the API adapters (2026-11-14), which re-check role + demo RBAC.
   const caps = {
-    'approve provider registration': /data-mk="padmit"[\s\S]*M\.updateProvider\(id, \{ status: 'approved' \}\)/,
-    'reject registration': /M\.updateProvider\(id, \{ status: 'rejected' \}\)/,
-    'suspend / reactivate provider': /data-mk="psusp"/,
-    'special commission rate': /specialRate: s === '' \? null : \+s/,
-    'manual assignment with candidates': /M\.candidates\(r\)[\s\S]*M\.assign\(id, pid\)/,
-    'auto-match': /data-mk="automatch"[\s\S]*M\.assign\(id\)/,
-    'cancel before work starts': /M\.cancel\(id, 'إلغاء من الإدارة'\)/,
+    'approve provider registration': /data-mk="padmit"[\s\S]*A\.admin\.setProviderStatus\(id, 'approved'\)/,
+    'reject registration': /A\.admin\.setProviderStatus\(id, 'rejected'\)/,
+    'suspend / reactivate provider': /data-mk="psusp"[\s\S]*was === 'suspended' \? 'approved' : 'suspended'/,
+    'special commission rate': /A\.admin\.setSpecialRate\(id, s === '' \? null : \+s\)/,
+    'manual assignment with candidates': /M\.candidates\(r\)[\s\S]*A\.admin\.assign\(id, pid\)/,
+    'auto-match': /data-mk="automatch"[\s\S]*A\.admin\.assign\(id\)/,
+    'cancel before work starts': /A\.orders\.cancel\(id, 'إلغاء من الإدارة'\)/,
     'view current quote': /M\.currentQuote\(r\.id\)/,
-    'suspend customer': /data-mk="csusp"/,
-    'resolve complaint': /M\.resolveComplaint\(id, note\)/,
-    'commission rates': /M\.setSetting\('defaultRate'[\s\S]*M\.setCatRate\(/,
-    'collection status': /M\.setCollection\(/,
+    'suspend customer': /A\.admin\.setCustomerStatus\(id,/,
+    'resolve complaint': /A\.support\.resolve\(id, note\)/,
+    'commission rates': /A\.finance\.setCommission\(\{ defaultRate:[\s\S]*A\.finance\.setCommission\(\{ cat:/,
+    'collection status': /A\.finance\.setCollection\(/,
     'restore demo data': /M\.reset\(\)/
   };
-  for (const [name, re] of Object.entries(caps)) assert.match(src, re, name);
+  assert.doesNotMatch(src, /M\.(updateProvider|assign|cancel|resolveComplaint|setCollection|setSetting|setCatRate)\(|M\.save\(\)/, 'no direct store mutation besides the demo reset');  for (const [name, re] of Object.entries(caps)) assert.match(src, re, name);
   assert.doesNotMatch(src, /buildFixtures|FIXTURES/, 'operates on the shared MP store, not fixtures');
   const page = require(path.join(ROOT, 'apps/admin/pages/marketplace.page.js'));
   assert.deepEqual(page.summary({ providers: [{ status: 'pending' }, { status: 'approved' }], serviceRequests: [{ status: 'searching' }, { status: 'started' }], complaints: [{ status: 'open' }], transactions: [{ collection: 'pending' }, { collection: 'collected' }] }),
     { pending: 1, providers: 2, unassigned: 1, requests: 2, openComplaints: 1, uncollected: 1 });
 });
 
-test('Customer and Provider share one marketplace store: a customer request reaches the provider', () => {
+test('Customer and Provider share one marketplace store: a customer request reaches the provider', async () => {
   const owner = { hs_user: JSON.stringify({ name: 'سارة', phone: '01011112222' }) };
   const cust = bootCustomer({ local: owner });
   cust.run("MP.customerFor('سارة','01011112222'); MP.db().settings.autoAssign=false");

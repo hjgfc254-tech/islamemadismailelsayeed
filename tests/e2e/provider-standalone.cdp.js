@@ -146,7 +146,7 @@ async function run({ exe, wsUrl }) {
       ok(await waitFor('!!document.querySelector("#pv-profile-form") && document.querySelector("#pv-profile-form [name=name]").value.length > 0'), `${tag} profile editing opens a prefilled form`);
       // The seeded demo provider has no phone; the required field must block saving until a valid one is entered.
       ok(await evaluate(`(()=>{const f=document.querySelector('#pv-profile-form'),p=f.querySelector('[name=phone]');return p.value!=='' || !f.checkValidity();})()`), `${tag} profile form enforces a phone number`);
-      await evaluate(`(()=>{const p=document.querySelector('#pv-profile-form [name=phone]');if(!p.value)p.value='01012345678';return true;})()`);
+      await evaluate(`(()=>{const p=document.querySelector('#pv-profile-form [name=phone]');if(!p.value)p.value='01022223333';return true;   /* distinct from the registration step's number: duplicate phones are refused */})()`);
       await evaluate(`(()=>{const n=document.querySelector('#pv-profile-form [name=bio]');n.value='نبذة من اختبار المتصفح';document.querySelector('#pv-profile-form .pv-btn-primary').focus();return true;})()`); await ENTER();
       ok(await waitFor(`/نبذة من اختبار المتصفح/.test(document.querySelector('#provider-view').textContent) && /تم حفظ ملفك/.test(document.querySelector('#provider-toast').textContent)`), `${tag} saving the profile updates it in place`);
       ok(await noOverflow(), `${tag} profile: no horizontal overflow`);

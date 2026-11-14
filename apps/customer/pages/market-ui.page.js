@@ -121,15 +121,17 @@ document.addEventListener('click', e => {
   }
   if (d.chooseProvider) {
     e.preventDefault(); e.stopPropagation();
-    chooseProviderManually(d.chooseProvider);
+    chooseProviderManually(d.chooseProvider, d.chooseReq || '', t);
     return;
   }
   if (d.favProvider) {
     e.preventDefault(); e.stopPropagation();
     const u = me(); if (!u) return toast('سجّل بياناتك أولاً');
-    const on = MP.toggleFavorite(u.id, 'provider', d.favProvider);
-    t.classList.toggle('on', on);
-    toast(on ? 'أُضيف للمفضلة' : 'أُزيل من المفضلة');
+    apiCall('fav:' + d.favProvider, t, () => HSCustomerApi.toggleFavorite('provider', d.favProvider), res => {
+      const on = !!res.data.favorite;
+      t.classList.toggle('on', on); t.setAttribute('aria-pressed', on ? 'true' : 'false');
+      toast(on ? 'أُضيف للمفضلة' : 'أُزيل من المفضلة');
+    });
     return;
   }
   if (d.providerServiceRequest) {
@@ -140,36 +142,30 @@ document.addEventListener('click', e => {
 
   /* data-act */
   switch (d.act) {
+    /* Marketplace mutations go through the API adapters (services/*-api.js); MP stays the local read model. */
     case 'custConfirm':
-      if (MP.confirmTime(d.id, 'customer')) { show('tracking', d.id); toast('تم الاتفاق على الموعد'); }
+      apiCall('confirm:' + d.id, t, () => HSOrdersApi.schedule(d.id), () => { show('tracking', d.id); toast('تم الاتفاق على الموعد'); });
       break;
     case 'custClose':
-      if (MP.close(d.id)) { show('tracking', d.id); toast('تم إغلاق الطلب'); }
+      apiCall('close:' + d.id, t, () => HSOrdersApi.close(d.id), () => { show('tracking', d.id); toast('تم إغلاق الطلب'); });
       break;
     case 'cancelReq':
-      if (confirm('هل تريد إلغاء الطلب؟')) {
-        const reason = prompt('سبب الإلغاء (اختياري):') || 'ألغاه العميل';
-        if (MP.cancel(d.id, reason)) { show('tracking', d.id); toast('تم إلغاء الطلب'); }
-      }
+      askSheet({ id: d.id, kind: 'cancel', title: 'إلغاء الطلب', text: 'هل تريد إلغاء الطلب؟ لا يمكن التراجع.', reasonLabel: 'سبب الإلغاء (اختياري)', confirmLabel: 'تأكيد الإلغاء' });
       break;
     case 'rate': openRateSheet(d.id); break;
     case 'complain': openComplainSheet(d.id); break;
     case 'approveQuote':
-      if (MP.approveQuote(d.id)) { show('tracking', d.id); toast('تمت الموافقة على السعر — سينفّذ مقدم الخدمة ثم يسجّل الإكمال'); }
-      else toast('تعذرت الموافقة على عرض السعر');
+      apiCall('approve:' + d.id, t, () => HSQuotesApi.approve(d.id), () => { show('tracking', d.id); toast('تمت الموافقة على السعر — سينفّذ مقدم الخدمة ثم يسجّل الإكمال'); });
       break;
     /* الخدمة المجانية: مسار مستقل عن عروض الأسعار (لا عرض سعر بقيمة صفر) */
     case 'acceptFree':
-      if (MP.respondFree(d.id, true)) { show('tracking', d.id); toast('وافقت على تنفيذ الخدمة مجانًا'); } else toast('تعذر تنفيذ الإجراء؛ تغيّرت حالة الطلب');
+      apiCall('free:' + d.id, t, () => HSQuotesApi.respondFree(d.id, true), () => { show('tracking', d.id); toast('وافقت على تنفيذ الخدمة مجانًا'); });
       break;
     case 'declineFree':
-      if (MP.respondFree(d.id, false)) { show('tracking', d.id); toast('تم رفض الخدمة المجانية — يمكن لمقدم الخدمة إرسال عرض سعر'); } else toast('تعذر تنفيذ الإجراء؛ تغيّرت حالة الطلب');
+      apiCall('free:' + d.id, t, () => HSQuotesApi.respondFree(d.id, false), () => { show('tracking', d.id); toast('تم رفض الخدمة المجانية — يمكن لمقدم الخدمة إرسال عرض سعر'); });
       break;
     case 'rejectQuote':
-      if (confirm('هل تريد رفض عرض السعر؟')) {
-        const reason = prompt('سبب الرفض (اختياري):') || '';
-        if (MP.rejectQuote(d.id, reason)) { show('tracking', d.id); toast('تم رفض العرض — يمكن للفني إرسال عرض معدّل'); }
-      }
+      askSheet({ id: d.id, kind: 'rejectQuote', title: 'رفض عرض السعر', text: 'سيتمكن مقدم الخدمة من إرسال عرض معدّل.', reasonLabel: 'سبب الرفض (اختياري)', confirmLabel: 'تأكيد الرفض' });
       break;
     case 'viewMatches':
       if (typeof state !== 'undefined') { state.stack.push('match:'+d.id); history.pushState({m:1},''); }
@@ -204,9 +200,7 @@ document.addEventListener('click', e => {
       const expanded = MP.db().providers.filter(p => p.status==='approved' && p.cats.includes(r.cat) && p.govs.some(g => ['القاهرة','الجيزة','الإسكندرية','القليوبية'].includes(g)));
       if (!expanded.length) { toast('لا يوجد مقدمو خدمة إضافيون حاليًا'); break; }
       const p = expanded[0];
-      const res = MP.assign(r.id, p.id);
-      if (res.ok) { show('tracking', d.id); toast('تم توسيع نطاق البحث — أُرسل الطلب إلى ' + p.name); }
-      else toast(res.msg || 'تعذّر التوسيع');
+      apiCall('expand:' + d.id, t, () => HSOrdersApi.chooseProvider(r.id, p.id), () => { show('tracking', d.id); toast('تم توسيع نطاق البحث — أُرسل الطلب إلى ' + p.name); });
       break;
     }
     /* 2026-11-14: the customer-side «محاكاة التقدّم» controls (simAdvance/simQuote) were removed — they let the
@@ -215,14 +209,51 @@ document.addEventListener('click', e => {
 });
 
 /* ═════════ اختيار مزود يدويًا ═════════ */
-function chooseProviderManually(providerId) {
-  /* نحتاج reqId — نستخدم أحدث طلب غير مُسند في searching/received */
-  const r = MP.reqs().find(x => ['searching','received'].includes(x.status));
-  if (!r) { toast('لا يوجد طلب بانتظار الإسناد'); return; }
-  const res = MP.assign(r.id, providerId);
-  if (res.ok) { show('tracking', r.id); toast('تم إرسال الطلب إلى ' + res.provider.name); }
-  else toast(res.msg || 'تعذّر الإسناد');
+/* reqId comes from the matches screen (data-choose-req). From the directory there is no request in context: use the
+   customer's own single unassigned request in the provider's category, otherwise start a new request in that category
+   (previously it silently assigned whichever unassigned request came first, possibly someone else's). */
+function chooseProviderManually(providerId, reqId, control) {
+  const u = me(); if (!u) { toast('سجّل بياناتك أولاً'); return; }
+  const p = MP.get('providers', providerId); if (!p) return;
+  let id = reqId;
+  if (!id) {
+    const own = MP.reqs().filter(x => x.customerId === u.id && ['searching','received'].includes(x.status) && (p.cats || []).includes(x.cat));
+    if (own.length === 1) id = own[0].id;
+    else { if (typeof startRequest === 'function') startRequest((p.cats || [])[0]); toast('ابدأ طلبًا جديدًا ثم اختر ' + p.name); return; }
+  }
+  apiCall('choose:' + id, control, () => HSOrdersApi.chooseProvider(id, providerId), res => { show('tracking', id); toast('تم إرسال الطلب إلى ' + (res.data.providerName || p.name)); });
 }
+
+/* ═════════ API calls from Customer screens ═════════
+   apiCall(key, control, request, onOk, onFail?): one in-flight request per key (repeat clicks/Enter ignored), the
+   control is disabled + aria-busy while waiting; failures show the envelope's message (401 → sign-in prompt). */
+const _apiInFlight = new Set();
+function apiErrorText(res) {
+  if (res && res.status === 401) return 'سجّل الدخول لإتمام هذا الإجراء';
+  return (res && res.error && res.error.message) || 'تعذر تنفيذ الإجراء. حاول مرة أخرى.';
+}
+async function apiCall(key, control, request, onOk, onFail) {
+  if (_apiInFlight.has(key)) return;
+  _apiInFlight.add(key);
+  const busy = on => { if (control && typeof control.setAttribute === 'function') { try { control.disabled = on; if (on) control.setAttribute('aria-busy', 'true'); else control.removeAttribute('aria-busy'); } catch {} } };
+  busy(true);
+  try {
+    const res = await request();
+    if (res && res.ok) onOk(res);
+    else if (onFail) onFail(res); else toast(apiErrorText(res));
+  } catch { if (onFail) onFail(null); else toast(apiErrorText(null)); }
+  finally { _apiInFlight.delete(key); busy(false); }
+}
+
+/* Accessible confirmation (replaces native confirm()/prompt()): a labelled form inside the focus-managed sheet. */
+function askSheet(o) {
+  sheet(`<h4 id="ask-title">${esc(o.title)}</h4><div class="sub">${esc(o.text)}</div>
+    <form class="form" id="askForm" data-id="${esc(o.id)}" data-kind="${esc(o.kind)}" aria-labelledby="ask-title">
+      ${o.reasonLabel ? `<div><label for="ask-reason">${esc(o.reasonLabel)}</label><textarea id="ask-reason" name="reason" maxlength="300"></textarea></div>` : ''}
+      <div class="row2"><button class="cta" type="submit">${esc(o.confirmLabel)}</button><button class="cta ghost" type="button" data-act="askCancel">تراجع</button></div>
+    </form>`);
+}
+document.addEventListener('click', e => { if (e.target.closest('[data-act="askCancel"]')) closeSheet(); });
 
 /* ═════════ شيت التقييم (V7) ═════════ */
 function openRateSheet(reqId) {
@@ -281,20 +312,28 @@ document.addEventListener('submit', e => {
     e.preventDefault();
     const d = new FormData(f), s = +d.get('stars');
     if (!s) return toast('اختر عدد النجوم');
-    const r = MP.review(f.dataset.id, { stars:s, quality:d.get('quality'), comment:d.get('comment'), attachments: _rvPhotos.map(x=>x.id) });
-    if (r) {
+    const id = f.dataset.id;
+    apiCall('review:' + id, f.querySelector('[type=submit]'), () => HSOrdersApi.review(id, s, String(d.get('comment') || '')), () => {
+      /* quality + photo attachments are presentation extras kept on the local review record */
+      const rv = MP.db().reviews.find(x => x.reqId === id);
+      if (rv) { rv.quality = d.get('quality'); rv.attachments = _rvPhotos.map(x => x.id); MP.save(); }
       _rvPhotos = [];
       closeSheet();
-      show('tracking', f.dataset.id);
+      show('tracking', id);
       toast('شكرًا على تقييمك');
-    } else toast('تعذّر حفظ التقييم');
+    });
   }
   if (f.id === 'cmpForm') {
     e.preventDefault();
     const d = new FormData(f);
-    MP.complain(f.dataset.id, f.dataset.by || 'customer', d.get('text'), {kind: d.get('kind')});
-    closeSheet();
-    toast('تم تسجيل شكواك');
+    apiCall('complain:' + f.dataset.id, f.querySelector('[type=submit]'), () => HSSupportApi.file(String(d.get('text') || ''), f.dataset.id, d.get('kind')), () => { closeSheet(); toast('تم تسجيل شكواك'); });
+  }
+  if (f.id === 'askForm') {
+    e.preventDefault();
+    const id = f.dataset.id, reason = String(new FormData(f).get('reason') || '').trim(), btn = f.querySelector('[type=submit]');
+    if (f.dataset.kind === 'cancel') apiCall('cancel:' + id, btn, () => HSOrdersApi.cancel(id, reason || 'ألغاه العميل'), () => { closeSheet(true); show('tracking', id); toast('تم إلغاء الطلب'); });
+    if (f.dataset.kind === 'addrRemove') apiCall('addr-rm:' + id, btn, () => HSCustomerApi.removeAddress(id), () => { closeSheet(true); show('addresses'); toast('تم حذف العنوان'); });
+    if (f.dataset.kind === 'rejectQuote') apiCall('reject:' + id, btn, () => HSQuotesApi.reject(id, reason), () => { closeSheet(true); show('tracking', id); toast('تم رفض العرض — يمكن للفني إرسال عرض معدّل'); });
   }
 });
 
