@@ -3,7 +3,7 @@
 .adm{--adm-h:60px;--adm-side-w:264px;--adm-rail-w:72px;--adm-dir:1;min-height:100dvh;background:var(--bg-primary);color:var(--text-primary)}
 [dir="ltr"] .adm{--adm-dir:-1}
 .adm-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.adm-skip{position:absolute;inset-inline-start:12px;top:-60px;z-index:calc(var(--z-toast) + 1);padding:10px 16px;border-radius:var(--r-sm);background:var(--brand-primary);color:#fff;font-weight:700;text-decoration:none}
+.adm-skip{position:absolute;inset-inline-start:12px;top:-60px;z-index:calc(var(--z-toast) + 1);padding:10px 16px;border-radius:var(--r-sm);background:var(--brand-primary-strong);color:#fff;font-weight:700;text-decoration:none}
 .adm-skip:focus{top:12px}
 html.adm-lock{overflow:hidden}
 body,body.adm-body{margin:0}

@@ -49,7 +49,7 @@
     /* بيانات المزود / البحث */
     const providerBlock = p
       ? `<div class="prov-inline glass neon">
-          <div class="prov-avatar" style="background:${p.avatar||'#FF3D8F'}">${esc((p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>
+          <div class="prov-avatar" aria-hidden="true" style="background:${p.avatar||'#FF3D8F'}">${esc((p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>
           <div class="prov-head"><b>${esc(p.name)}</b><small>${p.cats.map(c=>MP.catName(c)).join('، ')}${p.demo?' • محاكاة':''}</small></div>
           <button class="tag" data-provider-details="${esc(p.id)}">${ic('info')} التفاصيل</button>
         </div>`

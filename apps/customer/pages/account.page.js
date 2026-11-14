@@ -84,7 +84,7 @@ const Account = (() => {
     const provCards = provs.map(p => `
       <div class="card2 glass neon prov-card">
         <div class="top">
-          <div class="prov-avatar" style="background:${p.avatar || '#FF3D8F'}">${_esc((p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>
+          <div class="prov-avatar" aria-hidden="true" style="background:${p.avatar || '#FF3D8F'}">${_esc((p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>
           <div class="prov-head">
             <b>${_esc(p.name)}</b>
             <small>${p.cats.map(c => MP.catName(c)).join('، ')}${p.rating ? ` • ★ ${p.rating}` : ''}</small>
@@ -234,9 +234,9 @@ const Account = (() => {
     if (typeof sheet !== 'function') return;
     sheet(`<h4>${safeIc('user')} تعديل الملف الشخصي</h4>
       <form class="form" id="accProfileForm" data-id="${_esc(u.id)}">
-        <div><label>الاسم *</label><input name="name" required value="${_esc(u.name || '')}" autocomplete="name"></div>
-        <div><label>رقم الهاتف *</label><input name="phone" required type="tel" inputmode="tel" value="${_esc(u.phone || '')}" pattern="[0-9+ ]{8,15}" autocomplete="tel"></div>
-        <div><label>البريد الإلكتروني (اختياري)</label><input name="email" type="email" value="${_esc(u.email || '')}"></div>
+        <div><label for="acc-name">الاسم *</label><input id="acc-name" name="name" required value="${_esc(u.name || '')}" autocomplete="name"></div>
+        <div><label for="acc-phone">رقم الهاتف *</label><input id="acc-phone" name="phone" required type="tel" inputmode="tel" value="${_esc(u.phone || '')}" pattern="[0-9+ ]{8,15}" autocomplete="tel"></div>
+        <div><label for="acc-email">البريد الإلكتروني (اختياري)</label><input id="acc-email" name="email" type="email" autocomplete="email" value="${_esc(u.email || '')}"></div>
         <button class="cta" type="submit">${safeIc('check')} حفظ التعديلات</button>
       </form>
     `);
@@ -249,7 +249,7 @@ const Account = (() => {
     sheet(`<h4>${safeIc('warn')} حذف الحساب؟</h4>
       <div class="demo-banner">${safeIc('info')}<span>حذف الحساب يمسح بياناتك المحلية فقط (الاسم، الهاتف، العناوين، المفضلة). لا يمكن التراجع.</span></div>
       <form class="form" id="accDeleteForm" data-id="${_esc(u.id)}">
-        <div><label>للتأكيد اكتب كلمة "حذف"</label><input name="confirm" required placeholder="حذف"></div>
+        <div><label for="acc-del-confirm">للتأكيد اكتب كلمة "حذف"</label><input id="acc-del-confirm" name="confirm" required placeholder="حذف" autocomplete="off"></div>
         <button class="cta" style="background:#8b1a35;border-color:#8b1a35" type="submit">${safeIc('trash')} حذف نهائي</button>
         <button class="cta ghost" type="button" data-account-cancel-delete>إلغاء</button>
       </form>

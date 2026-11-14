@@ -112,8 +112,8 @@ const Support = (() => {
     sheet(`<h4>${safeIc('warn')} تقديم شكوى</h4>
       <div class="sub">سيتم حفظها محليًا في الوضع التجريبي</div>
       <form class="form" id="supComplaintForm">
-        <div><label>نوع الشكوى *</label>
-          <select name="kind" required>
+        <div><label for="sup-kind">نوع الشكوى *</label>
+          <select id="sup-kind" name="kind" required>
             <option value="quality">جودة الخدمة</option>
             <option value="delay">تأخر في الموعد</option>
             <option value="price">خلاف على السعر</option>
@@ -122,17 +122,17 @@ const Support = (() => {
             <option value="other">أخرى</option>
           </select>
         </div>
-        ${myReqs.length ? `<div><label>ربط برقم الطلب (اختياري)</label>
-          <select name="reqId">
+        ${myReqs.length ? `<div><label for="sup-req">ربط برقم الطلب (اختياري)</label>
+          <select id="sup-req" name="reqId">
             <option value="">— بدون طلب —</option>
             ${myReqs.slice(0, 20).map(r => `<option value="${_esc(r.id)}" ${r.id === reqId ? 'selected' : ''}>#${_esc(r.no)} — ${_esc(r.serviceName)}</option>`).join('')}
           </select>
         </div>` : ''}
-        <div><label>تفاصيل الشكوى *</label>
-          <textarea name="text" required minlength="10" maxlength="1000" placeholder="اشرح ما حدث بالتفصيل"></textarea>
+        <div><label for="sup-text">تفاصيل الشكوى *</label>
+          <textarea id="sup-text" name="text" required minlength="10" maxlength="1000" placeholder="اشرح ما حدث بالتفصيل"></textarea>
         </div>
-        <div><label>مرفقات (اختياري)</label>
-          <div class="thumbs" id="sup-thumbs"></div>
+        <div><span class="lbl-like" id="sup-att-lbl">مرفقات (اختياري)</span>
+          <div class="thumbs" id="sup-thumbs" role="list" aria-labelledby="sup-att-lbl"></div>
           <button type="button" class="cta ghost" style="min-height:44px" data-sup-add-photo>${safeIc('camera')} إضافة صورة</button>
         </div>
         <button class="cta" type="submit">${safeIc('send')} إرسال الشكوى</button>
@@ -148,14 +148,14 @@ const Support = (() => {
     sheet(`<h4>${safeIc('shield')} الإبلاغ عن مقدم خدمة</h4>
       <div class="sub">سيتم مراجعة البلاغ من الإدارة</div>
       <form class="form" id="supReportForm">
-        <div><label>مقدم الخدمة *</label>
-          <select name="providerId" required>
+        <div><label for="rep-provider">مقدم الخدمة *</label>
+          <select id="rep-provider" name="providerId" required>
             <option value="">— اختر —</option>
             ${provs.map(p => `<option value="${_esc(p.id)}" ${p.id === providerId ? 'selected' : ''}>${_esc(p.name)} — ${p.cats.map(c => MP.catName(c)).join('، ')}</option>`).join('')}
           </select>
         </div>
-        <div><label>سبب الإبلاغ *</label>
-          <select name="kind" required>
+        <div><label for="rep-kind">سبب الإبلاغ *</label>
+          <select id="rep-kind" name="kind" required>
             <option value="behavior">سلوك غير لائق</option>
             <option value="fraud">احتيال أو تلاعب</option>
             <option value="damage">تلف بالممتلكات</option>
@@ -163,8 +163,8 @@ const Support = (() => {
             <option value="other">أخرى</option>
           </select>
         </div>
-        <div><label>تفاصيل *</label>
-          <textarea name="text" required minlength="10" maxlength="1000" placeholder="اشرح ما حدث"></textarea>
+        <div><label for="rep-text">تفاصيل *</label>
+          <textarea id="rep-text" name="text" required minlength="10" maxlength="1000" placeholder="اشرح ما حدث"></textarea>
         </div>
         <button class="cta" type="submit">${safeIc('send')} إرسال البلاغ</button>
       </form>`);

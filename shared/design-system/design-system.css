@@ -2,7 +2,7 @@
    Layered after legacy styles to migrate the live UI without replacing its behavior. */
 :root{
   color-scheme:dark;
-  --brand-primary:#3b82f6;--brand-primary-hover:#60a5fa;--brand-primary-soft:rgba(59,130,246,.14);
+  --brand-primary:#3b82f6;--brand-primary-strong:#1d4ed8;--brand-primary-hover:#60a5fa;--brand-primary-soft:rgba(59,130,246,.14);
   --bg-primary:#0f1426;--bg-secondary:#141a2e;--bg-tertiary:#1b2238;
   --surface-primary:#171d30;--surface-secondary:#1f273c;
   --text-primary:#f4f6fb;--text-secondary:#b8c0d4;--text-muted:#8d97ad;
@@ -65,7 +65,7 @@ button:disabled,[aria-disabled="true"]{opacity:.48;cursor:not-allowed;pointer-ev
 .cta:hover{filter:brightness(1.07)}.cta:active{transform:translateY(1px) scale(.99)}.cta.ghost,.cta.secondary{background:var(--surface-secondary);border:1px solid var(--border-default);box-shadow:none;color:var(--text-primary)}.cta.danger{background:var(--danger);box-shadow:none}
 .card2,.act-card,.empty-card,.disc-box,.provider-hero,.prov-inline,.address-card,.order-card{border:1px solid var(--border-subtle);border-radius:var(--r-lg);background:var(--surface-primary);box-shadow:var(--shadow-1)}
 .card2{padding:16px}.act-card{padding:16px}.act-card.need{border-color:rgba(251,191,36,.42);background:linear-gradient(120deg,rgba(251,191,36,.06),transparent 70%),var(--surface-primary)}
-.qa button,.cp{border:1px solid var(--border-subtle);background:var(--surface-primary);border-radius:var(--r-md)}.qa .i{color:var(--brand-primary-hover)}.qa .n,.tab-badge{background:var(--brand-primary);box-shadow:none}
+.qa button,.cp{border:1px solid var(--border-subtle);background:var(--surface-primary);border-radius:var(--r-md)}.qa .i{color:var(--brand-primary-hover)}.qa .n,.tab-badge{background:var(--brand-primary-strong);box-shadow:none}
 .cp{min-height:72px;padding:12px 14px}.cp .tx small{color:var(--text-muted)}
 .field input,.field textarea,.field select,input:not([type="checkbox"]):not([type="radio"]),textarea,select{accent-color:var(--brand-primary)}
 input:not([type="checkbox"]):not([type="radio"]),textarea,select{max-width:100%}

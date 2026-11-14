@@ -24,7 +24,7 @@
     const initials = (p.name || '?').split(' ').map(w=>w[0]).slice(0,2).join('');
     return `<div class="card2 glass neon prov-card">
     <div class="top">
-      <div class="prov-avatar" style="background:${avatar}">${esc(initials)}</div>
+      <div class="prov-avatar" aria-hidden="true" style="background:${avatar}">${esc(initials)}</div>
       <div class="prov-head">
         <b>${esc(p.name)}</b>
         ${p.demo?`<span class="tag">محاكاة</span>`:''}
@@ -58,7 +58,7 @@
     const ratingCount = MP.db().reviews.filter(v => v.providerId === p.id).length;
     return `<div class="screen">${head('تفاصيل مقدم الخدمة', true)}${demoBanner()}
       <div class="provider-hero glass neon">
-        <div class="prov-avatar" style="background:${p.avatar||'#FF3D8F'}">${esc((p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>
+        <div class="prov-avatar" aria-hidden="true" style="background:${p.avatar||'#FF3D8F'}">${esc((p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>
         <div>
           <h3>${esc(p.name)}</h3>
           <small>${p.cats.map(c=>MP.catName(c)).join('، ')}</small>

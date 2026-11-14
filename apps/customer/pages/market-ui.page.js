@@ -109,7 +109,7 @@ document.addEventListener('click', e => {
     return;
   }
   if (d.star) {
-    document.querySelectorAll('#sheet [data-star]').forEach(b => b.classList.toggle('on', +b.dataset.star <= +d.star));
+    document.querySelectorAll('#sheet [data-star]').forEach(b => { b.classList.toggle('on', +b.dataset.star <= +d.star); b.setAttribute('aria-pressed', String(+b.dataset.star === +d.star)); });
     const el = document.getElementById('rv-stars'); if (el) el.value = d.star;
     return;
   }
@@ -260,11 +260,11 @@ function openRateSheet(reqId) {
   const r = MP.get('serviceRequests', reqId);
   if (!r) return;
   sheet(`<h4>${ic('medal')} قيّم مقدم الخدمة</h4><div class="sub">#${esc(r.no)} — ${esc(r.serviceName)}</div>
-    <div class="stars-in">${[1,2,3,4,5].map(n=>`<button data-star="${n}" aria-label="${n}">${ic('star')}</button>`).join('')}</div>
+    <div class="stars-in" role="group" aria-label="عدد النجوم">${[1,2,3,4,5].map(n=>`<button type="button" data-star="${n}" aria-pressed="false" aria-label="${n} من 5 نجوم">${ic('star')}</button>`).join('')}</div>
     <form class="form" id="rvForm" data-id="${reqId}"><input type="hidden" id="rv-stars" name="stars" value="0">
-      <div><label>جودة التنفيذ</label><select name="quality"><option>ممتازة</option><option>جيدة</option><option>مقبولة</option><option>ضعيفة</option></select></div>
-      <div><label>تعليق</label><textarea name="comment" placeholder="اكتب تجربتك (اختياري)" maxlength="500"></textarea></div>
-      <div><label>صور (اختياري)</label><div class="thumbs" id="rv-thumbs"></div>
+      <div><label for="rv-quality">جودة التنفيذ</label><select id="rv-quality" name="quality"><option>ممتازة</option><option>جيدة</option><option>مقبولة</option><option>ضعيفة</option></select></div>
+      <div><label for="rv-comment">تعليق</label><textarea id="rv-comment" name="comment" placeholder="اكتب تجربتك (اختياري)" maxlength="500"></textarea></div>
+      <div><span class="lbl-like" id="rv-photos-lbl">صور (اختياري)</span><div class="thumbs" id="rv-thumbs" role="list" aria-labelledby="rv-photos-lbl"></div>
         <button type="button" class="cta ghost" style="min-height:44px" data-act="rvAddPhoto">${ic('camera')} إضافة صورة</button>
       </div>
       <button class="cta" type="submit">${ic('check')} إرسال التقييم</button>
@@ -291,8 +291,8 @@ document.addEventListener('click', e => {
 function openComplainSheet(reqId) {
   sheet(`<h4>${ic('warn')} تقديم شكوى</h4><div class="sub">سيراجعها فريق الإدارة</div>
     <form class="form" id="cmpForm" data-id="${reqId}" data-by="customer">
-      <div><label>نوع الشكوى</label>
-        <select name="kind">
+      <div><label for="cmp-kind">نوع الشكوى</label>
+        <select id="cmp-kind" name="kind">
           <option value="quality">جودة الخدمة</option>
           <option value="delay">تأخر في الموعد</option>
           <option value="price">خلاف على السعر</option>
@@ -300,7 +300,7 @@ function openComplainSheet(reqId) {
           <option value="other">أخرى</option>
         </select>
       </div>
-      <div><label>تفاصيل الشكوى</label><textarea name="text" required minlength="10" maxlength="1000" placeholder="اشرح ما حدث بالتفصيل"></textarea></div>
+      <div><label for="cmp-text">تفاصيل الشكوى</label><textarea id="cmp-text" name="text" required minlength="10" maxlength="1000" placeholder="اشرح ما حدث بالتفصيل"></textarea></div>
       <button class="cta" type="submit">${ic('send')} إرسال الشكوى</button>
     </form>`);
 }

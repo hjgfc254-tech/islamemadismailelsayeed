@@ -76,25 +76,25 @@ const Addresses = (() => {
     if (typeof sheet !== 'function') return;
     sheet(`<h4>${safeIc('pin')} ${a ? 'تعديل عنوان' : 'إضافة عنوان'}</h4>
       <form class="form" id="addrForm" data-id="${a ? a.id : ''}">
-        <div><label>المحافظة *</label>
-          <select id="addr-gov"><option value="">اختر المحافظة</option>
+        <div><label for="addr-gov">المحافظة *</label>
+          <select id="addr-gov" required><option value="">اختر المحافظة</option>
             ${(MP.GOVS || []).map(g => `<option ${g === v.gov ? 'selected' : ''}>${_esc(g)}</option>`).join('')}
           </select>
         </div>
-        <div><label>المنطقة *</label>
+        <div><label for="addr-area">المنطقة *</label>
           <input id="addr-area" list="addr-areas" value="${_esc(v.area)}" placeholder="المنطقة / الحي">
           <datalist id="addr-areas">${((MP.AREA_HINTS && MP.AREA_HINTS[v.gov]) || []).map(x => `<option value="${_esc(x)}">`).join('')}</datalist>
         </div>
-        <div><label>الشارع ورقم العقار *</label>
+        <div><label for="addr-addr">الشارع ورقم العقار *</label>
           <input id="addr-addr" value="${_esc(v.addr)}" placeholder="الشارع، رقم العمارة">
         </div>
-        <div><label>تفاصيل إضافية</label>
+        <div><label for="addr-detail">تفاصيل إضافية</label>
           <input id="addr-detail" value="${_esc(v.detail)}" placeholder="الدور، الشقة، علامة مميزة">
         </div>
-        <div><label>نوع العنوان</label>
-          <div class="chips">${typeChips(v.type)}</div>
+        <div><span class="lbl-like" id="addr-type-lbl">نوع العنوان</span>
+          <div class="chips" role="group" aria-labelledby="addr-type-lbl">${typeChips(v.type)}</div>
         </div>
-        <div><label>اسم مختصر (اختياري)</label>
+        <div><label for="addr-label">اسم مختصر (اختياري)</label>
           <input id="addr-label" value="${_esc(v.label)}" placeholder="مثل: البيت، المكتب">
         </div>
         <label class="hint" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="addr-default" ${v.default ? 'checked' : ''} style="width:auto"> اجعله العنوان الافتراضي</label>
