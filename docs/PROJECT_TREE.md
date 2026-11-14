@@ -360,7 +360,7 @@ hansalhlak/
 │   │   ├── quotes-management.browser.js
 │   │   ├── README.md
 │   │   ├── reports.browser.js
-│   │   ├── responsive-sweep.browser.js
+│   │   ├── responsive-sweep.cdp.js
 │   │   ├── security.browser.js
 │   │   ├── super-dashboard.browser.js
 │   │   └── system-settings.browser.js

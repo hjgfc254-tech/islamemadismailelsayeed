@@ -1,6 +1,6 @@
 'use strict';
 /* PHASE 5 TASK 03 — regression guards for defects found by the real-browser responsive sweep.
-   Browser-level proof lives in tests/e2e/responsive-sweep.browser.js (manual, not part of npm test). */
+   Browser-level proof lives in tests/e2e/responsive-sweep.cdp.js (CDP runner, not part of npm test). */
 const fs=require('fs'),path=require('path'),assert=require('assert');
 const root=path.join(__dirname,'../..');
 const rd=p=>fs.readFileSync(path.join(root,p),'utf8');

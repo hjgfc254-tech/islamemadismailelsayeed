@@ -37,7 +37,7 @@ Run in the background from the project root: `python -m http.server 8099`
 ## 4. Viewports
 - Provider (protocol §6 P2): 1280, 768, 430, 390, 320.
 - General matrix (`docs/FRONTEND_QA_ACCEPTANCE.md` §4): 360, 390, 768, 1024, 1440.
-- Existing sweep reference: `tests/e2e/responsive-sweep.browser.js` (1280/768/390/320).
+- Existing sweep: `tests/e2e/responsive-sweep.cdp.js` (CDP; 1280/768/430/390/320; Customer, Guest, Provider, Admin).
 
 ## 5. Checks per viewport
 - No horizontal overflow: `documentElement.scrollWidth <= clientWidth + 1`.

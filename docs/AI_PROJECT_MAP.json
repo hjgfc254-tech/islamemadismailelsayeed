@@ -113,8 +113,8 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "003b5e72fa11354d6859d369ffc3982ca094999b860385694239077cb2d29615",
-      "bytes": 3791
+      "sha256": "a830a997c4c3ba5c8a7eaa9dd7c6a17ee6db0a522e5d717cf301512983844a69",
+      "bytes": 3820
     },
     {
       "path": ".claude/skills/finish-gate/SKILL.md",
@@ -2361,7 +2361,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md). Also holds .hs-badge styles for shared/components/status-badge.js. Also holds .hs-grid styles for shared/components/data-grid.js.",
-      "sha256": "3bf1fbe1947e3110652d31bc235b658a577d0da960e03671bb09d16a24729282",
+      "sha256": "22c044d39e2012bc0369c62130907d30fa239e60e6316589c3f5f057f99506e3",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2398,7 +2398,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 27867
+      "bytes": 27946
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -8311,7 +8311,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "ec240831afb9c0db21de785dfe82b1fae64bd62c9d919b94aa24e3652b575121",
+      "sha256": "b49fe298cc03afc1cef60ff1c60c42f51de7615a03f2f49cf6b3daabf5021913",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8347,7 +8347,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 238881
+      "bytes": 238970
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -8407,7 +8407,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "1bc911ffa11156289d18dbf216b5f1714b70e669c7046ed72bc90c7a251f6dd5",
+      "sha256": "5d096c9ac0ec888ad1652723d1435a7289e437cb14719b53ce030920449ddc5d",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8443,7 +8443,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 104171
+      "bytes": 104262
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -9883,7 +9883,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "54d649d759dd82e56b67adf71ad854d1eea5b9219c1e3d2dcc8e95ce50e2e241",
+      "sha256": "f5925fa45377598826bb88489fc91c87d15051b41ff3ca2654cafd83b4859322",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -9920,7 +9920,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 18109
+      "bytes": 18105
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -13048,7 +13048,7 @@
       "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
       "explicit_references": [],
       "notes": "File exists but its planned functionality is NOT implemented. Test source existence does not prove browser E2E coverage.",
-      "sha256": "6d5ec13c955dc4f48d3090df33ce8889a86ebb5440d61edebc3c703d0dd12f96",
+      "sha256": "b2f1af03765d94d09327514e40c735903b8235be778afdef0caba6eea5ac88e3",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -13085,7 +13085,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 7085
+      "bytes": 7223
     },
     {
       "path": "tests/e2e/reports.browser.js",
@@ -13109,19 +13109,20 @@
       "bytes": 5136
     },
     {
-      "path": "tests/e2e/responsive-sweep.browser.js",
+      "path": "tests/e2e/responsive-sweep.cdp.js",
       "area": "tests",
       "status": "TEST",
       "functional_title": "Responsive sweep browser regression",
-      "current_responsibility": "Manual Playwright/Chromium responsive browser sweep for Customer, Provider compatibility workspace and Admin pages at 1280/768/390/320px.",
-      "next_action": "Maintain and rerun after responsive changes; manual runner, not part of npm test.",
+      "current_responsibility": "Responsive sweep (CDP, ported from Playwright 2026-11-14): Customer, Guest, Provider, Admin at 1280/768/430/390/320 - overflow, clipped text, off-screen/covered controls (fixed chrome re-tested after scrolling), touch targets < 24px on phones, tables, dialogs; original sweep checks kept.",
+      "next_action": "Run after layout changes.",
       "explicit_references": [
         "docs/RESPONSIVE_AUDIT.md"
       ],
-      "notes": "Reviewed and classified during 2026-11-13 TASK 04 documentation reconciliation.",
-      "sha256": "6fdd80fd024fb013a9a319e86c8fcc549c381dd1a43b86cd0e7b473d92fe9afe",
-      "bytes": 3449,
-      "has_real_logic": true
+      "notes": "Last run 2026-11-14: 280/280.",
+      "sha256": "a56c53c8218ed40315390c76b83a5ac476f1dab8e43552b754a0d25c61e3a2ec",
+      "bytes": 12661,
+      "has_real_logic": true,
+      "actual_status_ar": "اختبار متصفح"
     },
     {
       "path": "tests/e2e/security.browser.js",
@@ -14412,7 +14413,7 @@
       "next_action": "Add browser-backed viewport assertions when Chromium navigation is available; source tests do not replace visual QA.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "a63b0c0d697818e64863f8459ee6e3a4a191cbc34ac30b5b04df3d642b4eb2ba",
+      "sha256": "cede96b46058c90548450ac2fcd1452afbd41310d564b72af0a776bedb77a95a",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -14449,7 +14450,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 4301
+      "bytes": 4495
     },
     {
       "path": "tests/unit/responsive-sweep-regression.test.js",
@@ -14462,7 +14463,7 @@
         "docs/RESPONSIVE_AUDIT.md"
       ],
       "notes": "Reviewed and classified during 2026-11-13 TASK 04 documentation reconciliation.",
-      "sha256": "de7aac6a73a7700ad57c51dee6530f57b5eeba2daecafb7ebaad3a5a693a4dc1",
+      "sha256": "5d78080877d5486a287e8697f4eba3aaf85e91294641248e03720ef6d39a9b92",
       "bytes": 2480,
       "has_real_logic": true
     },

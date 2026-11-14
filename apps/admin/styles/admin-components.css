@@ -128,7 +128,8 @@ th[aria-sort="ascending"] .hs-grid-sort,th[aria-sort="descending"] .hs-grid-sort
   .hs-grid-wrap{overflow:visible;border:0;background:transparent}
   .hs-grid-table,.hs-grid-table tbody,.hs-grid-table tr,.hs-grid-table td{display:block;width:100%}
   .hs-grid-table td{box-sizing:border-box}
-  .hs-grid-table thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  /* card layout: the visible «ترتيب» select replaces header sorting; display:none keeps hidden sort buttons out of the Tab order */
+  .hs-grid-table thead{display:none}
   .hs-grid-table tr{margin-bottom:var(--sp-3);border:1px solid var(--border-subtle);border-radius:var(--r-lg);background:var(--surface-primary);overflow:hidden}
   .hs-grid-table td{display:flex;justify-content:space-between;align-items:center;gap:var(--sp-3);border-bottom:1px solid var(--border-subtle);text-align:end}
   .hs-grid-table td::before{content:attr(data-label);flex:none;color:var(--text-muted);font-weight:700;text-align:start}

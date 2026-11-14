@@ -58,7 +58,9 @@ test('Admin shell switches between desktop sidebar and mobile/tablet drawer at 1
 test('Admin data grids and summary cards have narrow viewport layouts',()=>{
   assert(/@media \(max-width:767px\)/.test(adminParts));
   assert(/\.hs-grid-table td\{display:flex;justify-content:space-between/.test(adminParts));
-  assert(/\.hs-grid-table thead\{position:absolute/.test(adminParts));
+  // card layout: header removed (no invisible focusable sort buttons); the visible «ترتيب» select sorts instead (2026-11-14)
+  assert(/\.hs-grid-table thead\{display:none\}/.test(adminParts));
+  assert(/\.hs-grid-sortsel\{display:grid\}/.test(adminParts));
   assert(/\.ord-sum\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}/.test(adminParts));
   assert(/\.rep-pick\{grid-template-columns:minmax\(0,1fr\)\}/.test(adminParts));
 });
