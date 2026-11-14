@@ -3379,7 +3379,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "490bc1d22b6cb0bab403ca788d2bc8e25851af75c1058ee155f5f78156ae3bc3",
+      "sha256": "6e642f03d849d76335ba5d95f4517d835d4bcad33d4e66ef339b30a54c12fc92",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3418,7 +3418,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 91780
+      "bytes": 91512
     },
     {
       "path": "apps/guest/guest-entry.js",
@@ -3577,7 +3577,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "3a2e5afc3d9e9b4353bf7c2010160fe4dfd7da5bfc1119416f907ff929858dd9",
+      "sha256": "02d4c4d5d88c2ac4a90a029f217691c4de11ff2e5c3c4f1953ac4080509fa2be",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3614,7 +3614,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 31464
+      "bytes": 31668
     },
     {
       "path": "apps/provider/index.html",
@@ -8175,7 +8175,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 84316
+      "bytes": 84504
     },
     {
       "path": "docs/AI_CONTEXT/README.md",
@@ -8382,7 +8382,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1435003
+      "bytes": 1435004
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
@@ -10473,7 +10473,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "7e63a83d599d4564eda5d08e20ceda4b31338cad470ae30cdc774c8745fceb6c",
+      "sha256": "f5d116a73e468e9cb8db0f3b573c4f6b89f7806ac99d42d03c7278f261ee30fa",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12957,8 +12957,8 @@
       "next_action": "Run after Provider UI changes; keep checks aligned with behavior.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P2 batch).",
-      "sha256": "c4eca90bb42df49bf3a3342c7b82007dc7a1b13a6123f95bb2bc1e217b2c3ea7",
-      "bytes": 15795
+      "sha256": "3e21b4d4bed73cc733286699bf180473dee6d4fd15c62c517aa6c17fa92698b4",
+      "bytes": 16191
     },
     {
       "path": "tests/e2e/quotes-management.browser.js",
@@ -13062,8 +13062,8 @@
         "docs/RESPONSIVE_AUDIT.md"
       ],
       "notes": "Reviewed and classified during 2026-11-13 TASK 04 documentation reconciliation.",
-      "sha256": "009386a473c3a7644acfb4cece63345da936afdcf2d692b087b3346005551761",
-      "bytes": 3350,
+      "sha256": "6fdd80fd024fb013a9a319e86c8fcc549c381dd1a43b86cd0e7b473d92fe9afe",
+      "bytes": 3449,
       "has_real_logic": true
     },
     {
@@ -13335,7 +13335,7 @@
       "functional_title": "Accessible tabs integration contracts",
       "current_responsibility": "Verifies Customer/Admin loading order, Service Worker precache, and feature wiring.",
       "next_action": "Run with npm test.",
-      "sha256": "094da73c5cc09c99b865cedcb8a1364f9b89148008be8869d5770af98bc0a5d0",
+      "sha256": "0449cd986377e33a42d1e1fc0ce78fb662802e02d6343df4f5bd49a7179e5f87",
       "bytes": 1342
     },
     {
@@ -13743,7 +13743,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "35999589e4e7580a4bcc50f33d1498cd120c151354caa7a7ea6337bb6341430f",
+      "sha256": "3e7d725d6e75993a520e1ce14ece18dac7ac00a2656c1f877a8a895ae29e7ce5",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -14018,8 +14018,8 @@
       "next_action": "Keep in sync with the rules it pins.",
       "explicit_references": [],
       "notes": "Added 2026-11-14 (final frontend completion batch).",
-      "sha256": "6da166d5fdfa18b5b63d849c57550675a5a326c5871d9d29cfff614654a37a5a",
-      "bytes": 10118,
+      "sha256": "b959dd5ec99b79f28ea836e10dde0a42e4f5ddfbb87b49307687d42d8d7ae794",
+      "bytes": 10972,
       "has_real_logic": true,
       "actual_status_ar": "اختبار"
     },
@@ -14134,7 +14134,7 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "6c56ce5ea72d3f2d0faa7c4423560f3329b5cb751e2414a8b30d1fd655e00ccf",
+      "sha256": "3addbce698baaa6d5a69a2b714965ba9aae5a910dd393b21f27c94dc3cc3f945",
       "bytes": 6785
     },
     {
@@ -14518,7 +14518,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "75b6f61d3362d6412e36a825d61ed47ac5886590ebda430a736fa93dcd5170bf",
+      "sha256": "db8bee99fd7e306255413bf665204ca919e566becef4498fd80ae1e739d5b2c4",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",

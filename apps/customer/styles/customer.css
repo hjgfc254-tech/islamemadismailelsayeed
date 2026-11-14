@@ -289,9 +289,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke
 .stars-in{display:flex;justify-content:center;gap:8px;margin:14px 0}.stars-in button{font-size:38px;color:#4a3a48;line-height:1}.stars-in button.on{color:#ffc247;text-shadow:0 0 12px rgba(255,194,71,.6)}
 .stars{color:#ffc247;letter-spacing:2px}
 
-/* بوابة المزوّد والإدارة */
-.role-bar{display:flex;align-items:center;gap:10px;padding:10px 0}.role-bar b{flex:1;font-size:17px}
-.role-bar button{padding:7px 13px;border-radius:16px;background:var(--card2);border:1px solid var(--line);font-size:13px;color:var(--pink2)}
+/* مكوّنات قوائم وبطاقات مشتركة */
 .subtabs{display:flex;gap:7px;overflow-x:auto;padding:4px 0 10px;scrollbar-width:none}.subtabs::-webkit-scrollbar{display:none}
 .subtabs button{flex:none;padding:8px 14px;border-radius:18px;font-size:13.5px;background:var(--card2);border:1px solid var(--line-soft);white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
 .subtabs button.on{background:var(--grad-pink);border-color:var(--pink);font-weight:700}
@@ -306,7 +304,6 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke
 .tbl{width:100%;border-collapse:collapse;font-size:13px}.tbl th,.tbl td{padding:8px 6px;text-align:start;border-bottom:1px solid var(--line-soft)}.tbl th{color:var(--muted);font-weight:600;font-size:12px}
 .tblw{overflow-x:auto;border-radius:var(--r-md);padding:4px 8px}
 .bars .bar{display:flex;align-items:center;gap:8px;font-size:13px;margin:6px 0}.bars .bar span{width:92px;flex:none}.bars .bar i{height:10px;border-radius:5px;background:var(--grad-pink);display:block;min-width:3px}.bars .bar em{font-style:normal;color:var(--muted);font-size:12px}
-body.role-mode #tabbar{display:none}
 
 /* ═══ V5: الكتالوج الهرمي ونموذج الطلب ═══ */
 .cgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}

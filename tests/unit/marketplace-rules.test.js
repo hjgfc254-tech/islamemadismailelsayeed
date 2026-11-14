@@ -144,3 +144,18 @@ test('onboarding entry: #/join opens registration without a session; registratio
   const signedIn = bootProvider({ session: PROVIDER, hash: '#/join' });
   assert.doesNotMatch(signedIn.html(), /pv-register-form/, 'signed-in providers are not sent to registration');
 });
+
+test('provider: a screen change starts at the top (logout from a scrolled page → picker), #/join still focuses the form', () => {
+  const app = bootProvider({ session: 'p_demo1', hash: '#/profile' });
+  const calls = [];
+  app.ctx.scrollTo = (x, y) => calls.push([x, y]);
+  app.click({ 'data-pv-action': 'logout' }, { force: true });
+  assert.deepEqual(calls[0], [0, 0], 'scroll reset on the route change');
+  assert.equal(app.focus.current, 'view');
+  calls.length = 0;
+  app.click({ 'data-pv-action': 'register' });
+  assert.equal(calls.length, 0, 'opening a form on the same screen does not jump to the top');
+  assert.equal(app.focus.current, 'field:pv-register-form');
+  const join = bootProvider({ hash: '#/join' });
+  assert.equal(join.focus.current, 'field:pv-register-form', 'the join entry focuses the registration form after settling');
+});

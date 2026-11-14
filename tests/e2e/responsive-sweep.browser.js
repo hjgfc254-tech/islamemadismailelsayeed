@@ -18,12 +18,12 @@ for(const [w,h] of VPS){
   let inSheet=0;for(let i=0;i<70;i++){await p.keyboard.press('Tab');if(await p.evaluate(()=>!!document.activeElement.closest('#sheet')))inSheet++;}
   ok(inSheet===0,w+' Tab never enters the closed sheet');
   ok(await p.evaluate(()=>{const a=document.getElementById('app');return !a.scrollTop&&!a.scrollLeft;}),w+' app not displaced after Tab');
-  // provider flexible request: no "Invalid Date"
-  await p.evaluate(()=>{const s=(MP.db().services||[])[0]||{};const r=MP.createRequest({name:'س',phone:'01012345678',cat:'electric',serviceId:s.id,serviceName:'خدمة تجريبية طويلة الاسم لاختبار الالتفاف داخل البطاقة',desc:'وصف',gov:'القاهرة',area:'م',addr:'ش',flexible:true});MP.assign(r.id,'p_demo1');store.set('provId','p_demo1');enterRole('provider');});
-  await p.waitForSelector('.pw-nav');await p.click('.pw-nav [data-id=new]');await p.waitForTimeout(300);
-  const txt=await p.evaluate(()=>document.getElementById('view').innerText);
+  // provider flexible request: no "Invalid Date" — in the standalone Provider app (the in-Customer legacy workspace was
+  // removed on 2026-11-14; the CDP runner tests/e2e/provider-standalone.cdp.js covers this path without Playwright).
+  await p.evaluate(()=>{const s=(MP.db().services||[])[0]||{};MP.db().settings.autoAssign=false;const r=MP.createRequest({name:'س',phone:'01012345678',cat:'electric',serviceId:s.id,serviceName:'خدمة تجريبية طويلة الاسم لاختبار الالتفاف داخل البطاقة',desc:'وصف',gov:'القاهرة',area:'م',addr:'ش',flexible:true});MP.assign(r.id,'p_demo1');sessionStorage.setItem('hs_provider_demo_session','p_demo1');});
+  await p.goto(BASE+'/apps/provider/index.html#/new');await p.waitForSelector('#provider-view [data-pv-action="accept"]');
+  const txt=await p.evaluate(()=>document.getElementById('provider-view').innerText);
   ok(!/Invalid Date/.test(txt),w+' provider card has no "Invalid Date"');
-  ok(await p.evaluate(()=>{const b=document.querySelector('.card2 .top b');return b.getBoundingClientRect().width>=120;}),w+' provider card title not squeezed');
   ok(await p.evaluate(()=>document.documentElement.scrollWidth<=document.documentElement.clientWidth+1),w+' provider no horizontal overflow');
   // admin tables: badges stay single-word-wide
   await p.goto(BASE+'/apps/admin/index.html#/audit');await p.reload();await p.waitForSelector('.hs-grid-table .hs-badge-t');

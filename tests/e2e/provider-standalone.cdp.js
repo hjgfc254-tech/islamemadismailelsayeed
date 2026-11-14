@@ -159,7 +159,9 @@ async function run({ exe, wsUrl }) {
       await ENTER();
       ok(await waitFor('!!document.querySelector("#pv-register-form") && document.activeElement?.name === "name"'), `${tag} register form opens with focus on the name field`);
       // Not just inside the viewport: the field must not be covered by the sticky top bar / nav (topmost element at its top edge).
-      ok(await waitFor(`(()=>{const f=document.querySelector('#pv-register-form [name="name"]'),r=f.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight&&document.elementFromPoint(r.left+r.width/2,r.top+3)===f;})()`, 2500), `${tag} register form scrolls the focused field into view, clear of sticky chrome`);
+      const clear = await waitFor(`(()=>{const f=document.querySelector('#pv-register-form [name="name"]'),r=f.getBoundingClientRect();return r.top>=0&&r.bottom<=innerHeight&&document.elementFromPoint(r.left+r.width/2,r.top+3)===f;})()`, 2500);
+      const diag = clear ? '' : ' — ' + await evaluate(`(()=>{const f=document.querySelector('#pv-register-form [name="name"]'),r=f.getBoundingClientRect(),e=document.elementFromPoint(r.left+r.width/2,r.top+3);return 'top='+Math.round(r.top)+' bottom='+Math.round(r.bottom)+' ih='+innerHeight+' sy='+scrollY+' at='+(e?e.tagName+'.'+e.className:'null');})()`);
+      ok(clear, `${tag} register form scrolls the focused field into view, clear of sticky chrome${diag}`);
       ok(await noOverflow() && await clipped() === '', `${tag} register form (27 governorates): no overflow/clipping`);
       if (process.env.QA_SHOTS) { const shot = await cdp.send('Page.captureScreenshot', { format: 'png' }); fs.writeFileSync(path.join(process.env.QA_SHOTS, `provider-register-${w}.png`), Buffer.from(shot.data, 'base64')); }
       await cdp.send('Input.insertText', { text: 'مقدم QA' });

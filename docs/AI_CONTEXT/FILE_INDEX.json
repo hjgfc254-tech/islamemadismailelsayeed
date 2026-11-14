@@ -496,8 +496,8 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 91780,
-      "sha256": "490bc1d22b6cb0bab403ca788d2bc8e25851af75c1058ee155f5f78156ae3bc3"
+      "bytes": 91512,
+      "sha256": "6e642f03d849d76335ba5d95f4517d835d4bcad33d4e66ef339b30a54c12fc92"
     },
     {
       "path": "apps/guest/guest-entry.js",
@@ -524,8 +524,8 @@
       "path": "apps/provider/app.js",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 31464,
-      "sha256": "3a2e5afc3d9e9b4353bf7c2010160fe4dfd7da5bfc1119416f907ff929858dd9"
+      "bytes": 31668,
+      "sha256": "02d4c4d5d88c2ac4a90a029f217691c4de11ff2e5c3c4f1953ac4080509fa2be"
     },
     {
       "path": "apps/provider/index.html",
@@ -1231,7 +1231,7 @@
       "path": "docs/AI_CONTEXT/FILE_INDEX.json",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 84316,
+      "bytes": 84504,
       "sha256": null
     },
     {
@@ -1273,7 +1273,7 @@
       "path": "docs/AI_PROJECT_MAP.json",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 1435003,
+      "bytes": 1435004,
       "sha256": null
     },
     {
@@ -1687,7 +1687,7 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 6995,
-      "sha256": "7e63a83d599d4564eda5d08e20ceda4b31338cad470ae30cdc774c8745fceb6c"
+      "sha256": "f5d116a73e468e9cb8db0f3b573c4f6b89f7806ac99d42d03c7278f261ee30fa"
     },
     {
       "path": "services/admin-api.js",
@@ -2085,8 +2085,8 @@
       "path": "tests/e2e/provider-standalone.cdp.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 15795,
-      "sha256": "c4eca90bb42df49bf3a3342c7b82007dc7a1b13a6123f95bb2bc1e217b2c3ea7"
+      "bytes": 16191,
+      "sha256": "3e21b4d4bed73cc733286699bf180473dee6d4fd15c62c517aa6c17fa92698b4"
     },
     {
       "path": "tests/e2e/quotes-management.browser.js",
@@ -2113,8 +2113,8 @@
       "path": "tests/e2e/responsive-sweep.browser.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 3350,
-      "sha256": "009386a473c3a7644acfb4cece63345da936afdcf2d692b087b3346005551761"
+      "bytes": 3449,
+      "sha256": "6fdd80fd024fb013a9a319e86c8fcc549c381dd1a43b86cd0e7b473d92fe9afe"
     },
     {
       "path": "tests/e2e/security.browser.js",
@@ -2184,7 +2184,7 @@
       "area": "tests",
       "status": "TEST",
       "bytes": 1342,
-      "sha256": "094da73c5cc09c99b865cedcb8a1364f9b89148008be8869d5770af98bc0a5d0"
+      "sha256": "0449cd986377e33a42d1e1fc0ce78fb662802e02d6343df4f5bd49a7179e5f87"
     },
     {
       "path": "tests/unit/accessible-tabs.test.js",
@@ -2331,7 +2331,7 @@
       "area": "tests",
       "status": "IMPLEMENTED",
       "bytes": 2290,
-      "sha256": "35999589e4e7580a4bcc50f33d1498cd120c151354caa7a7ea6337bb6341430f"
+      "sha256": "3e7d725d6e75993a520e1ce14ece18dac7ac00a2656c1f877a8a895ae29e7ce5"
     },
     {
       "path": "tests/unit/design-token-audit.test.js",
@@ -2393,8 +2393,8 @@
       "path": "tests/unit/marketplace-rules.test.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 10118,
-      "sha256": "6da166d5fdfa18b5b63d849c57550675a5a326c5871d9d29cfff614654a37a5a"
+      "bytes": 10972,
+      "sha256": "b959dd5ec99b79f28ea836e10dde0a42e4f5ddfbb87b49307687d42d8d7ae794"
     },
     {
       "path": "tests/unit/notifications-management.test.js",
@@ -2450,7 +2450,7 @@
       "area": "tests",
       "status": "TEST",
       "bytes": 6785,
-      "sha256": "6c56ce5ea72d3f2d0faa7c4423560f3329b5cb751e2414a8b30d1fd655e00ccf"
+      "sha256": "3addbce698baaa6d5a69a2b714965ba9aae5a910dd393b21f27c94dc3cc3f945"
     },
     {
       "path": "tests/unit/provider-request-domain.test.js",
@@ -2576,7 +2576,7 @@
       "area": "tests",
       "status": "IMPLEMENTED",
       "bytes": 2063,
-      "sha256": "75b6f61d3362d6412e36a825d61ed47ac5886590ebda430a736fa93dcd5170bf"
+      "sha256": "db8bee99fd7e306255413bf665204ca919e566becef4498fd80ae1e739d5b2c4"
     },
     {
       "path": "tests/unit/status-badge.test.js",

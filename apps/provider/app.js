@@ -121,7 +121,7 @@
      restores focus to the first matching selector so keyboard users are not dropped to <body>. */
   function render(focusTargets) {
     const p=currentProvider();
-    if(!p){accountPicker();const joining=router.parse(location.hash).page==='join';if(joining)openRegisterForm();settle(joining?'join':'picker',joining?'الانضمام كمقدم خدمة':'اختيار حساب العرض',focusTargets);return;}
+    if(!p){accountPicker();const joining=router.parse(location.hash).page==='join';settle(joining?'join':'picker',joining?'الانضمام كمقدم خدمة':'اختيار حساب العرض',focusTargets);if(joining)openRegisterForm();return;}
     $('[data-pv-action="logout"]',dom.host).hidden=false;
     if(p.status!=='approved') {
       dom.nav.hidden=true;
@@ -142,7 +142,11 @@
     lastRouteKey=routeKey;
     document.title=`${label} | ${BASE_TITLE}`;
     if(first) return; // never steal focus on initial load
-    if(changed) dom.view.focus({preventScroll:true});
+    if(changed) {
+      // A new screen starts at the top (e.g. logout from a long, scrolled profile page back to the picker).
+      try { if(typeof root.scrollTo==='function') root.scrollTo(0,0); } catch {}
+      dom.view.focus({preventScroll:true});
+    }
     else if(focusTargets) focusIn(focusTargets);
   }
 
