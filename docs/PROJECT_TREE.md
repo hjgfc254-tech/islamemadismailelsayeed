@@ -438,6 +438,7 @@ hansalhlak/
 │       └── workforce.test.js
 ├── _redirects
 ├── .editorconfig
+├── .gitattributes
 ├── .gitignore
 ├── AGENTS.md
 ├── CLAUDE.md

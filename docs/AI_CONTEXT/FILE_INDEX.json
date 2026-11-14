@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 375,
+  "file_count": 376,
   "files": [
     {
       "path": "_redirects",
@@ -36,6 +36,13 @@
       "status": "CONFIGURATION",
       "bytes": 232,
       "sha256": "1bd97dd1da2c0df094db760aada3282a1e7b2be90280737b8b293b4b80e58323"
+    },
+    {
+      "path": ".gitattributes",
+      "area": ".gitattributes",
+      "status": "IMPLEMENTED",
+      "bytes": 525,
+      "sha256": "004af0bd7cb29957378a49891c1878a91144353c798124624ee754e40a08518a"
     },
     {
       "path": ".gitignore",
@@ -1231,7 +1238,7 @@
       "path": "docs/AI_CONTEXT/FILE_INDEX.json",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 84748,
+      "bytes": 84951,
       "sha256": null
     },
     {
@@ -1266,22 +1273,22 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 236057,
-      "sha256": "cf82c898e8780e8a458fc85c22801b56db983d40c0892b0ef7336feb01eb8015"
+      "bytes": 236315,
+      "sha256": "9c9b2d8599904949729a22bd97ff1490dd83f3ace8d6cfe1ef1cb8dd9e08e64e"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 1435808,
+      "bytes": 1436481,
       "sha256": null
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 101502,
-      "sha256": "629f23ca1784946a5c5a1985ba52ebd5ad84c40ab52ddc525adb2dbd88d4f50d"
+      "bytes": 101735,
+      "sha256": "bee83f79462185bc2f7cd5fcb4d207f1214fd725bca4737f90733f192d29db5d"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -1574,8 +1581,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 17838,
-      "sha256": "d578a810e2aed9da91c7c99c0cce2edde3ae6a3db0841bf4ae5e530b9d2f54d7"
+      "bytes": 17863,
+      "sha256": "c1b2809a45a23204068bb687c8a47979d6825c5af8d322cfc690e572de169ef6"
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",

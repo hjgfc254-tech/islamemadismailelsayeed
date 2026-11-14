@@ -9,6 +9,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | .claude/skills/finish-gate/SKILL.md | DOCUMENTATION | Claude Code project skill: ordered end-of-task gate (tests, docs, inventory, handoff). | Read when relevant; keep tests and docs aligned with behavior changes. |
 | .claude/skills/vm-script-test/SKILL.md | DOCUMENTATION | Claude Code project skill: node:vm testing guidance for classic global scripts. | Read when relevant; keep tests and docs aligned with behavior changes. |
 | .editorconfig | CONFIGURATION | Current inventory entry; inspect file for exact behavior. | Read when relevant; do not duplicate behavior. |
+| .gitattributes | IMPLEMENTED | Pins LF line endings for text files (CSV inventory stored byte-for-byte) so every checkout matches the index and the SHA-256 inventory reproduces from a clean clone on any OS/core.autocrlf. | Done. |
 | .gitignore | CONFIGURATION | Current inventory entry; inspect file for exact behavior. | Read when relevant; do not duplicate behavior. |
 | AGENTS.md | DOCUMENTATION | Added to the normalized current inventory; inspect source for exact behavior. | Read only when relevant to the task; do not duplicate existing behavior. |
 | apps/admin/admin-auth.js | IMPLEMENTED (FRONTEND DEMO) | HSAdminAuth: demo account list/resolve from the active RBAC roster. Not authentication. | Read when relevant; keep tests/docs aligned with behavior changes. |

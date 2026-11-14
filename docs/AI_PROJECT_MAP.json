@@ -2,14 +2,14 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 375,
-    "total_files": 375,
+    "file_count": 376,
+    "total_files": 376,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 50,
       "DECISION": 7,
       "DOCUMENTATION": 38,
-      "IMPLEMENTED": 52,
+      "IMPLEMENTED": 53,
       "IMPLEMENTED (DEMO PRESENTATION)": 12,
       "IMPLEMENTED (DEMO)": 29,
       "IMPLEMENTED (DEMO) — PARTIAL (templates + read-only delivery log)": 1,
@@ -149,6 +149,20 @@
       "next_action": "Read when relevant; do not duplicate behavior.",
       "sha256": "1bd97dd1da2c0df094db760aada3282a1e7b2be90280737b8b293b4b80e58323",
       "bytes": 232
+    },
+    {
+      "path": ".gitattributes",
+      "area": ".gitattributes",
+      "status": "IMPLEMENTED",
+      "functional_title": ".gitattributes",
+      "current_responsibility": "Pins LF line endings for text files (CSV inventory stored byte-for-byte) so every checkout matches the index and the SHA-256 inventory reproduces from a clean clone on any OS/core.autocrlf.",
+      "next_action": "Done.",
+      "explicit_references": [],
+      "notes": "Added 2026-11-14 (final completion sprint).",
+      "sha256": "004af0bd7cb29957378a49891c1878a91144353c798124624ee754e40a08518a",
+      "bytes": 525,
+      "has_real_logic": true,
+      "actual_status_ar": "منفذ"
     },
     {
       "path": ".gitignore",
@@ -8174,7 +8188,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 84748
+      "bytes": 84951
     },
     {
       "path": "docs/AI_CONTEXT/README.md",
@@ -8297,7 +8311,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "cf82c898e8780e8a458fc85c22801b56db983d40c0892b0ef7336feb01eb8015",
+      "sha256": "9c9b2d8599904949729a22bd97ff1490dd83f3ace8d6cfe1ef1cb8dd9e08e64e",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8333,7 +8347,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 236057
+      "bytes": 236315
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -8381,7 +8395,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1435808
+      "bytes": 1436481
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
@@ -8393,7 +8407,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "629f23ca1784946a5c5a1985ba52ebd5ad84c40ab52ddc525adb2dbd88d4f50d",
+      "sha256": "bee83f79462185bc2f7cd5fcb4d207f1214fd725bca4737f90733f192d29db5d",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8429,7 +8443,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 101502
+      "bytes": 101735
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -9869,7 +9883,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "d578a810e2aed9da91c7c99c0cce2edde3ae6a3db0841bf4ae5e530b9d2f54d7",
+      "sha256": "c1b2809a45a23204068bb687c8a47979d6825c5af8d322cfc690e572de169ef6",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -9906,7 +9920,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 17838
+      "bytes": 17863
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",

@@ -1,0 +1,17 @@
+# Line endings are pinned so every checkout (any OS, any core.autocrlf) has the same bytes as the index.
+# The SHA-256 inventory (docs/AI_PROJECT_MAP.json) hashes raw bytes, so this is required for clean-clone reproducibility.
+* text=auto eol=lf
+
+# Binary assets: never convert.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
+
+# Generated RFC 4180 CSV (CRLF + BOM, Excel-friendly): stored and checked out byte-for-byte.
+docs/AI_PROJECT_MAP.csv -text
