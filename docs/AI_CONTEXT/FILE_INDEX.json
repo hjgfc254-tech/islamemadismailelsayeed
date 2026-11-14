@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 373,
+  "file_count": 374,
   "files": [
     {
       "path": "_redirects",
@@ -76,8 +76,8 @@
       "path": "apps/admin/admin-shell.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL, DEMO)",
-      "bytes": 21595,
-      "sha256": "0f8f6695af5db67482e6890f18bb0dafccd40657c3f9b7bc0da40f3c288bf0f9"
+      "bytes": 21702,
+      "sha256": "1f0223edc4a92ba75c84202ec0ff6712c88fd9c308049ba25e7d2f2f066be609"
     },
     {
       "path": "apps/admin/app.js",
@@ -1231,7 +1231,7 @@
       "path": "docs/AI_CONTEXT/FILE_INDEX.json",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 84089,
+      "bytes": 84316,
       "sha256": null
     },
     {
@@ -1266,29 +1266,29 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 230660,
-      "sha256": "1a2e1de8d036255a4e09c20e812ea21e2e4a71ad8e34d96794f85568aa1a0d04"
+      "bytes": 235678,
+      "sha256": "692f28972e86dac823dbc4420f23bc6848e0ac19600dcb61bc6b7c275304094f"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 1427869,
+      "bytes": 1435003,
       "sha256": null
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 96183,
-      "sha256": "c34cb1cffca683c6b0be603154ac4660f904278ad20da7719ec0ab115bc81163"
+      "bytes": 101156,
+      "sha256": "60e28a0813a108725f7e1d4329e06f05ccf8076866c13f406da43443a17be299"
     },
     {
       "path": "docs/API_CONTRACTS.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 808,
-      "sha256": "7752a38ac2d24cb2dbe76d30ca67cf2d73f85541251f259bf336fe5fcb9ff89a"
+      "bytes": 10460,
+      "sha256": "f260a9eff1171c06517d16517d0520d2cb74127741ac89bf3fd7afb71dc2ae47"
     },
     {
       "path": "docs/ARCHITECTURE_BLUEPRINT_V1.md",
@@ -1574,8 +1574,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 17691,
-      "sha256": "b2b1a0d2751c7650b417f1f59f8c249188ffa28e3cbdb0c5cb9f4b85259307f8"
+      "bytes": 17732,
+      "sha256": "ca04c1e376f9d0a375e75c962cecd8574310c26a875fbf9bd26736890d8b9614"
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -1692,44 +1692,44 @@
     {
       "path": "services/admin-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "bytes": 277,
-      "sha256": "ac20885aa2a4ccb99d8097e11c6227bd48b7854d60808200e0b61593d4ac1741"
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "bytes": 7182,
+      "sha256": "76a7ba4a57259c8b63e7f8f40452b7fd5a1afa7748f06e5d098c97c9962be219"
     },
     {
       "path": "services/api-client.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "bytes": 279,
-      "sha256": "4fa36bfb66edcbc9136045580ec04caa293f100e5a6a361001587a36f8c30e66"
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "bytes": 9021,
+      "sha256": "ccfe35d113d01ea2561196c47ada1e10f3791bda09a5ce186d25146a8a12ac9a"
     },
     {
       "path": "services/auth-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "bytes": 275,
-      "sha256": "2fda58d8e3dfb8b4374014e775245f637df0554940a06090b12dc07720528212"
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "bytes": 4274,
+      "sha256": "7221c02eb6559ce21c465fc5f1987ca47ce43ecefdf963fc901a8e2b3bfd587b"
     },
     {
       "path": "services/catalog-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "bytes": 281,
-      "sha256": "139a40e328a69c4034e24282a13f523cf908921a582253c2944390d6abf5b237"
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "bytes": 3962,
+      "sha256": "6abb139a23f9c5730fb1295f305359fe6647fbb49aa74669d1b73963374310b7"
     },
     {
       "path": "services/customer-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "bytes": 283,
-      "sha256": "93cb9e7e1e9426efa0bf876f69a11bbc974d654d0a7d24e7ce44f649dedce123"
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "bytes": 4696,
+      "sha256": "0aa9831f5c4b52896b9629f02a42eef49598d5db242704b5c65f031275130141"
     },
     {
       "path": "services/finance-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "bytes": 281,
-      "sha256": "e3e5a092d07ee6f8627c2882887fe0cdac50f8ce02b52a2a4e6457181df7d036"
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "bytes": 4984,
+      "sha256": "5a06e5b9313dad6bc921ae91a2af84bb366d077caf8f0a71984a697316ecaa44"
     },
     {
       "path": "services/local-attachments.js",
@@ -1755,58 +1755,58 @@
     {
       "path": "services/notifications-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "bytes": 293,
-      "sha256": "157bbefbe698ccaecdd827e013504a0d14cf89cb6efee519d0d98a6b3bfcbc65"
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "bytes": 1769,
+      "sha256": "3db9b04eb3396796eb1a84bc37e87e4d7ba417140251ff5b43024e1af79e41a9"
     },
     {
       "path": "services/orders-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "bytes": 279,
-      "sha256": "420b2234275bfd12d75ad1baa34a506f5d4fbfa094e46c13f6949ab5dcc3ec34"
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "bytes": 9264,
+      "sha256": "0e45480600fc4039d64dea3a8833dadfa961a6f0641f6eac895178072263f9ac"
     },
     {
       "path": "services/provider-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "bytes": 283,
-      "sha256": "cd184961282850ebb7c8714b036e3b0e306a83a6a9a098b40576817facceb8cb"
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "bytes": 5961,
+      "sha256": "d436f657c2923c92162069e02259afa88c4701a0b1eeadb38d27479422e09782"
     },
     {
       "path": "services/quotes-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "bytes": 279,
-      "sha256": "91cacc77d38d03693122103b3168e02f0f1d39639d9dd0c52b4082c8ba068846"
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "bytes": 7074,
+      "sha256": "81629b0682010cfef34d798ce60bbbe60ff77f5ef8471ba4bf21e995b5f4000f"
     },
     {
       "path": "services/README.md",
       "area": "services",
       "status": "CONFIGURATION",
-      "bytes": 237,
-      "sha256": "108b1ac37c7aa52a3e800e3decb76470f97a3b68f90a081bb2e472db377932c8"
+      "bytes": 940,
+      "sha256": "e1a7fb7862381d33d5011e7c8cc0c56f288482caf2c6bda5fa29650b5e781102"
     },
     {
       "path": "services/realtime-client.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "bytes": 289,
-      "sha256": "cdfbff9e74fb349311c21b8f0d05e8dffdbf725125d056b1204347b6aa920f3c"
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "bytes": 3152,
+      "sha256": "1bd0e41854cd96f15d3ffea4b7a99fcf2bc56575ce0cb6114e8799e100dd7a90"
     },
     {
       "path": "services/support-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "bytes": 281,
-      "sha256": "92843c030cdd2c076b5df7d301d83215555a7d408a924a6f427bb1918218d2f5"
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "bytes": 3576,
+      "sha256": "1cf636e93e64f841a60dd69143f09b52a48b656e1ae1ddc5c99f589621165978"
     },
     {
       "path": "services/uploads-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "bytes": 281,
-      "sha256": "90629390d07b9c10aeafe60de0786b29ebbfe9ddef3920b6ea910dc23eb63dd6"
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "bytes": 3215,
+      "sha256": "83ae79d3dd49c2428cfa48040af6b9619e76664127ad7157335199069dbe02b2"
     },
     {
       "path": "shared/components/accessible-tabs.js",
@@ -2220,6 +2220,13 @@
       "status": "TEST",
       "bytes": 2973,
       "sha256": "b711b5db8803144dd6b805be41d91b8fc5ed1b5105f0378c352a18be783a8dee"
+    },
+    {
+      "path": "tests/unit/api-adapters.test.js",
+      "area": "tests",
+      "status": "TEST",
+      "bytes": 19263,
+      "sha256": "7517897cc79644b0ab290d026c586c1542daba8ed7780cb39687aa5a4bf11e90"
     },
     {
       "path": "tests/unit/audit-log.test.js",

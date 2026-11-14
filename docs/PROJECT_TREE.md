@@ -377,6 +377,7 @@ hansalhlak/
 │       ├── admin-modules.test.js
 │       ├── admin-runtime.test.js
 │       ├── admin-shell.test.js
+│       ├── api-adapters.test.js
 │       ├── audit-log.test.js
 │       ├── catalog-wizard.test.js
 │       ├── categories-management.test.js

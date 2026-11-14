@@ -3,7 +3,8 @@
  * RESPONSIBILITY: Admin shell and navigation frame — sidebar (collapsible rail on desktop,
  *   drawer on mobile), header, breadcrumbs, page title/description, actions area and the
  *   content container. FRONTEND DEMO ONLY.
- * STATUS: IMPLEMENTED (shell frame). The 23 admin pages themselves are still PLACEHOLDERS.
+ * STATUS: IMPLEMENTED (shell frame). Every NAV item has a registered page (apps/admin/pages/*.page.js, demo data);
+ *   the «قريبًا» fallback below remains only as a guard for future items.
  *
  * Contract
  *   HSAdminShell.registerPage(id, { title, description?, parent?, actions?, render(ctx) })

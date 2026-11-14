@@ -2,8 +2,8 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 373,
-    "total_files": 373,
+    "file_count": 374,
+    "total_files": 374,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 50,
@@ -16,6 +16,7 @@
       "IMPLEMENTED (FRONTEND DEMO)": 27,
       "IMPLEMENTED (FRONTEND ROUTER)": 1,
       "IMPLEMENTED (FRONTEND SHELL)": 1,
+      "IMPLEMENTED (MOCK ADAPTER)": 13,
       "IMPLEMENTED (RESPONSIVE FRONTEND)": 1,
       "IMPLEMENTED (SHELL HOST)": 1,
       "IMPLEMENTED (SHELL PARTS)": 1,
@@ -24,8 +25,8 @@
       "LEGACY": 1,
       "NEEDS_REVIEW": 1,
       "PARTIALLY IMPLEMENTED": 1,
-      "PLACEHOLDER": 77,
-      "TEST": 70
+      "PLACEHOLDER": 64,
+      "TEST": 71
     },
     "status_semantics": {
       "IMPLEMENTED": "Implementation exists in the current source; still protect with tests.",
@@ -338,7 +339,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md).",
-      "sha256": "0f8f6695af5db67482e6890f18bb0dafccd40657c3f9b7bc0da40f3c288bf0f9",
+      "sha256": "1f0223edc4a92ba75c84202ec0ff6712c88fd9c308049ba25e7d2f2f066be609",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -375,7 +376,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 21595
+      "bytes": 21702
     },
     {
       "path": "apps/admin/app.js",
@@ -8174,7 +8175,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 84089
+      "bytes": 84316
     },
     {
       "path": "docs/AI_CONTEXT/README.md",
@@ -8297,7 +8298,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "1a2e1de8d036255a4e09c20e812ea21e2e4a71ad8e34d96794f85568aa1a0d04",
+      "sha256": "692f28972e86dac823dbc4420f23bc6848e0ac19600dcb61bc6b7c275304094f",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8333,7 +8334,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 230660
+      "bytes": 235678
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -8381,7 +8382,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1427869
+      "bytes": 1435003
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
@@ -8393,7 +8394,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "c34cb1cffca683c6b0be603154ac4660f904278ad20da7719ec0ab115bc81163",
+      "sha256": "60e28a0813a108725f7e1d4329e06f05ccf8076866c13f406da43443a17be299",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8429,7 +8430,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 96183
+      "bytes": 101156
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -8441,7 +8442,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "7752a38ac2d24cb2dbe76d30ca67cf2d73f85541251f259bf336fe5fcb9ff89a",
+      "sha256": "f260a9eff1171c06517d16517d0520d2cb74127741ac89bf3fd7afb71dc2ae47",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -8478,7 +8479,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 808
+      "bytes": 10460
     },
     {
       "path": "docs/ARCHITECTURE_BLUEPRINT_V1.md",
@@ -9869,7 +9870,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "b2b1a0d2751c7650b417f1f59f8c249188ffa28e3cbdb0c5cb9f4b85259307f8",
+      "sha256": "ca04c1e376f9d0a375e75c962cecd8574310c26a875fbf9bd26736890d8b9614",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -9906,7 +9907,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 17691
+      "bytes": 17732
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -10514,14 +10515,14 @@
     {
       "path": "services/admin-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "has_real_logic": false,
-      "current_responsibility": "Admin Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "has_real_logic": true,
+      "current_responsibility": "Admin marketplace-operations contract over services/api-client.js (mock handlers on MP). Admin-only by role; when the Admin RBAC (apps/admin/permission-guard.js) is loaded, each action is also checked against the signed-in demo employee's permissions — the same rules apps/admin/pages/marketplace.page.js applies in the UI.",
       "planned_responsibility": "Admin Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented.",
-      "sha256": "ac20885aa2a4ccb99d8097e11c6227bd48b7854d60808200e0b61593d4ac1741",
+      "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
+      "sha256": "76a7ba4a57259c8b63e7f8f40452b7fd5a1afa7748f06e5d098c97c9962be219",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -10536,7 +10537,7 @@
       "user_visible_behavior": "لا تظهر كصفحة؛ تنقل بيانات أو عمليات بين الواجهة ومصدر البيانات.",
       "file_behavior": "Admin Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
       "completion_definition": "عقد API واضح، تحقق/تطبيع استجابة وأخطاء، مهلات وإلغاء عند الحاجة، واختبارات دون تسريب بيانات.",
-      "actual_status_ar": "هيكل/مكان مخصص فقط — غير منفذ",
+      "actual_status_ar": "منفذ كمحوّل وهمي (Mock) — بلا شبكة وبلا Backend",
       "detailed_contract": {
         "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `services` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
         "current_observed_responsibility": "Admin Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
@@ -10558,19 +10559,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 277
+      "bytes": 7182
     },
     {
       "path": "services/api-client.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "has_real_logic": false,
-      "current_responsibility": "Api Client adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "has_real_logic": true,
+      "current_responsibility": "The single request boundary between the frontend and a future backend. Today it runs in MOCK mode: requests are dispatched to in-process route handlers (registered by services/*-api.js) that operate on the local demo store (services/local-market-store.js → `MP`, localStorage `hs_mp_db`). NO network request is ever made in mock mode. A later backend phase plugs an HTTP transport in with `setTransport(fn)` — callers do not change.",
       "planned_responsibility": "Api Client adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented.",
-      "sha256": "4fa36bfb66edcbc9136045580ec04caa293f100e5a6a361001587a36f8c30e66",
+      "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
+      "sha256": "ccfe35d113d01ea2561196c47ada1e10f3791bda09a5ce186d25146a8a12ac9a",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -10585,7 +10586,7 @@
       "user_visible_behavior": "لا تظهر كصفحة؛ تنقل بيانات أو عمليات بين الواجهة ومصدر البيانات.",
       "file_behavior": "Api Client adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
       "completion_definition": "عقد API واضح، تحقق/تطبيع استجابة وأخطاء، مهلات وإلغاء عند الحاجة، واختبارات دون تسريب بيانات.",
-      "actual_status_ar": "هيكل/مكان مخصص فقط — غير منفذ",
+      "actual_status_ar": "منفذ كمحوّل وهمي (Mock) — بلا شبكة وبلا Backend",
       "detailed_contract": {
         "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `services` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
         "current_observed_responsibility": "Api Client adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
@@ -10607,19 +10608,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 279
+      "bytes": 9021
     },
     {
       "path": "services/auth-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "has_real_logic": false,
-      "current_responsibility": "Auth Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "has_real_logic": true,
+      "current_responsibility": "Resolves the demo *actor* ({ role, id, ... }) that services/api-client.js attaches to every request, from the existing per-app demo sessions — it does not create a new identity system: customer → localStorage `hs_user` ({name, phone}) matched to an MP customer (not suspended) provider → sessionStorage `hs_provider_demo_session` → MP provider whose status is 'approved' (a pending/rejected/suspended registration gets NO provider role: registering never grants it) admin    → sessionStorage `hs_admin_demo_session` → active HSAdminRbac roster employee The actor follows the app that is running (`useApp`, defaulting to the page path), so an Admin session in one tab can never act inside the Customer or Provider app.",
       "planned_responsibility": "Auth Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented.",
-      "sha256": "2fda58d8e3dfb8b4374014e775245f637df0554940a06090b12dc07720528212",
+      "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
+      "sha256": "7221c02eb6559ce21c465fc5f1987ca47ce43ecefdf963fc901a8e2b3bfd587b",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -10634,7 +10635,7 @@
       "user_visible_behavior": "لا تظهر كصفحة؛ تنقل بيانات أو عمليات بين الواجهة ومصدر البيانات.",
       "file_behavior": "Auth Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
       "completion_definition": "عقد API واضح، تحقق/تطبيع استجابة وأخطاء، مهلات وإلغاء عند الحاجة، واختبارات دون تسريب بيانات.",
-      "actual_status_ar": "هيكل/مكان مخصص فقط — غير منفذ",
+      "actual_status_ar": "منفذ كمحوّل وهمي (Mock) — بلا شبكة وبلا Backend",
       "detailed_contract": {
         "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `services` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
         "current_observed_responsibility": "Auth Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
@@ -10656,19 +10657,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 275
+      "bytes": 4274
     },
     {
       "path": "services/catalog-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "has_real_logic": false,
-      "current_responsibility": "Catalog Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "has_real_logic": true,
+      "current_responsibility": "Public browsing contract (Guest and Customer) over services/api-client.js: categories (CAT, services/local-catalog.js), services and provider directory/profiles (MP). Only APPROVED, non-suspended providers are listed, and the public projection never exposes phone numbers, documents or commission terms.",
       "planned_responsibility": "Catalog Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented.",
-      "sha256": "139a40e328a69c4034e24282a13f523cf908921a582253c2944390d6abf5b237",
+      "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
+      "sha256": "6abb139a23f9c5730fb1295f305359fe6647fbb49aa74669d1b73963374310b7",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -10683,7 +10684,7 @@
       "user_visible_behavior": "لا تظهر كصفحة؛ تنقل بيانات أو عمليات بين الواجهة ومصدر البيانات.",
       "file_behavior": "Catalog Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
       "completion_definition": "عقد API واضح، تحقق/تطبيع استجابة وأخطاء، مهلات وإلغاء عند الحاجة، واختبارات دون تسريب بيانات.",
-      "actual_status_ar": "هيكل/مكان مخصص فقط — غير منفذ",
+      "actual_status_ar": "منفذ كمحوّل وهمي (Mock) — بلا شبكة وبلا Backend",
       "detailed_contract": {
         "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `services` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
         "current_observed_responsibility": "Catalog Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
@@ -10705,19 +10706,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 281
+      "bytes": 3962
     },
     {
       "path": "services/customer-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "has_real_logic": false,
-      "current_responsibility": "Customer Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "has_real_logic": true,
+      "current_responsibility": "Signed-in customer self-service contract over services/api-client.js (mock handlers on MP). Every route is scoped to the calling customer — there is no way to address another customer's data.",
       "planned_responsibility": "Customer Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented.",
-      "sha256": "93cb9e7e1e9426efa0bf876f69a11bbc974d654d0a7d24e7ce44f649dedce123",
+      "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
+      "sha256": "0aa9831f5c4b52896b9629f02a42eef49598d5db242704b5c65f031275130141",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -10732,7 +10733,7 @@
       "user_visible_behavior": "لا تظهر كصفحة؛ تنقل بيانات أو عمليات بين الواجهة ومصدر البيانات.",
       "file_behavior": "Customer Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
       "completion_definition": "عقد API واضح، تحقق/تطبيع استجابة وأخطاء، مهلات وإلغاء عند الحاجة، واختبارات دون تسريب بيانات.",
-      "actual_status_ar": "هيكل/مكان مخصص فقط — غير منفذ",
+      "actual_status_ar": "منفذ كمحوّل وهمي (Mock) — بلا شبكة وبلا Backend",
       "detailed_contract": {
         "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `services` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
         "current_observed_responsibility": "Customer Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
@@ -10754,19 +10755,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 283
+      "bytes": 4696
     },
     {
       "path": "services/finance-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "has_real_logic": false,
-      "current_responsibility": "Finance Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "has_real_logic": true,
+      "current_responsibility": "Commission/earnings contract over services/api-client.js (mock handlers on MP). Figures are local demo calculations — NO payment processing, NO payouts, NO real money movement exists anywhere in this frontend. Free-service jobs appear as value-0 transactions (free:true, collection 'none') and never carry commission.",
       "planned_responsibility": "Finance Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented.",
-      "sha256": "e3e5a092d07ee6f8627c2882887fe0cdac50f8ce02b52a2a4e6457181df7d036",
+      "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
+      "sha256": "5a06e5b9313dad6bc921ae91a2af84bb366d077caf8f0a71984a697316ecaa44",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -10781,7 +10782,7 @@
       "user_visible_behavior": "لا تظهر كصفحة؛ تنقل بيانات أو عمليات بين الواجهة ومصدر البيانات.",
       "file_behavior": "Finance Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
       "completion_definition": "عقد API واضح، تحقق/تطبيع استجابة وأخطاء، مهلات وإلغاء عند الحاجة، واختبارات دون تسريب بيانات.",
-      "actual_status_ar": "هيكل/مكان مخصص فقط — غير منفذ",
+      "actual_status_ar": "منفذ كمحوّل وهمي (Mock) — بلا شبكة وبلا Backend",
       "detailed_contract": {
         "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `services` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
         "current_observed_responsibility": "Finance Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
@@ -10803,7 +10804,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 281
+      "bytes": 4984
     },
     {
       "path": "services/local-attachments.js",
@@ -10961,14 +10962,14 @@
     {
       "path": "services/notifications-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "has_real_logic": false,
-      "current_responsibility": "Notifications Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "has_real_logic": true,
+      "current_responsibility": "In-app notification inbox contract over services/api-client.js (mock handlers on MP). The inbox is derived from the caller's actor — `customer:<id>`, `provider:<id>` or the shared `admin` inbox — so no caller can read or clear another party's notifications. No push, SMS, e-mail or WhatsApp delivery exists.",
       "planned_responsibility": "Notifications Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented.",
-      "sha256": "157bbefbe698ccaecdd827e013504a0d14cf89cb6efee519d0d98a6b3bfcbc65",
+      "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
+      "sha256": "3db9b04eb3396796eb1a84bc37e87e4d7ba417140251ff5b43024e1af79e41a9",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -10983,7 +10984,7 @@
       "user_visible_behavior": "لا تظهر كصفحة؛ تنقل بيانات أو عمليات بين الواجهة ومصدر البيانات.",
       "file_behavior": "Notifications Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
       "completion_definition": "عقد API واضح، تحقق/تطبيع استجابة وأخطاء، مهلات وإلغاء عند الحاجة، واختبارات دون تسريب بيانات.",
-      "actual_status_ar": "هيكل/مكان مخصص فقط — غير منفذ",
+      "actual_status_ar": "منفذ كمحوّل وهمي (Mock) — بلا شبكة وبلا Backend",
       "detailed_contract": {
         "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `services` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
         "current_observed_responsibility": "Notifications Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
@@ -11005,19 +11006,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 293
+      "bytes": 1769
     },
     {
       "path": "services/orders-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "has_real_logic": false,
-      "current_responsibility": "Orders Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "has_real_logic": true,
+      "current_responsibility": "Service-request (order) contract over services/api-client.js. Mock handlers delegate to the local demo store (MP) and add the boundaries a backend must enforce: role, ownership and state-transition errors. Access rule (shared by the other adapters via `canAccess`): a customer sees only their own requests; a provider only requests offered/assigned to them; admin sees all.",
       "planned_responsibility": "Orders Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented.",
-      "sha256": "420b2234275bfd12d75ad1baa34a506f5d4fbfa094e46c13f6949ab5dcc3ec34",
+      "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
+      "sha256": "0e45480600fc4039d64dea3a8833dadfa961a6f0641f6eac895178072263f9ac",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11032,7 +11033,7 @@
       "user_visible_behavior": "لا تظهر كصفحة؛ تنقل بيانات أو عمليات بين الواجهة ومصدر البيانات.",
       "file_behavior": "Orders Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
       "completion_definition": "عقد API واضح، تحقق/تطبيع استجابة وأخطاء، مهلات وإلغاء عند الحاجة، واختبارات دون تسريب بيانات.",
-      "actual_status_ar": "هيكل/مكان مخصص فقط — غير منفذ",
+      "actual_status_ar": "منفذ كمحوّل وهمي (Mock) — بلا شبكة وبلا Backend",
       "detailed_contract": {
         "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `services` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
         "current_observed_responsibility": "Orders Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
@@ -11054,19 +11055,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 279
+      "bytes": 9264
     },
     {
       "path": "services/provider-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "has_real_logic": false,
-      "current_responsibility": "Provider Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "has_real_logic": true,
+      "current_responsibility": "Provider onboarding and self-service contract over services/api-client.js (mock handlers on MP). • Registration is public and creates a PENDING record only — it grants no provider role (see auth-api: the provider actor requires status 'approved', which only Admin can set via admin-api). • A provider edits only their own profile fields (allow-list); status, commission and rating are not writable.",
       "planned_responsibility": "Provider Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented.",
-      "sha256": "cd184961282850ebb7c8714b036e3b0e306a83a6a9a098b40576817facceb8cb",
+      "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
+      "sha256": "d436f657c2923c92162069e02259afa88c4701a0b1eeadb38d27479422e09782",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11081,7 +11082,7 @@
       "user_visible_behavior": "لا تظهر كصفحة؛ تنقل بيانات أو عمليات بين الواجهة ومصدر البيانات.",
       "file_behavior": "Provider Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
       "completion_definition": "عقد API واضح، تحقق/تطبيع استجابة وأخطاء، مهلات وإلغاء عند الحاجة، واختبارات دون تسريب بيانات.",
-      "actual_status_ar": "هيكل/مكان مخصص فقط — غير منفذ",
+      "actual_status_ar": "منفذ كمحوّل وهمي (Mock) — بلا شبكة وبلا Backend",
       "detailed_contract": {
         "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `services` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
         "current_observed_responsibility": "Provider Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
@@ -11103,19 +11104,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 283
+      "bytes": 5961
     },
     {
       "path": "services/quotes-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "has_real_logic": false,
-      "current_responsibility": "Quotes Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "has_real_logic": true,
+      "current_responsibility": "Quote and free-service contract over services/api-client.js (mock handlers on the local MP store). Business rules enforced at the boundary AND again in the store: • a quote total must be > 0 — zero-value quotes are refused on submit (422) and on accept (409); • a job done without charge uses the separate FREE-SERVICE workflow (propose → customer accepts/declines → provider completes, value 0, no commission) — never a zero quote; • providers submit quotes / free proposals; only the owning customer approves or rejects them.",
       "planned_responsibility": "Quotes Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented.",
-      "sha256": "91cacc77d38d03693122103b3168e02f0f1d39639d9dd0c52b4082c8ba068846",
+      "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
+      "sha256": "81629b0682010cfef34d798ce60bbbe60ff77f5ef8471ba4bf21e995b5f4000f",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11130,7 +11131,7 @@
       "user_visible_behavior": "لا تظهر كصفحة؛ تنقل بيانات أو عمليات بين الواجهة ومصدر البيانات.",
       "file_behavior": "Quotes Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
       "completion_definition": "عقد API واضح، تحقق/تطبيع استجابة وأخطاء، مهلات وإلغاء عند الحاجة، واختبارات دون تسريب بيانات.",
-      "actual_status_ar": "هيكل/مكان مخصص فقط — غير منفذ",
+      "actual_status_ar": "منفذ كمحوّل وهمي (Mock) — بلا شبكة وبلا Backend",
       "detailed_contract": {
         "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `services` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
         "current_observed_responsibility": "Quotes Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
@@ -11152,7 +11153,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 279
+      "bytes": 7074
     },
     {
       "path": "services/README.md",
@@ -11164,7 +11165,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "108b1ac37c7aa52a3e800e3decb76470f97a3b68f90a081bb2e472db377932c8",
+      "sha256": "e1a7fb7862381d33d5011e7c8cc0c56f288482caf2c6bda5fa29650b5e781102",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11201,19 +11202,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 237
+      "bytes": 940
     },
     {
       "path": "services/realtime-client.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "has_real_logic": false,
-      "current_responsibility": "Realtime Client adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "has_real_logic": true,
+      "current_responsibility": "Topic-based change feed so screens can refresh when marketplace data changes, without knowing the transport. Mock implementation (no sockets, no network): • same tab  — every successful mutating request through services/api-client.js publishes `market:changed`; • other tabs — the browser `storage` event on the shared store key `hs_mp_db` publishes `market:changed` (e.g. Admin approves a provider in one tab → the Provider tab can refresh). A backend phase replaces `connect()` with a WebSocket/SSE transport keeping the same subscribe() contract.",
       "planned_responsibility": "Realtime Client adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented.",
-      "sha256": "cdfbff9e74fb349311c21b8f0d05e8dffdbf725125d056b1204347b6aa920f3c",
+      "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
+      "sha256": "1bd0e41854cd96f15d3ffea4b7a99fcf2bc56575ce0cb6114e8799e100dd7a90",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11228,7 +11229,7 @@
       "user_visible_behavior": "لا تظهر كصفحة؛ تنقل بيانات أو عمليات بين الواجهة ومصدر البيانات.",
       "file_behavior": "Realtime Client adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
       "completion_definition": "عقد API واضح، تحقق/تطبيع استجابة وأخطاء، مهلات وإلغاء عند الحاجة، واختبارات دون تسريب بيانات.",
-      "actual_status_ar": "هيكل/مكان مخصص فقط — غير منفذ",
+      "actual_status_ar": "منفذ كمحوّل وهمي (Mock) — بلا شبكة وبلا Backend",
       "detailed_contract": {
         "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `services` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
         "current_observed_responsibility": "Realtime Client adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
@@ -11250,19 +11251,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 289
+      "bytes": 3152
     },
     {
       "path": "services/support-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "has_real_logic": false,
-      "current_responsibility": "Support Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "has_real_logic": true,
+      "current_responsibility": "Complaints/support contract over services/api-client.js (mock handlers on MP). Customers and providers file complaints only about requests they can access (or a general one with no request); only Admin lists all complaints and resolves them.",
       "planned_responsibility": "Support Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented.",
-      "sha256": "92843c030cdd2c076b5df7d301d83215555a7d408a924a6f427bb1918218d2f5",
+      "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
+      "sha256": "1cf636e93e64f841a60dd69143f09b52a48b656e1ae1ddc5c99f589621165978",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11277,7 +11278,7 @@
       "user_visible_behavior": "لا تظهر كصفحة؛ تنقل بيانات أو عمليات بين الواجهة ومصدر البيانات.",
       "file_behavior": "Support Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
       "completion_definition": "عقد API واضح، تحقق/تطبيع استجابة وأخطاء، مهلات وإلغاء عند الحاجة، واختبارات دون تسريب بيانات.",
-      "actual_status_ar": "هيكل/مكان مخصص فقط — غير منفذ",
+      "actual_status_ar": "منفذ كمحوّل وهمي (Mock) — بلا شبكة وبلا Backend",
       "detailed_contract": {
         "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `services` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
         "current_observed_responsibility": "Support Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
@@ -11299,19 +11300,19 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 281
+      "bytes": 3576
     },
     {
       "path": "services/uploads-api.js",
       "area": "services",
-      "status": "PLACEHOLDER",
-      "has_real_logic": false,
-      "current_responsibility": "Uploads Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
+      "status": "IMPLEMENTED (MOCK ADAPTER)",
+      "has_real_logic": true,
+      "current_responsibility": "Attachment-upload contract. Files never leave the device: validation and storage are delegated to the existing local attachment store (services/local-attachments.js → `AT`, IndexedDB `hs_attachments_v1`, memory fallback). This adapter only fixes the contract a future upload endpoint must satisfy (limits, accepted types, error envelope). It deliberately does not go through api-client's JSON router because payloads are binary. Contract: limits()                      → { ok, status:200, data: { maxFiles, maxImageMB, maxVideoMB, … } } validate(files, existing)     → { ok, status:200, data:{ valid[] } } | { ok:false, status:422, error:{ code:'VALIDATION', details:{ errors[] } } } upload(reqId, files)          → Promise of the same envelope with data:{ items:[summary] }",
       "planned_responsibility": "Uploads Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
-      "next_action": "Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic.",
+      "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
-      "notes": "File exists but its planned functionality is NOT implemented.",
-      "sha256": "90629390d07b9c10aeafe60de0786b29ebbfe9ddef3920b6ea910dc23eb63dd6",
+      "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
+      "sha256": "83ae79d3dd49c2428cfa48040af6b9619e76664127ad7157335199069dbe02b2",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11326,7 +11327,7 @@
       "user_visible_behavior": "لا تظهر كصفحة؛ تنقل بيانات أو عمليات بين الواجهة ومصدر البيانات.",
       "file_behavior": "Uploads Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
       "completion_definition": "عقد API واضح، تحقق/تطبيع استجابة وأخطاء، مهلات وإلغاء عند الحاجة، واختبارات دون تسريب بيانات.",
-      "actual_status_ar": "هيكل/مكان مخصص فقط — غير منفذ",
+      "actual_status_ar": "منفذ كمحوّل وهمي (Mock) — بلا شبكة وبلا Backend",
       "detailed_contract": {
         "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `services` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
         "current_observed_responsibility": "Uploads Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.",
@@ -11348,7 +11349,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 281
+      "bytes": 3215
     },
     {
       "path": "shared/components/accessible-tabs.js",
@@ -13412,6 +13413,20 @@
       "completion_definition": "File responsibility and actual behavior are verified and covered by appropriate checks.",
       "actual_status_ar": "مضاف إلى الجرد الحالي؛ يحتاج فحصًا بحسب المهمة.",
       "bytes": 2973
+    },
+    {
+      "path": "tests/unit/api-adapters.test.js",
+      "area": "tests",
+      "status": "TEST",
+      "functional_title": "api-adapters.test.js",
+      "current_responsibility": "Backend-readiness contract for services/api-client.js and all *-api.js/realtime-client mock adapters over the real MP store in a vm context: envelope, 401/403/404/503, ownership, zero-quote and free-service rules, onboarding without role grant, admin RBAC, public projection, realtime events, transport seam, uploads, no network I/O, every route documented.",
+      "next_action": "Keep in sync with docs/API_CONTRACTS.md.",
+      "explicit_references": [],
+      "notes": "Added 2026-11-14.",
+      "sha256": "7517897cc79644b0ab290d026c586c1542daba8ed7780cb39687aa5a4bf11e90",
+      "bytes": 19263,
+      "has_real_logic": true,
+      "actual_status_ar": "اختبار"
     },
     {
       "path": "tests/unit/audit-log.test.js",

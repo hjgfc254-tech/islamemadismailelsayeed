@@ -1,6 +1,82 @@
 /**
  * MODULE: finance-api
- * RESPONSIBILITY: Finance Api adapter boundary for a future backend. No HTTP API/backend is present; this module intentionally contains documentation only.
- * STATUS: PLACEHOLDER
- * NOTE: Documentation only. No functional implementation is present.
+ * RESPONSIBILITY: Commission/earnings contract over services/api-client.js (mock handlers on MP). Figures are local
+ *   demo calculations — NO payment processing, NO payouts, NO real money movement exists anywhere in this frontend.
+ *   Free-service jobs appear as value-0 transactions (free:true, collection 'none') and never carry commission.
+ * ROUTES:
+ *   GET  /providers/me/earnings              provider   own transactions + totals
+ *   GET  /admin/transactions?collection=     admin      all transactions               finance.view
+ *   POST /admin/transactions/:id/collection  admin      {status: pending|collected|waived}   finance.edit
+ *   GET  /admin/commission                   admin      {defaultRate, rates{cat:%}}
+ *   POST /admin/commission                   admin      {defaultRate?, cat?, rate?}    (0–50 %)
+ * STATUS: IMPLEMENTED (MOCK ADAPTER — demo figures only, no payments, no network)
  */
+'use strict';
+(function (root, factory) {
+  const client = root.HSApiClient || (typeof require === 'function' ? require('./api-client.js') : null);
+  const api = factory(root, client);
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  root.HSFinanceApi = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function (root, client) {
+  const { fail } = client;
+  const COLLECTION = ['pending', 'collected', 'waived'];
+  const rateOk = v => Number.isFinite(+v) && +v >= 0 && +v <= 50;
+  function permitted(actor, module, action) {
+    const G = root.HSAdminPermissionGuard;
+    if (!G || !actor.adminRole) return true;
+    return G.can({ id: actor.id, role: actor.adminRole, status: 'active' }, module, action);
+  }
+
+  /** Totals over a transaction list (pure). Free jobs count as jobs but add nothing to value or commission. */
+  function totals(list) {
+    const sum = k => Math.round(list.reduce((s, t) => s + (+t[k] || 0), 0) * 100) / 100;
+    return { jobs: list.length, freeJobs: list.filter(t => t.free).length, value: sum('value'), commission: sum('commission'), net: sum('net') };
+  }
+
+  client.define('GET', '/providers/me/earnings', { roles: ['provider'], summary: 'Own transactions and totals.' }, ({ actor, store }) => {
+    const items = store.db().transactions.filter(t => t.providerId === actor.id);
+    return { items, totals: totals(items), demo: true };
+  });
+
+  client.define('GET', '/admin/transactions', { roles: ['admin'], summary: 'All transactions (?collection=).' }, ({ query, actor, store }) => {
+    if (!permitted(actor, 'finance', 'view')) return fail('FORBIDDEN');
+    const items = store.db().transactions.filter(t => !query.collection || t.collection === query.collection);
+    return { items, totals: totals(items), demo: true };
+  });
+
+  client.define('POST', '/admin/transactions/:id/collection', { roles: ['admin'], summary: 'Set a commission collection status.' }, ({ params, body, actor, store }) => {
+    if (!permitted(actor, 'finance', 'edit')) return fail('FORBIDDEN');
+    const t = store.get('transactions', params.id); if (!t) return fail('NOT_FOUND', 'المعاملة غير موجودة');
+    if (t.free) return fail('CONFLICT', 'خدمة مجانية — لا توجد عمولة للتحصيل');
+    if (!COLLECTION.includes(body.status)) return fail('VALIDATION', 'حالة غير صالحة', { status: COLLECTION.join('|') });
+    store.setCollection(t.id, body.status);
+    return store.get('transactions', t.id);
+  });
+
+  client.define('GET', '/admin/commission', { roles: ['admin'], summary: 'Commission settings.' }, ({ store }) => {
+    const s = store.db().settings;
+    return { defaultRate: s.defaultRate, rates: { ...s.rates }, collectionModel: s.collectionModel };
+  });
+
+  client.define('POST', '/admin/commission', { roles: ['admin'], summary: 'Update default or per-category rate (0–50 %).' }, ({ body, store }) => {
+    if (body.defaultRate !== undefined) {
+      if (!rateOk(body.defaultRate)) return fail('VALIDATION', 'النسبة من 0 إلى 50', { defaultRate: '0–50' });
+      store.setSetting('defaultRate', +body.defaultRate);
+    }
+    if (body.cat) {
+      if (body.rate !== '' && body.rate !== null && !rateOk(body.rate)) return fail('VALIDATION', 'النسبة من 0 إلى 50', { rate: '0–50' });
+      store.setCatRate(String(body.cat), body.rate === null ? '' : body.rate);
+    }
+    const s = store.db().settings;
+    return { defaultRate: s.defaultRate, rates: { ...s.rates }, collectionModel: s.collectionModel };
+  });
+
+  return {
+    totals,
+    earnings: () => client.get('/providers/me/earnings'),
+    transactions: collection => client.get('/admin/transactions' + (collection ? '?collection=' + encodeURIComponent(collection) : '')),
+    setCollection: (txId, status) => client.post('/admin/transactions/' + encodeURIComponent(txId) + '/collection', { status }),
+    commission: () => client.get('/admin/commission'),
+    setCommission: patch => client.post('/admin/commission', patch)
+  };
+});
