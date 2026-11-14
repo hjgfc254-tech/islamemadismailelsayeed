@@ -62,12 +62,19 @@ async function run({ exe, wsUrl }) {
     ok(await noOverflow(), `${tag} tracking: no horizontal overflow`);
     if (process.env.QA_SHOTS) { fs.mkdirSync(process.env.QA_SHOTS, { recursive: true }); const s = await cdp.send('Page.captureScreenshot', { format: 'png' }); fs.writeFileSync(path.join(process.env.QA_SHOTS, `customer-tracking-${w}.png`), Buffer.from(s.data, 'base64')); }
 
-    // A tracking action re-renders the screen: focus must not fall to <body>.
-    if (await focusEl(`[data-act="simAdvance"][data-id="${rid}"]`, `${tag} simAdvance`)) {
-      const before = await evaluate(`MP.get('serviceRequests','${rid}').status`);
+    // Paid lifecycle (2026-11-14). The customer has no provider-side controls; the provider acts on the shared store.
+    ok(await evaluate('!document.querySelector("[data-act=simAdvance],[data-act=simQuote]")'), `${tag} tracking offers no provider-side (simulation) controls`);
+    await evaluate(`(()=>{const id='${rid}';MP.db().settings.autoAssign=false;if(!MP.activeAssignment(id))MP.assign(id,'p_demo1');MP.respond(id,true);MP.confirmTime(id,'provider');['enroute','arrived','started'].forEach(s=>MP.advance(id,s));MP.createQuote(id,{labor:260});show('tracking',id);return true;})()`);
+    if (await focusEl(`[data-act="approveQuote"][data-id="${rid}"]`, `${tag} approve quote`)) {
       await ENTER(); await sleep(150);
-      ok(await evaluate(`MP.get('serviceRequests','${rid}').status`) !== before, `${tag} Enter on "next status" advances the demo request`);
+      ok(await evaluate(`MP.get('serviceRequests','${rid}').status==='started' && /السعر المتفق عليه/.test(document.querySelector('#view').textContent)`), `${tag} Enter on «موافقة» agrees the price; the job stays in progress`);
+      ok(await evaluate('!document.querySelector("[data-act=custClose]")'), `${tag} no completion confirmation before the provider completes`);
       ok(await evaluate('document.activeElement && document.activeElement !== document.body'), `${tag} focus is kept on the screen after the action (not <body>)`);
+    }
+    await evaluate(`(()=>{MP.complete('${rid}');show('tracking','${rid}');return true;})()`);
+    if (await focusEl(`[data-act="custClose"][data-id="${rid}"]`, `${tag} confirm completion`)) {
+      await ENTER(); await sleep(150);
+      ok(await evaluate(`MP.get('serviceRequests','${rid}').status==='closed'`), `${tag} Enter on «تأكيد إتمام الخدمة» closes the order after the provider completed it`);
     }
 
     // Back with Enter: leaves tracking and focus is not lost.

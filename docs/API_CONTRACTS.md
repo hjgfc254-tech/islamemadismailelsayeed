@@ -51,8 +51,22 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 - A job done without charge uses the **free-service** routes (propose → customer accepts or declines → provider
   completes). The result has value 0, no commission, and a transaction with `free:true, collection:'none'`. Collection
   cannot be set on it.
-- A paid completion needs a value > 0 or an approved quote. Approving a quote while the request is in the `quote` state
-  completes the job with the quote total (existing store behaviour).
+- **Paid order lifecycle (corrected 2026-11-14):**
+  ```
+  received → searching → sent ─respond(accept)→ accepted ─confirmTime→ scheduled ─advance→ enroute ─advance→ arrived ─advance→ started
+  started ─quotes (provider)→ quote ─quote/approve (customer)→ started [agreedValue = quote total]
+                              quote ─quote/reject (customer)→ started (provider may send a new quote)
+  started ─complete (provider; agreed price, or value > 0 when no quote)→ completed [finalValue, one transaction]
+  completed ─close (customer confirms)→ closed ─review (customer, once)
+  cancel: customer/admin before `started` · free service: started ─free→ proposed ─free/respond→ accepted ─free/complete→ completed (value 0)
+  ```
+  - Approving a quote **does not** complete the job.
+  - Only a `pending` quote can be approved or rejected, once. An approved quote cannot be replaced or rejected.
+    Sending a new quote while one is pending marks the old one `superseded`.
+  - Completion is refused while a quote awaits the customer, and at any amount other than the agreed price.
+  - `advance` only performs `enroute`, `arrived` and `started`; the other states go through their own validated routes.
+  - Exactly one transaction is created, at completion. Tests: `tests/unit/order-lifecycle.test.js` and
+    `api-adapters.test.js`.
 - A provider edits only `name, phone, type, cats, govs, areas, years, bio, docs`. `status`, `specialRate` and rating are
   rejected (403).
 - The public catalogue lists only approved providers and never returns `phone`, `docs`, `specialRate` or `status`.

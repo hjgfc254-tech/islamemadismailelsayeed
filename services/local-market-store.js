@@ -319,20 +319,29 @@ const MP = (() => {
       const r = get('serviceRequests',reqId); if(!r) return false;
       const i = k => FLOW.findIndex(f=>f[0]===k);
       if (i(r.status) < 0) return false;               /* من حالة نهائية بديلة (cancelled/failed) لا تقدم */
+      /* advance يغطي الخطوات التشغيلية فقط. بقية الحالات لها عمليات مُتحقَّق منها:
+         accepted=respond، scheduled=confirmTime، quote=createQuote، completed=complete/completeFree، closed=close. */
+      if (!['enroute','arrived','started'].includes(to)) return false;
+      if (!api.providerOf(reqId)) return false;
       if (i(to) !== i(r.status) + 1) return false;
       log(r,to);
       notify('customer:'+r.customerId, STATUS_LABEL[to]+' — الطلب '+r.no, r.id);
       save(); return true;
     },
 
-    /* ═════════ عرض السعر والموافقة ═════════
-       createQuote: يُنشئ عرض سعر من المزود ويحوّل الحالة إلى 'quote'.
-       approveQuote / rejectQuote: من العميل.
-       ملاحظة: القيمة النهائية في r.finalValue = total العرض المعتمد. */
+    /* ═════════ عرض السعر والموافقة — دورة حياة الطلب المدفوع (2026-11-14) ═════════
+       started ──createQuote──▶ quote ──approveQuote──▶ started (السعر متفق عليه r.agreedValue، جارٍ التنفيذ)
+               ◀──rejectQuote──┘                         ──complete (المزود)──▶ completed ──close (العميل)──▶ closed
+       • موافقة العميل لا تُكمل الطلب: المزود يسجّل الإكمال، والعميل يؤكد الإتمام.
+       • عرض بقيمة صفر ممنوع؛ لا يُستبدل عرض معتمد؛ تحديث عرض معلّق يجعل السابق superseded.
+       • المعاملة المالية تُنشأ مرة واحدة عند complete() فقط. */
     createQuote(reqId, q){
       const r = get('serviceRequests',reqId); const p = api.providerOf(reqId);
       if(!r || !p) return {ok:false,msg:'لا يوجد مزود معين'};
       if (r.freeService && ['proposed','accepted'].includes(r.freeService.status)) return {ok:false,msg:'هذا الطلب في مسار «خدمة مجانية»؛ لا يمكن إرسال عرض سعر معه'};
+      if (!['scheduled','enroute','arrived','started','quote'].includes(r.status)) return {ok:false,msg:'حالة الطلب لا تسمح بإرسال عرض سعر'};
+      const prev = api.currentQuote(reqId);
+      if (prev && prev.status === 'approved') return {ok:false,msg:'السعر متفق عليه بالفعل؛ لا يمكن استبدال عرض معتمد'};
       const total = Math.max(0, (+q.labor||0) + (+q.parts||0) + (+q.visitFee||0) - (+q.discount||0));
       /* قاعدة عمل: عروض الأسعار بقيمة صفر ممنوعة — الخدمة بلا مقابل لها مسار «خدمة مجانية» مستقل */
       if (!(total > 0)) return {ok:false,msg:'لا يُسمح بعرض سعر بقيمة صفر. إن كانت الخدمة بلا مقابل استخدم «خدمة مجانية».'};
@@ -341,6 +350,7 @@ const MP = (() => {
         labor:+q.labor||0, parts:+q.parts||0, visitFee:+q.visitFee||0, discount:+q.discount||0,
         total, note:q.note||'', status:'pending', at:now()
       };
+      if (prev && prev.status === 'pending') prev.status = 'superseded';
       db.quotes.unshift(quote);
       r.quoteId = quote.id;
       /* إن كان الطلب في started أو arrived، انتقل إلى quote */
@@ -354,24 +364,18 @@ const MP = (() => {
       const r = get('serviceRequests',reqId); if(!r) return false;
       const q = db.quotes.find(x=>x.id===r.quoteId);
       if(!q || !(+q.total > 0)) return false;   /* لا موافقة على عرض بقيمة صفر (بيانات قديمة) */
+      if (q.status !== 'pending' || r.status !== 'quote') return false;   /* موافقة واحدة على عرض معلّق فقط */
+      const p = api.providerOf(reqId); if (!p) return false;
       q.status = 'approved'; q.approvedAt = now();
-      if (r.status === 'quote') log(r,'completed','العميل وافق على السعر');
-      r.finalValue = q.total;
-      const p = api.providerOf(reqId);
-      if (p) {
-        const rate = rateFor(r.cat, p.id), x = calc(q.total, rate);
-        if (!db.transactions.some(t => t.reqId===reqId)) {
-          db.transactions.push({id:uid('t'), reqId, providerId:p.id, customerId:r.customerId, cat:r.cat, ...x,
-            model:db.settings.collectionModel, collection:'pending', demo:true, at:now()});
-        }
-      }
-      notify('provider:'+(p||{}).id,'العميل وافق على السعر — الطلب '+r.no,r.id);
+      r.agreedValue = q.total;
+      log(r,'started','العميل وافق على السعر ('+q.total+' ج.م) — جارٍ التنفيذ');
+      notify('provider:'+p.id,'العميل وافق على السعر — نفّذ الخدمة ثم سجّل الإكمال (الطلب '+r.no+')',r.id);
       save(); return true;
     },
     rejectQuote(reqId, reason){
       const r = get('serviceRequests',reqId); if(!r) return false;
       const q = db.quotes.find(x=>x.id===r.quoteId);
-      if(!q) return false;
+      if(!q || q.status !== 'pending') return false;   /* الرفض لعرض معلّق فقط (لا رفض لعرض معتمد) */
       q.status = 'rejected'; q.reason = reason || '';
       /* إذا رُفض السعر، نرجع الطلب إلى started لو كان في quote */
       if (r.status === 'quote') log(r,'started','العميل رفض السعر — إعادة التفاوض');
@@ -428,13 +432,15 @@ const MP = (() => {
       const r = get('serviceRequests',reqId), p = api.providerOf(reqId);
       if(!r || !p) return false;
       if (r.freeService && ['proposed','accepted'].includes(r.freeService.status)) return false;   /* المسار المجاني يُكمَل عبر completeFree */
-      if (![ 'started','arrived','enroute','quote','scheduled','accepted' ].includes(r.status)) return false;
+      if (![ 'started','arrived','enroute','scheduled','accepted' ].includes(r.status)) return false;   /* 'quote' = بانتظار موافقة العميل: لا إكمال */
+      const q = api.currentQuote(reqId);
+      if (q && q.status === 'pending') return false;
       let v = +value;
-      if (!v || v <= 0) {
-        const q = api.currentQuote(reqId);
-        if (q && q.status === 'approved') v = q.total;
-        else return false;
-      }
+      if (q && q.status === 'approved') {
+        /* السعر المتفق عليه هو القيمة النهائية؛ لا يُقبل مبلغ مختلف */
+        if (value !== undefined && value !== null && value !== '' && v !== +q.total) return false;
+        v = +q.total;
+      } else if (!Number.isFinite(v) || v <= 0) return false;
       const rate = rateFor(r.cat, p.id), x = calc(v, rate, deductions);
       r.finalValue = x.value;
       log(r,'completed','القيمة النهائية '+x.value);

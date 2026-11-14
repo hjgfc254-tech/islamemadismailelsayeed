@@ -405,6 +405,7 @@ hansalhlak/
 │       ├── legacy-migration.test.js
 │       ├── marketplace-rules.test.js
 │       ├── notifications-management.test.js
+│       ├── order-lifecycle.test.js
 │       ├── orders-management.test.js
 │       ├── provider-app-a11y.test.js
 │       ├── provider-app-actions.test.js

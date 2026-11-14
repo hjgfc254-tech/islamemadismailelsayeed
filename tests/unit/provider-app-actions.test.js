@@ -366,6 +366,13 @@ test('a full provider journey mutates only the local demo store and the demo ses
   walkTo(app, rid, 'started');
   app.click({ 'data-pv-action': 'quote', 'data-id': rid });
   app.submit('pv-quote-form', { labor: '100', parts: '0', visitFee: '0', discount: '0', note: '' });
+  // Paid lifecycle: while the quote awaits the customer there is no completion control.
+  app.go('#/quote');
+  assert.ok(!app.has({ 'data-pv-action': 'complete', 'data-id': rid }), 'no completion while the quote is pending');
+  assert.equal(app.MP.approveQuote(rid), true, 'customer approves (shared store)');
+  assert.equal(app.request(rid).status, 'started', 'approval does not complete the job');
+  app.go('#/progress');
+  assert.ok(!app.has({ 'data-pv-action': 'quote', 'data-id': rid }), 'an approved quote cannot be replaced');
   app.click({ 'data-pv-action': 'complete', 'data-id': rid });
   app.submit('pv-complete-form', { value: '100', deductions: '0' });
   assert.equal(app.request(rid).status, 'completed');

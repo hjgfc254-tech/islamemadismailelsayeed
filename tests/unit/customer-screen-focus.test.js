@@ -68,8 +68,12 @@ test('opening a request from the orders list focuses the tracking heading; track
   app.clickDoc({ track: id });
   assert.match(app.html(), /<h2 tabindex="-1">متابعة الطلب #HS-/);
   assert.equal(app.focus.current, 'heading');
+  // Provider side (shared store) completes the job; the customer's own action then re-renders tracking.
+  app.run(`(()=>{const id=${JSON.stringify(id)};if(!MP.activeAssignment(id))MP.assign(id,'p_demo1');MP.respond(id,true);MP.confirmTime(id,'provider');['enroute','arrived','started'].forEach(s=>MP.advance(id,s));MP.complete(id,150);})()`);
+  app.run(`show('tracking', ${JSON.stringify(id)})`);
   app.focus.current = null;
-  app.clickDoc({ act: 'simAdvance', id });
+  app.clickDoc({ act: 'custClose', id });
+  assert.equal(app.run(`MP.get('serviceRequests', ${JSON.stringify(id)}).status`), 'closed');
   assert.equal(app.focus.current, 'heading', 'status change re-render does not drop focus to <body>');
 });
 

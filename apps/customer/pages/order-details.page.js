@@ -107,7 +107,7 @@
     /* معلومات الطلب */
     const sum = `<div class="sumbox glass neon">
       <div><small>الخدمة</small><b>${esc(r.catName||MP.catName(r.cat))} — ${esc(r.serviceName)}</b></div>
-      ${r.finalValue != null ? `<div><small>القيمة النهائية</small><b>${money(r.finalValue)}</b></div>` : ''}
+      ${r.finalValue != null ? `<div><small>القيمة النهائية</small><b>${money(r.finalValue)}</b></div>` : (r.agreedValue != null ? `<div><small>السعر المتفق عليه</small><b>${money(r.agreedValue)}</b></div>` : '')}
       ${r.preferredPeriod || r.when ? `<div><small>الموعد المفضل</small><b>${esc(r.when || 'مرن')}${r.preferredPeriod?` — ${({morning:'صباحًا',noon:'ظهرًا',evening:'مساءً'})[r.preferredPeriod]||r.preferredPeriod}`:''}</b></div>` : ''}
       ${r.flexible ? `<div><small>مرونة الموعد</small><b>مرن</b></div>` : ''}
       <div><small>المكان</small><b>${esc(r.gov)} — ${esc(r.area)}${r.addr ? ' — '+esc(r.addr) : ''}</b></div>
@@ -138,12 +138,8 @@
       actions.push(`<button class="cta ghost" data-act="complain" data-id="${id}">${ic('warn')} تقديم شكوى</button>`);
     }
 
-    /* حالة "تجريبي: محاكاة التقدم" */
-    const sim = (!cancelled && !failed && !closed) ? `<div class="demo-banner" style="margin-top:14px">${ic('info')}<span>يمكنك محاكاة تقدّم الطلب لتجربة الواجهات.</span></div>
-      <div class="row2">
-        <button class="cta ghost" style="margin:0" data-act="simAdvance" data-id="${id}">${ic('arrow')} الحالة التالية</button>
-        <button class="cta ghost" style="margin:0" data-act="simQuote" data-id="${id}">${ic('st-quote')} عرض سعر</button>
-      </div>` : '';
+    /* Progress is driven by the provider from the Provider app (shared store); the customer has no provider-side controls. */
+    const sim = (!cancelled && !failed && !closed && !['completed'].includes(r.status)) ? `<div class="demo-banner" style="margin-top:14px">${ic('info')}<span>يحدّث مقدم الخدمة حالة الطلب من تطبيقه.</span></div>` : '';
 
     return `<div class="screen">${head('متابعة الطلب #'+esc(r.no), true)}${demoBanner()}
       ${uiOfflineIfNeeded()}

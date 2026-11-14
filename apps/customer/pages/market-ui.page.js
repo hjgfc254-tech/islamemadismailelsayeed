@@ -155,7 +155,7 @@ document.addEventListener('click', e => {
     case 'rate': openRateSheet(d.id); break;
     case 'complain': openComplainSheet(d.id); break;
     case 'approveQuote':
-      if (MP.approveQuote(d.id)) { show('tracking', d.id); toast('تمت الموافقة على السعر'); }
+      if (MP.approveQuote(d.id)) { show('tracking', d.id); toast('تمت الموافقة على السعر — سينفّذ مقدم الخدمة ثم يسجّل الإكمال'); }
       else toast('تعذرت الموافقة على عرض السعر');
       break;
     /* الخدمة المجانية: مسار مستقل عن عروض الأسعار (لا عرض سعر بقيمة صفر) */
@@ -209,30 +209,8 @@ document.addEventListener('click', e => {
       else toast(res.msg || 'تعذّر التوسيع');
       break;
     }
-    case 'simAdvance': {
-      const r = MP.get('serviceRequests', d.id);
-      if (!r) break;
-      const idx = FLOW.findIndex(f => f[0] === r.status);
-      if (idx < 0 || idx >= FLOW.length - 1) { toast('الطلب في حالة نهائية'); break; }
-      const next = FLOW[idx + 1][0];
-      /* محاكاة قبول/بدء بدون مزود */
-      if ((next === 'accepted' || next === 'scheduled') && !MP.providerOf(d.id)) {
-        const cand = MP.candidates(r)[0];
-        if (cand) { MP.assign(r.id, cand.id); MP.respond(r.id, true); }
-      }
-      MP.advance(d.id, next);
-      show('tracking', d.id);
-      toast('الحالة: ' + (STATUS_LABEL[next]||next));
-      break;
-    }
-    case 'simQuote': {
-      const p = MP.providerOf(d.id);
-      if (!p) { toast('لا يوجد مزود معيّن بعد'); break; }
-      MP.createQuote(d.id, { labor: 250, parts: 120, visitFee: 0, discount: 0, note: 'محاكاة عرض سعر تجريبي' });
-      show('tracking', d.id);
-      toast('تم إنشاء عرض سعر تجريبي');
-      break;
-    }
+    /* 2026-11-14: the customer-side «محاكاة التقدّم» controls (simAdvance/simQuote) were removed — they let the
+       customer perform provider-only transitions. Progress now comes only from the Provider app on the shared store. */
   }
 });
 

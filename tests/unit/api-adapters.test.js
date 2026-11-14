@@ -129,12 +129,21 @@ test('paid flow through the API: zero quote refused (422), valid quote → appro
   t.as('customer', sara);
   const ap = await Q.approve(id); assert.equal(ap.ok, true, JSON.stringify(ap.error));
   assert.equal(ap.data.status, 'approved');
-  // Store semantics: approving a quote in the `quote` state completes the job with the quote total as final value.
+  // Lifecycle (2026-11-14): approval agrees the price and returns the job to in-progress; it does NOT complete it.
   const after = (await O.get(id)).data;
-  assert.deepEqual([after.status, after.finalValue], ['completed', 350]);
+  assert.deepEqual([after.status, after.agreedValue, after.finalValue], ['started', 350, null]);
+  assert.equal(t.run(`MP.db().transactions.filter(x=>x.reqId==='${id}').length`), 0, 'no transaction before completion');
+  assert.equal((await Q.approve(id)).status, 409, 'no second approval');
+  assert.equal((await Q.reject(id, 'متأخر')).status, 409, 'an approved quote cannot be rejected');
+  assert.equal((await O.close(id)).status, 409, 'customer cannot close before the provider completes');
   t.as('provider', 'p_demo1');
+  assert.equal((await Q.submit(id, { labor: 999 })).status, 409, 'an approved quote cannot be replaced');
   assert.equal((await O.complete(id, 0)).status, 422, 'zero final value refused');
-  assert.equal((await O.complete(id, 400)).status, 409, 'already completed');
+  assert.equal((await O.complete(id, 400)).status, 409, 'a different amount than the agreed price is refused');
+  const fin = await O.complete(id);
+  assert.deepEqual([fin.data.status, fin.data.finalValue], ['completed', 350], 'completion at the agreed price');
+  assert.equal((await O.complete(id)).status, 409, 'no double completion');
+  assert.equal(t.run(`MP.db().transactions.filter(x=>x.reqId==='${id}').length`), 1, 'exactly one transaction');
   t.as('customer', sara);
   assert.equal((await O.review(id, 6)).status, 422);
   assert.equal((await O.close(id)).data.status, 'closed');
