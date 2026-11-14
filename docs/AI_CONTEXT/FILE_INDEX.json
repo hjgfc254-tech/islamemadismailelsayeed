@@ -1238,7 +1238,7 @@
       "path": "docs/AI_CONTEXT/FILE_INDEX.json",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 84951,
+      "bytes": null,
       "sha256": null
     },
     {
@@ -1280,7 +1280,7 @@
       "path": "docs/AI_PROJECT_MAP.json",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 1436481,
+      "bytes": null,
       "sha256": null
     },
     {
@@ -1686,8 +1686,8 @@
       "path": "scripts/refresh-project-inventory.mjs",
       "area": "scripts",
       "status": "CONFIGURATION",
-      "bytes": 5508,
-      "sha256": "4acf68e3aa4c6a17af2f1ec32fb2c215f8e76726c238b6b009a737fb51f9fee0"
+      "bytes": 5760,
+      "sha256": "35a46edddbbc598d0adf75e68e6998c67600424425cdc12461843ab539ac6de7"
     },
     {
       "path": "scripts/verify-project-inventory.mjs",
