@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 374,
+  "file_count": 375,
   "files": [
     {
       "path": "_redirects",
@@ -1231,7 +1231,7 @@
       "path": "docs/AI_CONTEXT/FILE_INDEX.json",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 84504,
+      "bytes": 84748,
       "sha256": null
     },
     {
@@ -1266,22 +1266,22 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 235678,
-      "sha256": "692f28972e86dac823dbc4420f23bc6848e0ac19600dcb61bc6b7c275304094f"
+      "bytes": 236057,
+      "sha256": "cf82c898e8780e8a458fc85c22801b56db983d40c0892b0ef7336feb01eb8015"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 1435005,
+      "bytes": 1435808,
       "sha256": null
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 101156,
-      "sha256": "60e28a0813a108725f7e1d4329e06f05ccf8076866c13f406da43443a17be299"
+      "bytes": 101502,
+      "sha256": "629f23ca1784946a5c5a1985ba52ebd5ad84c40ab52ddc525adb2dbd88d4f50d"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -1574,8 +1574,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 17732,
-      "sha256": "ca04c1e376f9d0a375e75c962cecd8574310c26a875fbf9bd26736890d8b9614"
+      "bytes": 17838,
+      "sha256": "d578a810e2aed9da91c7c99c0cce2edde3ae6a3db0841bf4ae5e530b9d2f54d7"
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -1669,18 +1669,25 @@
       "sha256": "0b3a5a994f2cb127f574cfcc37e6aadf058561f81300ef2e3319a2be5af88955"
     },
     {
+      "path": "scripts/inventory-files.mjs",
+      "area": "scripts",
+      "status": "IMPLEMENTED",
+      "bytes": 1990,
+      "sha256": "7d1c5d86d5e4efb09ca254be4406461d5e491b15a0beac2b2c2b9deebb0d80fd"
+    },
+    {
       "path": "scripts/refresh-project-inventory.mjs",
       "area": "scripts",
       "status": "CONFIGURATION",
-      "bytes": 5670,
-      "sha256": "c53df5cb917507f48ee4901ea69b3d8d073afeccfaa5323014b6d720de031049"
+      "bytes": 5508,
+      "sha256": "4acf68e3aa4c6a17af2f1ec32fb2c215f8e76726c238b6b009a737fb51f9fee0"
     },
     {
       "path": "scripts/verify-project-inventory.mjs",
       "area": "scripts",
       "status": "CONFIGURATION",
-      "bytes": 1893,
-      "sha256": "50270f6f4b32c6f94f068db4b6bd87182de5a51c8804339af1e0948cef8382f7"
+      "bytes": 1646,
+      "sha256": "7afc3b8b8e55d0dccb47961989968c1d1bae6a260fd48b479c93c2963ad95f92"
     },
     {
       "path": "service-worker.js",
@@ -2024,13 +2031,6 @@
       "status": "IMPLEMENTED",
       "bytes": 2042,
       "sha256": "b1a85bff32930835152bba3652c154be767af31b56e454f74d0b91bce23884cd"
-    },
-    {
-      "path": "test-write.tmp",
-      "area": "test-write.tmp",
-      "status": "NEEDS_REVIEW",
-      "bytes": 0,
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
       "path": "tests/e2e/admin-app.cdp.js",
@@ -2381,6 +2381,13 @@
       "status": "TEST",
       "bytes": 4303,
       "sha256": "be96a4e94858a344d473efb1f549f222a08f0d2be01cb52daa198ddea96e9bae"
+    },
+    {
+      "path": "tests/unit/inventory-reproducibility.test.js",
+      "area": "tests",
+      "status": "TEST",
+      "bytes": 3440,
+      "sha256": "045320cfef18c24c48cb6d136fec2351a8ee0d70119c22f191f11ae7ea2b96f2"
     },
     {
       "path": "tests/unit/legacy-migration.test.js",

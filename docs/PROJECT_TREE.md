@@ -1,6 +1,6 @@
 # Current Project Tree
 
-> Generated from the current working tree. Human reference only; use `docs/AI_CONTEXT/FILE_INDEX.json` for fast AI lookup.
+> Generated from the inventory file set (git: tracked + untracked-unignored files). Human reference only; use `docs/AI_CONTEXT/FILE_INDEX.json` for fast AI lookup.
 
 ```text
 hansalhlak/
@@ -284,6 +284,7 @@ hansalhlak/
 │   ├── TEST_RESULTS.md
 │   └── TESTING_STRATEGY.md
 ├── scripts/
+│   ├── inventory-files.mjs
 │   ├── refresh-project-inventory.mjs
 │   └── verify-project-inventory.mjs
 ├── services/
@@ -400,6 +401,7 @@ hansalhlak/
 │       ├── frontend-contracts.test.js
 │       ├── home.test.js
 │       ├── icon-asset-audit.test.js
+│       ├── inventory-reproducibility.test.js
 │       ├── legacy-migration.test.js
 │       ├── marketplace-rules.test.js
 │       ├── notifications-management.test.js
@@ -445,6 +447,5 @@ hansalhlak/
 ├── package.json
 ├── PROJECT_CONTROL_CENTER.html
 ├── README.md
-├── service-worker.js
-└── test-write.tmp
+└── service-worker.js
 ```

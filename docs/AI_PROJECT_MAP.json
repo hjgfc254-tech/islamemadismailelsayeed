@@ -2,14 +2,14 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 374,
-    "total_files": 374,
+    "file_count": 375,
+    "total_files": 375,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 50,
       "DECISION": 7,
       "DOCUMENTATION": 38,
-      "IMPLEMENTED": 51,
+      "IMPLEMENTED": 52,
       "IMPLEMENTED (DEMO PRESENTATION)": 12,
       "IMPLEMENTED (DEMO)": 29,
       "IMPLEMENTED (DEMO) — PARTIAL (templates + read-only delivery log)": 1,
@@ -23,10 +23,9 @@
       "IMPLEMENTED (SHELL, DEMO)": 1,
       "IMPLEMENTED (SHELL)": 2,
       "LEGACY": 1,
-      "NEEDS_REVIEW": 1,
       "PARTIALLY IMPLEMENTED": 1,
       "PLACEHOLDER": 64,
-      "TEST": 71
+      "TEST": 72
     },
     "status_semantics": {
       "IMPLEMENTED": "Implementation exists in the current source; still protect with tests.",
@@ -8175,7 +8174,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 84504
+      "bytes": 84748
     },
     {
       "path": "docs/AI_CONTEXT/README.md",
@@ -8298,7 +8297,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "692f28972e86dac823dbc4420f23bc6848e0ac19600dcb61bc6b7c275304094f",
+      "sha256": "cf82c898e8780e8a458fc85c22801b56db983d40c0892b0ef7336feb01eb8015",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8334,7 +8333,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 235678
+      "bytes": 236057
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -8382,7 +8381,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1435005
+      "bytes": 1435808
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
@@ -8394,7 +8393,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "60e28a0813a108725f7e1d4329e06f05ccf8076866c13f406da43443a17be299",
+      "sha256": "629f23ca1784946a5c5a1985ba52ebd5ad84c40ab52ddc525adb2dbd88d4f50d",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8430,7 +8429,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 101156
+      "bytes": 101502
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -9870,7 +9869,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "ca04c1e376f9d0a375e75c962cecd8574310c26a875fbf9bd26736890d8b9614",
+      "sha256": "d578a810e2aed9da91c7c99c0cce2edde3ae6a3db0841bf4ae5e530b9d2f54d7",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -9907,7 +9906,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 17732
+      "bytes": 17838
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -10431,6 +10430,20 @@
       "bytes": 4086
     },
     {
+      "path": "scripts/inventory-files.mjs",
+      "area": "scripts",
+      "status": "IMPLEMENTED",
+      "functional_title": "inventory-files.mjs",
+      "current_responsibility": "Shared inventory file-set resolver: git tracked + untracked-unignored files (fallback: directory walk outside git). Used by refresh/verify inventory scripts so ignored local files never enter the inventory and clean clones reproduce it.",
+      "next_action": "Done.",
+      "explicit_references": [],
+      "notes": "Added 2026-11-14 (final completion sprint).",
+      "sha256": "7d1c5d86d5e4efb09ca254be4406461d5e491b15a0beac2b2c2b9deebb0d80fd",
+      "bytes": 1990,
+      "has_real_logic": true,
+      "actual_status_ar": "منفذ"
+    },
+    {
       "path": "scripts/refresh-project-inventory.mjs",
       "area": "scripts",
       "status": "CONFIGURATION",
@@ -10439,8 +10452,8 @@
       "next_action": "Run npm run audit:refresh after file changes, then npm run audit:inventory to verify hashes and coverage.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "c53df5cb917507f48ee4901ea69b3d8d073afeccfaa5323014b6d720de031049",
-      "bytes": 5670
+      "sha256": "4acf68e3aa4c6a17af2f1ec32fb2c215f8e76726c238b6b009a737fb51f9fee0",
+      "bytes": 5508
     },
     {
       "path": "scripts/verify-project-inventory.mjs",
@@ -10452,7 +10465,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "50270f6f4b32c6f94f068db4b6bd87182de5a51c8804339af1e0948cef8382f7",
+      "sha256": "7afc3b8b8e55d0dccb47961989968c1d1bae6a260fd48b479c93c2963ad95f92",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "verify-project-inventory.mjs",
@@ -10461,7 +10474,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 1893
+      "bytes": 1646
     },
     {
       "path": "service-worker.js",
@@ -12828,18 +12841,6 @@
       "bytes": 2042
     },
     {
-      "path": "test-write.tmp",
-      "area": "test-write.tmp",
-      "status": "NEEDS_REVIEW",
-      "functional_title": "test-write.tmp",
-      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
-      "next_action": "Inspect, classify and document before implementation or deletion.",
-      "explicit_references": [],
-      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-      "bytes": 0
-    },
-    {
       "path": "tests/e2e/admin-app.cdp.js",
       "area": "tests",
       "status": "TEST",
@@ -13994,6 +13995,20 @@
       "actual_status_ar": "منفذ: اختبارات تكامل الأيقونات والأصول.",
       "bytes": 4303,
       "sha256": "be96a4e94858a344d473efb1f549f222a08f0d2be01cb52daa198ddea96e9bae"
+    },
+    {
+      "path": "tests/unit/inventory-reproducibility.test.js",
+      "area": "tests",
+      "status": "TEST",
+      "functional_title": "inventory-reproducibility.test.js",
+      "current_responsibility": "Inventory reproducibility: resolver semantics on a temp git repo, non-git fallback, no git-ignored path in the map, scripts use the resolver.",
+      "next_action": "Keep in sync with scripts/inventory-files.mjs.",
+      "explicit_references": [],
+      "notes": "Added 2026-11-14 (final completion sprint).",
+      "sha256": "045320cfef18c24c48cb6d136fec2351a8ee0d70119c22f191f11ae7ea2b96f2",
+      "bytes": 3440,
+      "has_real_logic": true,
+      "actual_status_ar": "اختبار"
     },
     {
       "path": "tests/unit/legacy-migration.test.js",

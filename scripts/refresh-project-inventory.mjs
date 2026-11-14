@@ -1,47 +1,40 @@
 import { createHash } from 'node:crypto';
-import { readdir, readFile, writeFile, stat } from 'node:fs/promises';
+import { readFile, writeFile, stat } from 'node:fs/promises';
 import path from 'node:path';
+import { projectFiles } from './inventory-files.mjs';
 
 const root = process.cwd();
 const mapPath = 'docs/AI_PROJECT_MAP.json';
 const indexPath = 'docs/AI_CONTEXT/FILE_INDEX.json';
-const ignoredDirs = new Set(['.git', 'node_modules']);
 const selfHashPaths = new Set([mapPath, indexPath]);
 const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const areaOf = (file) => file.split('/')[0] === 'apps' ? file.split('/').slice(0, 2).join('/') : (file.split('/')[0] || 'root');
-const actual = new Set();
 
-async function walk(dir = root) {
-  for (const item of await readdir(dir, { withFileTypes: true })) {
-    if (ignoredDirs.has(item.name)) continue;
-    const absolute = path.join(dir, item.name);
-    const relative = path.relative(root, absolute).replaceAll('\\', '/');
-    if (item.isDirectory()) await walk(absolute);
-    else actual.add(relative);
-  }
-}
 
 function csvCell(value) {
   const text = String(value ?? '');
   return /[",\n\r]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;
 }
 
-function makeTree() {
-  const lines = ['# Current Project Tree', '', '> Generated from the current working tree. Human reference only; use `docs/AI_CONTEXT/FILE_INDEX.json` for fast AI lookup.', '', '```text', 'hansalhlak/'];
-  async function append(dir, prefix = '') {
-    const items = (await readdir(dir, { withFileTypes: true }))
-      .filter((item) => !ignoredDirs.has(item.name))
-      .sort((a, b) => Number(b.isDirectory()) - Number(a.isDirectory()) || a.name.localeCompare(b.name));
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i], last = i === items.length - 1;
-      lines.push(prefix + (last ? '└── ' : '├── ') + item.name + (item.isDirectory() ? '/' : ''));
-      if (item.isDirectory()) await append(path.join(dir, item.name), prefix + (last ? '    ' : '│   '));
-    }
+/* Built from the same file set as the inventory (git tracked + unignored), so a clean clone produces the same tree. */
+function makeTree(files) {
+  const lines = ['# Current Project Tree', '', '> Generated from the inventory file set (git: tracked + untracked-unignored files). Human reference only; use `docs/AI_CONTEXT/FILE_INDEX.json` for fast AI lookup.', '', '```text', 'hansalhlak/'];
+  const tree = {};
+  for (const f of files) { let node = tree; for (const part of f.split('/')) node = node[part] = node[part] || {}; }
+  const isDir = (node) => Object.keys(node).length > 0;
+  function append(node, prefix) {
+    const names = Object.keys(node).sort((a, b) => Number(isDir(node[b])) - Number(isDir(node[a])) || a.localeCompare(b));
+    names.forEach((name, i) => {
+      const last = i === names.length - 1, child = node[name];
+      lines.push(prefix + (last ? '└── ' : '├── ') + name + (isDir(child) ? '/' : ''));
+      if (isDir(child)) append(child, prefix + (last ? '    ' : '│   '));
+    });
   }
-  return append(root).then(() => lines.concat('```').join('\n') + '\n');
+  append(tree, '');
+  return lines.concat('```').join('\n') + '\n';
 }
 
-await walk();
+const { files: actual } = await projectFiles(root);
 const map = JSON.parse(await readFile(path.join(root, mapPath), 'utf8'));
 const entries = new Map(map.files.map((entry) => [entry.path.replaceAll('\\', '/'), entry]));
 const missing = [...entries.keys()].filter((file) => !actual.has(file));
@@ -94,7 +87,7 @@ const md = [
   ...map.files.map((entry) => `| ${String(entry.path).replaceAll('|', '\\|')} | ${String(entry.status || '').replaceAll('|', '\\|')} | ${String(entry.current_responsibility || '').replaceAll('|', '\\|').replaceAll('\n', ' ')} | ${String(entry.next_action || '').replaceAll('|', '\\|').replaceAll('\n', ' ')} |`)
 ].join('\n') + '\n';
 await writeFile(path.join(root, 'docs/AI_PROJECT_MAP.md'), md);
-await writeFile(path.join(root, 'docs/PROJECT_TREE.md'), await makeTree());
+await writeFile(path.join(root, 'docs/PROJECT_TREE.md'), makeTree(actual));
 
 // Generated exports are now final; refresh their hashes in the canonical map.
 await refreshHashes();
