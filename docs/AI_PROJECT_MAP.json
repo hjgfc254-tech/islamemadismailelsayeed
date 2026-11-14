@@ -8007,7 +8007,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "ef141caaec5583e1244dcfb78492f868f5eda235ac709933277e12734257c6d9",
+      "sha256": "8ef7b794a660104accdfb23efcf5a288e923b711d5a51ad621d4b7a5a180d99e",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "ADMIN.md",
@@ -8016,7 +8016,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 2942
+      "bytes": 4382
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/CUSTOMER.md",
@@ -8028,7 +8028,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "5d7a8c8c0ee5de405d76d74a198934bd44df95c438e01c8fb80fca22378e0b6b",
+      "sha256": "8391f9848c4d4b80a420c66b9e5a4d6797a6bcfec6ddcbd0525f9e0ee57cfd99",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "CUSTOMER.md",
@@ -8037,7 +8037,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 6411
+      "bytes": 7442
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/FRONTEND_RUNTIME.md",
@@ -8049,7 +8049,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "5d84b2a180f613acbf9a9a282190a758aaf19abbee9e6024d2f017c00c2dfffe",
+      "sha256": "bdb4c7bbb9a6ab3c33a57ee26919e9d786ae26d6ba8d64f39172fec9ed293c91",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "FRONTEND_RUNTIME.md",
@@ -8058,7 +8058,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 3352
+      "bytes": 3744
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/FUTURE_BACKEND_BOUNDARY.md",
@@ -8070,7 +8070,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "b0f7f3f0ad7158e7329258fe865121c7d3ff5aa2dbda72131456d8c70aaff840",
+      "sha256": "f3dda2e29ba78094084274d65e0b65ee22c6cf6910f4c0c090cd96f97ddc1a5c",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "FUTURE_BACKEND_BOUNDARY.md",
@@ -8079,7 +8079,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 1303
+      "bytes": 1611
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/PROVIDER.md",
@@ -8091,7 +8091,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "8513d478733292b7b90afa5a5df5238aae034928f9ab7d15cade780aa22fb5f6",
+      "sha256": "ae3014377deb95cd3e4920d85a09f491910b9df7529f7b3dd0a06d7e1f7b7acb",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "PROVIDER.md",
@@ -8100,7 +8100,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 9689
+      "bytes": 10536
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/SHARED_AND_SERVICES.md",
@@ -8133,7 +8133,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "57aa223a720ef7bcf0cb394c1b8e5597a9b1473e23c41b7e1303c8a603076044",
+      "sha256": "a78cfadd6b7032a92ebeab8cf48ecf36ea7e1d9f565dcd523475b6c2657d639a",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "TESTING.md",
@@ -8142,7 +8142,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 4370
+      "bytes": 4894
     },
     {
       "path": "docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md",
@@ -8153,8 +8153,8 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "daea2abf15cbd83889e1d3cd83113cf6c9563bef15d7a8e3e62f6467835fb5e2",
-      "bytes": 3879
+      "sha256": "427a722cac7459caf43337474bcbcb07222bc9feb108219191d6f54ed543809b",
+      "bytes": 5814
     },
     {
       "path": "docs/AI_CONTEXT/FILE_INDEX.json",
@@ -8208,7 +8208,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "621f671769b6891e778ec32d31c8003f5a2c931822907c0f0bf3a80644612db8",
+      "sha256": "437b42c19f05d5541829b2fd87a9b21c5af10e9bd6165673562b30f92fc47f68",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "START_HERE.md",
@@ -8217,7 +8217,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 3837
+      "bytes": 4532
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -8250,7 +8250,7 @@
       "next_action": "استخدمه مرجعًا مساعدًا؛ ترتيب المراحل التفصيلي الحالي موجود في لوحة المهندس.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "dc7083d9347d42612babafc937d9cd5c844bba25e93b85f4dce96d47b698878d",
+      "sha256": "afe0e29d33f5a09707f8eea2653be2996c4391bdaebe55df697fa368ac7e20b4",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8286,7 +8286,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 14126
+      "bytes": 14359
     },
     {
       "path": "docs/AI_PROJECT_MAP.csv",
@@ -8382,7 +8382,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1435004
+      "bytes": 1435005
     },
     {
       "path": "docs/AI_PROJECT_MAP.md",
@@ -8964,7 +8964,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "b440c8555a9fcd7ff95b5ac5695554256f5d26277f0fa0bac569fa893c408ddc",
+      "sha256": "e205702fb67d74ebd56dffa115d38e12b4c506ccf09123b18b3ed1fbded13ddc",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -9001,7 +9001,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 16019
+      "bytes": 15964
     },
     {
       "path": "docs/ENGINEERING_ENVIRONMENT_REPORT.md",
@@ -9300,7 +9300,7 @@
       "next_action": "Review in the relevant task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added during the 2026-11-09 environment normalization pass.",
-      "sha256": "3cf5942a53825b42a921d0ad605dcb3423cc4c047f7263683cf97e5a383e6034",
+      "sha256": "42d81f3ce901be9d6f5b0969ecd8f1e75cb47e110cd2b64288b1b535d419a9f8",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "HANDOFF_NEXT_AI.md",
@@ -9309,7 +9309,7 @@
       "file_behavior": "Inventory entry only; inspect source for exact behavior.",
       "completion_definition": "File responsibility and actual behavior are verified and covered by appropriate checks.",
       "actual_status_ar": "مضاف إلى الجرد الحالي؛ يحتاج فحصًا بحسب المهمة.",
-      "bytes": 80960
+      "bytes": 84623
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -9967,8 +9967,8 @@
       "next_action": "Read when relevant; update with any legacy/standalone Provider change.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P3 batch).",
-      "sha256": "53c3ad0f6144ad037e81b5a3b4308e57ae8e4e5ad15321d9e983683e85861bb7",
-      "bytes": 6090
+      "sha256": "f99a76b72aeb7550ddeeeb392c22aa7fbf5320a997dfe2972b5aa50254d73805",
+      "bytes": 6575
     },
     {
       "path": "docs/REMOVED_FILES_REPORT.md",
@@ -10177,8 +10177,8 @@
       "next_action": "Update at the next documentation checkpoint.",
       "explicit_references": [],
       "notes": "Created 2026-11-13 by audit task.",
-      "sha256": "15ee7e514d010b54e288c577e6a0f5aee628b593b6ca76ff47a6e391832fe235",
-      "bytes": 31980
+      "sha256": "4bc31ca46f62d79e74c2fcd9ba396d91a2bbcee5952f6e296aa230262f768817",
+      "bytes": 33783
     },
     {
       "path": "index.html",

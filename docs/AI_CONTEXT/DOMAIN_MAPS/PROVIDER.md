@@ -1,6 +1,6 @@
 # Provider Domain Map — Current Verified Architecture
 
-**Status:** standalone `IMPLEMENTED (FRONTEND DEMO)`; legacy compatibility remains active for Customer.  
+**Status:** standalone `IMPLEMENTED (FRONTEND DEMO)`. It is the only Provider experience: the legacy in-Customer bridge was removed on 2026-11-14.  
 **Authoritative entry:** `apps/provider/index.html`.
 
 ## 1. Standalone script dependency order
@@ -34,8 +34,7 @@ When adding/reordering scripts, inspect actual globals and run script-order/cont
 | `pages/*.page.js` | Presentation-only renderers; receive explicit context, return markup |
 | `styles/provider.css` | Standalone Provider responsive visual system |
 | `services/local-market-store.js` | LocalStorage-backed `MP` demo store; not an API/backend |
-| `legacy/portal-compat.js` | Legacy bridge for Customer's Provider experience; not loaded by standalone Provider |
-| `provider-workspace.js` | Legacy Customer-integrated workspace; do not delete before parity proof |
+| ~~`legacy/portal-compat.js`, `provider-workspace.js`~~ | **Removed 2026-11-14** (commit `cb3789f`). The Provider screen is covered by this app; the legacy Admin console moved to `apps/admin/pages/marketplace.page.js`. Guarded by `tests/unit/legacy-migration.test.js`. |
 
 ## 3. Renderer inventory
 - `dashboard.page.js`
@@ -62,21 +61,15 @@ Renderers do not own persistence or business transitions. The runtime owns actio
 - No production API, backend authorization or database persistence is connected.
 - Do not introduce personal or production records into fixtures.
 
-## 5. Compatibility boundary
-Customer's legacy Provider route is separate from the standalone entry. `portal-compat.js` and `provider-workspace.js` remain required until proven otherwise. Before retirement, inventory:
-- Customer entry script order and every bridge consumer;
-- globals/functions/DOM selectors/storage keys and route fragments;
-- all action workflows and visible states;
-- behavioral parity tests for both routes;
-- browser regression for Customer and standalone Provider.
-
-No removal based only on static import search or apparent duplication.
+## 5. Compatibility boundary (closed 2026-11-14)
+The Customer-loaded legacy Provider route no longer exists. Customer reaches Provider only through the onboarding link `apps/provider/index.html#/join`. Both apps share the `MP` store but keep separate demo identities (`hs_user` vs `hs_provider_demo_session`). Evidence of migration: `docs/PROVIDER_LEGACY_PARITY_AUDIT.md` (P3) plus `tests/unit/legacy-migration.test.js`.
 
 ## 6. Current test references
 - `tests/unit/provider-pages.test.js`
 - `tests/unit/provider-domain.test.js`
 - `tests/unit/provider-request-domain.test.js`
-- `tests/unit/provider-workspace.test.js`
+- `tests/unit/marketplace-rules.test.js`: zero-quote refusal, free-service flow (store + Provider UI + Customer accept), profile editing, `#/join` onboarding, scroll reset on screen change.
+- `tests/unit/legacy-migration.test.js`: no Admin traces, legacy files gone, onboarding link, shared store across apps.
 - `tests/unit/frontend-contracts.test.js` (shared app contracts; inspect current assertions)
 - `tests/unit/provider-app-actions.test.js` — P0 behavior: account select/logout, gate, availability, accept/reject (reason required), propose/confirm, advance (valid/invalid/final), quote validation, completion bounds, stale-action failures, local-only mutation invariant (25 tests).
 - `tests/unit/provider-app-routing.test.js` — P0 routes: every tab, unknown/query/legacy hash fallback, group routes, details deep link, missing/unknown/malformed/foreign IDs, reload persistence, no-session deep link (12 tests).
@@ -87,7 +80,7 @@ No removal based only on static import search or apparent duplication.
 ### Runtime behavior contracts added in P0 (2026-11-13)
 - `accept`, `confirm`, reject submit and propose submit check the `MP` result; on `false` (stale view, e.g. customer cancelled) the view re-renders and shows `تعذر تنفيذ الإجراء…` instead of a success toast, and no route change happens.
 - Reject requires a non-empty reason (`select[required]` + runtime check). Propose refuses past times (mirrors the input `min`).
-- Quote submit requires labor and non-negative finite amounts (mirrors the form constraints). A zero total is still accepted — no documented product rule; open decision.
+- Quote submit requires labor and non-negative finite amounts (mirrors the form constraints). A zero total is refused (rule decided 2026-11-14) with guidance to the free-service flow; `MP.createQuote`/`approveQuote` refuse it too.
 - Completion additionally rejects non-finite values; bound remains `0 <= deductions <= value`, `value > 0`.
 - A successful `advance` on a group route follows the request to its new group (as accept/reject/quote/complete already route); details and home keep their route.
 
@@ -103,9 +96,9 @@ Do not confuse source/script-order tests with end-to-end browser proof. Standalo
 1. ✅ **P0 behavior tests — done 2026-11-13** (see §6). Known, deliberately unchanged: selecting an account after opening a deep link without a session lands on `#/home`, not the original link.
 2. ✅ **P1 accessibility — done 2026-11-13** (see §6). Not verified: real screen readers; per-field `aria-invalid`/`aria-describedby` (errors are announced via the live toast instead).
 3. ✅ **P2 browser QA — done 2026-11-13** with `tests/e2e/provider-standalone.cdp.js` (real Edge, 170/170 at 1280/768/430/390/320). Defects found and fixed: all `ic()` icons rendered at container size with black fill (no `svg.i` rule in `provider.css`); `.pv-availability`, `.pv-toast`, `.pv-note`, `.pv-quote` had no styles (toast text lingered in page flow); missing favicon link caused a 404. Guards: `provider-pages.test.js` (every runtime `pv-*` class has a rule; icon contract; favicon). Not covered: WebKit/Firefox, real screen readers, Cairo webfont (blocked for determinism).
-4. ✅ **P3 legacy parity audit — done 2026-11-13:** `docs/PROVIDER_LEGACY_PARITY_AUDIT.md` + `tests/unit/provider-legacy-parity.test.js` (grouping identical across 105 combinations; shared `MP` store; separate demo identities). `portal-compat.js` also hosts a legacy **Admin** console. Gaps: **G1** self-registration, **G2** profile edit (decision: keep disabled), **G3** commission preview on completion, **G4** `login.html` placeholder. Retirement not recommended yet.
+4. ✅ **P3 legacy parity audit — done 2026-11-13:** `docs/PROVIDER_LEGACY_PARITY_AUDIT.md` + `tests/unit/provider-legacy-parity.test.js` (grouping identical across 105 combinations; shared `MP` store; separate demo identities). `portal-compat.js` also hosts a legacy **Admin** console. Gaps: **G1** self-registration, **G2** profile edit (decision: keep disabled), **G3** commission preview on completion, **G4** `login.html` placeholder. Retirement not recommended yet *(at the time; superseded in item 7: all gaps closed, legacy and its parity test removed 2026-11-14)*.
 5. ✅ **G3 + G4 — done 2026-11-13:** completion form live commission/net preview (`completionPreview`, `#pv-complete-preview`, `.pv-calc`, `input` listener; rate from `MP.rateFor(cat, provider)`); `login.html` hands off to the standalone picker with a demo notice.
 6. ✅ **G1 — done 2026-11-13:** demo self-registration on the picker (`openRegisterForm`, `registrationFrom`; fields/validation mirror legacy + reject tampered values) → `MP.registerProvider` → pending gate. Also fixed: `.pv-nav{display:flex}` overrode `[hidden]` so the workspace nav showed on the picker/gate (`.pv-app [hidden]{display:none!important}`); inline forms scrolled under the sticky chrome (`scroll-margin-top`); Cancel did not work on the picker (handled before the provider guard). Tests: `provider-app-register.test.js` (9).
-7. **Decision pending (user):** reroute Customer «بوابة مقدم الخدمة»/«انضم الآن» to the standalone app. Do not reroute or unload the bridge without it.
+7. ✅ **2026-11-14:** Customer links to `#/join` («عايز تقدم خدماتك؟ انضم كمقدم خدمة») and the bridge is unloaded and deleted. **G2 profile editing enabled** (`openProfileForm`, `pv-profile-form`, same validation as registration, `MP.updateProvider`; status/approval not editable). **Free service:** «تنفيذ كخدمة مجانية» on started jobs with no pending/approved quote → `pv-free-form` (reason from `MP.FREE_REASONS`) → customer accepts/declines → «تسجيل إكمال الخدمة المجانية» (value 0, no commission). `settle()` resets the window scroll on a route change.
 
 See `docs/AI_AGENT_CONTINUATION_PROTOCOL.md` sections 5–6. Do not start another Provider visual rebuild before P0 tests are added.

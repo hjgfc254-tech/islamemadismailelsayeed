@@ -29,19 +29,45 @@ Compact resume state for autonomous sessions. Update after every committed batch
 12. Admin modules — 8 placeholders converted (workforce ×3, audit ×2, access-control ×3) by extraction from pages (42-point HEAD parity, 0 diffs)
    + permission presets wired into the role editor. Tests: `admin-modules.test.js` (8); Admin browser 69/69. `npm test` 305/305.
 
+## Completed batches (2026-11-14, "Final frontend engineering completion")
+13. Visual refresh: logo-aligned palette and intro. Commit `e75650e`.
+14. Marketplace rules, role isolation, legacy migration. Commit `cb3789f`.
+    - Zero-value quotes are refused in the store, the Provider UI and on approve.
+    - Free-service workflow: `MP.proposeFree/respondFree/completeFree`, Provider form `pv-free-form`, Customer accept/decline.
+    - Provider `#/join` onboarding and profile editing.
+    - Customer Admin/role switching removed; "انضم كمقدم خدمة" now links to Provider onboarding.
+    - Legacy `portal-compat.js` and `provider-workspace.js` deleted after their Admin console capabilities moved to the
+      new `apps/admin/pages/marketplace.page.js` (live MP).
+    - Admin picker 320px overflow fixed (body margin).
+    - Tests: `marketplace-rules` and `legacy-migration`. SW `-16`.
+15. Backend-ready mock adapters. Commit `bcf2f89`.
+    - `services/api-client.js` + 11 `*-api.js` + `realtime-client.js`: 50 routes, envelope, role and ownership checks,
+      `setTransport` seam, no network.
+    - `docs/API_CONTRACTS.md`; tests in `api-adapters.test.js` (14).
+16. Provider screen change resets scroll (logout from a scrolled page left the register form off-screen at 768px).
+    Dead `.role-bar`/`role-mode` CSS removed; the manual Playwright sweep was updated; SW `-18`. Commit `67a316a`.
+    - Verified: `npm test` 326/326.
+    - Browser runs: Customer 145/145, Provider 261/261, Admin 124/124 at 1280/768/430/390/320.
+
 ## Current task
-Customer Addresses + Support keyboard & accessibility (Phase 5 item 4). All implementable placeholders are done.
+Customer Addresses + Support keyboard & accessibility (Phase 5 item 4).
 
 ## Remaining queue (priority order)
 1. Customer Addresses + Support a11y.
-2. Console/network smoke across entries; Admin keyboard traversal.
-3. Deferred by scope/decision: `services/*-api.js` + `realtime-client.js` (backend HTTP); split design-system CSS (migration decision).
+2. Optional: migrate screens from direct `MP` calls onto the mock adapters, one screen per batch, with parity tests.
+3. Console/network smoke across entries; Admin keyboard traversal; Guest-specific CDP runner (Guest is currently checked
+   inside the Customer runner's isolation loop).
+4. Deferred by decision: split design-system CSS (pinned empty by `design-token-audit.test.js`).
+
+## Resolved decisions (2026-11-14 directive)
+- Customer → Provider is the onboarding invitation to `apps/provider/index.html#/join` (no role switch, no auto-grant).
+- The legacy Admin console was migrated to `apps/admin/pages/marketplace.page.js`, then removed.
+- Zero-value quotes are forbidden; free service is its own workflow. Provider profile editing is enabled.
 
 ## Pending user decisions
-- Reroute Customer «بوابة مقدم الخدمة»/«انضم الآن» to the standalone Provider app (separate demo identities).
-- Legacy Admin console inside `portal-compat.js` vs `apps/admin/` (separate audit).
-- Zero-total Provider quotes accepted (no documented rule); Provider profile edit stays disabled (G2).
 - `test-write.tmp` is ignored locally but listed in the inventory (a clean clone reports it missing).
+- Approving a quote while the request is in `quote` completes the job immediately (existing store semantics, pinned by
+  `api-adapters.test.js`). Confirm whether a separate "provider marks done" step is wanted.
 
 ## Exact next action
 Read `apps/customer/pages/addresses.page.js` and `support.page.js` handlers/forms; reuse `tests/helpers/customer-app-harness.js`.

@@ -5,7 +5,10 @@
 ## Current phase rules
 - Do not implement backend routes, database schemas/migrations, production auth, server authorization, or external API calls while completing Frontend tasks.
 - Frontend may use local stores, fixtures, mock APIs, and local browser storage. Clearly label all simulated behavior.
-- Do not treat `services/*-api.js` filenames as proof of live backend integration.
+- Do not treat `services/*-api.js` as live backend integration. Since 2026-11-14 they are **mock adapters**: in-process
+  routes over `MP`, no network, not loaded by any entry. They define the contract in `docs/API_CONTRACTS.md` (envelope,
+  roles, ownership, validation, business rules). The backend phase plugs in `HSApiClient.setTransport()` and must
+  re-enforce every rule server-side.
 - Do not delete future backend/database scaffolding as unused. It is reserved for a later integration phase.
 
 ## Backend injection readiness

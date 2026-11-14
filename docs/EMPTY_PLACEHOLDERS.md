@@ -1,5 +1,7 @@
 # Current Placeholder / Scaffold Register
 
+> 2026-11-14: the legacy Provider bridge files were removed (no longer listed). `services/*-api.js` and `realtime-client.js` are now IMPLEMENTED (MOCK ADAPTER). `docs/AI_PROJECT_MAP.json` holds the authoritative per-file status; counts below may lag.
+
 This is a per-file inventory status, not proof that a whole feature is absent. Some behavior may live in legacy/grouped modules.
 
 **Files classified as PLACEHOLDER:** 120
@@ -46,8 +48,6 @@ This is a per-file inventory status, not proof that a whole feature is absent. S
 - `apps/provider/login.html` — Authentication entry placeholder; no production login/authentication.
 - `apps/provider/provider-auth.js` — Demo account selector only; trusted backend authentication remains unimplemented.
 - `apps/provider/provider-session.js` — Isolated demo session key only; not a secure production session.
-- `apps/provider/legacy/portal-compat.js` — Legacy customer-integrated compatibility bridge; retained for parity and not loaded by standalone Provider entry.
-- `apps/provider/provider-workspace.js` — Legacy customer-integrated workspace; retained for parity and not loaded by standalone Provider entry.
 
 Implemented frontend modules: standalone entry/shell/router, local demo bootstrap, twelve page renderers, request-domain grouping and responsive Provider stylesheet.
 

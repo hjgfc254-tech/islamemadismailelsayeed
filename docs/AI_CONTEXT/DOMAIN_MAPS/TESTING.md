@@ -15,7 +15,13 @@
 - Accessibility: partial; a complete automated accessibility runner is not currently established.
 
 ## Current baseline
-- `npm test`: **305 passed, 0 failed** (61 files) after Admin modules batch (2026-11-13). CDP runners: Provider 231/231, Customer 75/75, Admin 69/69 (shared `tests/e2e/lib/cdp.js`).
+- `npm test`: **326 passed, 0 failed** after the final completion batch (2026-11-14). CDP runners at 1280/768/430/390/320: Customer 145/145 (includes the Guest + Admin-isolation loop), Provider 261/261, Admin 124/124 (shared `tests/e2e/lib/cdp.js`).
+- Contract suites added 2026-11-14:
+  - `marketplace-rules.test.js`: business rules;
+  - `legacy-migration.test.js`: role isolation and legacy capability parity;
+  - `api-adapters.test.js`: mock API contract; it fails on any route missing from `docs/API_CONTRACTS.md`.
+- The manual Playwright scripts (`tests/e2e/*.browser.js`) need Playwright, which is not installed. They are kept as
+  references only; the CDP runners are the executable browser checks.
 - CDP lesson: `Page.navigate` to a fragment-only change is same-document — use `about:blank` first for a true fresh deep-link load.
 - Customer full-app harness: `tests/helpers/customer-app-harness.js` (`boot({hash, local, session})`, `clickDoc`, `submitDoc`, `navigate`, history/focus recording).
 - CDP lesson: assert what is *rendered*, not DOM state — `el.hidden === true` passed while CSS still displayed the element; use `getComputedStyle(...).display` and `document.elementFromPoint` for occlusion.

@@ -9,10 +9,19 @@
 - Home renderer: `apps/customer/pages/home.page.js` (independent, dependency-injected renderer; `app.js` owns runtime data/events).
 - Orders renderer: `apps/customer/pages/orders.page.js` (independent renderer; market-ui supplies MP data and filter event handling).
 - Order details/tracking renderer: `apps/customer/pages/order-details.page.js` (dependency-injected renderer; `market-ui.page.js` supplies the local MP adapter and presentation helpers; events/state remain in market-ui/app).
-- Details/providers/request-create route modules are still grouped or not yet independently wired; do not infer completion from filenames.
+- Providers (`pages/providers.page.js`) and request-create (`pages/request-create.page.js`, `#/request[/<catalogId>]`) are real modules since 2026-11-13; other screens may still live inside `market-ui.page.js`/`app.js`. Do not infer completion from filenames.
 - Styles: `apps/customer/styles/customer.css` plus `shared/design-system/`.
 - Local services: `services/local-catalog.js`, `services/local-market-store.js`, `services/local-attachments.js`.
 - Current concern: large files and behavior still grouped in legacy modules. Refactor only incrementally, preserving public globals/events/DOM contracts and adding regression tests.
+- **Role isolation (2026-11-14):** the Customer app has no Provider/Admin role switching (`enterRole`, `screens.admin` and
+  `screens.provider` are gone, and the legacy bridge scripts are no longer loaded). The menu section «للمتخصصين» and the home
+  CTA offer «عايز تقدم خدماتك؟ انضم كمقدم خدمة», a plain link to `../provider/index.html#/join`. It grants no permission.
+  `tests/unit/legacy-migration.test.js` fails on any Admin trace in Customer sources or rendered screens.
+- **Quotes and free service:**
+  - `order-details.page.js` renders `freeBlock` between the proposal and quote blocks. A proposed free service shows
+    `data-act="acceptFree"` / `"declineFree"` (handled in `market-ui.page.js` → `MP.respondFree`). Accepted, completed and
+    declined states show notes.
+  - Approving a quote toasts on failure; zero quotes are refused by `MP.approveQuote`.
 
 - Bottom Sheet: rendered in `apps/customer/index.html` (`#sheet`, `role=dialog`, `aria-modal=true`) and managed by `apps/customer/app.js` (`sheet`, `closeSheet`). TASK 04 adds opener preservation, initial focus, Tab/Shift+Tab containment, Escape, focus restoration/fallback, and background inert/aria-hidden isolation. `origin` remains a separate problem-list return context. Browser coverage: `tests/e2e/customer-sheet-focus.browser.py`.
 

@@ -81,7 +81,7 @@ A focused shared keyboard-tabs helper is now implemented and tested: `shared/com
 
 ## تحديث 2026-11-13 — Provider standalone frontend
 
-- أُنجز standalone demo entry/runtime والـ shell/router و12 renderer. هذا لا يثبت تكافؤ legacy bridge ولا يبرر حذف `portal-compat.js` أو `provider-workspace.js`.
+- أُنجز standalone demo entry/runtime والـ shell/router و12 renderer. هذا لا يثبت تكافؤ legacy bridge ولا يبرر حذف `portal-compat.js` أو `provider-workspace.js`. **(محدّث 2026-11-14: أُثبت التكافؤ ونُقلت قدرات لوحة الإدارة القديمة إلى `apps/admin/pages/marketplace.page.js`، ثم حُذف الملفان؛ انظر `docs/HANDOFF_NEXT_AI.md`.)**
 - ✅ **P0 (منجز 2026-11-13):** `provider-app-actions.test.js` (25) و`provider-app-routing.test.js` (12) عبر `tests/helpers/provider-app-harness.js`؛ أُصلحت رسائل النجاح الكاذبة عند الإجراءات القديمة (stale)، وإلزام سبب الرفض، ورفض المواعيد الماضية، والتحقق من مبالغ عرض السعر، وانتقال `advance` لمجموعة الطلب الجديدة. التفاصيل في `DOMAIN_MAPS/PROVIDER.md` §6.
 - ✅ **P1 (منجز 2026-11-13):** إدارة التركيز عند تغيير المسار وبعد الإجراءات، عناوين الصفحات، نماذج inline بأسماء وصولية ونموذج واحد فقط وEscape وإرجاع التركيز، احترام reduced motion — `provider-app-a11y.test.js` (14). التالي: P2.
 - ✅ **P2 (منجز 2026-11-13):** فحص متصفح حقيقي (Edge عبر DevTools Protocol بلا اعتماديات) عند 1280/768/430/390/320px — 170/170. أُصلحت أيقونات بلا حجم/تعبئة سوداء، وأنماط مفقودة (زر التوفر، الإشعار toast، ملاحظة الموعد، ملخص عرض السعر)، وfavicon مفقود. السكربت: `tests/e2e/provider-standalone.cdp.js`.

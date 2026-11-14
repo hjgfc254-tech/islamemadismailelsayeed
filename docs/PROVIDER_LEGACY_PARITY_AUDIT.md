@@ -1,5 +1,7 @@
 # Provider Legacy Parity Audit (P3)
 
+> **CLOSED 2026-11-14 (commit `cb3789f`).** Every gap was resolved: G1 registration, G2 profile editing (enabled), G3 commission preview, G4 login hand-off. The legacy Admin console's capabilities moved to `apps/admin/pages/marketplace.page.js`. `portal-compat.js`, `provider-workspace.js` and `tests/unit/provider-legacy-parity.test.js` were then deleted. The current guard is `tests/unit/legacy-migration.test.js`. The text below is the original 2026-11-13 audit, kept as evidence.
+
 **Date:** 2026-11-13 · **Scope:** frontend only · **Outcome:** evidence + recommendation. Nothing was removed, renamed or unloaded.
 **Executable evidence:** `tests/unit/provider-legacy-parity.test.js` (6 tests).
 

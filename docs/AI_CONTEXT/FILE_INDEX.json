@@ -1175,36 +1175,36 @@
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 2942,
-      "sha256": "ef141caaec5583e1244dcfb78492f868f5eda235ac709933277e12734257c6d9"
+      "bytes": 4382,
+      "sha256": "8ef7b794a660104accdfb23efcf5a288e923b711d5a51ad621d4b7a5a180d99e"
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/CUSTOMER.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 6411,
-      "sha256": "5d7a8c8c0ee5de405d76d74a198934bd44df95c438e01c8fb80fca22378e0b6b"
+      "bytes": 7442,
+      "sha256": "8391f9848c4d4b80a420c66b9e5a4d6797a6bcfec6ddcbd0525f9e0ee57cfd99"
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/FRONTEND_RUNTIME.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 3352,
-      "sha256": "5d84b2a180f613acbf9a9a282190a758aaf19abbee9e6024d2f017c00c2dfffe"
+      "bytes": 3744,
+      "sha256": "bdb4c7bbb9a6ab3c33a57ee26919e9d786ae26d6ba8d64f39172fec9ed293c91"
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/FUTURE_BACKEND_BOUNDARY.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 1303,
-      "sha256": "b0f7f3f0ad7158e7329258fe865121c7d3ff5aa2dbda72131456d8c70aaff840"
+      "bytes": 1611,
+      "sha256": "f3dda2e29ba78094084274d65e0b65ee22c6cf6910f4c0c090cd96f97ddc1a5c"
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/PROVIDER.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 9689,
-      "sha256": "8513d478733292b7b90afa5a5df5238aae034928f9ab7d15cade780aa22fb5f6"
+      "bytes": 10536,
+      "sha256": "ae3014377deb95cd3e4920d85a09f491910b9df7529f7b3dd0a06d7e1f7b7acb"
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/SHARED_AND_SERVICES.md",
@@ -1217,15 +1217,15 @@
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/TESTING.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 4370,
-      "sha256": "57aa223a720ef7bcf0cb394c1b8e5597a9b1473e23c41b7e1303c8a603076044"
+      "bytes": 4894,
+      "sha256": "a78cfadd6b7032a92ebeab8cf48ecf36ea7e1d9f565dcd523475b6c2657d639a"
     },
     {
       "path": "docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 3879,
-      "sha256": "daea2abf15cbd83889e1d3cd83113cf6c9563bef15d7a8e3e62f6467835fb5e2"
+      "bytes": 5814,
+      "sha256": "427a722cac7459caf43337474bcbcb07222bc9feb108219191d6f54ed543809b"
     },
     {
       "path": "docs/AI_CONTEXT/FILE_INDEX.json",
@@ -1245,8 +1245,8 @@
       "path": "docs/AI_CONTEXT/START_HERE.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 3837,
-      "sha256": "621f671769b6891e778ec32d31c8003f5a2c931822907c0f0bf3a80644612db8"
+      "bytes": 4532,
+      "sha256": "437b42c19f05d5541829b2fd87a9b21c5af10e9bd6165673562b30f92fc47f68"
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -1259,8 +1259,8 @@
       "path": "docs/AI_NEXT_IMPLEMENTATION_ORDER.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 14126,
-      "sha256": "dc7083d9347d42612babafc937d9cd5c844bba25e93b85f4dce96d47b698878d"
+      "bytes": 14359,
+      "sha256": "afe0e29d33f5a09707f8eea2653be2996c4391bdaebe55df697fa368ac7e20b4"
     },
     {
       "path": "docs/AI_PROJECT_MAP.csv",
@@ -1273,7 +1273,7 @@
       "path": "docs/AI_PROJECT_MAP.json",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 1435004,
+      "bytes": 1435005,
       "sha256": null
     },
     {
@@ -1392,8 +1392,8 @@
       "path": "docs/EMPTY_PLACEHOLDERS.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 16019,
-      "sha256": "b440c8555a9fcd7ff95b5ac5695554256f5d26277f0fa0bac569fa893c408ddc"
+      "bytes": 15964,
+      "sha256": "e205702fb67d74ebd56dffa115d38e12b4c506ccf09123b18b3ed1fbded13ddc"
     },
     {
       "path": "docs/ENGINEERING_ENVIRONMENT_REPORT.md",
@@ -1476,8 +1476,8 @@
       "path": "docs/HANDOFF_NEXT_AI.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 80960,
-      "sha256": "3cf5942a53825b42a921d0ad605dcb3423cc4c047f7263683cf97e5a383e6034"
+      "bytes": 84623,
+      "sha256": "42d81f3ce901be9d6f5b0969ecd8f1e75cb47e110cd2b64288b1b535d419a9f8"
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -1588,8 +1588,8 @@
       "path": "docs/PROVIDER_LEGACY_PARITY_AUDIT.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 6090,
-      "sha256": "53c3ad0f6144ad037e81b5a3b4308e57ae8e4e5ad15321d9e983683e85861bb7"
+      "bytes": 6575,
+      "sha256": "f99a76b72aeb7550ddeeeb392c22aa7fbf5320a997dfe2972b5aa50254d73805"
     },
     {
       "path": "docs/REMOVED_FILES_REPORT.md",
@@ -1630,8 +1630,8 @@
       "path": "HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md",
       "area": "HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md",
       "status": "DOCUMENTATION",
-      "bytes": 31980,
-      "sha256": "15ee7e514d010b54e288c577e6a0f5aee628b593b6ca76ff47a6e391832fe235"
+      "bytes": 33783,
+      "sha256": "4bc31ca46f62d79e74c2fcd9ba396d91a2bbcee5952f6e296aa230262f768817"
     },
     {
       "path": "index.html",

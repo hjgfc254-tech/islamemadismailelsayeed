@@ -1,3 +1,61 @@
+# CURRENT HANDOFF — 2026-11-14 — Final frontend engineering completion (Claude Code)
+
+> The newest entry is at the top; everything below this section is a dated history log. Source code wins over any older statement below
+> (in particular, entries that say the legacy bridge "must be kept" or that profile editing is "disabled" are superseded).
+
+**Commits (on `main`):**
+- `e75650e`: palette and intro.
+- `cb3789f`: marketplace rules, role isolation, legacy migration.
+- `bcf2f89`: mock API adapters.
+- `67a316a`: Provider scroll reset and dead CSS removal.
+- The docs commit follows.
+
+**What is now true**
+- **One marketplace:** Customer, Provider and Admin share `MP` (`hs_mp_db`).
+  - A Customer request reaches the Provider; a Provider registration reaches the Admin «تشغيل السوق» page
+    (`apps/admin/pages/marketplace.page.js`).
+- **Admin isolation:** the Customer app has no Admin link, role switch or `enterRole`. Provider has no Admin trace.
+  `tests/unit/legacy-migration.test.js` scans the sources and the rendered screens, and the CDP runners check it at 5 widths.
+- **Legacy removed:** `apps/provider/legacy/portal-compat.js` and `apps/provider/provider-workspace.js` were deleted, with
+  their two tests and SW entries.
+  - Their unique Admin console capabilities (approve/reject/suspend providers, special rate, manual and auto
+    assignment, cancel, customer suspension, complaint resolution, commission rates, collection status, demo reset)
+    live in `marketplace.page.js`.
+  - The legacy-migration test checks each capability.
+- **Onboarding:** Customer menu and home → «عايز تقدم خدماتك؟ انضم كمقدم خدمة» → `apps/provider/index.html#/join`.
+  Registration is `pending` and grants nothing until Admin approves.
+- **Provider:** profile editing is enabled (shared form, `pv-profile-form`). A screen change resets the scroll.
+- **Rules:** zero-value quotes are refused on submit and approve. Free service has its own flow:
+  - `MP.proposeFree(reqId, reason)` → `respondFree(reqId, accept)` → `completeFree(reqId)`;
+  - the result is value 0, no commission, `transaction.free = true`;
+  - paid `complete()` is blocked while a free service is open.
+- **Backend-ready:** `services/api-client.js` + `auth/orders/quotes/catalog/provider/customer/notifications/support/finance/admin/uploads-api.js`
+  + `realtime-client.js`.
+  - They are mock adapters: 50 routes, one envelope, 401/403/404/409/422/503, ownership checks, and
+    `setTransport()` for a future HTTP layer.
+  - They make **no network calls** and **no entry loads them yet**.
+  - Contract: `docs/API_CONTRACTS.md`.
+
+**Tests actually run (final state)**
+- `npm test` 326/326.
+- CDP runners (Edge via `tests/e2e/lib/cdp.js`, `python -m http.server 8099`) at 1280/768/430/390/320:
+  - `customer-orders.cdp.js` 145/145 (includes the Guest/isolation loop);
+  - `provider-standalone.cdp.js` 261/261;
+  - `admin-app.cdp.js` 124/124.
+- `audit:inventory` 0 missing / 0 untracked / 0 mismatches.
+
+**Not verified / limits**
+- Screen readers, Firefox/WebKit and physical devices were not tested.
+- `tests/e2e/responsive-sweep.browser.js` (Playwright) was updated but not run, because Playwright is not installed.
+- No dedicated Guest runner (Guest is covered inside the Customer runner).
+
+**Risks**
+- Approving a quote in the `quote` state completes the job immediately (existing semantics, now pinned).
+- The adapters are not wired into screens: migrating a screen changes its error and empty states and needs parity tests.
+
+**Exact next task:** Customer Addresses + Support keyboard & accessibility (see `docs/AI_CONTEXT/START_HERE.md`).
+
+---
 **آخر تحديث:** 2026-11-13 — PHASE 5 / TASK 03 مكتملة، وTASK 04: Customer Bottom Sheet + home/dedicated Search + guide carousel + Request Wizard + account-label accessibility دفعة واحدة منفذة ومختبرة جزئيًا.
 - TASK 03 Responsive browser sweep مكتملة حسب `docs/RESPONSIVE_AUDIT.md`؛ وصفها السابق في `START_HERE.md` وخريطة الملفات كان قديمًا وتمت تسويته.
 - الحالة السابقة المؤكدة: `sheet()` لم تحفظ opener ولم تنقل التركيز؛ `closeSheet()` لم تستعده؛ `origin` كان سياق رجوع قائمة المشاكل فقط. تمت مراجعة كل مستهلكي `sheet()` و`closeSheet()` في ملفات Customer قبل التنفيذ.
