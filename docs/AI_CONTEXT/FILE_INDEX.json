@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 458,
+  "file_count": 459,
   "files": [
     {
       "path": "_redirects",
@@ -90,8 +90,8 @@
       "path": "apps/admin/admin-shell.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL, DEMO)",
-      "bytes": 24745,
-      "sha256": "242c201a7c0ef9bc9335249e296fb90da8eba47d04e1fd33c3f87c7d7a085353"
+      "bytes": 25108,
+      "sha256": "54ff1eafa7eb84a24425e3f4a1f32c571db30abc21b86f33696db2c21a6003f1"
     },
     {
       "path": "apps/admin/app.js",
@@ -104,8 +104,8 @@
       "path": "apps/admin/index.html",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL HOST)",
-      "bytes": 4621,
-      "sha256": "e940c5c60db10381663da135aa058027bb56ed7a98d1272fa77e457db5a2a70e"
+      "bytes": 4674,
+      "sha256": "d8f717c6884f10874e65674c0e0d52c1eb49d65feca5f9bdff864961724d7fe1"
     },
     {
       "path": "apps/admin/login.html",
@@ -134,6 +134,13 @@
       "status": "IMPLEMENTED (FRONTEND DEMO)",
       "bytes": 7597,
       "sha256": "6cd81e8789c5f630db583bba344611b1e56233eff941a7006e30c5bd8fe9c909"
+    },
+    {
+      "path": "apps/admin/modules/admin-live-panels.js",
+      "area": "apps/admin",
+      "status": "NEEDS_REVIEW",
+      "bytes": 14432,
+      "sha256": "093aa60451e0b8b73640c5d9ee4afa36a7406dd3dd4f715605554cd04d0accf2"
     },
     {
       "path": "apps/admin/modules/admin-live.js",
@@ -1413,8 +1420,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 257136,
-      "sha256": "36bc5a6f6ce623f71c8c598a3a87f413ae433c4932bcb20b3f31ec7224892f42"
+      "bytes": 257386,
+      "sha256": "85da591366f10db5bfcd6aee56321451d9435759577f4aadd88bb0b7b914c745"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -1427,8 +1434,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 120617,
-      "sha256": "dafec83778f9d02b11a88e40ca641b5136e7b77ab532f3adbfdbe18eb7b37f11"
+      "bytes": 120838,
+      "sha256": "394f43006489493361c5c2b620ed479a9884131dfeb291100bbe33cf94c6c853"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -1770,8 +1777,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 21653,
-      "sha256": "84d3fa4540e32d86d99d297520d61721ea2f9f4c8ec39f9a1d994f6543500315"
+      "bytes": 21702,
+      "sha256": "e1e67d1c3fc9564e6e336a64462cdff44593f6cac35d258f495ed3a43d61458e"
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -2169,8 +2176,8 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 8258,
-      "sha256": "44d3679b3441acf47ae8d6e4791efbf68af515e7f5124a27c1eaecce33dbacfd"
+      "bytes": 8303,
+      "sha256": "c8da3d30234422ed7dc61cf09ec6800bc348a5c8fd7c4e9bed8847b88cb926b2"
     },
     {
       "path": "services/admin-api.js",
@@ -2575,8 +2582,8 @@
       "path": "tests/e2e/firebase-emulator.cdp.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 16826,
-      "sha256": "ec73f4a4a52a744ca0fc52211233cd06157a8e754aade41e18801f21a1629e01"
+      "bytes": 17465,
+      "sha256": "c84740ea6b63b4d627b4d1b7d4ad91410c08e07aceeeeb8bef4aa6e956b1792a"
     },
     {
       "path": "tests/e2e/guest.cdp.js",
@@ -2918,8 +2925,8 @@
       "path": "tests/unit/firebase-mode-data.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 13011,
-      "sha256": "6d676f3c648f8c8c0e729507ef0621cd00ad21eb0c0abc50afd1262087b0fdb8"
+      "bytes": 15984,
+      "sha256": "5fb41acaed1c74b63e93582c62748bd70d621a4f0f72d69b5d545a20ac15fc59"
     },
     {
       "path": "tests/unit/frontend-contracts.test.js",

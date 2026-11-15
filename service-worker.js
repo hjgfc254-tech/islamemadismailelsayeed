@@ -90,6 +90,7 @@ const FILES = [
   'services/firebase-config.js',
   'services/firebase-backend.js',
   'apps/admin/modules/admin-live.js',
+  'apps/admin/modules/admin-live-panels.js',
   'assets/vendor/firebase/13.1.0/firebase-app.js',
   'assets/vendor/firebase/13.1.0/firebase-auth.js',
   'assets/vendor/firebase/13.1.0/firebase-functions.js',

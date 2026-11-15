@@ -239,8 +239,13 @@
     else if (firebaseMode() && !LIVE_PAGES.has(id)) {
       /* Firebase backend: pages still built on local demo fixtures never show those fixtures as real data */
       setActions(null, ctx);
-      mountContent(notConnectedView(id, title));
-      if (id === DEFAULT_ROUTE) fillLiveSummary(token);
+      if (root.HSAdminLivePanels && root.HSAdminLivePanels.ids.includes(id)) {   /* server-backed panel (modules/admin-live-panels.js) */
+        mountContent('<div data-adm-live-panel="' + esc(id) + '"></div>');
+        const host = els.content.querySelector('[data-adm-live-panel]'); if (host) root.HSAdminLivePanels.mount(id, host);
+      } else {
+        mountContent(notConnectedView(id, title));
+        if (id === DEFAULT_ROUTE) fillLiveSummary(token);
+      }
     }
     else {
       els.content.setAttribute('aria-busy', 'true');

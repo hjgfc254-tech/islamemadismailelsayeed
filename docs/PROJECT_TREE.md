@@ -26,6 +26,7 @@ hansalhlak/
 │   │   │   │   ├── employee-form.js
 │   │   │   │   ├── employee-invitation.js
 │   │   │   │   └── employee-status.js
+│   │   │   ├── admin-live-panels.js
 │   │   │   └── admin-live.js
 │   │   ├── pages/
 │   │   │   ├── admin-dashboard.page.js

@@ -139,3 +139,37 @@ test('HSAdminLive: Admin pages read the server read model and act only through r
   assert.equal((await L.status('reviews', 'v1', 'hidden')).status, 501, 'no review moderation route');
   assert.equal(calls.length, before, 'unsupported actions never reach the network or the local store');
 });
+test('HSAdminLivePanels: every remaining Admin page renders server data from real routes (no fixtures)', async () => {
+  const vm = require('node:vm');
+  const calls = [];
+  const replies = {
+    'GET /admin/audit': { items: [{ id: 'a1', at: '2026-11-15T11:00:00Z', action: 'claimOwner', uid: 'u1' }] },
+    'GET /admin/settings': { autoAssign: true, customerFee: false, collectionModel: 'platform', markupRate: 15, defaultRate: 15 },
+    'GET /admin/departments': { items: [{ id: 'd1', name: 'العمليات', parentId: null, status: 'active', headId: null }] },
+    'GET /admin/security/admins': { items: [{ uid: 'u1', name: 'المالك', email: 'owner@example.test', role: 'owner', lastSignIn: '2026-11-15T10:00:00Z' }] },
+    'GET /admin/notifications/broadcasts': { items: [{ id: 'b1', audience: 'customers', text: 'عرض خاص', recipients: 3, at: '2026-11-15T10:00:00Z' }] },
+    'GET /admin/commission': { defaultRate: 15, rates: { electric: 12 } },
+    'GET /admin/pricing': { markupRate: 10, prices: {} },
+    'GET /admin/summary': { requests: 4, unassigned: 1, providers: 2, pending: 1, openComplaints: 0, uncollected: 1 }
+  };
+  const ctx = { console, Date, Math, JSON, Promise, Intl };
+  ctx.globalThis = ctx; vm.createContext(ctx);
+  vm.runInContext(read('apps/admin/modules/admin-live-panels.js'), ctx);
+  ctx.HSApiClient = { request: (m, p) => { calls.push(m + ' ' + p); const d = replies[m + ' ' + p]; return Promise.resolve(d ? { ok: true, status: 200, data: d } : { ok: false, status: 404, error: { message: 'x' } }); } };
+  ctx.MP = { db: () => ({ serviceRequests: [{ status: 'closed' }], transactions: [{ value: 220, commission: 20, collection: 'pending', at: new Date().toISOString() }] }), catName: k => k };
+  const P = ctx.HSAdminLivePanels;
+  assert.deepEqual([...P.ids].sort(), ['audit', 'commissions', 'departments', 'notifications', 'reports', 'security', 'services', 'settings', 'super-dashboard']);
+  const host = () => ({ innerHTML: '', querySelector: () => ({ addEventListener() {} }), querySelectorAll: () => [] });
+  const out = {};
+  for (const id of P.ids) { const h = host(); await P.mount(id, h); out[id] = h.innerHTML; }
+  assert.match(out.audit, /claimOwner/);
+  assert.match(out.settings, /name="markupRate"[^>]*value="15"/);
+  assert.match(out.departments, /العمليات/);
+  assert.match(out.security, /data-revoke="u1"/);
+  assert.match(out.notifications, /عرض خاص/);
+  assert.match(out.commissions, /12٪/);
+  assert.match(out['super-dashboard'], /بيانات حية من الخادم/);
+  assert.match(out.reports, /حصة المنصة/);
+  for (const id of P.ids) assert.doesNotMatch(out[id], /تجريبي|DEMO/i, id + ': no demo data');
+  assert.ok(['GET /admin/audit', 'GET /admin/settings', 'GET /admin/departments', 'GET /admin/security/admins', 'GET /admin/notifications/broadcasts', 'GET /admin/commission', 'GET /admin/summary'].every(c => calls.includes(c)), 'each panel reads its real route');
+});

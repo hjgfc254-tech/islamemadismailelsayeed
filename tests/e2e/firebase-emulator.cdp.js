@@ -152,7 +152,12 @@ withBrowser(async ({ wsUrl }) => {
   await d.evaluate(`location.hash = '#/settlements'; true`);
   ok(await d.waitFor('!document.querySelector("[data-adm-not-connected]")', 8000), 'settlements show real provider balances (not gated)');
   await d.evaluate(`location.hash = '#/notifications'; true`);
-  ok(await d.waitFor('!!document.querySelector("[data-adm-not-connected]")', 8000), 'a page without server data (notifications) stays explicitly gated');
+  ok(await d.waitFor('!!document.querySelector("[data-live-bc]")', 10000), 'notifications page is a live server panel');
+  await d.evaluate(`(() => { const f = document.querySelector('[data-live-bc]'); f.audience.value = 'customers'; f.text.value = 'تحديث مهم لعملائنا'; f.requestSubmit(); return true; })()`);
+  ok(await d.waitFor('document.body.textContent.includes("تحديث مهم لعملائنا")', 12000), 'an in-app broadcast is sent and listed from the server');
+  await d.evaluate(`location.hash = '#/audit'; true`);
+  ok(await d.waitFor('document.body.textContent.includes("claimOwner")', 12000), 'the audit log panel shows real server audit entries');
+  ok(await d.evaluate('!document.querySelector("[data-adm-not-connected]")'), 'no Admin page is left gated');
 
   const errs = d.errors.filter(e => !/favicon|ERR_FAILED/.test(e));
   ok(errs.length === 0, 'no console errors: ' + (errs.slice(0, 3).join(' | ') || 'none'));
