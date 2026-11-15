@@ -197,6 +197,13 @@ const MP = (() => {
     const r = db.settings.rates[cat];
     return (r!=null && r!=='') ? +r : +db.settings.defaultRate;
   };
+  /* ═════════ Upfront pricing (Uber model) ═════════
+     The admin sets a base price per service (catalog item id, or service id) = what the PROVIDER receives.
+     The customer sees base × (1 + markupRate%) at booking; the platform's share is the difference.
+     markupRate defaults to the existing defaultRate. No price configured → the previous flow (value at completion). */
+  const markupRate = () => { const m = db.settings.markupRate; return (m!=null && m!=='') ? +m : +db.settings.defaultRate; };
+  const quoteFor = (base, rate) => { const b = Math.round(+base*100)/100, c = Math.round(b*(1+rate/100)); return { base:b, rate, customerPrice:c, providerAmount:b, platformFee:Math.round((c-b)*100)/100 }; };
+  const priceFor = (key) => { const prices = db.settings.prices || {}; const b = key && prices[key]; return (b!=null && +b>0) ? quoteFor(+b, markupRate()) : null; };
   const calc = (value, rate, deductions=0) => {
     const v = Math.max(0, +value||0), c = Math.round(v*rate)/100, d = Math.max(0, +deductions||0);
     return { value:v, rate, commission:c, deductions:d, net: Math.round((v-c-d)*100)/100 };
@@ -266,6 +273,8 @@ const MP = (() => {
         status:'received', history:[], proposal:null, finalValue:null,
         quoteId:'', demo:true, createdAt:now()
       };
+      const pr = priceFor(r.itemId) || priceFor(r.serviceId);
+      if (pr) { r.pricing = pr; r.agreedValue = pr.customerPrice; }   /* upfront price shown to the customer and fixed on the request */
       log(r,'received'); log(r,'searching');
       db.serviceRequests.unshift(r);
       notify('admin','طلب جديد '+r.no+' — '+r.serviceName, r.id);
@@ -360,6 +369,7 @@ const MP = (() => {
         labor:+q.labor||0, parts:+q.parts||0, visitFee:+q.visitFee||0, discount:+q.discount||0,
         total, note:q.note||'', status:'pending', at:now()
       };
+      if (r.pricing) { const nq = quoteFor(total, r.pricing.rate); quote.providerAmount = nq.providerAmount; quote.customerTotal = nq.customerPrice; quote.platformFee = nq.platformFee; }
       if (prev && prev.status === 'pending') prev.status = 'superseded';
       db.quotes.unshift(quote);
       r.quoteId = quote.id;
@@ -378,6 +388,7 @@ const MP = (() => {
       const p = api.providerOf(reqId); if (!p) return false;
       q.status = 'approved'; q.approvedAt = now();
       r.agreedValue = q.total;
+      if (r.pricing) { r.pricing = quoteFor(q.total, r.pricing.rate); r.agreedValue = r.pricing.customerPrice; }   /* adjusted upfront price */
       log(r,'started','العميل وافق على السعر ('+q.total+' ج.م) — جارٍ التنفيذ');
       notify('provider:'+p.id,'العميل وافق على السعر — نفّذ الخدمة ثم سجّل الإكمال (الطلب '+r.no+')',r.id);
       save(); return true;
@@ -446,6 +457,16 @@ const MP = (() => {
       const q = api.currentQuote(reqId);
       if (q && q.status === 'pending') return false;
       let v = +value;
+      if (r.pricing) {
+        if (value !== undefined && value !== null && value !== '' && v !== +r.pricing.customerPrice) return false;   /* the booked price is final */
+        const d = Math.max(0, +deductions||0), pr = r.pricing;
+        const x = { value:pr.customerPrice, rate:pr.rate, commission:pr.platformFee, deductions:d, net:Math.round((pr.providerAmount-d)*100)/100, pricing:'upfront' };
+        r.finalValue = x.value;
+        log(r,'completed','السعر المحدد مسبقًا '+x.value);
+        if (!db.transactions.some(t => t.reqId===reqId)) db.transactions.push({id:uid('t'),reqId,providerId:p.id,customerId:r.customerId,cat:r.cat,...x,model:db.settings.collectionModel,collection:'pending',demo:true,at:now()});
+        notify('customer:'+r.customerId,'اكتملت الخدمة — أكّد الإتمام وقيّم الفني (الطلب '+r.no+')',r.id);
+        save(); return true;
+      }
       if (q && q.status === 'approved') {
         /* السعر المتفق عليه هو القيمة النهائية؛ لا يُقبل مبلغ مختلف */
         if (value !== undefined && value !== null && value !== '' && v !== +q.total) return false;
@@ -518,6 +539,8 @@ const MP = (() => {
     },
     updateProvider(id, patch){ const p = get('providers',id); if(p){ Object.assign(p,patch); save(); } },
     setSetting(k,v){ db.settings[k]=v; save(); },
+    setPrice(key,base){ db.settings.prices = db.settings.prices || {}; if(base===''||base==null) delete db.settings.prices[key]; else db.settings.prices[key]=+base; save(); },
+    priceFor, markupRate, quoteFor,
     setCatRate(cat,v){ if(v===''||v==null) delete db.settings.rates[cat]; else db.settings.rates[cat]=+v; save(); },
 
     /* ═════════ الإشعارات ═════════ */

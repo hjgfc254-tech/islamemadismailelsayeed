@@ -59,15 +59,17 @@
       ? `<div class="need">${ic('search')}<span>جارٍ البحث عن مقدم خدمة…</span></div>`
       : '';
 
+    /* upfront price (Uber model): fixed at booking */
+    const priceBlock = r.pricing && r.pricing.customerPrice ? `<div class="need">${ic('wallet')}<span>السعر المحدد عند الطلب: <b>${money(r.pricing.customerPrice)}</b> — شامل رسوم المنصة</span></div>` : '';
     /* عرض السعر */
     const quoteBlock = quote && quote.status === 'pending'
       ? `<div class="card2 glass neon" style="border-color:rgba(255,61,143,.5)">
           <div class="top"><b>${ic('st-quote')} عرض سعر من مقدم الخدمة</b><span class="tag">بانتظار موافقتك</span></div>
-          <div class="quote-row"><span>المصنعية</span><b>${money(quote.labor)}</b></div>
+          ${quote.customerTotal ? `<div class="quote-row"><span>تعديل السعر بعد المعاينة (شامل رسوم المنصة)</span></div>` : `<div class="quote-row"><span>المصنعية</span><b>${money(quote.labor)}</b></div>
           ${quote.parts?`<div class="quote-row"><span>قطع الغيار</span><b>${money(quote.parts)}</b></div>`:''}
           ${quote.visitFee?`<div class="quote-row"><span>رسوم المعاينة</span><b>${money(quote.visitFee)}</b></div>`:''}
-          ${quote.discount?`<div class="quote-row" style="color:#6ee7b7"><span>خصم</span><b>- ${money(quote.discount)}</b></div>`:''}
-          <div class="quote-row total"><span>الإجمالي</span><b>${money(quote.total)}</b></div>
+          ${quote.discount?`<div class="quote-row" style="color:#6ee7b7"><span>خصم</span><b>- ${money(quote.discount)}</b></div>`:''}`}
+          <div class="quote-row total"><span>الإجمالي</span><b>${money(quote.customerTotal || quote.total)}</b></div>
           ${quote.note?`<small>${esc(quote.note)}</small>`:''}
           <div class="acts">
             <button class="pri" data-act="approveQuote" data-id="${id}">${ic('check')} موافقة</button>
@@ -75,7 +77,7 @@
           </div>
         </div>`
       : quote && quote.status === 'approved'
-      ? `<div class="need" style="color:#6ee7b7">${ic('check')}<span>تمت الموافقة على عرض السعر — ${money(quote.total)}</span></div>`
+      ? `<div class="need" style="color:#6ee7b7">${ic('check')}<span>تمت الموافقة على عرض السعر — ${money(quote.customerTotal || quote.total)}</span></div>`
       : '';
 
     /* الخدمة المجانية — مسار مستقل: اقتراح من مقدم الخدمة ← موافقة/رفض العميل ← إكمال بلا مقابل */
@@ -150,7 +152,7 @@
       ${statusTimeline(r)}
       ${proposalBlock}
       ${freeBlock}
-      ${quoteBlock}
+      ${priceBlock}${quoteBlock}
       <h2 class="sec-title">${ic('info')}التفاصيل</h2>
       ${sum}
       <div class="plist" style="margin-top:12px;gap:8px">${actions.join('')}</div>

@@ -16,7 +16,7 @@ const { keyOf, colName, KNOWN_ARRAYS } = require('./store');
 const { PartialDb } = require('./partial');
 const { plan, syncPlan } = require('./plan');
 const { normalizePhone, APPS } = require('./identity');
-const { scopeFor } = require('./scope');
+const { scopeFor, customerRequestView, customerQuote } = require('./scope');
 const workforce = require('./workforce');
 
 const METHODS = ['GET', 'POST', 'PATCH', 'DELETE'];
@@ -119,6 +119,15 @@ function redactForProvider(data, actor, db) {
   return fix(data);
 }
 
+/** Customer responses never carry the provider amount / platform fee of priced requests (Uber model). */
+function redactForCustomer(data) {
+  if (data == null) return data;
+  const fix = v => (v && typeof v === 'object' && v.customerId && v.no ? customerRequestView(v) : (v && v.customerTotal != null ? customerQuote(v) : v));
+  if (Array.isArray(data)) return data.map(fix);
+  if (data && Array.isArray(data.items)) return { ...data, items: data.items.map(fix) };
+  return fix(data);
+}
+
 /** GET /admin/summary from aggregation counts (6 count queries) instead of loading collections. */
 async function adminSummary(ld) {
   const [pending, providers, requests, unassigned, openComplaints, uncollected] = await Promise.all([
@@ -171,6 +180,7 @@ async function api(backend, { auth, data }) {
     let changes = {};
     if (res.envelope.ok && !isRead) changes = ld.commit(res.db).changes;
     if (res.envelope.ok) res.envelope.data = redactForProvider(res.envelope.data, actor, res.db);
+    if (res.envelope.ok && actor && actor.role === 'customer') res.envelope.data = redactForCustomer(res.envelope.data);
     if (Object.keys(ld.pages).length && res.envelope.ok) res.envelope.page = { nextCursor: Object.values(ld.pages)[0] };
     if (idemPath && !isRead) backend.adapter.set(tx, idemPath, { envelope: res.envelope, atMs: Date.now(), path: req.path, expiresAt: new Date(Date.now() + IDEMPOTENCY_TTL_MS) });
     return { envelope: res.envelope, changes, actor, db: res.db, reads: ld.reads };

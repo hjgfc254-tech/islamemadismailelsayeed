@@ -71,6 +71,32 @@
     return { defaultRate: s.defaultRate, rates: { ...s.rates }, collectionModel: s.collectionModel };
   });
 
+  /* ── Upfront pricing (Uber model): base price per service = provider amount; customer pays base × (1 + markup%) ── */
+  const KEY_RE = /^[\w:./-]{1,80}$/;
+  client.define('GET', '/pricing', { roles: ['public'], summary: 'Customer prices per service key (upfront, platform share included) and the markup rate.' }, ({ store }) => {
+    const prices = store.db().settings.prices || {};
+    const out = {};
+    for (const k of Object.keys(prices)) { const q = store.priceFor(k); if (q) out[k] = q.customerPrice; }
+    return { markupRate: store.markupRate(), prices: out };
+  });
+  client.define('GET', '/admin/pricing', { roles: ['admin'], summary: 'Base prices (provider amounts) per service key and the markup rate.' }, ({ actor, store }) => {
+    if (!permitted(actor, 'services', 'view')) return fail('FORBIDDEN');
+    return { markupRate: store.markupRate(), prices: { ...(store.db().settings.prices || {}) } };
+  });
+  client.define('POST', '/admin/pricing', { roles: ['admin'], summary: 'Set or clear the base price of a service key {key, base>0|null}; or the markup {markupRate 0–100}.' }, ({ body, actor, store }) => {
+    if (!permitted(actor, 'services', 'edit')) return fail('FORBIDDEN');
+    if (body.markupRate !== undefined) {
+      if (!rateOk(body.markupRate)) return fail('VALIDATION', 'النسبة من 0 إلى 100', { markupRate: '0–100' });
+      store.setSetting('markupRate', +body.markupRate);
+    }
+    if (body.key !== undefined) {
+      if (!KEY_RE.test(String(body.key))) return fail('VALIDATION', 'خدمة غير صالحة', { key: 'invalid' });
+      if (body.base !== null && body.base !== '' && !(+body.base > 0 && +body.base <= 1000000)) return fail('VALIDATION', 'السعر الأساسي يجب أن يكون أكبر من صفر', { base: '>0' });
+      store.setPrice(String(body.key), body.base === null || body.base === '' ? null : +body.base);
+    }
+    return { markupRate: store.markupRate(), prices: { ...(store.db().settings.prices || {}) } };
+  });
+
   return {
     totals,
     earnings: () => client.get('/providers/me/earnings'),

@@ -75,6 +75,7 @@ checked per record: a customer only reaches their own requests, addresses and co
 requests offered or assigned to them. **This is a demo boundary.** A real backend must enforce all of it server-side.
 
 ## Business rules at the boundary (also enforced in the store)
+- **Upfront pricing (Uber model):** the admin sets a base price per service key (catalog item id or service id) = the provider amount. At booking the request gets `pricing = {base, rate, customerPrice = round(base × (1 + markupRate/100)), providerAmount, platformFee}`, which is fixed (`agreedValue = customerPrice`). Completion records `value = customerPrice`, `net = providerAmount − deductions`, `commission = platformFee`. A price adjustment after inspection is a quote whose total is the new provider amount; the customer approves `customerTotal` (same markup). Payment today: the customer pays the provider; the platform share is collected from the provider (`collection: pending`). Customers never see the provider amount, platform fee or quote breakdown of priced requests. No configured price → the previous flow (value at completion, commission rate). `markupRate` defaults to `defaultRate`.
 - A quote total must be **> 0**. It is refused on submit (422) and on approve (409).
 - A job done without charge uses the **free-service** routes (propose → customer accepts or declines → provider
   completes). The result has value 0, no commission, and a transaction with `free:true, collection:'none'`. Collection
@@ -150,6 +151,9 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /admin/transactions/:id/collection` | admin | finance-api.js | Set a commission collection status. |
 | `GET /admin/commission` | admin | finance-api.js | Commission settings. |
 | `POST /admin/commission` | admin | finance-api.js | Update default or per-category rate (0–100 %). |
+| `GET /pricing` | public | finance-api.js | Customer prices per service key (upfront, platform share included) and the markup rate. |
+| `GET /admin/pricing` | admin | finance-api.js | Base prices (provider amounts) per service key and the markup rate (RBAC `services.view`). |
+| `POST /admin/pricing` | admin | finance-api.js | Set or clear a base price {key, base>0\|null} or the markup {markupRate 0–100} (RBAC `services.edit`). |
 | `GET /admin/summary` | admin | admin-api.js | Operations counts. |
 | `GET /admin/providers` | admin | admin-api.js | All providers (?status=). |
 | `POST /admin/providers/:id/status` | admin | admin-api.js | Approve / reject / suspend a provider. |

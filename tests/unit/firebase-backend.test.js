@@ -365,3 +365,20 @@ test('read-path rate limiting: per uid, per infrastructure IP (not spoofable via
   assert.equal(isReadCall('session', { op: 'sync' }), true); assert.equal(isReadCall('api', { method: 'get' }), true);
   assert.equal(isReadCall('api', { method: 'POST' }), false); assert.equal(isReadCall('session', { op: 'registerCustomer' }), false);
 });
+test('upfront pricing through the backend: the customer sees only their price; provider/admin see the split', async () => {
+  const b = await setup();
+  await service.session(b, { auth: SARA, data: { op: 'registerCustomer', name: 'سارة' } });
+  assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/pricing', { key: 'electric/dist-board', base: 200 })).ok, true);
+  assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/pricing', { markupRate: 10 })).ok, true);
+  assert.equal(b.docs.get('system/settings').prices['electric/dist-board'], 200, 'prices persist in system/settings');
+  const pub = await call(b, null, 'customer', 'GET', '/pricing');
+  assert.equal(pub.data.prices['electric/dist-board'], 220);
+  const created = await call(b, SARA, 'customer', 'POST', '/requests', { ...REQ, itemId: 'electric/dist-board' });
+  assert.equal(created.status, 201);
+  assert.deepEqual(created.data.pricing, { customerPrice: 220, rate: 10 }, 'the customer response hides the provider amount and platform fee');
+  const stored = b.col('requests').find(r => r.id === created.data.id);
+  assert.equal(stored.pricing.providerAmount, 200, 'the server keeps the full split');
+  const synced = await service.session(b, { auth: SARA, data: { op: 'sync', app: 'customer' } });
+  assert.ok(!JSON.stringify(synced.db.serviceRequests).includes('providerAmount'), 'nor in the customer read model');
+  assert.equal((await call(b, SARA, 'customer', 'POST', '/admin/pricing', { key: 'x', base: 1 })).status, 403, 'pricing administration is admin-only');
+});

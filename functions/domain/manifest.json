@@ -3,7 +3,7 @@
   "files": {
     "shared/config/legacy-data.js": "74e266afbc3500f0ccc9cadc740cdfec4e16964a5bace6a5fc602a47fba9c338",
     "services/local-catalog.js": "de3fcd80ef8de84667bada846d511897d05e285048cad59b10d9d6fdb69e8151",
-    "services/local-market-store.js": "eec29c466f8c1622fe2ba7b79195d3e5c92fae58a8a01e81e01afc0fe5c2432b",
+    "services/local-market-store.js": "ffddcfa29c197c249ecee4ea9374f8bda9203b745eb7090af5a0b38908d13109",
     "services/api-client.js": "ccfe35d113d01ea2561196c47ada1e10f3791bda09a5ce186d25146a8a12ac9a",
     "services/auth-api.js": "7221c02eb6559ce21c465fc5f1987ca47ce43ecefdf963fc901a8e2b3bfd587b",
     "services/orders-api.js": "98082ef9e08bdb5e72f7d3025008725a3b0ee14db52a5faf3d1597ff9a78dcb0",
@@ -13,7 +13,7 @@
     "services/customer-api.js": "ebad855b2bd8103f38cd5f9cdae520095adabe1033851c03b9c05f79a9ce684b",
     "services/notifications-api.js": "3db9b04eb3396796eb1a84bc37e87e4d7ba417140251ff5b43024e1af79e41a9",
     "services/support-api.js": "a206923cc18bdadd7310b1932eacff6b3fa2ae81bc621f56b47dc59a2e20a40f",
-    "services/finance-api.js": "747948faa4a84352de265d150746b4fd47294b42cfbcf175c78c365cc83ea42f",
+    "services/finance-api.js": "3787368a257195a10c7b651b870ddb5dad7aed4934c2b352a064b2967722359c",
     "services/admin-api.js": "836795f30a7f5f6ccbc3ee72ba7ffee2771e2b7de9d69ec9d4963416ec438f62",
     "apps/admin/rbac-store.js": "ccc0e6ee029a3a6ba6fb5e41e747695fa1811e7d8ea2ed80747cafb4134d90eb",
     "apps/admin/permission-guard.js": "155783b0aa24a1e02d3e8045ae243f4c31f02155a8a3b25072c59f743ebace71",

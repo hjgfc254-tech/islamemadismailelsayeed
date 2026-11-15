@@ -525,6 +525,7 @@ hansalhlak/
 │       ├── tree.test.js
 │       ├── ui-adapter-integration.test.js
 │       ├── ui-kit.test.js
+│       ├── upfront-pricing.test.js
 │       └── workforce.test.js
 ├── _redirects
 ├── .editorconfig
