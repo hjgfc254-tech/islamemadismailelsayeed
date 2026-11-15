@@ -8,7 +8,8 @@
  *  - Read model: callable `session.sync` returns the actor-scoped database, written into the existing local store
  *    (localStorage `hs_mp_db`, device-local drafts/searchHistory preserved) so every screen keeps rendering from MP.
  *  - Realtime: Realtime Database `signals/{uid}` → re-sync, then HSRealtimeClient publishes `market:changed`.
- *  - Auth: phone OTP (customer, provider) and email/password (admin) through Firebase Auth, with a small RTL dialog.
+ *  - Auth: customers choose a quick device account (anonymous), email/password or SMS code; providers use SMS;
+ *    admins use verified email/password — all through Firebase Auth with small RTL dialogs.
  * Firebase Storage is not used (deferred).
  */
 const CFG = globalThis.HSFirebaseConfig;
@@ -157,6 +158,73 @@ async function start() {
   }
   const normalized = u => (u && u.phoneNumber ? '0' + u.phoneNumber.replace(/^\+20/, '') : '');
 
+  /* ── customer sign-in without forcing SMS (owner decision, 2026-11-15) ──
+     quick  : Firebase anonymous account on this device + name/phone (no code, no password)
+     email  : email + password (create or sign in; verification mail sent but not required)
+     phone  : SMS one-time code (unchanged)                                                      */
+  const BTN = 'display:grid;gap:2px;width:100%;min-height:56px;padding:10px 14px;border:1.5px solid var(--border-default,#D6CBB9);border-radius:14px;background:var(--surface-primary,#fff);font:inherit;text-align:start;cursor:pointer';
+  function choiceDialog(title, intro, choices, err) {
+    return new Promise(resolve => {
+      const d = document.createElement('dialog'); d.setAttribute('dir', 'rtl');
+      d.style.cssText = 'border:0;border-radius:20px;padding:22px;max-width:min(92vw,400px);width:100%;font-family:var(--font-body,inherit);color:var(--text-primary,#1F1B17);box-shadow:0 22px 50px rgba(31,27,23,.18)';
+      d.innerHTML = `<form method="dialog" style="display:grid;gap:10px"><h2 style="margin:0;font-size:19px">${title}</h2>${intro ? `<p style="margin:0;color:var(--text-secondary,#4A433C);font-size:14px">${intro}</p>` : ''}${err ? `<p role="alert" style="margin:0;color:var(--danger,#A8261B);font-size:14px">${err}</p>` : ''}${choices.map(c => `<button value="${c.value}" style="${BTN}${c.primary ? ';border-color:var(--accent,#B4511C);box-shadow:0 0 0 1px var(--accent,#B4511C)' : ''}"><b style="font-size:15px">${c.label}</b>${c.hint ? `<small style="color:var(--text-muted,#6B625A);font-size:12.5px">${c.hint}</small>` : ''}</button>`).join('')}<button value="cancel" formnovalidate style="min-height:44px;border:0;background:none;font:inherit;color:var(--text-secondary,#4A433C);cursor:pointer">إلغاء</button></form>`;
+      document.body.appendChild(d);
+      d.addEventListener('close', () => { const v = d.returnValue; d.remove(); resolve(v && v !== 'cancel' ? v : null); }, { once: true });
+      d.showModal();
+    });
+  }
+  function emailDialog(err) {
+    return new Promise(resolve => {
+      const d = document.createElement('dialog'); d.setAttribute('dir', 'rtl');
+      d.style.cssText = 'border:0;border-radius:20px;padding:22px;max-width:min(92vw,380px);width:100%;font-family:var(--font-body,inherit);color:var(--text-primary,#1F1B17);box-shadow:0 22px 50px rgba(31,27,23,.18)';
+      const inp = 'min-height:46px;border:1.5px solid var(--border-default,#D6CBB9);border-radius:12px;padding:0 12px;font:inherit';
+      d.innerHTML = `<form method="dialog" style="display:grid;gap:12px"><h2 style="margin:0;font-size:19px">الدخول بالبريد الإلكتروني</h2><label style="display:grid;gap:6px;font-weight:600">البريد الإلكتروني<input name="email" type="email" autocomplete="email" dir="ltr" required style="${inp}"></label><label style="display:grid;gap:6px;font-weight:600">كلمة المرور<input name="password" type="password" autocomplete="current-password" minlength="6" required style="${inp}"></label><p role="alert" style="margin:0;color:var(--danger,#A8261B);min-height:1em;font-size:14px">${err || ''}</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><button value="login" style="min-height:46px;border:0;border-radius:12px;background:var(--brand-primary,#1F1B17);color:#fff;font:inherit;font-weight:700">دخول</button><button value="signup" style="min-height:46px;border:1.5px solid var(--brand-primary,#1F1B17);border-radius:12px;background:#fff;font:inherit;font-weight:700">حساب جديد</button></div><div style="display:flex;justify-content:space-between"><button value="reset" style="border:0;background:none;font:inherit;font-size:13.5px;color:var(--accent-ink,#9A4415);cursor:pointer">نسيت كلمة المرور؟</button><button value="cancel" formnovalidate style="border:0;background:none;font:inherit;font-size:13.5px;cursor:pointer">رجوع</button></div></form>`;
+      document.body.appendChild(d);
+      const form = d.querySelector('form');
+      d.addEventListener('close', () => { const v = d.returnValue; const f = Object.fromEntries(new FormData(form)); d.remove(); resolve(v && v !== 'cancel' ? { action: v, ...f } : null); }, { once: true });
+      d.showModal();
+    });
+  }
+  const AUTH_MSG = {
+    'auth/invalid-credential': 'البريد أو كلمة المرور غير صحيحة', 'auth/wrong-password': 'البريد أو كلمة المرور غير صحيحة',
+    'auth/user-not-found': 'لا يوجد حساب بهذا البريد — اختر «حساب جديد»', 'auth/email-already-in-use': 'هذا البريد له حساب بالفعل — اختر «دخول»',
+    'auth/weak-password': 'كلمة المرور 6 أحرف على الأقل', 'auth/invalid-email': 'اكتب بريدًا إلكترونيًا صحيحًا',
+    'auth/too-many-requests': 'محاولات كثيرة — انتظر قليلًا ثم حاول', 'auth/network-request-failed': 'لا يوجد اتصال بالإنترنت',
+    'auth/operation-not-allowed': 'هذه الطريقة غير مفعّلة حاليًا — اختر طريقة أخرى', 'auth/admin-restricted-operation': 'هذه الطريقة غير مفعّلة حاليًا — اختر طريقة أخرى'
+  };
+  const authMsg = e => AUTH_MSG[e && e.code] || (e && e.message) || 'حدث خطأ — حاول مرة أخرى';
+  async function emailSignIn() {
+    let err = '';
+    for (;;) {
+      const v = await emailDialog(err);
+      if (!v) return false;
+      try {
+        if (v.action === 'reset') { await A.sendPasswordResetEmail(auth, String(v.email).trim()); err = 'أرسلنا رابط إعادة تعيين كلمة المرور إلى بريدك'; continue; }
+        if (v.action === 'signup') {
+          const cred = await A.createUserWithEmailAndPassword(auth, String(v.email).trim(), v.password);
+          A.sendEmailVerification(cred.user).catch(() => {});              // optional confirmation; not required to continue
+        } else await A.signInWithEmailAndPassword(auth, String(v.email).trim(), v.password);
+        return true;
+      } catch (e) { err = authMsg(e); }
+    }
+  }
+  async function customerSignIn(phone) {
+    let err = '';
+    for (;;) {
+      const how = await choiceDialog('اختر طريقة الدخول', 'بياناتك (الاسم ورقم التواصل) تُحفظ مع حسابك، ويراها مقدم الخدمة فقط بعد قبول طلبك.', [
+        { value: 'quick', label: 'متابعة سريعة', hint: 'بالاسم والرقم فقط — بدون كود أو كلمة مرور. الحساب محفوظ على هذا الجهاز.', primary: true },
+        { value: 'email', label: 'البريد الإلكتروني وكلمة المرور', hint: 'للدخول من أي جهاز.' },
+        { value: 'phone', label: 'كود تحقق على الموبايل (SMS)', hint: `نرسل كودًا إلى ${phone}.` }
+      ], err);
+      if (!how) return false;
+      try {
+        if (how === 'quick') { await A.signInAnonymously(auth); return true; }
+        if (how === 'email') { if (await emailSignIn()) return true; err = ''; continue; }
+        await phoneSignIn(phone); return true;
+      } catch (e) { if (e && e.message === 'cancelled') { err = ''; continue; } err = authMsg(e); }
+    }
+  }
+
   const HSBackend = {
     mode: 'firebase',
     get actor() { return actor; },
@@ -168,11 +236,15 @@ async function start() {
       try { await sync(); } catch {}
       return res;
     },
-    /** Customer: returns true when this phone is verified and registered; otherwise runs OTP + registration. */
-    verifiedCustomer(phone) { return normalized(auth.currentUser) === String(phone).trim() && actor && actor.role === 'customer'; },
+    /** Customer: signed in (any method) and registered server-side. */
+    verifiedCustomer() { return !!(auth.currentUser && actor && actor.role === 'customer'); },
+    /** Customer sign-in + registration: quick account, email or SMS (the user chooses); name + contact phone. */
     async verifyCustomer(name, phone) {
-      if (normalized(auth.currentUser) !== String(phone).trim()) await phoneSignIn(phone);
-      const r = (await callSession({ op: 'registerCustomer', name })).data;
+      const u = auth.currentUser;
+      const usable = u && (!u.phoneNumber || normalized(u) === String(phone).trim());
+      if (!usable && !(await customerSignIn(phone))) throw new Error('cancelled');
+      const body = auth.currentUser.phoneNumber ? { name } : { name, phone: String(phone).trim() };
+      const r = (await callSession({ op: 'registerCustomer', ...body })).data;
       actor = r.actor; applySnapshot(r.db); reflectSession(actor, r.db);
       if (globalThis.HSRealtimeClient) globalThis.HSRealtimeClient.notify({ source: 'firebase' });
       return actor;

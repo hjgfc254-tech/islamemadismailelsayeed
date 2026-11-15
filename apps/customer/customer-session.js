@@ -34,7 +34,8 @@
     const error = validate(name, phone);
     if (error) return { ok: false, error };
     const user = { name: String(name).trim(), phone: String(phone).trim() };
-    /* Firebase backend: the phone must be verified (OTP) and the customer registered server-side first. */
+    /* Firebase backend: the customer signs in (quick device account, email or SMS — their choice) and is registered
+       server-side first; the sign-in dialog opens from here. */
     const cfg = root.HSFirebaseConfig;
     if (cfg && cfg.mode === 'firebase') {
       const B = root.HSBackend;
@@ -42,9 +43,9 @@
       if (!B.verifiedCustomer(user.phone)) {
         const say = m => { try { if (typeof root.toast === 'function') root.toast(m); } catch {} };
         B.verifyCustomer(user.name, user.phone)
-          .then(() => say('تم التحقق من رقمك — اضغط مرة أخرى للمتابعة'))
-          .catch(e => say(e && e.message === 'cancelled' ? 'تم إلغاء التحقق' : 'تعذّر التحقق من الرقم'));
-        return { ok: false, pending: true, error: 'أرسلنا رمز تحقق إلى رقمك — أدخله ثم أعد المحاولة' };
+          .then(() => { write(user); say('تم تسجيل الدخول — اضغط مرة أخرى للمتابعة'); })
+          .catch(e => say(e && e.message === 'cancelled' ? 'تم إلغاء تسجيل الدخول' : ('تعذّر تسجيل الدخول' + (e && e.message && /[؀-ۿ]/.test(e.message) ? ' — ' + e.message : ''))));
+        return { ok: false, pending: true, error: 'اختر طريقة الدخول في النافذة المفتوحة ثم أعد المحاولة' };
       }
       write(user);
       return { ok: true, user };

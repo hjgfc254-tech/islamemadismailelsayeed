@@ -124,10 +124,99 @@ hansalhlak/
 ├── assets/
 │   ├── brand/
 │   │   ├── hero-technician.jpg
+│   │   ├── logo-v10-lockup-light.webp
+│   │   ├── logo-v10-lockup.webp
+│   │   ├── logo-v10-mark.webp
+│   │   ├── logo-v10-word.webp
 │   │   ├── logo-wordmark-light.png
 │   │   ├── logo-wordmark.png
 │   │   ├── README.md
 │   │   └── trust-handshake.jpg
+│   ├── icons/
+│   │   └── svc/
+│   │       ├── appliances/
+│   │       │   ├── ac.webp
+│   │       │   ├── cooker.webp
+│   │       │   ├── deep-freezer.webp
+│   │       │   ├── dishwasher.webp
+│   │       │   ├── fridge.webp
+│   │       │   ├── heater-electric.webp
+│   │       │   ├── heater-gas.webp
+│   │       │   ├── hood.webp
+│   │       │   ├── microwave.webp
+│   │       │   ├── other-appliance.webp
+│   │       │   ├── washer-auto.webp
+│   │       │   └── washer-semi.webp
+│   │       ├── carpentry/
+│   │       │   ├── assemble.webp
+│   │       │   ├── chairs-tables.webp
+│   │       │   ├── doors.webp
+│   │       │   ├── hinges-locks.webp
+│   │       │   ├── kitchens.webp
+│   │       │   ├── other-carpentry.webp
+│   │       │   ├── wardrobes.webp
+│   │       │   └── windows.webp
+│   │       ├── cars/
+│   │       │   ├── battery.webp
+│   │       │   ├── brakes.webp
+│   │       │   ├── car-ac.webp
+│   │       │   ├── car-electric.webp
+│   │       │   ├── engine.webp
+│   │       │   ├── gearbox.webp
+│   │       │   ├── oil-change.webp
+│   │       │   ├── other-car.webp
+│   │       │   ├── suspension.webp
+│   │       │   ├── tires.webp
+│   │       │   └── towing.webp
+│   │       ├── cleaning/
+│   │       │   ├── apartments.webp
+│   │       │   ├── bathrooms.webp
+│   │       │   ├── carpets.webp
+│   │       │   ├── kitchens-clean.webp
+│   │       │   ├── mattresses.webp
+│   │       │   ├── offices.webp
+│   │       │   ├── other-cleaning.webp
+│   │       │   ├── post-finishing.webp
+│   │       │   ├── tanks-clean.webp
+│   │       │   └── villas.webp
+│   │       ├── electric/
+│   │       │   ├── dist-board.webp
+│   │       │   ├── elec-heaters.webp
+│   │       │   ├── electrical-devices.webp
+│   │       │   ├── fans.webp
+│   │       │   ├── lighting.webp
+│   │       │   ├── other-electric.webp
+│   │       │   ├── switches.webp
+│   │       │   └── wiring.webp
+│   │       ├── home/
+│   │       │   ├── appliances.webp
+│   │       │   ├── carpentry.webp
+│   │       │   ├── cars.webp
+│   │       │   ├── cleaning.webp
+│   │       │   ├── electric.webp
+│   │       │   ├── painting.webp
+│   │       │   └── plumbing.webp
+│   │       ├── painting/
+│   │       │   ├── ceilings.webp
+│   │       │   ├── cracks.webp
+│   │       │   ├── damp.webp
+│   │       │   ├── decor-paint.webp
+│   │       │   ├── facades.webp
+│   │       │   ├── full-apartment.webp
+│   │       │   ├── other-painting.webp
+│   │       │   ├── room.webp
+│   │       │   └── wallpaper.webp
+│   │       └── plumbing/
+│   │           ├── faucets.webp
+│   │           ├── heaters-plumb.webp
+│   │           ├── other-plumbing.webp
+│   │           ├── pipes.webp
+│   │           ├── pumps.webp
+│   │           ├── sewage.webp
+│   │           ├── sinks.webp
+│   │           ├── siphon.webp
+│   │           ├── toilet.webp
+│   │           └── water-tanks.webp
 │   ├── vendor/
 │   │   ├── firebase/
 │   │   │   └── 13.1.0/
@@ -141,6 +230,8 @@ hansalhlak/
 │   │   ├── README.md
 │   │   ├── three.LICENSE.txt
 │   │   └── three.module.min.js
+│   ├── app-icon-192.png
+│   ├── app-icon-512.png
 │   ├── icon.svg
 │   ├── logo-mark.webp
 │   ├── logo-word.webp

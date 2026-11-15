@@ -96,3 +96,4 @@
 .pv-location .pv-actions a.pv-btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
 .pv-location .pv-hint{margin:8px 0 0}
 @media (max-width:640px){.pv-hero::after{display:none}}
+@media (max-width:400px){.pv-brand::before{width:100px;height:28px}}

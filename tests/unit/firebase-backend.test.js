@@ -252,6 +252,42 @@ test('a provider gets the customer contact details only after accepting', async 
   assert.equal(synced.db.serviceRequests[0].phone, '01011112222');
   assert.equal(synced.db.customers[0].phone, '01011112222');
 });
+test('customer sign-up without SMS: email or quick (anonymous) account bound by uid, contact phone unique, phone OTP still works', async () => {
+  const b = await setup();
+  const MONA = { uid: 'u_mona', token: { email: 'mona@example.com', email_verified: false, firebase: { sign_in_provider: 'password' } } };
+  const QUICK = { uid: 'u_quick', token: { firebase: { sign_in_provider: 'anonymous' } } };
+  const reg = (auth, body) => service.session(b, { auth, data: { op: 'registerCustomer', ...body } });
+
+  await assert.rejects(reg(MONA, { name: 'منى' }), /رقم موبايل/, 'email accounts must give a contact phone');
+  await assert.rejects(reg(MONA, { name: 'منى', phone: '12345' }), /رقم موبايل/);
+  const mona = await reg(MONA, { name: 'منى', phone: '01055556666' });
+  assert.equal(mona.actor.role, 'customer');
+  const rec = b.col('customers').find(c => c.id === mona.actor.id);
+  assert.equal(rec.uid, 'u_mona'); assert.equal(rec.phoneVerified, false); assert.equal(rec.authMethod, 'password'); assert.equal(rec.email, 'mona@example.com');
+  assert.equal((await reg(MONA, { name: 'منى', phone: '01055556666' })).actor.id, mona.actor.id, 'registering again is idempotent');
+
+  const s1 = await service.session(b, { auth: MONA, data: { op: 'sync', app: 'customer' } });
+  assert.equal(s1.actor && s1.actor.id, mona.actor.id, 'an email account resolves to its customer by uid');
+  const created = await call(b, MONA, 'customer', 'POST', '/requests', REQ);
+  assert.equal(created.status, 201, 'and can place requests');
+
+  await assert.rejects(reg(QUICK, { name: 'زائر', phone: '01055556666' }), /مسجّل/, 'a contact phone cannot be claimed by a second account');
+  const quick = await reg(QUICK, { name: 'زائر سريع', phone: '01077778888' });
+  assert.equal(b.col('customers').find(c => c.id === quick.actor.id).authMethod, 'anonymous');
+  assert.equal((await service.session(b, { auth: QUICK, data: { op: 'sync', app: 'customer' } })).actor.id, quick.actor.id);
+  assert.equal((await call(b, QUICK, 'customer', 'GET', `/requests/${created.data.id}`)).status, 404, 'accounts stay isolated');
+
+  const STRANGER = { uid: 'u_x', token: { firebase: { sign_in_provider: 'anonymous' } } };
+  assert.equal((await service.session(b, { auth: STRANGER, data: { op: 'sync', app: 'customer' } })).actor, null, 'no link, no customer');
+  assert.equal((await service.session(b, { auth: MONA, data: { op: 'sync', app: 'provider' } })).actor, null, 'email customers never become providers');
+
+  assert.equal((await call(b, MONA, 'customer', 'PATCH', '/customers/me', { phone: '01099990000' })).status, 409, 'contact phone is fixed for email accounts');
+  const same = await call(b, MONA, 'customer', 'PATCH', '/customers/me', { name: 'منى أحمد', phone: '01055556666' });
+  assert.equal(same.ok, true, 'other profile fields still edit (unchanged phone is accepted)');
+
+  const viaOtp = await reg(SARA, { name: 'سارة' });
+  assert.equal(b.col('customers').find(c => c.id === viaOtp.actor.id).phoneVerified, true, 'phone OTP sign-up is unchanged and marked verified');
+});
 test('customer map pin: validated server-side, stored clean, released to the provider only after acceptance', async () => {
   const b = await setup();
   await service.session(b, { auth: SARA, data: { op: 'registerCustomer', name: 'سارة' } });

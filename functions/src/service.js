@@ -59,14 +59,23 @@ async function loadActor(ld, token, app, admin) {
   if (!token || !APPS.includes(app)) return null;
   if (app === 'admin') return admin && admin.status === 'active' ? { role: 'admin', id: token.uid, name: admin.name || '', adminRole: admin.role, employeeId: admin.employeeId || null } : null;
   const phone = normalizePhone(token.phone_number);
-  if (!phone) return null;
+  if (!phone) return app === 'customer' ? accountCustomer(ld, token) : null;   // email / quick (anonymous) customer accounts
   if (app === 'provider') {
     const [p] = await ld.where('providers', [['phone', '==', phone]], { limit: 1 });
     return p && p.status === 'approved' ? { role: 'provider', id: p.id, name: p.name } : null;
   }
   const [c] = await ld.where('customers', [['phone', '==', phone]], { limit: 1 });
-  return c && c.status !== 'suspended' ? { role: 'customer', id: c.id, name: c.name } : null;
+  return c && c.status !== 'suspended' && (!c.uid || c.phoneVerified !== false || c.uid === token.uid) ? { role: 'customer', id: c.id, name: c.name } : null;
 }
+/** Customer signed in WITHOUT a verified phone (email/password or quick anonymous account): bound by uid through the
+    server-only users/{uid} link written at registration, and the customer document must carry the same uid. */
+async function accountCustomer(ld, token) {
+  const link = await ld.adapter.get(ld.tx, `users/${token.uid}`); ld.reads++;
+  if (!link || link.role !== 'customer' || !link.refId) return null;
+  const c = await ld.doc('customers', link.refId);
+  return c && c.uid === token.uid && c.status !== 'suspended' ? { role: 'customer', id: c.id, name: c.name } : null;
+}
+const authMethodOf = token => (token && token.firebase && token.firebase.sign_in_provider) || (token && token.phone_number ? 'phone' : token && token.email ? 'password' : 'anonymous');
 async function providerStatusOf(ld, token) {
   const phone = normalizePhone(token && token.phone_number);
   if (!phone) return { id: null, status: 'not-registered' };
@@ -149,7 +158,14 @@ async function api(backend, { auth, data }) {
   if (req.method === 'POST' && req.path === '/providers/register' && token && token.phone_number) {
     req.body.phone = normalizePhone(token.phone_number);        // a registration is bound to the verified phone
   }
-  if (req.method === 'PATCH' && req.path === '/customers/me' && req.body.phone !== undefined && token && normalizePhone(req.body.phone) !== normalizePhone(token.phone_number)) {
+  if (req.method === 'PATCH' && req.path === '/customers/me' && req.body.phone !== undefined && token && !token.phone_number) {
+    /* email / quick accounts: the contact number is fixed at registration (it keys request matching); other fields edit freely */
+    const link = await backend.getDoc(`users/${token.uid}`);
+    const mine = link && link.role === 'customer' && link.refId ? await backend.getDoc(`customers/${link.refId}`) : null;
+    if (mine && normalizePhone(req.body.phone) === normalizePhone(mine.phone)) delete req.body.phone;
+    else return { ok: false, status: 409, error: { code: 'CONFLICT', message: 'تغيير رقم التواصل غير متاح من هنا حاليًا — تواصل مع الدعم', details: { phone: 'ثابت لهذا الحساب' } } };
+  }
+  if (req.method === 'PATCH' && req.path === '/customers/me' && req.body.phone !== undefined && token && token.phone_number && normalizePhone(req.body.phone) !== normalizePhone(token.phone_number)) {
     return { ok: false, status: 409, error: { code: 'CONFLICT', message: 'تغيير رقم الهاتف يتطلب التحقق من الرقم الجديد — سجّل الدخول به', details: { phone: 'يجب أن يطابق الرقم المُتحقَّق منه' } } };
   }
   const idemPath = req.idem && token ? `idempotency/${token.uid}__${req.idem}` : null;
@@ -230,18 +246,41 @@ async function session(backend, { auth, data }) {
       return { serverTime: Date.now(), actor, db: scopeFor(db, actor), provider: app === 'provider' && token ? await providerStatusOf(ld, token) : null, admin: adminData, signedIn: !!token, reads: ld.reads };
     }
     case 'registerCustomer': {
-      if (!token) fail('unauthenticated', 'سجّل الدخول برقم الموبايل أولًا');
-      const phone = normalizePhone(token.phone_number);
-      if (!/^01[0125]\d{8}$/.test(phone)) fail('failed-precondition', 'رقم موبايل مصري مُتحقَّق منه مطلوب');
+      /* Three ways in, one customer record per phone:
+         phone OTP   → the verified token phone is the identity (phoneVerified: true);
+         email / quick (anonymous) account → identity is the uid; d.phone is a CONTACT number (phoneVerified: false)
+         and may not belong to another account (requests are matched to customers by phone). */
+      if (!token) fail('unauthenticated', 'سجّل الدخول أولًا');
+      const verified = normalizePhone(token.phone_number);
+      const phone = verified || normalizePhone(d.phone);
+      if (!/^01[0125]\d{8}$/.test(phone)) fail(verified ? 'failed-precondition' : 'invalid-argument', 'اكتب رقم موبايل مصري صحيح (01xxxxxxxxx) للتواصل');
       const name = String(d.name || '').trim();
       if (name.length < 2 || name.length > 60) fail('invalid-argument', 'اكتب اسمك (2–60 حرفًا)');
       await rateLimit(backend, token.uid);
+      const method = authMethodOf(token);
       const out = await backend.runTransaction(async tx => {
         const ld = new PartialDb(backend.adapter, tx);
         await ld.loadSystem();
         const [existing] = await ld.where('customers', [['phone', '==', phone]], { limit: 1 });
         if (existing && existing.status === 'suspended') fail('permission-denied', 'هذا الحساب موقوف');
+        if (!verified) {
+          const link = await backend.adapter.get(tx, `users/${token.uid}`);
+          const mine = link && link.role === 'customer' && link.refId ? await ld.doc('customers', link.refId) : null;
+          if (mine && mine.uid === token.uid) {                         // already registered on this account
+            if (existing && existing.id !== mine.id) fail('already-exists', 'هذا الرقم مسجّل بحساب آخر');
+            const res = runtime.operation({ db: ld.toDb(), roster: [] }, env => mine);
+            return res;
+          }
+          if (existing && existing.uid !== token.uid) fail('already-exists', 'هذا الرقم مسجّل بالفعل — ادخل بنفس الطريقة التي سجّلت بها أول مرة');
+        }
         const res = runtime.operation({ db: ld.toDb(), roster: [] }, env => env.mp.customerFor(name, phone));
+        const rec = (res.db.customers || []).find(c => c.id === res.result.id);
+        if (rec) {
+          if (verified) { rec.phoneVerified = true; if (!rec.uid) rec.uid = token.uid; }
+          else { rec.uid = token.uid; rec.phoneVerified = false; }
+          rec.authMethod = method;
+          if (token.email && !rec.email) rec.email = String(token.email).toLowerCase();
+        }
         ld.commit(res.db);
         return res;
       });

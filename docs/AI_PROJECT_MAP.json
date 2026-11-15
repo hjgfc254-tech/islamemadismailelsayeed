@@ -2,8 +2,8 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 463,
-    "total_files": 463,
+    "file_count": 544,
+    "total_files": 544,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 50,
@@ -23,7 +23,7 @@
       "IMPLEMENTED (SHELL, DEMO)": 1,
       "IMPLEMENTED (SHELL)": 2,
       "LEGACY": 1,
-      "NEEDS_REVIEW": 81,
+      "NEEDS_REVIEW": 162,
       "PARTIALLY IMPLEMENTED": 1,
       "PLACEHOLDER": 64,
       "TEST": 78
@@ -487,7 +487,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md). Loads orders-management.page.js after admin-dashboard.page.js.",
-      "sha256": "d8f717c6884f10874e65674c0e0d52c1eb49d65feca5f9bdff864961724d7fe1",
+      "sha256": "d360e5de8d69b4ed8709b6221372d094cab7d75f2d39c1217a552a1af17bd49f",
       "resolved_dependencies": [
         "apps/admin/styles/admin.css",
         "shared/components/data-grid.js",
@@ -528,7 +528,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 4674
+      "bytes": 4667
     },
     {
       "path": "apps/admin/login.html",
@@ -540,7 +540,7 @@
       "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
-      "sha256": "69cdfa73f4c592049d9c82c78ee4388b552f4db89b0702a47b972fa040ec0c7a",
+      "sha256": "ffb32b91faf2e9ee36bfbe6ba25bd12e1598fbc885c29ebfaf7641d6aaf32e75",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -577,7 +577,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 999
+      "bytes": 1033
     },
     {
       "path": "apps/admin/modules/access-control/permission-matrix.js",
@@ -2422,7 +2422,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md). Also holds .hs-badge styles for shared/components/status-badge.js. Also holds .hs-grid styles for shared/components/data-grid.js.",
-      "sha256": "5e49ba25a736563948a9b0c9799f8990606dc5082b960be52e9e0eabb0066de6",
+      "sha256": "3880d5ae16685e6daf2fc17c8ace66f4db82185448ace8c361fcc4378421a6de",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2459,7 +2459,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 29843
+      "bytes": 29849
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -2574,7 +2574,7 @@
         "tests/e2e/customer-sheet-focus.browser.py"
       ],
       "notes": "2026-11-13 TASK 04: Bottom Sheet initial focus, Tab/Shift+Tab containment, Escape, focus restoration/fallback, and background inert/aria-hidden isolation implemented and browser-tested. origin remains the legacy problem-list return context; route-style close focuses the destination #view.",
-      "sha256": "13b3538d4e6b3e42dbfc4ac7b0b2ba845d1b6b7d2c9a71aca2ffad455cb81c1d",
+      "sha256": "26bfe5df24f2cdf6e99db5a0a3d9118e34e0a029073a8cb892987c7dc43e8382",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2613,7 +2613,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 73441
+      "bytes": 72835
     },
     {
       "path": "apps/customer/customer-router.js",
@@ -2674,7 +2674,7 @@
       "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after implementation (Customer routing/session batch).",
-      "sha256": "fc6081af734858534502f7b485e7d7f7c70a3a23b7acf38c1d7685a6c943b0ed",
+      "sha256": "502f08623d6b032b69057c1cef6e7855e65a96df921e7495ccfe567e66ba5196",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2711,7 +2711,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 3805
+      "bytes": 3989
     },
     {
       "path": "apps/customer/index.html",
@@ -2727,7 +2727,7 @@
         "https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
       ],
       "notes": "TASK 04: #sheet retains role=dialog and aria-modal=true and adds tabindex=-1 as a safe focus fallback when content has no interactive control.",
-      "sha256": "0c7498cfddf8e552e2dd37df9c8cbbd253a3ccfd7a22b89d2ba2292d462986fd",
+      "sha256": "79b7de96cfd4ffca511813eb12107a7e06c036e31e5e2567139fdab6e820f4bb",
       "resolved_dependencies": [
         "manifest.json",
         "assets/icon.svg",
@@ -2790,7 +2790,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 9956
+      "bytes": 7034
     },
     {
       "path": "apps/customer/intro-3d.js",
@@ -2967,7 +2967,7 @@
       "next_action": "Keep this module presentation-only; extract individual sections only when tests establish stable contracts.",
       "explicit_references": [],
       "notes": "Extracted from screens.home on 2026-11-13. Script loaded before app.js. Tests: customer-page-renderers.test.js and home.test.js.",
-      "sha256": "be29e6a2877c1e566823051775d4463eac9e9cde4ad63df4fa5cbbda10ecf7ad",
+      "sha256": "3fdb9c43460ccc63377a89f4c8cdc157fd9c01755c99d4267b9d726c347995d3",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3004,7 +3004,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 4797
+      "bytes": 4800
     },
     {
       "path": "apps/customer/pages/market-ui.page.js",
@@ -3465,7 +3465,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "9878825e7e73f66f4451a123d2650d34e93fc139bd6a0e015c18e395f47762db",
+      "sha256": "55278220be362031f2653afc46110a705384bf9191fba8f694b143b9edd2f9e4",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3504,7 +3504,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 92182
+      "bytes": 82300
     },
     {
       "path": "apps/guest/guest-entry.js",
@@ -3712,7 +3712,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "0d50be585bd1cdd296909a46fa0172cf19c3cb3f77f7644c9b3eff4420f06614",
+      "sha256": "ead93396af9d97a0ca1fa9484445f18eb608f04cbc05878096aa9ad589d5850c",
       "resolved_dependencies": [
         "apps/provider/styles/provider.css",
         "apps/customer/index.html"
@@ -3752,7 +3752,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 2972
+      "bytes": 2965
     },
     {
       "path": "apps/provider/login.html",
@@ -3764,7 +3764,7 @@
       "next_action": "Keep demo-only until a trusted backend auth exists (out of frontend scope).",
       "explicit_references": [],
       "notes": "Reclassified 2026-11-13 (Provider G4) after replacing the placeholder.",
-      "sha256": "cfbec83ecdfe6ef28b12c2f5b8c298288d23aa67b9ffcda5ab4f7b82939ec0e5",
+      "sha256": "1c2ca35450b071cce63cb14e967d5a7435634a26c4d44891912deeee9213b963",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3801,7 +3801,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 939
+      "bytes": 973
     },
     {
       "path": "apps/provider/pages/active-jobs.page.js",
@@ -4682,7 +4682,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "a28896e5a130b2355cc09e0c06078c2b96be5fe1dd40d3f2c1f229bac5bb048d",
+      "sha256": "2d53e740b6a41720d1c2241749bd2785f49731a8b957488ad2c1c9e53c6747d3",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4721,7 +4721,31 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 21519
+      "bytes": 21654
+    },
+    {
+      "path": "assets/app-icon-192.png",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "app-icon-192.png",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "57fbf248ac8ef1570c0abfe4fae2d59dab93cbc5535132e4af908041efad1606",
+      "bytes": 14352
+    },
+    {
+      "path": "assets/app-icon-512.png",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "app-icon-512.png",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "dd3df759020295f8e8589cd9bb43f79d6e0abef2076738ce9c1b0870f4372be7",
+      "bytes": 52706
     },
     {
       "path": "assets/brand/hero-technician.jpg",
@@ -4734,6 +4758,54 @@
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "17ecff3bcde6648c0af2a288454856fdf669f4bf437eb60bd9d48e98a0c66f6a",
       "bytes": 73867
+    },
+    {
+      "path": "assets/brand/logo-v10-lockup-light.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "logo-v10-lockup-light.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "c9101f1d19f6d9c11ac43b258cca24293450b7e535f7499b6e687fe0f487183d",
+      "bytes": 21732
+    },
+    {
+      "path": "assets/brand/logo-v10-lockup.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "logo-v10-lockup.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "2077c5c5fab74cf1d23ad2a3974034585a14733038083bc4ce02ad6c458f169a",
+      "bytes": 32586
+    },
+    {
+      "path": "assets/brand/logo-v10-mark.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "logo-v10-mark.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "bd29a8c61e7393a7446a809e52e24fb91049f0c6bca751cdb89992367d28e77c",
+      "bytes": 29120
+    },
+    {
+      "path": "assets/brand/logo-v10-word.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "logo-v10-word.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "95c00176767e4fc8af59c7918721269ca636f6b1a718a2b2682ff1cbf4032178",
+      "bytes": 29510
     },
     {
       "path": "assets/brand/logo-wordmark-light.png",
@@ -4833,6 +4905,906 @@
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
       "bytes": 553
+    },
+    {
+      "path": "assets/icons/svc/appliances/ac.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "ac.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "32b531edd90b9d0a35e3fea6d31d54fde1af80fc38e08837d991778dbff82445",
+      "bytes": 6212
+    },
+    {
+      "path": "assets/icons/svc/appliances/cooker.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "cooker.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "5e63262c6e5e434f4b0c838cfd17ac28ea2375e55476815c731f6e69b1bf2f13",
+      "bytes": 10156
+    },
+    {
+      "path": "assets/icons/svc/appliances/deep-freezer.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "deep-freezer.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "0b2dcdc7456520a114ef97ebf0d9612fd5833d1fc490b01970ac432626eba9fd",
+      "bytes": 7712
+    },
+    {
+      "path": "assets/icons/svc/appliances/dishwasher.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "dishwasher.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "be646c23f8c5901e0cbeee12b856c047889f79a5ddfced294323276f7fea7e67",
+      "bytes": 11904
+    },
+    {
+      "path": "assets/icons/svc/appliances/fridge.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "fridge.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "1a0e640400db82c7021c00293c232ad7d6a9479b5382b1bd612fde3d33176875",
+      "bytes": 4348
+    },
+    {
+      "path": "assets/icons/svc/appliances/heater-electric.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "heater-electric.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "8c9b05d60973090ce914409c7be540acb347a223613064f4594144a2143631d0",
+      "bytes": 4298
+    },
+    {
+      "path": "assets/icons/svc/appliances/heater-gas.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "heater-gas.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "d0692f5300751464664bcffcd11f12e082b5b3dda94ee1a58c7d1f985483fc3a",
+      "bytes": 4454
+    },
+    {
+      "path": "assets/icons/svc/appliances/hood.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "hood.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "6662a648960dd7e660b6f6b8472921ebbf25e0357f3b9f950f29a8823f3aa659",
+      "bytes": 5872
+    },
+    {
+      "path": "assets/icons/svc/appliances/microwave.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "microwave.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "d5f22eda0b232a0f55c387e2ea017c60715efcd5c405a528835f748fbf0f516c",
+      "bytes": 8244
+    },
+    {
+      "path": "assets/icons/svc/appliances/other-appliance.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "other-appliance.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "6de6cbec07350e4855afccf34b204c597b5a7d52cd32063bb5dc89ab8da21e5b",
+      "bytes": 12192
+    },
+    {
+      "path": "assets/icons/svc/appliances/washer-auto.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "washer-auto.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "5213e08db104b2900c2534da60a3be4b17d421d40ce406ac3223c518ba0834a1",
+      "bytes": 9876
+    },
+    {
+      "path": "assets/icons/svc/appliances/washer-semi.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "washer-semi.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "acefdeff49a9507f59b50ca6d4cc49234d56b828dff0534c8feb5671f962ecd0",
+      "bytes": 8378
+    },
+    {
+      "path": "assets/icons/svc/carpentry/assemble.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "assemble.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "a3bf9e31bdbda9c213b5e2812bd95fe02e5d70afbc9239700473582ab1a09ab3",
+      "bytes": 8192
+    },
+    {
+      "path": "assets/icons/svc/carpentry/chairs-tables.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "chairs-tables.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "041b5df1ba8ba381de9e04588b6bd99ce06f3710655790a13600d85a41e227e8",
+      "bytes": 8452
+    },
+    {
+      "path": "assets/icons/svc/carpentry/doors.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "doors.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "8be51fe549505dbf863070cf2decb3d97149f1b89ba485a3a99e2bf0769893a2",
+      "bytes": 5238
+    },
+    {
+      "path": "assets/icons/svc/carpentry/hinges-locks.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "hinges-locks.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "80c3d3df4ff12ace3d3d017a37988d9da871c41d0d572776996050b2473def2a",
+      "bytes": 6602
+    },
+    {
+      "path": "assets/icons/svc/carpentry/kitchens.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "kitchens.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "810a51aba0fee48dffe6da5550b60904aa0a67138a560f6d4371fcdda3c6d44e",
+      "bytes": 7382
+    },
+    {
+      "path": "assets/icons/svc/carpentry/other-carpentry.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "other-carpentry.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "cc8bdc4bb9326f3195ea4e937fed74e8ed9b8107388e61497ab90b678feec3ce",
+      "bytes": 9550
+    },
+    {
+      "path": "assets/icons/svc/carpentry/wardrobes.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "wardrobes.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "231e3eef307c8158587b8bd0cbf12a37e2a4097385f26fe55c26800c36b7c337",
+      "bytes": 6512
+    },
+    {
+      "path": "assets/icons/svc/carpentry/windows.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "windows.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "7dbefeb5660021377da70666a1cad57cf8708fb62d56b36263c54d690c1686ff",
+      "bytes": 6472
+    },
+    {
+      "path": "assets/icons/svc/cars/battery.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "battery.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "7eca95d08e91e2ed9a1cb51651cf0eb354579e2f04194d845b932b9908b4d99b",
+      "bytes": 6590
+    },
+    {
+      "path": "assets/icons/svc/cars/brakes.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "brakes.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "3eaf54a8034b0555fcdcab84feb6baf852c68a52fb012187903e4d1007f8baa1",
+      "bytes": 10680
+    },
+    {
+      "path": "assets/icons/svc/cars/car-ac.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "car-ac.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "47c5dd1341e8bc9f0ea5cc34054274265bd10e02cf64618761115657b60f8df6",
+      "bytes": 7254
+    },
+    {
+      "path": "assets/icons/svc/cars/car-electric.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "car-electric.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "23169affea050f3fed2afc19ea95666a3150012d40bcacd669406b59b3b5c6f8",
+      "bytes": 12866
+    },
+    {
+      "path": "assets/icons/svc/cars/engine.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "engine.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "dfb1166368a908b7574f70e26a99ae920b4b5017e1c1666c60aef58ba17f822c",
+      "bytes": 13588
+    },
+    {
+      "path": "assets/icons/svc/cars/gearbox.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "gearbox.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "6c7b5897612e08191cf547ba8d50dfaa894471bcb385aa92720758d0538580d4",
+      "bytes": 11806
+    },
+    {
+      "path": "assets/icons/svc/cars/oil-change.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "oil-change.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "6319b10c8f6a330910b1f178a23b9de4ef5305d93363a371788c138a7cc8e7ce",
+      "bytes": 7310
+    },
+    {
+      "path": "assets/icons/svc/cars/other-car.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "other-car.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "a8992105ba1e53ed864bddad4dd3e09cf6f9f44137221cb8a82da17a7405db60",
+      "bytes": 9004
+    },
+    {
+      "path": "assets/icons/svc/cars/suspension.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "suspension.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "6bbe8a892363c07c5d4be1ae126557311753b85e8a89e0198f60dc6e1ffe0934",
+      "bytes": 9806
+    },
+    {
+      "path": "assets/icons/svc/cars/tires.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "tires.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "969721e1237dcd2793518f9b3d6f40ebcd47b98dfcc1b22ad9dfae732c29fa6a",
+      "bytes": 12524
+    },
+    {
+      "path": "assets/icons/svc/cars/towing.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "towing.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "b82c68ed08d8db0211ae325ac4cb2a2a9f390d0365a144ec25e15225bec55444",
+      "bytes": 10036
+    },
+    {
+      "path": "assets/icons/svc/cleaning/apartments.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "apartments.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "7fdd2bc8b627f25c9b067bda37118107b69250110236ddfc9aa2c5e7466f6269",
+      "bytes": 10888
+    },
+    {
+      "path": "assets/icons/svc/cleaning/bathrooms.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "bathrooms.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "9be0feaf41581de64be8a7db244b50b871c3a6ca4b4ff54494385974d3eeffb0",
+      "bytes": 7974
+    },
+    {
+      "path": "assets/icons/svc/cleaning/carpets.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "carpets.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "bfe7fcb27169c9374b5f5389edb457c5ad608d3971531e340e042aabe3f54d58",
+      "bytes": 21536
+    },
+    {
+      "path": "assets/icons/svc/cleaning/kitchens-clean.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "kitchens-clean.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "db5341ca3a2461b8958d8f976ed734ee343f9e13c9ab43f08f624d7f1a1063a9",
+      "bytes": 7380
+    },
+    {
+      "path": "assets/icons/svc/cleaning/mattresses.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "mattresses.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "952f1772adab9c2cd216e62a464d73afc8bce0e465b326e91d8acfe442fe815c",
+      "bytes": 9656
+    },
+    {
+      "path": "assets/icons/svc/cleaning/offices.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "offices.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "52995378a84e4e01bd5d5fa658695d43bd6bb9dd016707370cf41ac4b53b9ee1",
+      "bytes": 10912
+    },
+    {
+      "path": "assets/icons/svc/cleaning/other-cleaning.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "other-cleaning.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "ce7677d640687d968fbc1d45f3009b0b8efd7497ec4b6d5298d5b9519dd9c84a",
+      "bytes": 9328
+    },
+    {
+      "path": "assets/icons/svc/cleaning/post-finishing.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "post-finishing.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "8cbe43b93eb6e40522ecb14a16dd2c258e15a10516de1a9ea36aa42d7dedeb57",
+      "bytes": 8406
+    },
+    {
+      "path": "assets/icons/svc/cleaning/tanks-clean.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "tanks-clean.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "14693f29a50d13b41731dd18c6845227b04d881491c9ba6ef5202f05fec43b25",
+      "bytes": 6236
+    },
+    {
+      "path": "assets/icons/svc/cleaning/villas.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "villas.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "2710744d16c8a2e5767832d0ec48fd37343359e6c6764669cd650254af8e0787",
+      "bytes": 10862
+    },
+    {
+      "path": "assets/icons/svc/electric/dist-board.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "dist-board.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "1b1109b61ac1cb790acf9764687b2edeb4023027d178f486e325c99674862b6a",
+      "bytes": 8738
+    },
+    {
+      "path": "assets/icons/svc/electric/elec-heaters.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "elec-heaters.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "691d368f4a526f72f176b6a57b0413e2d9cd211f9dc0fce847619dd4cde352da",
+      "bytes": 2630
+    },
+    {
+      "path": "assets/icons/svc/electric/electrical-devices.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "electrical-devices.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "04be5a42f9c036b56dd670adeb1aa481ae533f5a0eb08a04f0ece7aa8bf567ac",
+      "bytes": 5504
+    },
+    {
+      "path": "assets/icons/svc/electric/fans.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "fans.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "b5f0ed47681ae5e842cfc55c4bc03be053c168abd1cea52e4ea3947a7a2e22fe",
+      "bytes": 4548
+    },
+    {
+      "path": "assets/icons/svc/electric/lighting.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "lighting.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "bdfb4db5f4d391a06c0614ec59e311e8eac2fbca2f41b175e8e2f03bc1643437",
+      "bytes": 9934
+    },
+    {
+      "path": "assets/icons/svc/electric/other-electric.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "other-electric.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "674c28893670ca91829f8b041899bc9f7214eea1d2d6734bded1b2b3149d8687",
+      "bytes": 7930
+    },
+    {
+      "path": "assets/icons/svc/electric/switches.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "switches.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "04b69334e7e2b941a4b4e585220102325326b88ec4f714d756de7941db204632",
+      "bytes": 3214
+    },
+    {
+      "path": "assets/icons/svc/electric/wiring.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "wiring.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "0f5b88664c97da9d5c2ea3f3c75fd2c2c0361ec933b0e26a457057d2897cb23c",
+      "bytes": 6628
+    },
+    {
+      "path": "assets/icons/svc/home/appliances.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "appliances.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "c240dedc7ba9b766f21f3061ed472ab4fb0de4a223963950a9618ccc1d7a126d",
+      "bytes": 6560
+    },
+    {
+      "path": "assets/icons/svc/home/carpentry.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "carpentry.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "ec2a3385593596dd48a2086f2fed4702124f7f17a8f6531caea0ce3c75d0040a",
+      "bytes": 7786
+    },
+    {
+      "path": "assets/icons/svc/home/cars.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "cars.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "1caa3f78a40a7350e3cf82a33435c58410cf3d753406b5143729d6ff7127288e",
+      "bytes": 6090
+    },
+    {
+      "path": "assets/icons/svc/home/cleaning.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "cleaning.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "625699f73be43186de0430bf3727531de28748af93c3637f0c772190edadecb2",
+      "bytes": 6720
+    },
+    {
+      "path": "assets/icons/svc/home/electric.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "electric.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "081e78ee7a069022bb3c27de3ef6a93d65dee668c6608646512b8e4b962573f5",
+      "bytes": 6434
+    },
+    {
+      "path": "assets/icons/svc/home/painting.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "painting.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "4de165cfb096ee4ded3c3b3f6daca7bb5f0f3053e053cdd8a5fa4cfa9bf5326a",
+      "bytes": 4184
+    },
+    {
+      "path": "assets/icons/svc/home/plumbing.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "plumbing.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "a5905d1fa9e9e2a8baf2d08587773baef002137346e10f79d787de014613df74",
+      "bytes": 4248
+    },
+    {
+      "path": "assets/icons/svc/painting/ceilings.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "ceilings.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "0a63527a4242857d0629a9b59a8469a1bb7809e8cc1df5369569234466c4a6a4",
+      "bytes": 4786
+    },
+    {
+      "path": "assets/icons/svc/painting/cracks.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "cracks.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "e808dfd2aa2622d50566e5c84fdd6639d39cd530ab127eed51530fe611b0294e",
+      "bytes": 11248
+    },
+    {
+      "path": "assets/icons/svc/painting/damp.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "damp.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "73e35ea12878c20c0b3768f44b24e03eba50a77a60e9b9fee65761366c5c9b18",
+      "bytes": 12266
+    },
+    {
+      "path": "assets/icons/svc/painting/decor-paint.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "decor-paint.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "f8dd014a2a2cfdef918e015b420b8a13c658b656e0d2b919d8740d0e691703e4",
+      "bytes": 10248
+    },
+    {
+      "path": "assets/icons/svc/painting/facades.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "facades.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "f8769ac3f7495c3ad29ad43fbd10928cf02429f953568d24fa6b46d3c8c097ce",
+      "bytes": 10278
+    },
+    {
+      "path": "assets/icons/svc/painting/full-apartment.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "full-apartment.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "3b07af4e99b92c9b3fc5cc95f0e26b621eec00da8b07770043d0504b27935795",
+      "bytes": 6190
+    },
+    {
+      "path": "assets/icons/svc/painting/other-painting.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "other-painting.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "47521308e0389df36515b9831671a1e99ec4dbc496830e5629105ef30f041e89",
+      "bytes": 10262
+    },
+    {
+      "path": "assets/icons/svc/painting/room.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "room.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "b3e9b5bcd35fd92c999a45e0fb089b92988d7c61ec0ead3beab0a74097918f41",
+      "bytes": 6124
+    },
+    {
+      "path": "assets/icons/svc/painting/wallpaper.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "wallpaper.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "1340ebf6f3a7aa1417256ef4a8c117c74298190a4df949e81f1ef99a9d65a94e",
+      "bytes": 16076
+    },
+    {
+      "path": "assets/icons/svc/plumbing/faucets.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "faucets.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "e42dbf3983b260a4776d5442450a4e963e99f3f5e53c6a766a7c6e9e2f46b961",
+      "bytes": 7288
+    },
+    {
+      "path": "assets/icons/svc/plumbing/heaters-plumb.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "heaters-plumb.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "6cc4c3e3f8bf887e950cd281b43875946454ccb0e3c7a168b5d43098833d1b06",
+      "bytes": 3912
+    },
+    {
+      "path": "assets/icons/svc/plumbing/other-plumbing.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "other-plumbing.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "635d5394c136a89f3b47e7cd005c7b29a7dbf1f0bf8d80def15496a1544f8525",
+      "bytes": 8632
+    },
+    {
+      "path": "assets/icons/svc/plumbing/pipes.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "pipes.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "d448a334450554c25dbd4bcb84d1cdb345ce288abf31b9843ac0953756995d47",
+      "bytes": 6900
+    },
+    {
+      "path": "assets/icons/svc/plumbing/pumps.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "pumps.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "b97dc21e8c08b1101ed11fd2fdfce0503b60cfc22892436e433305dd629a86e8",
+      "bytes": 10102
+    },
+    {
+      "path": "assets/icons/svc/plumbing/sewage.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "sewage.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "f4abadaa03c2b6811013d871b02975157c6bdbd900a8dd6e402586b7553cfbc7",
+      "bytes": 12466
+    },
+    {
+      "path": "assets/icons/svc/plumbing/sinks.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "sinks.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "a6ff7096a11edc710b5b498fae6b4b97e923e72eae98b89f167283c9dccbaba6",
+      "bytes": 2932
+    },
+    {
+      "path": "assets/icons/svc/plumbing/siphon.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "siphon.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "cdc7b38246e4512e0d7513d4852df7b2310844afc16d206d9aea8c2b9f82b9c2",
+      "bytes": 3502
+    },
+    {
+      "path": "assets/icons/svc/plumbing/toilet.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "toilet.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "a254eca472efec95db402b60defa1f4bbb61d2befb5f033021d145d1883f478f",
+      "bytes": 3808
+    },
+    {
+      "path": "assets/icons/svc/plumbing/water-tanks.webp",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "water-tanks.webp",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "91a017a5de7fd64e565fa12f715bb81d58544d91fe3d1b7bb1a8d80c0ce77d10",
+      "bytes": 6838
     },
     {
       "path": "assets/logo-mark.webp",
@@ -8510,7 +9482,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "e0313bfdf98c580145e6467266a15c056d6d850031540e1ffda22e532c2f8ceb",
+      "sha256": "135a18ed5d74c8a6035336f14af7b6b76b7d7232f6fc2d56da870a96fc15827a",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "START_HERE.md",
@@ -8519,7 +9491,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 5750
+      "bytes": 6081
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -8600,7 +9572,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "158f8c58b5f44da50394db0af7e40ebc3f7305299fc343e83209a7d916e0da15",
+      "sha256": "52afe75c888417f23078e14a6a5c4b2b77e325d1a38a9a123edcbb44b154acbc",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8636,7 +9608,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 258348
+      "bytes": 277777
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -8696,7 +9668,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "ab6a976a91cf514cd52ba272b239656b37771a75e7bfc4e06195dbe06d4db73a",
+      "sha256": "541cc1cbd856ee1e72ee47a7c5aad2a11e6600b112f25fa19543e6eeb73d6163",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -8732,7 +9704,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 121674
+      "bytes": 139545
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -9469,8 +10441,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "0a1503b9e28b0c7879a9144578c75e85a0d1e1a878b1f9f87748a35a1b907ffb",
-      "bytes": 13189
+      "sha256": "91f2194bc0597ef0b87a2b09326670356aeebe808b779a0d19f1c9e313fc1e78",
+      "bytes": 14575
     },
     {
       "path": "docs/FIREBASE_DATA_INVENTORY.md",
@@ -10256,7 +11228,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "7943988384aa10c188fb96d5b76c2686e57fc41fa4c7f1e35796cbb3bed2573a",
+      "sha256": "8490bc3d45d34cbd1e48cb2d424a3d5e1f53297b0cbdbff7334cebd5a51954d8",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -10293,7 +11265,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 21849
+      "bytes": 25916
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -10683,7 +11655,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "25d4b731c9a287a0d30eb4f051b91736e484f773902bd09f022ae6cccab64d01",
+      "sha256": "a10b68aebf957eaa966a32e92aea4a2a8bbe03a91ee8586c1ecb3b998e8cf995",
       "bytes": 2051
     },
     {
@@ -10851,8 +11823,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "74e266afbc3500f0ccc9cadc740cdfec4e16964a5bace6a5fc602a47fba9c338",
-      "bytes": 37573
+      "sha256": "39f50b5456f3d685c3f1c06f477e7d90f835d58d850cfee151d1a9fa673dbfff",
+      "bytes": 38016
     },
     {
       "path": "functions/index.js",
@@ -10983,8 +11955,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "6b48858bea894065b398a679cd7936bbd0e419b6347fcc441482c4b370f8f469",
-      "bytes": 20058
+      "sha256": "ba199f9ff393846da721822fcb352b0487eedac36d22dfd8a8abfc28533b314f",
+      "bytes": 23830
     },
     {
       "path": "functions/src/store.js",
@@ -11085,7 +12057,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "356a16b1d3407e825cd1b7b5d252b2d2cfde0e75b42334f9bf29785be35081d5",
+      "sha256": "549ac5f0f34419a52ea89728aff98ab2ce58950bbced657491e7e918a60ae5aa",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11124,7 +12096,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 540
+      "bytes": 629
     },
     {
       "path": "package.json",
@@ -11353,7 +12325,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "55b57dfd26850fd4b09e2fde0843bcbe51988db2c9f2a441131c0e9531181a57",
+      "sha256": "2113c0792c16de46c38c7dc448da708cc645b06245fa6c5af228194369af9fb9",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11390,7 +12362,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 8541
+      "bytes": 8731
     },
     {
       "path": "services/admin-api.js",
@@ -11695,8 +12667,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "98fcc60495909ad08758b1258088611f62e2ddbf95c40859316b25b3b0be85cf",
-      "bytes": 15048
+      "sha256": "dfce7a2be7a02eb03fa573b8fcc7cbbdffb848d572d77c6c852eb0beb60531cb",
+      "bytes": 22748
     },
     {
       "path": "services/firebase-config.js",
@@ -12776,7 +13748,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "74e266afbc3500f0ccc9cadc740cdfec4e16964a5bace6a5fc602a47fba9c338",
+      "sha256": "39f50b5456f3d685c3f1c06f477e7d90f835d58d850cfee151d1a9fa673dbfff",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12815,7 +13787,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 37573
+      "bytes": 38016
     },
     {
       "path": "shared/config/routes.js",
@@ -12925,7 +13897,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "615daf218d14c1ecde1e62c63c3fc01651dd1e13ef791b5cee9bcc54acb821e0",
+      "sha256": "b4c2fb1848f2a842133a5303d80c4637b95c025a79cdbb55db6276849d30e979",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12964,7 +13936,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 44845
+      "bytes": 45442
     },
     {
       "path": "shared/design-system/layout.css",
@@ -13123,7 +14095,7 @@
       "next_action": "Keep registry aliases and all dynamic mapping outputs valid; protected by icon-asset-audit.test.js.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "0712c1509c1277b2cfb44a4a50be8c181423fac295626a0f96e79e28aa3c6d4b",
+      "sha256": "16ebb5e19541f1acd5da39ec2e16abbe3f0d613957660a702ad4e86ca0b8fa6c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -13162,7 +14134,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 90162
+      "bytes": 93509
     },
     {
       "path": "shared/README.md",
@@ -13851,8 +14823,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "c84740ea6b63b4d627b4d1b7d4ad91410c08e07aceeeeb8bef4aa6e956b1792a",
-      "bytes": 17465
+      "sha256": "d2137d629105d81b8e529f4d5941b220eaa32a475a92511c5698df288abd0529",
+      "bytes": 19000
     },
     {
       "path": "tests/e2e/guest.cdp.js",
@@ -14308,8 +15280,8 @@
       "next_action": "Keep in sync with a11y.cdp.js findings.",
       "explicit_references": [],
       "notes": "Added 2026-11-14 (final completion sprint).",
-      "sha256": "7e72e9e6a866416cacfb8117f67579a297f905118c4d8b7d7639fbb84c88d5d2",
-      "bytes": 3849,
+      "sha256": "eef4238989b999666e15a7f0c33a3d44163a7362c746f9aec9fb4d16ce5d09a5",
+      "bytes": 3839,
       "has_real_logic": true,
       "actual_status_ar": "اختبار"
     },
@@ -14320,7 +15292,7 @@
       "functional_title": "Accessible tabs integration contracts",
       "current_responsibility": "Verifies Customer/Admin loading order, Service Worker precache, and feature wiring.",
       "next_action": "Run with npm test.",
-      "sha256": "9a43bc7c2d11ce474492042da8a76c47f8391ad96c34240e11aff3650ab863bf",
+      "sha256": "0c185da87db0b46937de6ebb6c0c3480bf3b84974a16cfd5e8d3d3bdcda08afc",
       "bytes": 1367
     },
     {
@@ -14728,7 +15700,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "db7266e14a3c92826ebfb8b35d4cd3bb22df9e8ac8520ca4fde0dee300cb17ca",
+      "sha256": "d1b39340bf421ba1dfe7ebc26b47e906a876030d2063582d919df4a038ad679e",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -14893,8 +15865,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "43ee74bf3d9deebc7400c4d1416334009df9f0d16e76f0ddfcb71a1a684e7c6d",
-      "bytes": 35222
+      "sha256": "544daa8e4859dc09956c4c4aea030334cd7eb6650ce27702688215641cba47a7",
+      "bytes": 38334
     },
     {
       "path": "tests/unit/firebase-integration-contract.test.js",
@@ -15013,8 +15985,8 @@
       "file_behavior": "Unit tests registry and asset integrity contracts.",
       "completion_definition": "All icons/maps/assets resolve and are precached without byte-identical duplicates.",
       "actual_status_ar": "منفذ: اختبارات تكامل الأيقونات والأصول.",
-      "bytes": 4303,
-      "sha256": "be96a4e94858a344d473efb1f549f222a08f0d2be01cb52daa198ddea96e9bae"
+      "bytes": 4660,
+      "sha256": "15909361415b0fefc572edc6ab76d8acaaf5f3d41734c336d5c17cae6c50d1a8"
     },
     {
       "path": "tests/unit/inventory-reproducibility.test.js",
@@ -15195,8 +16167,8 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "06e8d943ef5b9e9a97a6052afb7f790910c403e61313775d7b016bba4fb78721",
-      "bytes": 6874
+      "sha256": "9adb3d112dfff5f76838ccf938db9fd1afb8786a1885349fee7e68eb7690f541",
+      "bytes": 6951
     },
     {
       "path": "tests/unit/provider-request-domain.test.js",
@@ -15579,7 +16551,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "923a3b59654fb9f5bdb343c59d608b4b9cd0656708e54cb4cb36dd1bc54d0735",
+      "sha256": "0c763c0f9b1a3da5d64f52d6ba8ce3451e7e63c3b2c81954e1b853696bb9cd4e",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",

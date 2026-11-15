@@ -160,3 +160,22 @@ After deploying:
 2. Set `DEFAULT_MODE = 'firebase'` in `services/firebase-config.js` and bump the SW `CACHE`.
 3. Migrate browser data: run `HSBackend.importLocal(true)` to review the dry-run report, then
    `HSBackend.importLocal(false)`.
+
+## Customer sign-in methods (2026-11-15)
+Customers choose how to sign in. SMS is no longer mandatory.
+
+| Method | Identity on the server | Contact phone |
+|---|---|---|
+| Quick continue (Firebase **anonymous** account on the device) | `uid` (server-only `users/{uid}` link, plus `customers/{id}.uid`) | Given at sign-up; `phoneVerified: false` |
+| Email + password (verification mail sent, not required) | `uid` (same link) | Given at sign-up; `phoneVerified: false` |
+| SMS code (phone OTP) | Verified token phone | Verified; `phoneVerified: true` |
+
+`session.registerCustomer {name, phone?}` rules:
+- A contact phone belongs to one account only. Requests are matched to customers by phone, so a second account using the same phone gets `already-exists`.
+- Phone-OTP sign-in still resolves by phone. It never resolves to another account's unverified record.
+- Email and quick customers cannot change their contact phone through `PATCH /customers/me`; this returns 409. Other fields can still be edited.
+- Providers still use SMS. Admins use a verified email.
+
+**Production prerequisites:** enable the **Anonymous** and **Email/Password** providers in the Firebase Console (Authentication → Sign-in method), then redeploy Functions.
+
+**Phone OTP needs an authorized http(s) domain.** It does not work from `file://`, which is why the OTP fails when the app is opened by double-click.

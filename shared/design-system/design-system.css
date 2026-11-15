@@ -411,15 +411,13 @@ img,svg,video,canvas{max-width:100%}
 .tile.small .tart{aspect-ratio:16/9}.tile.small .tart svg,.tile.small .tart svg.i{width:36px;height:36px}.tile.small .tl{padding:9px 8px 11px;font-size:13.5px}
 @media(min-width:700px){.grid.fit{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}}
 @media(max-width:699px){
-  .grid.fit{grid-template-columns:minmax(0,1fr);gap:8px}
-  .tile,.tile.small{flex-direction:row;align-items:center;min-height:68px;padding:8px;gap:12px;text-align:start;border-radius:16px}
-  .tile .tart,.tile.small .tart{flex:0 0 58px;width:58px;height:52px;aspect-ratio:auto;border-radius:12px;font-size:26px}
-  .tile .tart svg,.tile .tart svg.i,.tile.small .tart svg,.tile.small .tart svg.i{width:26px;height:26px}
-  .tile .tl,.tile.small .tl{flex:1;padding:0;font-size:15px;text-align:start}
-  .tile .tl{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:8px}
-  /* chevron pointing forward: "<" in RTL, ">" in LTR */
-  .tile .tl::after{content:"";flex:0 0 9px;width:9px;height:9px;margin-inline-end:10px;border:0;border-left:2px solid var(--text-muted);border-bottom:2px solid var(--text-muted);transform:rotate(45deg)}
-  [dir="ltr"] .tile .tl::after{border-left:0;border-right:2px solid var(--text-muted);transform:rotate(-45deg)}
+  /* V10 phones: compact app-style grid (3 per row; icon above the label). A lone last card centres. */
+  .grid.fit{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .grid.fit>.tile:last-child:nth-child(3n+1){grid-column:2}
+  .tile,.tile.small{flex-direction:column;align-items:center;justify-content:flex-start;min-height:0;padding:12px 4px 10px;gap:8px;text-align:center;border-radius:18px}
+  .tile .tart,.tile.small .tart{width:auto;height:auto;aspect-ratio:auto;background:none;border-radius:0;font-size:30px}
+  .tile .tart svg,.tile .tart svg.i,.tile.small .tart svg,.tile.small .tart svg.i{width:30px;height:30px}
+  .tile .tl,.tile.small .tl{padding:0;font-size:13px;line-height:1.35;text-align:center}
   .topbar{margin-inline:-16px;padding-inline:16px;border-radius:0}
 }
 

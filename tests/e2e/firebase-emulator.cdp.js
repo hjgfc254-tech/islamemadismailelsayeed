@@ -62,6 +62,8 @@ withBrowser(async ({ wsUrl }) => {
   ok(await d.evaluate('MP.db().providers.every(p => !p.demo)'), 'the local read model now comes from the server (no demo providers)');
 
   await d.evaluate(`window.__auth = HSBackend.verifyCustomer('سارة','01011112222').then(a => (window.__actor = a), e => (window.__err = String(e && e.message))); true`);
+  ok(await d.waitFor('!!document.querySelector("dialog button[value=quick]") && !!document.querySelector("dialog button[value=email]") && !!document.querySelector("dialog button[value=phone]")', 15000), 'customer sign-in offers quick, email and SMS methods');
+  await d.evaluate(`document.querySelector('dialog button[value=phone]').click(); true`);
   ok(await d.waitFor('!!document.querySelector("dialog input[name=code]")', 15000), 'the OTP dialog opens after the code is sent');
   let code = null;
   for (let i = 0; i < 20 && !code; i++) {
@@ -82,6 +84,13 @@ withBrowser(async ({ wsUrl }) => {
   ok(list === 200, 'listing own requests through the backend works');
   const denied = await d.evaluate(`HSApiClient.request('GET','/admin/summary').then(r => r.status)`);
   ok(denied === 403 || denied === 401, 'admin route denied for a customer by the server: ' + denied);
+  /* quick continue: no SMS, no password — an anonymous device account bound to the customer by uid */
+  await d.evaluate(`HSBackend.signOut().then(() => { window.__actor = null; window.__err = null; window.__q = HSBackend.verifyCustomer('منى','01055556666').then(a => (window.__actor = a), e => (window.__err = String(e && e.message))); }); true`);
+  ok(await d.waitFor('!!document.querySelector("dialog button[value=quick]")', 15000), 'quick continue offered again after sign-out');
+  await d.evaluate(`document.querySelector('dialog button[value=quick]').click(); true`);
+  ok(await d.waitFor('!!window.__actor || !!window.__err', 15000) && await d.evaluate('window.__actor && window.__actor.role === "customer" && window.__actor.name === "منى"'), 'quick account registered as a customer without SMS: ' + await d.evaluate('JSON.stringify(window.__actor || window.__err)'));
+  const quickReq = await d.evaluate(`HSOrdersApi.create({ cat:'plumbing', serviceName:'تسريب', desc:'تسريب حوض', gov:'القاهرة', area:'المعادي', addr:'شارع 9' }).then(r => r.status)`);
+  ok(quickReq === 201, 'a quick-account customer can place a request: ' + quickReq);
   /* ── Admin app (browser): email sign-in in the app dialog → first owner → workforce through the real page ── */
   await emailAccount(OWNER_EMAIL, 'emulator-only-1', true);                     // owner verified their email (emulator)
   const ADMIN = BASE + '/apps/admin/index.html?backend=firebase&emulators=1';

@@ -884,3 +884,8 @@ button.crumb:active{border-color:var(--pink)}
 .prow .ip.ph{width:52px;height:52px;border-radius:14px}
 .icard.sel .ip.ph,.prow.sel .ip.ph{box-shadow:0 0 0 3px var(--accent),var(--shadow-1)}
 @media (max-width:420px){.tile .tart.ph .iph{width:72px;height:72px;border-radius:19px}.icard .ip.ph{width:68px;height:68px}}
+/* fix: the generic .done success-box rule must not inflate completed wizard progress segments */
+.wz-bar i.done{padding:0;margin:0;text-align:initial}
+/* mobile list tiles: keep the photo icon inside the card */
+@media (max-width:767px){.tile .tart.ph{margin:0}.tile .tart.ph .iph{width:64px;height:64px;border-radius:17px}}
+@media (max-width:360px){.tile .tart.ph .iph{width:56px;height:56px;border-radius:15px}}
