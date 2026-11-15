@@ -99,6 +99,27 @@
     })
   };
 
+  /**
+   * Finance rows per category bucket of the Finance page (its ids: electric, plumbing, carpentry, other), computed from
+   * REAL transactions within the last `days` days using only stored fields: value, commission, net, collection.
+   * Current collection model: the customer pays the provider and the platform collects its commission from the
+   * provider, so the platform owes no payouts → settled = pendingDues = 0 until a payout process is decided.
+   */
+  function financeRows(days, bucketIds, labels) {
+    const since = Date.now() - (+days || 30) * 86400000;
+    const known = (bucketIds || []).filter((id) => id !== 'other');
+    const bucketOf = (cat) => (known.includes(cat) ? cat : 'other');
+    const rowsBy = {};
+    (bucketIds || []).forEach((id) => { rowsBy[id] = { id, label: (labels && labels[id]) || id, gmv: 0, commission: 0, collected: 0, uncollected: 0, providerNet: 0, settled: 0, pendingDues: 0 }; });
+    (db().transactions || []).filter((t) => !t.free && Date.parse(t.at) >= since).forEach((t) => {
+      const r = rowsBy[bucketOf(t.cat)]; if (!r) return;
+      const commission = +t.commission || 0;
+      r.gmv += +t.value || 0; r.commission += commission; r.providerNet += +t.net || 0;
+      if (t.collection === 'collected') r.collected += commission; else if (t.collection === 'pending') r.uncollected += commission;
+    });
+    return (bucketIds || []).map((id) => rowsBy[id]);
+  }
+
   /** Rows for a page entity, from the server read model. */
   function rows(entity, opts) { return MAP[entity] ? MAP[entity](opts) : []; }
 
@@ -115,7 +136,7 @@
   }
   const errorText = (res) => (res && res.error && res.error.message) || 'تعذّر تنفيذ الإجراء.';
 
-  const api = Object.freeze({ enabled, rows, status, errorText, UNSUPPORTED, ENTITIES: Object.keys(MAP) });
+  const api = Object.freeze({ enabled, rows, status, errorText, financeRows, UNSUPPORTED, ENTITIES: Object.keys(MAP) });
   root.HSAdminLive = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

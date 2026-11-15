@@ -64,9 +64,11 @@
     st = st || state;
     const p = PERIODS.some((x) => x.id === period) ? period : '30';
     const cat = CATEGORIES.some((c) => c.id === category) ? category : 'all';
-    const rows = CATEGORIES.filter((c) => cat === 'all' || c.id === cat).map((c) => rowFor(c, p));
+    const L = root.HSAdminLive && root.HSAdminLive.enabled() ? root.HSAdminLive : null;   /* server backend mode: real transactions via HSAdminLive, no fixture rates */
+    const rows = L ? L.financeRows(Number(p), CATEGORIES.map((c) => c.id), Object.fromEntries(CATEGORIES.map((c) => [c.id, c.label]))).filter((r) => cat === 'all' || r.id === cat)
+      : CATEGORIES.filter((c) => cat === 'all' || c.id === cat).map((c) => rowFor(c, p));
     const days = Number(p);
-    const disc = DISCREPANCIES.filter((d) => d.ageDays <= days && (cat === 'all' || d.category === cat)).map((d) => Object.assign({}, d, {
+    const disc = (L ? [] : DISCREPANCIES).filter((d) => d.ageDays <= days && (cat === 'all' || d.category === cat)).map((d) => Object.assign({}, d, {
       diff: d.recorded - d.expected, status: st.reviewed[d.id] ? 'reviewed' : 'open',
       categoryLabel: (CATEGORIES.find((c) => c.id === d.category) || {}).label || ''
     }));
