@@ -128,7 +128,7 @@ See `docs/TESTING_STRATEGY.md` for the test layers, rules, completion gate, and 
 
 ## Responsive browser sweep (2026-11-13)
 - Real Chromium sweep completed (see `docs/RESPONSIVE_AUDIT.md`); the earlier `ERR_BLOCKED_BY_ADMINISTRATOR` blocker no longer applied.
-- Added `tests/unit/responsive-sweep-regression.test.js` (6 checks) and manual `tests/e2e/responsive-sweep.browser.js` (36 checks over 4 widths, all passing).
+- Added `tests/unit/responsive-sweep-regression.test.js` (6 checks) and manual `tests/e2e/responsive-sweep.browser.js` (36 checks over 4 widths, all passing) — *renamed/ported on 2026-11-14 to `tests/e2e/responsive-sweep.cdp.js`*.
 
 
 ## 2026-11-13 — PHASE 5 / TASK 04: Customer Bottom Sheet focus

@@ -77,12 +77,12 @@
 | `apps/provider/README.md` | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
 | `apps/provider/app.js` | PLACEHOLDER | Provider application bootstrap; independent mounting is not yet implemented. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
 | `apps/provider/index.html` | PLACEHOLDER | Application route document. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
-| `apps/provider/legacy/portal-compat.js` | LEGACY | Legacy mixed provider/admin role bridge and demo administration logic; retained unchanged. | Split by responsibility and test before deletion. |
+| `apps/provider/legacy/portal-compat.js` | REMOVED (2026-11-14) | Former Customer-loaded role bridge + legacy Admin console. Deleted after its Admin capabilities moved to `apps/admin/pages/marketplace.page.js`; guarded by `tests/unit/legacy-migration.test.js`. | Do not restore. |
 | `apps/provider/login.html` | PLACEHOLDER | Application route document. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
 | `apps/provider/pages/active-jobs.page.js` | PLACEHOLDER | Active jobs route; current behavior is grouped within the provider workspace. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
-| `apps/provider/pages/dashboard.page.js` | PLACEHOLDER | Provider dashboard is currently rendered by apps/provider/provider-workspace.js; dedicated page extraction is pending. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
+| `apps/provider/pages/dashboard.page.js` | IMPLEMENTED (FRONTEND DEMO) | Provider dashboard renderer of the standalone Provider app (dependency-injected; runtime in `apps/provider/app.js`). | Keep renderer contracts stable. |
 | `apps/provider/pages/earnings.page.js` | PLACEHOLDER | Provider earnings route; current values are demo data from local MP store. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
-| `apps/provider/pages/incoming-requests.page.js` | PLACEHOLDER | Incoming request view is currently rendered inside apps/provider/provider-workspace.js; extraction pending. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
+| `apps/provider/pages/incoming-requests.page.js` | IMPLEMENTED (FRONTEND DEMO) | Incoming-requests renderer of the standalone Provider app. | Keep renderer contracts stable. |
 | `apps/provider/pages/notifications.page.js` | PLACEHOLDER | Provider notifications route; not implemented independently. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
 | `apps/provider/pages/profile.page.js` | PLACEHOLDER | Provider profile route; current view is grouped within provider workspace. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
 | `apps/provider/pages/quotes.page.js` | PLACEHOLDER | Provider quotes route; current behavior depends on legacy portal compatibility. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
@@ -95,7 +95,7 @@
 | `apps/provider/provider-router.js` | PLACEHOLDER | Provider route resolution and refresh-safe deep links; not implemented. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
 | `apps/provider/provider-session.js` | PLACEHOLDER | Provider session isolation; no production session provider exists. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
 | `apps/provider/provider-shell.js` | PLACEHOLDER | Provider application shell; standalone shell extraction is pending. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
-| `apps/provider/provider-workspace.js` | PARTIALLY IMPLEMENTED | Provider workspace dashboard and operational views; retained demo implementation. | Refactor incrementally and add regression tests. |
+| `apps/provider/provider-workspace.js` | REMOVED (2026-11-14) | Former Customer-integrated Provider workspace. Superseded by the standalone Provider app (`apps/provider/index.html`). | Do not restore. |
 | `apps/provider/styles/provider.css` | PLACEHOLDER | Stylesheet module; see file header. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
 | `assets/icon.svg` | IMPLEMENTED | Project asset or configuration file. | Protect with regression tests; do not rewrite unnecessarily. |
 | `assets/logo-mark.webp` | IMPLEMENTED | Project asset or configuration file. | Protect with regression tests; do not rewrite unnecessarily. |
@@ -207,7 +207,7 @@
 | `tests/unit/design-system.test.js` | IMPLEMENTED | Existing unit/static regression test. | Protect with regression tests; do not rewrite unnecessarily. |
 | `tests/unit/discover.test.js` | IMPLEMENTED | Existing unit/static regression test. | Protect with regression tests; do not rewrite unnecessarily. |
 | `tests/unit/home.test.js` | IMPLEMENTED | Existing unit/static regression test. | Protect with regression tests; do not rewrite unnecessarily. |
-| `tests/unit/provider-workspace.test.js` | IMPLEMENTED | Existing unit/static regression test. | Protect with regression tests; do not rewrite unnecessarily. |
+| `tests/unit/provider-workspace.test.js` | REMOVED (2026-11-14) | Tested the deleted workspace; replaced by `legacy-migration.test.js` and the Provider app suites. | — |
 | `tests/unit/responsive-audit.test.js` | IMPLEMENTED | Existing unit/static regression test. | Protect with regression tests; do not rewrite unnecessarily. |
 | `tests/unit/static-audit.test.js` | IMPLEMENTED | Existing unit/static regression test. | Protect with regression tests; do not rewrite unnecessarily. |
 | `tests/unit/ui-kit.test.js` | IMPLEMENTED | Existing unit/static regression test. | Protect with regression tests; do not rewrite unnecessarily. |

@@ -40,12 +40,16 @@ test('no blocking native dialogs (confirm/prompt/alert) in any app runtime', () 
   assert.deepEqual(offenders, []);
 });
 
-test('contrast fixes: strong brand token for small white text; decorative avatar initials hidden and darkened', () => {
-  assert.match(read('shared/design-system/design-system.css'), /--brand-primary-strong:#1d4ed8/);
-  assert.match(read('shared/design-system/design-system.css'), /\.qa \.n,\.tab-badge\{background:var\(--brand-primary-strong\)/);
+test('contrast fixes: strong brand token for small white text; decorative avatar initials hidden and readable', () => {
+  const ds = read('shared/design-system/design-system.css');
+  // Approved identity: deep primary green #0B3E38 carries small white text (11.6:1); primary green #135049 carries buttons (9.2:1)
+  assert.match(ds, /--brand-primary-strong:#0B3E38/);
+  assert.match(ds, /--brand-primary:#135049/);
+  assert.match(ds, /\.qa \.n,\.tab-badge\{background:var\(--brand-primary-strong\)/);
   assert.match(read('apps/admin/styles/admin.css'), /\.adm-skip\{[^}]*background:var\(--brand-primary-strong\)/);
   for (const f of ['apps/customer/pages/account.page.js', 'apps/customer/pages/order-details.page.js']) assert.match(read(f), /class="prov-avatar" aria-hidden="true"/, f);
-  assert.equal((read('apps/customer/styles/customer.css').match(/background-image:linear-gradient\(rgba\(0,0,0,\.3\),rgba\(0,0,0,\.3\)\)/g) || []).length, 2);
+  // provider-data avatar colours are overridden by one calm, high-contrast avatar style (emerald ink on mint)
+  assert.match(ds, /\.prov-avatar\{background:var\(--mint\)!important;[^}]*color:var\(--brand-ink\)!important/);
 });
 
 test('every app honours prefers-reduced-motion', () => {

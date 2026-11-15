@@ -196,7 +196,7 @@ const Account = (() => {
       <div class="card2 glass neon">
         <b>${safeIc('shield')} الخصوصية والحساب</b>
         <button class="menu-item" data-account-logout>${safeIc('logout')} تسجيل الخروج</button>
-        <button class="menu-item" style="color:#ff8a9b" data-account-delete>${safeIc('trash')} حذف الحساب</button>
+        <button class="menu-item is-danger" data-account-delete>${safeIc('trash')} حذف الحساب</button>
       </div>
       <small class="hint" style="padding:10px 4px;display:block">جميع البيانات محفوظة محليًا على جهازك في الوضع التجريبي.</small>
     `;
@@ -217,14 +217,14 @@ const Account = (() => {
     const tabBar = u ? `<div class="subtabs account-tabs" role="group" aria-label="أقسام الحساب" style="margin-top:10px">
       ${TABS.map(([k, n, ico]) => `<button type="button" aria-pressed="${tab === k}" class="${tab === k ? 'on' : ''}" data-account-tab="${k}">${safeIc(ico)} ${_esc(n)}</button>`).join('')}
     </div>` : '';
-    const body = !u ? loginPrompt() : ({
+    const body = !u ? loginPrompt() : (({
       orders: tabOrders,
       favorites: tabFavorites,
       notifs: tabNotifs,
       reviews: tabReviews,
       profile: tabProfile,
       settings: tabSettings
-    })[tab]();
+    })[tab] || tabOrders)();   /* unknown/stale tab key falls back instead of crashing the screen */
     return `<div class="screen">${typeof head === 'function' ? head('حسابي') : ''}${tabBar}${body}</div>`;
   };
 
@@ -280,19 +280,13 @@ const Account = (() => {
     const t = e.target;
     if (t.dataset.accountPref !== undefined) {
       const u = meUser(); if (!u) return;
-      const prefs = u.prefs || {notifyStatus:true, notifyQuotes:true, notifyReminders:true, preferredContact:'call'};
-      prefs[t.dataset.accountPref] = t.checked;
-      u.prefs = prefs;
-      MP.save();
-      toast('تم حفظ التفضيلات');
+      HSCustomerApi.updateMe({ prefs: { [t.dataset.accountPref]: t.checked } })
+        .then(res => toast(res.ok ? 'تم حفظ التفضيلات' : 'تعذّر حفظ التفضيلات'));
     }
     if (t.dataset.accountContact !== undefined) {
       const u = meUser(); if (!u) return;
-      const prefs = u.prefs || {notifyStatus:true, notifyQuotes:true, notifyReminders:true, preferredContact:'call'};
-      prefs.preferredContact = t.value;
-      u.prefs = prefs;
-      MP.save();
-      toast('تم حفظ وسيلة التواصل');
+      HSCustomerApi.updateMe({ prefs: { preferredContact: t.value } })
+        .then(res => toast(res.ok ? 'تم حفظ وسيلة التواصل' : 'تعذّر حفظ وسيلة التواصل'));
     }
   });
 
@@ -319,12 +313,13 @@ const Account = (() => {
       if (!/^[0-9+ ]{8,15}$/.test(phone)) return toast('رقم الهاتف غير صحيح');
       const dup = MP.db().customers.find(c => c.phone === phone && c.id !== u.id);
       if (dup) return toast('هذا الرقم مسجّل باسم آخر');
-      u.name = name; u.phone = phone; u.email = email;
-      MP.save();
-      HSCustomerSession.update({name, phone});
-      if (typeof closeSheet === 'function') closeSheet();
-      toast('تم حفظ التعديلات');
-      if (typeof show === 'function') show('account');
+      HSCustomerApi.updateMe({ name, phone, email }).then(res => {
+        if (!res.ok) return toast((res.error && res.error.details && Object.values(res.error.details)[0]) || (res.error && res.error.message) || 'تعذّر حفظ التعديلات');
+        HSCustomerSession.update({name, phone});
+        if (typeof closeSheet === 'function') closeSheet();
+        toast('تم حفظ التعديلات');
+        if (typeof show === 'function') show('account');
+      });
     }
     if (f.id === 'accDeleteForm') {
       e.preventDefault();
@@ -332,19 +327,22 @@ const Account = (() => {
       const d = new FormData(f);
       if ((d.get('confirm') || '').trim() !== 'حذف') return toast('اكتب كلمة "حذف" للتأكيد');
       /* تنظيف محلي */
-      try {
-        const db = MP.db();
-        db.customers = db.customers.filter(c => c.id !== u.id);
-        db.addresses = db.addresses.filter(a => a.customerId !== u.id);
-        db.favorites = db.favorites.filter(x => x.customerId !== u.id);
-        db.drafts = db.drafts.filter(x => x.customerId !== u.id);
-        db.searchHistory = db.searchHistory.filter(x => x.customerId !== u.id);
-        MP.save();
-      } catch {}
-      HSCustomerSession.signOut();
-      if (typeof closeSheet === 'function') closeSheet();
-      toast('تم حذف الحساب');
-      if (typeof show === 'function') show('account');
+      /* profile/addresses/favorites are deleted through the API (local store or Firebase backend);
+         drafts and search history are device-local and are cleared here */
+      HSCustomerApi.deleteMe().then(res => {
+        if (!res.ok) return toast('تعذّر حذف الحساب');
+        try {
+          const db = MP.db();
+          db.drafts = db.drafts.filter(x => x.customerId !== u.id);
+          db.searchHistory = db.searchHistory.filter(x => x.customerId !== u.id);
+          MP.save();
+        } catch {}
+        HSCustomerSession.signOut();
+        if (typeof HSBackend !== 'undefined' && HSBackend.mode === 'firebase') HSBackend.signOut().catch(() => {});
+        if (typeof closeSheet === 'function') closeSheet();
+        toast('تم حذف الحساب');
+        if (typeof show === 'function') show('account');
+      });
     }
   });
 

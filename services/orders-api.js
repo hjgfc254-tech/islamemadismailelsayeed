@@ -119,12 +119,26 @@
     return store.close(r.id) ? view(store, r) : fail('CONFLICT', 'الطلب لم يكتمل بعد');
   });
 
+  client.define('POST', '/requests/:id/attachments', { roles: ['customer'], summary: 'Link uploaded attachment ids to an own open request {ids[]}.' }, ({ params, body, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    if (store.FINAL_STATUSES && store.FINAL_STATUSES.has(r.status)) return fail('CONFLICT', 'الطلب مغلق');
+    if (!Array.isArray(body.ids) || body.ids.length > 10 || body.ids.some(v => typeof v !== 'string' || v.length > 80)) return fail('VALIDATION', 'مرفقات غير صالحة', { ids: 'حتى 10 معرّفات' });
+    r.attachments = body.ids.slice();
+    store.save();
+    return view(store, r);
+  });
+  client.define('POST', '/requests/:id/repeat', { roles: ['customer'], summary: 'Create a new request from an own previous one.' }, ({ params, actor, store }) => {
+    const old = load(store, actor, params.id); if (!old) return notFound();
+    const r = store.repeatRequest(old.id);
+    return r ? ok(view(store, r), 201) : fail('CONFLICT', 'تعذّر إعادة الطلب');
+  });
   client.define('POST', '/requests/:id/review', { roles: ['customer'], summary: 'Rate the provider once {stars 1–5, comment}.' }, ({ params, body, actor, store }) => {
     const r = load(store, actor, params.id); if (!r) return notFound();
     const stars = +body.stars;
     if (!Number.isInteger(stars) || stars < 1 || stars > 5) return fail('VALIDATION', 'اختر تقييمًا من 1 إلى 5', { stars: '1–5' });
     if (!['completed', 'closed'].includes(r.status)) return fail('CONFLICT', 'التقييم متاح بعد إتمام الخدمة');
-    return store.review(r.id, { stars, comment: String(body.comment || '').slice(0, 1000) }) ? ok(view(store, r), 201) : fail('CONFLICT', 'تم تقييم هذا الطلب من قبل');
+    const extra = { quality: body.quality == null ? undefined : String(body.quality).slice(0, 20), attachments: Array.isArray(body.attachments) ? body.attachments.map(String).slice(0, 6) : [] };
+    return store.review(r.id, { stars, comment: String(body.comment || '').slice(0, 1000), ...extra }) ? ok(view(store, r), 201) : fail('CONFLICT', 'تم تقييم هذا الطلب من قبل');
   });
 
   const id = v => encodeURIComponent(v);
@@ -140,6 +154,8 @@
     advance: (reqId, to) => client.post('/requests/' + id(reqId) + '/advance', { to }),
     complete: (reqId, value, deductions) => client.post('/requests/' + id(reqId) + '/complete', { value, deductions }),
     close: reqId => client.post('/requests/' + id(reqId) + '/close'),
-    review: (reqId, stars, comment) => client.post('/requests/' + id(reqId) + '/review', { stars, comment })
+    review: (reqId, stars, comment, extra) => client.post('/requests/' + id(reqId) + '/review', { stars, comment, ...(extra || {}) }),
+    attachments: (reqId, ids) => client.post('/requests/' + id(reqId) + '/attachments', { ids }),
+    repeat: reqId => client.post('/requests/' + id(reqId) + '/repeat', {})
   };
 });

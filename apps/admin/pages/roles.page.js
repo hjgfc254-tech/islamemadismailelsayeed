@@ -81,6 +81,15 @@
       if (b.hasAttribute('data-rl-back')) { st = { values: st.values }; paintDlg('#rl-name'); return; }
       if (b.hasAttribute('data-rl-confirm')) {
         const im = st.impact, creating = !openId;
+        const remote = root.HSBackend && root.HSBackend.mode === 'firebase' ? root.HSBackend : null;
+        if (remote) {                                 /* Firebase backend: roles are stored and enforced server-side */
+          const values = st.values;
+          remote.admin('POST', '/admin/rbac/roles', { id: openId || undefined, fields: values }).then((res) => {
+            if (res.ok) { if (creating) openId = R.state.roles[R.state.roles.length - 1].id; st = { message: creating ? 'أُضيف الدور على الخادم.' : 'تم حفظ الدور على الخادم.' }; sync(); paintDlg('[data-ord-close]'); }
+            else { st = { values, errors: (res.error && res.error.details) || {}, message: (res.error && res.error.message) || 'تعذر تنفيذ الإجراء.' }; paintDlg(); }
+          });
+          return;
+        }
         try {
           R.state.roles = apply(st.values);
           if (creating) openId = R.state.roles[R.state.roles.length - 1].id;

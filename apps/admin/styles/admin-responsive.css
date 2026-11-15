@@ -22,3 +22,6 @@
   .adm-side,.adm-main,.adm-link,.adm-btn{transition:none!important}
   .adm-spin{animation-duration:2.4s}
 }
+/* V9: on phones the demo chip moves out of the crowded header (the page banner already states demo mode) */
+@media (max-width:480px){.adm-head .adm-chip{display:none}.adm-acc-name small{display:none}}
+.adm-backdrop{background:rgba(23,35,31,.42)}

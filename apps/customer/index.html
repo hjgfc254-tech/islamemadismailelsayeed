@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#0f1426">
+<meta name="theme-color" content="#135049">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>هنصلحلك — اطلب متخصصًا</title>
@@ -11,21 +11,21 @@
 <link rel="icon" href="../../assets/icon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles/customer.css">
 <link rel="stylesheet" href="../../shared/design-system/design-system.css">
 <script>
 /* الافتتاحية السينمائية: مرة واحدة لكل جلسة. الفحص مبكر لمنع أي وميض عند الدخول الداخلي المتكرر. */
-(function(){try{var d=document.documentElement;if(sessionStorage.getItem('hs_intro_v1')){d.classList.add('no-intro');}else{sessionStorage.setItem('hs_intro_v1','1');['logo-mark','logo-word'].forEach(function(n){var l=document.createElement('link');l.rel='preload';l.as='image';l.href='../../assets/'+n+'.webp';document.head.appendChild(l);});}}catch(e){}})();
+(function(){try{var d=document.documentElement;if(sessionStorage.getItem('hs_intro_v1')){d.classList.add('no-intro');}else{sessionStorage.setItem('hs_intro_v1','1');['brand/logo-wordmark-light.png'].forEach(function(n){var l=document.createElement('link');l.rel='preload';l.as='image';l.href='../../assets/'+n;document.head.appendChild(l);});}}catch(e){}})();
 </script>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
   <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4f1f7"/><stop offset=".5" stop-color="#bdb7c6"/><stop offset="1" stop-color="#7b7487"/></linearGradient>
   <linearGradient id="metal2" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#8d8698"/><stop offset=".5" stop-color="#e6e2ea"/><stop offset="1" stop-color="#a39cae"/></linearGradient>
-  <radialGradient id="glass" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#4b5e86"/><stop offset=".45" stop-color="#1a2238"/><stop offset="1" stop-color="#070a14"/></radialGradient>
-  <linearGradient id="pinkg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#60a5fa"/><stop offset="1" stop-color="#3b82f6"/></linearGradient>
-  <linearGradient id="screeng" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f1730"/><stop offset=".6" stop-color="#1e3a8a"/><stop offset="1" stop-color="#3b82f6" stop-opacity=".75"/></linearGradient>
+  <radialGradient id="glass" cx=".35" cy=".3" r=".85"><stop offset="0" stop-color="#4b5e86"/><stop offset=".45" stop-color="#1a2238"/><stop offset="1" stop-color="#04120D"/></radialGradient>
+  <linearGradient id="pinkg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5FC79C"/><stop offset="1" stop-color="#2FA57A"/></linearGradient>
+  <linearGradient id="screeng" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0f1730"/><stop offset=".6" stop-color="#1e3a8a"/><stop offset="1" stop-color="#2FA57A" stop-opacity=".75"/></linearGradient>
   <filter id="gb6" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
   <filter id="gb10" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="10"/></filter>
 </defs></svg>
@@ -40,17 +40,18 @@
 </div>
 
 <!-- الافتتاحية خارج #app عمدًا: #app عليه transform أثناء الحركة (appIn) فكان يحتجز position:fixed داخل عمود 480px بدل الشاشة كلها.
-     V2: الشعار المرفق (assets/logo-mark.webp + logo-word.webp) مقسوم لجزأين من نفس الصورة الأصلية بلا إعادة رسم؛ يُعاد تركيبهما بنفس النسب.
+     Approved identity: the bilingual wordmark (assets/brand/logo-wordmark-light.png, extracted from the logo board) is the logo;
+     the legacy symbol layer (.in-mark, assets/logo-mark.webp) is kept in the DOM for the controller but hidden by CSS.
      الطبقات الديناميكية (خطوط/جسيمات) تُولَّد من app.js (Intro) ولا تُكتب هنا. -->
-<div id="intro" role="group" aria-label="هنصلحلك — خدماتك.. في إيد أمينة.">
+<div id="intro" role="group" aria-label="هنصلحلك — خدماتك، في تجربة أسهل.">
   <div class="in-fx">
     <div class="in-radial" aria-hidden="true"></div>
     <div class="in-lines" aria-hidden="true"></div>
     <div class="in-dust" aria-hidden="true"></div>
     <div class="in-world" aria-hidden="true">
       <div class="ring r1"><svg viewBox="0 0 400 400" focusable="false"><defs>
-        <linearGradient id="inRg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#bfdbfe"/><stop offset=".55" stop-color="#3b82f6"/><stop offset="1" stop-color="#fb923c"/></linearGradient>
-        <linearGradient id="inRg2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fbbf24"/><stop offset=".5" stop-color="#3b82f6"/><stop offset="1" stop-color="#bfdbfe"/></linearGradient></defs>
+        <linearGradient id="inRg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#C0D3FF"/><stop offset=".55" stop-color="#1E6C60"/><stop offset="1" stop-color="#D17D32"/></linearGradient>
+        <linearGradient id="inRg2" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F1EADD"/><stop offset=".5" stop-color="#1E6C60"/><stop offset="1" stop-color="#C0D3FF"/></linearGradient></defs>
         <circle class="halo" cx="200" cy="200" r="190"/><circle class="line" cx="200" cy="200" r="190"/><circle class="tail" cx="200" cy="200" r="190" pathLength="100"/><circle class="comet" cx="200" cy="200" r="190" pathLength="100"/></svg></div>
       <div class="ring r2"><svg viewBox="0 0 400 400" focusable="false"><circle class="halo" cx="200" cy="200" r="190"/><circle class="line" cx="200" cy="200" r="190" style="stroke:url(#inRg2)"/><circle class="tail" cx="200" cy="200" r="190" pathLength="100"/><circle class="comet" cx="200" cy="200" r="190" pathLength="100"/></svg></div>
       <div class="ring r3"><svg viewBox="0 0 400 400" focusable="false"><circle class="halo" cx="200" cy="200" r="190"/><circle class="line" cx="200" cy="200" r="190"/><circle class="tail" cx="200" cy="200" r="190" pathLength="100"/><circle class="comet" cx="200" cy="200" r="190" pathLength="100"/></svg></div>
@@ -66,12 +67,12 @@
         <div class="sheen" aria-hidden="true"><i class="o"></i><i class="b"></i></div>
       </div>
       <div class="in-word">
-        <img class="main" src="../../assets/logo-word.webp" alt="هنصلحلك HANSALHLAK" decoding="async" draggable="false">
+        <img class="main" src="../../assets/brand/logo-wordmark-light.png" alt="هنصلحلك HANSALEHLAK" decoding="async" draggable="false">
         <div class="sheen" aria-hidden="true"><i class="b"></i></div>
       </div>
       <div class="in-floor" aria-hidden="true"></div>
     </div>
-    <p class="in-tag"><span>خدماتك..</span> <span>في</span> <span>إيد</span> <span>أمينة.</span><i class="in-sweep" aria-hidden="true"></i></p>
+    <p class="in-tag"><span>خدماتك،</span> <span>في</span> <span>تجربة</span> <span>أسهل.</span><i class="in-sweep" aria-hidden="true"></i></p>
   </div>
   <div class="in-fx">
     <div class="in-shock" aria-hidden="true"></div>
@@ -92,6 +93,7 @@
 <script src="../../shared/components/accessible-tabs.js"></script>
 <script src="../../shared/config/legacy-data.js"></script>
 <script src="../../services/local-catalog.js"></script>
+<script src="../../services/firebase-config.js"></script>
 <script src="../../services/local-market-store.js"></script>
 <!-- API adapter boundary (mock transport over MP; no network): Customer marketplace mutations go through these. -->
 <script src="../../services/api-client.js"></script><script src="../../services/auth-api.js"></script><script src="../../services/orders-api.js"></script><script src="../../services/quotes-api.js"></script><script src="../../services/customer-api.js"></script><script src="../../services/support-api.js"></script><script src="../../services/notifications-api.js"></script><script src="../../services/realtime-client.js"></script>
@@ -114,5 +116,10 @@
 <script src="pages/addresses.page.js"></script>
 <script src="pages/account.page.js"></script>
 <script src="pages/support.page.js"></script>
+<!-- V9 cinematic intro: GSAP (vendored, pinned) + Three.js scene module (additive; the CSS intro works without it) -->
+<script src="../../assets/vendor/gsap.min.js"></script>
+<script type="module" src="intro-3d.js"></script>
+<!-- Firebase backend (opt-in: ?backend=firebase). Local demo mode is unchanged when not selected. -->
+<script type="module" src="../../services/firebase-backend.js"></script>
 </body>
 </html>

@@ -18,7 +18,7 @@
    • CLEAR_CACHE  — مسح كل الكاش (لأدوات العرض التجريبي).
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'hansalhlak-v8-architecture-22';
+const CACHE = 'hansalhlak-v11-firebase-1';
 
 /* الملفات الأساسية — يجب أن تعمل offline بعد أول زيارة */
 const FILES = [
@@ -76,6 +76,8 @@ const FILES = [
   'apps/provider/pages/notifications.page.js',
   'apps/provider/pages/request-details.page.js',
   'services/local-attachments.js',
+  'apps/customer/intro-3d.js',
+  'assets/vendor/gsap.min.js',
   'apps/customer/pages/search.page.js',
   'apps/customer/pages/discover.page.js',
   'apps/customer/pages/addresses.page.js',
@@ -85,6 +87,17 @@ const FILES = [
   'assets/icon.svg',
   'assets/logo-mark.webp',
   'assets/logo-word.webp',
+  'services/firebase-config.js',
+  'services/firebase-backend.js',
+  'apps/admin/modules/admin-live.js',
+  'assets/vendor/firebase/13.1.0/firebase-app.js',
+  'assets/vendor/firebase/13.1.0/firebase-auth.js',
+  'assets/vendor/firebase/13.1.0/firebase-functions.js',
+  'assets/vendor/firebase/13.1.0/firebase-database.js',
+  'assets/brand/logo-wordmark.png',
+  'assets/brand/logo-wordmark-light.png',
+  'assets/brand/hero-technician.jpg',
+  'assets/brand/trust-handshake.jpg',
   'assets/slide-guide.svg',
   'assets/slide-popular.svg',
   'assets/slide-latest.svg',
@@ -124,6 +137,11 @@ self.addEventListener('fetch', event => {
 
   /* تجاهل أي مخطط غير HTTP/HTTPS (chrome-extension, blob, data, …) */
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return;
+
+  /* Firebase backend traffic (Auth, callable Functions, Realtime Database, reCAPTCHA) is never intercepted or cached:
+     authenticated responses must not land in the offline cache. */
+  if (/(^|\.)(googleapis\.com|firebaseio\.com|firebasedatabase\.app|cloudfunctions\.net|firebaseapp\.com|recaptcha\.net)$/.test(url.hostname) && !/^fonts\./.test(url.hostname)) return;
+  if (url.hostname === 'www.google.com' && url.pathname.startsWith('/recaptcha')) return;
 
   const isFont = /(^|\.)fonts\.(googleapis|gstatic)\.com$/.test(url.hostname);
 

@@ -1,3 +1,5 @@
+> **Historical document — architecture note (2026-11-14):** The diagram nodes `portal-compat.js` / `provider-workspace.js` are kept as history. References here to `apps/provider/legacy/portal-compat.js`, `apps/provider/provider-workspace.js`, Customer role switching (`enterRole`) or the legacy Admin console describe an **obsolete** architecture: those files were removed after their capabilities were migrated (Provider → standalone `apps/provider/`; Admin console → `apps/admin/pages/marketplace.page.js`). Current state: `docs/AI_CONTEXT/START_HERE.md`.
+
 # Current Frontend Dependency Graph
 
 This graph reflects observed entry-point wiring in the supplied archive. It is not a target architecture.

@@ -6,8 +6,8 @@
   "dir": "rtl",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0f1426",
-  "theme_color": "#0f1426",
+  "background_color": "#F5F7FD",
+  "theme_color": "#135049",
   "start_url": "apps/customer/index.html",
   "icons": [
     {

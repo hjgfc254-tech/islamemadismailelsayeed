@@ -22,10 +22,11 @@ hansalhlak/
 │   │   │   ├── audit/
 │   │   │   │   ├── audit-details.js
 │   │   │   │   └── audit-filters.js
-│   │   │   └── workforce/
-│   │   │       ├── employee-form.js
-│   │   │       ├── employee-invitation.js
-│   │   │       └── employee-status.js
+│   │   │   ├── workforce/
+│   │   │   │   ├── employee-form.js
+│   │   │   │   ├── employee-invitation.js
+│   │   │   │   └── employee-status.js
+│   │   │   └── admin-live.js
 │   │   ├── pages/
 │   │   │   ├── admin-dashboard.page.js
 │   │   │   ├── audit-log.page.js
@@ -86,6 +87,7 @@ hansalhlak/
 │   │   ├── customer-router.js
 │   │   ├── customer-session.js
 │   │   ├── index.html
+│   │   ├── intro-3d.js
 │   │   └── README.md
 │   ├── guest/
 │   │   ├── guest-entry.js
@@ -118,6 +120,25 @@ hansalhlak/
 │       ├── provider-shell.js
 │       └── README.md
 ├── assets/
+│   ├── brand/
+│   │   ├── hero-technician.jpg
+│   │   ├── logo-wordmark-light.png
+│   │   ├── logo-wordmark.png
+│   │   ├── README.md
+│   │   └── trust-handshake.jpg
+│   ├── vendor/
+│   │   ├── firebase/
+│   │   │   └── 13.1.0/
+│   │   │       ├── firebase-app-check.js
+│   │   │       ├── firebase-app.js
+│   │   │       ├── firebase-auth.js
+│   │   │       ├── firebase-database.js
+│   │   │       └── firebase-functions.js
+│   │   ├── gsap.min.js
+│   │   ├── lucide.LICENSE.txt
+│   │   ├── README.md
+│   │   ├── three.LICENSE.txt
+│   │   └── three.module.min.js
 │   ├── icon.svg
 │   ├── logo-mark.webp
 │   ├── logo-word.webp
@@ -235,6 +256,7 @@ hansalhlak/
 │   │   ├── 2026-11-09-settlements-demo-assumptions.md
 │   │   ├── 2026-11-09-system-settings-demo-assumptions.md
 │   │   └── 2026-11-10-super-dashboard-demo-assumptions.md
+│   ├── ADMIN_BACKEND_STATUS.md
 │   ├── ADMIN_MODULES.md
 │   ├── AI_AGENT_CONTINUATION_PROTOCOL.md
 │   ├── AI_NEXT_IMPLEMENTATION_ORDER.md
@@ -248,11 +270,18 @@ hansalhlak/
 │   ├── DATA_MODEL.md
 │   ├── DEPENDENCY_GRAPH.md
 │   ├── DESIGN_SYSTEM_AUDIT.md
+│   ├── DESIGN_SYSTEM_V9.md
 │   ├── DEVELOPMENT_PROGRESS.md
 │   ├── EMPTY_PLACEHOLDERS.md
 │   ├── ENGINEERING_ENVIRONMENT_REPORT.md
 │   ├── FILE_MAP.md
+│   ├── FINAL_8_PERCENT_ENGINEERING_FINDINGS.md
 │   ├── FINAL_AUDIT.md
+│   ├── FIREBASE_BACKEND_BLUEPRINT.md
+│   ├── FIREBASE_BACKEND.md
+│   ├── FIREBASE_DATA_INVENTORY.md
+│   ├── FIREBASE_MIGRATION_PLAN.md
+│   ├── FIREBASE_SCHEMA.md
 │   ├── FRONTEND_ARCHITECTURE.md
 │   ├── FRONTEND_COMPONENT_CATALOG.md
 │   ├── FRONTEND_DESIGN_SYSTEM.md
@@ -283,9 +312,55 @@ hansalhlak/
 │   ├── SECURITY_MODEL.md
 │   ├── TEST_RESULTS.md
 │   └── TESTING_STRATEGY.md
+├── functions/
+│   ├── domain/
+│   │   ├── apps/
+│   │   │   └── admin/
+│   │   │       ├── modules/
+│   │   │       │   └── workforce/
+│   │   │       │       ├── employee-form.js
+│   │   │       │       ├── employee-invitation.js
+│   │   │       │       └── employee-status.js
+│   │   │       ├── permission-guard.js
+│   │   │       └── rbac-store.js
+│   │   ├── services/
+│   │   │   ├── admin-api.js
+│   │   │   ├── api-client.js
+│   │   │   ├── auth-api.js
+│   │   │   ├── catalog-api.js
+│   │   │   ├── customer-api.js
+│   │   │   ├── finance-api.js
+│   │   │   ├── local-catalog.js
+│   │   │   ├── local-market-store.js
+│   │   │   ├── notifications-api.js
+│   │   │   ├── orders-api.js
+│   │   │   ├── provider-api.js
+│   │   │   ├── quotes-api.js
+│   │   │   └── support-api.js
+│   │   ├── shared/
+│   │   │   └── config/
+│   │   │       └── legacy-data.js
+│   │   └── manifest.json
+│   ├── src/
+│   │   ├── identity.js
+│   │   ├── limits.js
+│   │   ├── partial.js
+│   │   ├── plan.js
+│   │   ├── runtime.js
+│   │   ├── scope.js
+│   │   ├── service.js
+│   │   ├── store.js
+│   │   └── workforce.js
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── index.js
+│   ├── package-lock.json
+│   └── package.json
 ├── scripts/
+│   ├── build-lucide-icons.cjs
 │   ├── inventory-files.mjs
 │   ├── refresh-project-inventory.mjs
+│   ├── sync-functions-domain.cjs
 │   └── verify-project-inventory.mjs
 ├── services/
 │   ├── admin-api.js
@@ -294,6 +369,8 @@ hansalhlak/
 │   ├── catalog-api.js
 │   ├── customer-api.js
 │   ├── finance-api.js
+│   ├── firebase-backend.js
+│   ├── firebase-config.js
 │   ├── local-attachments.js
 │   ├── local-catalog.js
 │   ├── local-market-store.js
@@ -355,7 +432,9 @@ hansalhlak/
 │   │   ├── customer-request-wizard-accessibility.browser.py
 │   │   ├── customer-search-keyboard.browser.py
 │   │   ├── customer-sheet-focus.browser.py
+│   │   ├── firebase-emulator.cdp.js
 │   │   ├── guest.cdp.js
+│   │   ├── interaction.cdp.js
 │   │   ├── provider-standalone.cdp.js
 │   │   ├── quotes-management.browser.js
 │   │   ├── README.md
@@ -364,6 +443,8 @@ hansalhlak/
 │   │   ├── security.browser.js
 │   │   ├── super-dashboard.browser.js
 │   │   └── system-settings.browser.js
+│   ├── emulator/
+│   │   └── firebase-emulator.test.js
 │   ├── fixtures/
 │   │   └── README.md
 │   ├── helpers/
@@ -402,6 +483,9 @@ hansalhlak/
 │       ├── dialogs.test.js
 │       ├── discover.test.js
 │       ├── finance-dashboard.test.js
+│       ├── firebase-backend.test.js
+│       ├── firebase-integration-contract.test.js
+│       ├── firebase-mode-data.test.js
 │       ├── frontend-contracts.test.js
 │       ├── home.test.js
 │       ├── icon-asset-audit.test.js
@@ -444,10 +528,15 @@ hansalhlak/
 │       └── workforce.test.js
 ├── _redirects
 ├── .editorconfig
+├── .firebaserc
 ├── .gitattributes
 ├── .gitignore
 ├── AGENTS.md
 ├── CLAUDE.md
+├── database.rules.json
+├── firebase.json
+├── firestore.indexes.json
+├── firestore.rules
 ├── HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md
 ├── index.html
 ├── manifest.json

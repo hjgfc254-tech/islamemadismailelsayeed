@@ -29,7 +29,7 @@ The registry is loaded before app modules in both `apps/customer/index.html` and
 
 ### Confirmed defect fixed
 
-`apps/provider/provider-workspace.js` selects icons for priority queue rows using a runtime ternary. The `new` queue branch requested `inbox`, which was absent. The registry now defines `inbox` using the existing SVG layer conventions. No unrelated icon was renamed or removed.
+`apps/provider/provider-workspace.js` (removed 2026-11-14; historical finding) selected icons for priority queue rows using a runtime ternary. The `new` queue branch requested `inbox`, which was absent. The registry now defines `inbox` using the existing SVG layer conventions. No unrelated icon was renamed or removed.
 
 ## Image asset inventory
 

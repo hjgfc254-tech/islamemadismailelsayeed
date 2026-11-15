@@ -26,7 +26,21 @@
   }
   const tabs = [['home','الرئيسية'],['new','طلبات جديدة'],['accepted','مقبولة'],['progress','جارية'],['quote','عروض الأسعار'],['schedule','المواعيد'],['done','مكتملة'],['reviews','التقييمات'],['transactions','المعاملات'],['earnings','الأرباح'],['services','خدماتي'],['notifications','الإشعارات'],['profile','ملفي']];
 
+  /* Firebase backend: identity comes from a verified phone sign-in, never from a list of accounts. */
+  const firebaseMode=()=>!!(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase');
+  function firebaseSignIn() {
+    dom.nav.hidden=true; $('[data-pv-action="logout"]',dom.host).hidden=true;
+    dom.view.innerHTML=`<section class="pv-welcome" data-pv-signin-screen><span class="pv-eyebrow">HANSALEHLAK · PROVIDER PORTAL</span><h1>مساحة عمل مقدم الخدمة</h1><p>سجّل الدخول برقم الموبايل المسجّل لديك. تُفتح مساحة العمل بعد اعتماد الإدارة لتسجيلك.</p><button class="pv-btn pv-btn-primary" type="button" data-pv-fb-signin>دخول برقم الموبايل</button></section><section class="pv-panel"><div class="pv-section-head"><h2>مقدم خدمة جديد؟</h2></div><p class="pv-hint">سجّل بياناتك؛ يظهر طلبك بحالة «قيد المراجعة» حتى تعتمده الإدارة.</p><a class="pv-btn" href="#/join">الانضمام كمقدم خدمة</a></section>`;
+    const b=dom.view.querySelector('[data-pv-fb-signin]');
+    if(b)b.addEventListener('click',()=>{ if(globalThis.HSBackend)globalThis.HSBackend.signInProvider().catch(()=>{}); });
+  }
+  /* once the backend confirms a provider identity, reopen the workspace (the shell mounts once per page load) */
+  if(typeof document!=='undefined'&&document.addEventListener)document.addEventListener('hs:backend-sync',e=>{
+    const a=e.detail&&e.detail.actor;
+    if(a&&a.role==='provider'&&dom&&dom.view&&dom.view.querySelector('[data-pv-signin-screen]'))location.reload();
+  });
   function accountPicker() {
+    if(firebaseMode())return firebaseSignIn();
     const accounts=HSProviderAuth.listDemoAccounts(MP);
     dom.nav.hidden=true; $('[data-pv-action="logout"]',dom.host).hidden=true;
     dom.view.innerHTML=`<section class="pv-welcome"><span class="pv-eyebrow">HANSALEHLAK · PROVIDER PORTAL</span><h1>مساحة عمل مقدم الخدمة</h1><p>اختر حسابًا تجريبيًا لفتح مساحة العمل. هذا الاختيار لا يمثل تسجيل دخول حقيقيًا ولا يمنح صلاحيات إنتاجية.</p></section><section class="pv-panel"><div class="pv-section-head"><h2>حسابات العرض</h2><span>${accounts.length} حساب</span></div><div class="pv-account-list">${accounts.map(p=>`<button class="pv-account" type="button" data-pv-action="select" data-id="${esc(p.id)}"><span class="pv-avatar">${esc(p.name.slice(0,1))}</span><span class="pv-account-copy"><b>${esc(p.name)}</b><small>${p.demo?'حساب تجريبي':'حساب مسجل'} · ${p.status==='approved'?'مقبول':p.status==='pending'?'قيد المراجعة':p.status==='suspended'?'معلّق':'مرفوض'}</small></span><span class="pv-arrow">${icon('chev')}</span></button>`).join('')}</div></section><section class="pv-panel"><div class="pv-section-head"><h2>مقدم خدمة جديد؟</h2></div><p class="pv-hint">سجّل حسابًا تجريبيًا محليًا؛ يظهر بحالة «قيد المراجعة» حتى تعتمده الإدارة.</p><button class="pv-btn pv-btn-primary" type="button" data-pv-action="register">تسجيل مقدم خدمة جديد</button></section><p class="pv-disclaimer">لا توجد مصادقة فعلية في هذه النسخة. لا تستخدم بيانات حقيقية أو تعتبر هذه الشاشة حماية للحساب.</p>`;
@@ -67,7 +81,9 @@
 
   function renderNav(active) {
     dom.nav.hidden=false;
-    dom.nav.innerHTML=tabs.map(([id,label])=>`<button type="button" data-pv-route="${id}" class="${active===id?'is-active':''}" ${active===id?'aria-current="page"':''}>${esc(label)}</button>`).join('');
+    /* V9: each destination carries its Lucide icon (shared registry); the label stays the accessible name. */
+    const NAV_ICON={home:'home',new:'inbox',accepted:'st-accepted',progress:'st-working',quote:'st-quote',schedule:'calendar',done:'st-done',reviews:'star',transactions:'wallet',earnings:'earnings',services:'wrench',notifications:'bell',profile:'user'};
+    dom.nav.innerHTML=tabs.map(([id,label])=>`<button type="button" data-pv-route="${id}" class="${active===id?'is-active':''}" ${active===id?'aria-current="page"':''}>${typeof ic==='function'?ic(NAV_ICON[id]||'dots'):''}<span>${esc(label)}</span></button>`).join('');
   }
 
   function summary(p,groups,transactions) {

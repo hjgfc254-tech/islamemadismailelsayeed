@@ -133,7 +133,8 @@
       <nav id="cat-tree" class="cat-tree" aria-label="شجرة التصنيفات"></nav><dialog class="ord-dlg" id="ord-dlg" aria-labelledby="ord-dlg-t"></dialog>`;
     const sum = wrap.querySelector('#ord-sum'), tree = wrap.querySelector('#cat-tree'), dlgEl = wrap.querySelector('#ord-dlg');
     const collapsed = new Set(); let openId = null, st = {};
-    const paintTree = () => { tree.innerHTML = treeHtml(collapsed); };
+    /* Expand/collapse-all reflect the current state (disabled when there is nothing to do) instead of silently doing nothing. */
+  const paintTree = () => { tree.innerHTML = treeHtml(collapsed); const box = tree.parentElement, parents = cats.filter((c) => cats.some((x) => x.parentId === c.id)); const ex = box && box.querySelector('[data-cat-all="expand"]'), co = box && box.querySelector('[data-cat-all="collapse"]'); if (ex) ex.disabled = collapsed.size === 0; if (co) co.disabled = parents.every((c) => collapsed.has(c.id)); };
     const sync = () => { sum.innerHTML = summaryHtml(); paintTree(); };
     sync();
     const paintDlg = (sel) => { const c = openId ? byId(cats, openId) : null; if (openId && !c) return; dlgEl.innerHTML = dialogHtml(c, st); const f = sel && dlgEl.querySelector(sel); if (f) f.focus(); };

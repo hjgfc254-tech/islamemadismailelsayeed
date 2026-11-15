@@ -66,6 +66,11 @@ async function setupPage(cdp) {
   await cdp.send('Runtime.enable'); await cdp.send('Page.enable'); await cdp.send('Network.enable');
   await cdp.send('Network.setBlockedURLs', { urls: ['*fonts.googleapis.com*', '*fonts.gstatic.com*'] });
   await cdp.send('Network.setBypassServiceWorker', { bypass: true });
+  /* The apps default to the production Firebase backend. Browser runners must never touch production: unless a runner
+     explicitly opts in (?backend=firebase, which the emulator E2E uses together with ?emulators=1), pin local mode. */
+  await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: "try { if (!localStorage.getItem('hs_backend')) localStorage.setItem('hs_backend', 'local'); } catch (e) {}" });
+  /* Hard guard: production backend hosts are blocked in every runner (emulators run on 127.0.0.1). */
+  await cdp.send('Network.setBlockedURLs', { urls: ['*fonts.googleapis.com*', '*fonts.gstatic.com*', 'https://*.cloudfunctions.net/*', 'https://*.firebasedatabase.app/*', 'wss://*.firebasedatabase.app/*', 'https://identitytoolkit.googleapis.com/*', 'https://securetoken.googleapis.com/*'] });
 }
 
 /* Run `body(browser)` with guaranteed teardown and a watchdog so a failing step can never leave the browser running. */

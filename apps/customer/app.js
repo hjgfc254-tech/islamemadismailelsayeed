@@ -25,33 +25,8 @@
 const GEAR = (x,y,s=1) => `<g transform="translate(${x} ${y}) scale(${s})"><circle r="19" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="5" stroke-dasharray="5 8.35"/><circle r="14" fill="rgba(59,130,246,.25)" stroke="#fff" stroke-opacity=".9" stroke-width="4"/><circle r="6" fill="#140b18" stroke="#60a5fa" stroke-width="1.5"/></g>`;
 const SPARK = (x,y,s=1) => `<path transform="translate(${x} ${y}) scale(${s})" d="M0-6L1.5-1.5 6 0 1.5 1.5 0 6-1.5 1.5-6 0-1.5-1.5z" fill="#bfdbfe"/>`;
 const ART = {
-  hero:`<svg viewBox="0 0 220 240" preserveAspectRatio="xMidYMid meet">
-    <defs>
-      <linearGradient id="hBody" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#6a5a74"/><stop offset=".45" stop-color="#1c1521"/><stop offset="1" stop-color="#0c080e"/></linearGradient>
-      <radialGradient id="hScr" cx=".5" cy=".9" r=".95"><stop offset="0" stop-color="#3b82f6" stop-opacity=".95"/><stop offset=".5" stop-color="#5a1642"/><stop offset="1" stop-color="#140b18"/></radialGradient>
-    </defs>
-    <ellipse cx="108" cy="132" rx="78" ry="92" fill="#3b82f6" opacity=".32" filter="url(#gb10)"/>
-    <ellipse cx="108" cy="150" rx="100" ry="30" fill="none" stroke="#3b82f6" stroke-width="2.2" opacity=".85" transform="rotate(-18 108 150)"/>
-    <ellipse cx="108" cy="150" rx="82" ry="22" fill="none" stroke="#60a5fa" stroke-width="1.2" opacity=".5" transform="rotate(-18 108 150)"/>
-    <g transform="rotate(-12 100 125)">
-      <rect x="53" y="27" width="88" height="182" rx="17" fill="#2b1e30"/>
-      <rect x="46" y="20" width="88" height="182" rx="17" fill="url(#hBody)" stroke="url(#metal)" stroke-width="2.5"/>
-      <rect x="133" y="70" width="3" height="26" rx="1.5" fill="#b9b2c2"/><rect x="44" y="64" width="3" height="16" rx="1.5" fill="#b9b2c2"/>
-      <rect x="52" y="27" width="76" height="168" rx="12" fill="url(#hScr)"/>
-      <rect x="79" y="32" width="22" height="5" rx="2.5" fill="#000"/>
-      <path d="M60 44h10M110 44h10" stroke="#fff" stroke-opacity=".6" stroke-width="2" stroke-linecap="round"/>
-      ${GEAR(90,100,1.1)}
-      <g fill="#fff" fill-opacity=".2"><rect x="60" y="150" width="12" height="12" rx="3.5"/><rect x="78" y="150" width="12" height="12" rx="3.5"/><rect x="96" y="150" width="12" height="12" rx="3.5"/><rect x="114" y="150" width="8" height="12" rx="3.5" fill="#60a5fa" fill-opacity=".5"/><rect x="60" y="170" width="12" height="12" rx="3.5"/><rect x="78" y="170" width="12" height="12" rx="3.5" fill="#60a5fa" fill-opacity=".5"/><rect x="96" y="170" width="12" height="12" rx="3.5"/></g>
-      <path d="M52 30h44L58 150z" fill="#fff" opacity=".07"/>
-    </g>
-    <g transform="translate(166 66) rotate(38)">
-      <rect x="-8" y="12" width="16" height="116" rx="8" fill="url(#metal)" stroke="rgba(0,0,0,.35)"/>
-      <rect x="-3" y="22" width="4" height="96" rx="2" fill="#fff" opacity=".35"/>
-      <path d="M-7-20.9L-7-4 7-4 7-20.9A22 22 0 1 1-7-20.9z" fill="url(#metal2)" stroke="rgba(0,0,0,.35)"/>
-      <path d="M-15-12A18 18 0 0 0-13 8" fill="none" stroke="#fff" stroke-opacity=".5" stroke-width="2.5" stroke-linecap="round"/>
-    </g>
-    ${SPARK(28,54,1.4)}${SPARK(198,176,1.2)}${SPARK(184,26,1)}${SPARK(16,176,.9)}
-  </svg>`,
+  /* Approved identity hero: the technician photograph from the identity board (assets/brand/hero-technician.jpg) */
+  hero:'<img class="hero-photo" src="../../assets/brand/hero-technician.jpg" alt="فني من هنصلحلك يركّب إضاءة" width="820" height="934" decoding="async" fetchpriority="high" draggable="false">',
 
   electric:`<svg viewBox="0 0 160 150">
     <ellipse cx="80" cy="142" rx="56" ry="6" fill="#3b82f6" opacity=".5" filter="url(#gb6)"/>
@@ -230,7 +205,7 @@ const topbar = () => {
     <button class="ic-btn avatar" data-go="account" aria-label="حسابي">${ic('user')}</button>
     <button class="ic-btn ${hasNotes?'dot':''}" data-act="bell" aria-label="الإشعارات">${ic('bell')}</button>
   </div>
-  <div class="logo"><div class="mark">${ic('wrench')}</div><div class="t"><small>منصة</small><b>هنصلحلك</b></div></div>
+  <div class="logo"><img class="wordmark" src="../../assets/brand/logo-wordmark.png" alt="هنصلحلك HANSALEHLAK" width="517" height="162" decoding="async" draggable="false"></div>
   <div class="tb-actions"><button class="ic-btn" data-act="menu" aria-label="القائمة">${ic('menu')}</button></div>
 </header>`;
 };
@@ -239,7 +214,7 @@ const tile = (k, small) => {
   let viaCat = false;
   try { const c = CAT.category(k); viaCat = !!(c && c.active); } catch {}
   const target = viaCat ? `data-wz-hit="cat|${k}"` : `data-dev="${k}"`;
-  return `<button class="tile glass neon ${small?'small':''}" ${target} aria-label="${DEVICES[k].name}"><span class="tart">${ART[DEVICES[k].art]}</span><span class="tl">${DEVICES[k].cat}</span></button>`;
+  return `<button class="tile glass neon ${small?'small':''}" ${target} aria-label="${DEVICES[k].name}"><span class="tart" aria-hidden="true">${ic(icExists('c-'+k) ? 'c-'+k : (DEVICES[k].icon || 'p-service'))}</span><span class="tl">${DEVICES[k].cat}</span></button>`;
 };
 const tiles = (small) => `<div class="grid fit">${HOME_ORDER.map(k=>tile(k,small)).join('')}</div>`;
 const head = (title, back) => `<div class="dhead">${back?`<button class="back" data-back aria-label="رجوع">${ic('back')}</button>`:'<span></span>'}<h2 tabindex="-1">${title}</h2><span></span></div>`;
@@ -392,6 +367,12 @@ function renderFavorites(){
 }
 
 function renderServiceAreas(){
+  /* Firebase backend: service areas are server data — no hardcoded fallback and no demo notice; nothing until configured */
+  if (typeof HSFirebaseConfig !== 'undefined' && HSFirebaseConfig.mode === 'firebase') {
+    let real = [];
+    try { real = MP.db().serviceAreas.filter(x => !x.demo).map(x => x.gov); } catch {}
+    return real.length ? `<h2 class="sec-title">${ic('pin')}مناطق الخدمة</h2><div class="chips" style="flex-wrap:wrap">${real.map(g => `<span class="chip">${ic('pin')} ${esc(g)}</span>`).join('')}</div>` : '';
+  }
   let govs = [];
   try {
     govs = MP.db().serviceAreas.map(x => x.gov);
@@ -988,8 +969,11 @@ document.addEventListener('click', e => {
   }
   if (d.repeat){
     /* إعادة طلب خدمة سابقة */
-    try { const r = MP.repeatRequest(d.repeat); if (r) { toast('تم إنشاء طلب جديد '+r.no); go('orders'); } }
-    catch { toast('تعذّر إعادة الطلب'); }
+    /* through the API boundary (local store or Firebase backend) — never a direct store write */
+    HSOrdersApi.repeat(d.repeat).then(res => {
+      if (res.ok) { toast('تم إنشاء طلب جديد '+res.data.no); go('orders'); }
+      else toast('تعذّر إعادة الطلب');
+    });
     return;
   }
   if (d.provider){
@@ -1048,12 +1032,12 @@ const Intro = (() => {
     if(!lines || !dust) return;
     const vw = innerWidth, vh = innerHeight, vmin = Math.min(vw, vh), vmax = Math.max(vw, vh), small = vw < 600, r = Math.random;
     const lw = (logo && logo.getBoundingClientRect().width) || vmin * .6;
-    const pick = () => { const q = r(); return q < .62 ? '#60a5fa' : q < .84 ? '#fb923c' : '#fbbf24'; };   /* logo palette: blue · orange · amber */
+    const pick = () => { const q = r(); return q < .62 ? '#AAF4E6' : q < .84 ? '#D17D32' : '#F1EADD'; };   /* V9 palette: emerald · orange · champagne */
     const px = n => n.toFixed(0) + 'px', sec = n => n.toFixed(2) + 's';
     const nl = small ? 10 : 16, fl = document.createDocumentFragment();
     for(let i=0;i<nl;i++){
       const e = document.createElement('i'), q = r();
-      e.style.cssText = `--a:${(i/nl*360 + (r()*16-8)).toFixed(1)}deg;--L:${px(vmin*(.16+r()*.2))};--f:${px(vmax*(.55+r()*.15))};--n:${px(lw*(.62+r()*.14))};--z:${px(lw*.16)};--d:${sec(.78+r()*.39)};--l:${sec(.16+r()*.62)};--c:${q<.7?'rgba(59,130,246,.55)':q<.88?'rgba(251,146,60,.5)':'rgba(251,191,36,.45)'}`;
+      e.style.cssText = `--a:${(i/nl*360 + (r()*16-8)).toFixed(1)}deg;--L:${px(vmin*(.16+r()*.2))};--f:${px(vmax*(.55+r()*.15))};--n:${px(lw*(.62+r()*.14))};--z:${px(lw*.16)};--d:${sec(.78+r()*.39)};--l:${sec(.16+r()*.62)};--c:${q<.7?'rgba(120,200,185,.55)':q<.88?'rgba(209,125,50,.5)':'rgba(241,234,221,.45)'}`;
       fl.appendChild(e);
     }
     lines.appendChild(fl);

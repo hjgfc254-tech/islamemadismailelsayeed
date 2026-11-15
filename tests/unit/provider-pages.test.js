@@ -88,6 +88,6 @@ test('provider login route hands off to the standalone demo picker and collects 
 
 test('service worker precaches standalone Provider entry, renderer modules and bumps cache version', () => {
   const sw=fs.readFileSync(path.join(ROOT,'service-worker.js'),'utf8');
-  assert.match(sw,/hansalhlak-v8-architecture-22/);
+  assert.match(sw,/hansalhlak-v11-firebase-1/);
   for(const file of ['apps/provider/index.html','apps/provider/styles/provider.css','apps/provider/app.js',...fs.readdirSync(path.join(ROOT,'apps/provider/pages')).filter(x=>x.endsWith('.js')).map(x=>`apps/provider/pages/${x}`)]) assert.ok(sw.includes(`'${file}'`),`${file} should be precached`);
 });

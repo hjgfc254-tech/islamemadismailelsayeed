@@ -1,3 +1,5 @@
+> **Update 2026-11-14:** the sweep now runs on the dependency-free CDP runner `tests/e2e/responsive-sweep.cdp.js` (Customer, Guest, Provider, Admin; 1280/768/430/390/320; 280/280). It found and fixed focusable sort buttons hidden in the phone card layout of `HSDataGrid`. The method below is the original 2026-11-13 Playwright audit (historical).
+
 # HANSALEHLAK V8 — Responsive Audit (Browser Sweep)
 
 **Date:** 2026-11-13

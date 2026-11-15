@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 382,
+  "file_count": 456,
   "files": [
     {
       "path": "_redirects",
@@ -38,6 +38,13 @@
       "sha256": "1bd97dd1da2c0df094db760aada3282a1e7b2be90280737b8b293b4b80e58323"
     },
     {
+      "path": ".firebaserc",
+      "area": ".firebaserc",
+      "status": "NEEDS_REVIEW",
+      "bytes": 93,
+      "sha256": "3bd5c5126238d66bff749796aafb9aa97f535101c8ebe188d59fca2ce2b14ea3"
+    },
+    {
       "path": ".gitattributes",
       "area": ".gitattributes",
       "status": "IMPLEMENTED",
@@ -48,8 +55,8 @@
       "path": ".gitignore",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 407,
-      "sha256": "9cae541704939af861cac22df7c720e472d415ab2a3b2863ad1c9f936f44c21c"
+      "bytes": 617,
+      "sha256": "dd3b50ae2a5291890379d7a2546932154557db999007e7750458647c3e592a98"
     },
     {
       "path": "AGENTS.md",
@@ -83,22 +90,22 @@
       "path": "apps/admin/admin-shell.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL, DEMO)",
-      "bytes": 21702,
-      "sha256": "1f0223edc4a92ba75c84202ec0ff6712c88fd9c308049ba25e7d2f2f066be609"
+      "bytes": 24648,
+      "sha256": "2f5d9a29e35d5458af446e8b422a8daa7cae45bbb5f325e811060f8f6e10ec66"
     },
     {
       "path": "apps/admin/app.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 3711,
-      "sha256": "0b6e1b6888b820212c2a07199da532528027b2603f62571d7104d8d60fe8049d"
+      "bytes": 5163,
+      "sha256": "c1ac0efe3ce69aa5680b02bef74a527c3f41cc1ffff19559df2d2657c041dfcc"
     },
     {
       "path": "apps/admin/index.html",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL HOST)",
-      "bytes": 4285,
-      "sha256": "85c19bacb4c31f3fa977ee9affea0a38034fde0504aa647d1b8005481362fa99"
+      "bytes": 4621,
+      "sha256": "e940c5c60db10381663da135aa058027bb56ed7a98d1272fa77e457db5a2a70e"
     },
     {
       "path": "apps/admin/login.html",
@@ -127,6 +134,13 @@
       "status": "IMPLEMENTED (FRONTEND DEMO)",
       "bytes": 7597,
       "sha256": "6cd81e8789c5f630db583bba344611b1e56233eff941a7006e30c5bd8fe9c909"
+    },
+    {
+      "path": "apps/admin/modules/admin-live.js",
+      "area": "apps/admin",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7201,
+      "sha256": "4003418f0290b1a5d6b1d75d1b517630806c2253a81f5c11c0da893b3079f5a3"
     },
     {
       "path": "apps/admin/modules/audit/audit-details.js",
@@ -174,8 +188,8 @@
       "path": "apps/admin/pages/admin-dashboard.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 11677,
-      "sha256": "ea01b17b7857f083f672c7490021c6d33db6f6e9d188f99003e350e604e3d68c"
+      "bytes": 12197,
+      "sha256": "c10efe3aa0b4506b0e148a87f674ae87522ef7f12263478e558c8bb0c76fd5d9"
     },
     {
       "path": "apps/admin/pages/audit-log.page.js",
@@ -188,8 +202,8 @@
       "path": "apps/admin/pages/categories-management.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 17736,
-      "sha256": "9ca80873dc29f893cf778ed68052a1c8dcec8ab64809297545ef58ccbc08c685"
+      "bytes": 18198,
+      "sha256": "ca7e5853908ee1a847d7b66b9d1f6a4c14a7b67f8ad5fb0d9ab402f337ebd68e"
     },
     {
       "path": "apps/admin/pages/commissions.page.js",
@@ -202,29 +216,29 @@
       "path": "apps/admin/pages/complaints-management.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 16096,
-      "sha256": "a84f101ea554cc67b020a9ff93070e83c04f5fe8ade7a13db943aa73ed53aa41"
+      "bytes": 16697,
+      "sha256": "30f196e8a190a106a889cba8ab2f72ff962b27c671fb7bd11ef54419b7cd1d7e"
     },
     {
       "path": "apps/admin/pages/customers-management.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 12320,
-      "sha256": "42681a21324633ff94bdddf9d20cea6715638203c5d706eed28cc08071de7363"
+      "bytes": 12826,
+      "sha256": "d86cfdac5a8f40e3ce2f3a0b1303bba081580d2e5cb84707c131d6688616a4a6"
     },
     {
       "path": "apps/admin/pages/departments.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 19048,
-      "sha256": "e1bbe0012fa2858f0ae49bd32c624666b5620d14de713cc312a57341e36bdf0f"
+      "bytes": 19510,
+      "sha256": "1f7af557b76271b100b1be239a48fafe8498b8e04ff407b2294d568c8aa6efc8"
     },
     {
       "path": "apps/admin/pages/employee-details.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 8350,
-      "sha256": "c0561c80b85426c8fb62911cf8cd7c8e0298d244c7530a88bd8e6747309adce1"
+      "bytes": 9060,
+      "sha256": "9321287ae9e2cef2d39ff8d74b80ee233aafb7947b647df623017596bdab72ae"
     },
     {
       "path": "apps/admin/pages/finance-dashboard.page.js",
@@ -237,8 +251,8 @@
       "path": "apps/admin/pages/marketplace.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 22714,
-      "sha256": "631ab8f17269cdd7ae2abbe2edae0bbe645de3681f83bfeb4021badfedaa5515"
+      "bytes": 23220,
+      "sha256": "7382476e73b4465c01992d05d5539a9d3db6ca1177f0fe1e7ba933b4a4211d2d"
     },
     {
       "path": "apps/admin/pages/notifications-management.page.js",
@@ -251,22 +265,22 @@
       "path": "apps/admin/pages/orders-management.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 14510,
-      "sha256": "6d9d5d78642ab2478b179abbc1628db8c4c27b660c9bcc9070d3bbe5b855b982"
+      "bytes": 15050,
+      "sha256": "6f68c1df48b51d834db524860208dabc1f4ade2fa6582b178dd4155df3664ade"
     },
     {
       "path": "apps/admin/pages/permissions.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 9713,
-      "sha256": "093f264a9b82999932afb2696f4571c33d7792d56cc9c69ed94f64a97e48e561"
+      "bytes": 10412,
+      "sha256": "9f30197a3297f8937eac2b88e895d323846df2ae0187354abfed85eedc3197a5"
     },
     {
       "path": "apps/admin/pages/providers-management.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 12227,
-      "sha256": "a6298b896630acc0b293b848537df497a21eb8cb45156f2c248ce9336a65c01b"
+      "bytes": 12733,
+      "sha256": "c26f5d37bcfd96fc9cb2170e36a47becce880f45bdf82820b9f4c731116c15fe"
     },
     {
       "path": "apps/admin/pages/quotes-management.page.js",
@@ -286,15 +300,15 @@
       "path": "apps/admin/pages/reviews-management.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 14156,
-      "sha256": "6c06201cf6f9f1ca4f62eb37fac800fe53fca1f638b760d8cb9c9b4d829271d1"
+      "bytes": 14492,
+      "sha256": "e0c403118490c89f2d8e8762f99a9b9812ca3a5f08bbbc6c0a1a0b3121100400"
     },
     {
       "path": "apps/admin/pages/roles.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 9846,
-      "sha256": "1420ee76a699b270c04973b0370501e03845c619be47b39f218065fe3dd5f4a9"
+      "bytes": 10696,
+      "sha256": "60635dd03d8981057bc2e607c77dd29446383e7b9faea68a107943519a6dbd20"
     },
     {
       "path": "apps/admin/pages/security.page.js",
@@ -335,8 +349,8 @@
       "path": "apps/admin/pages/workforce.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 14359,
-      "sha256": "00da7b1213f8c8e45bdf1045e36ec65596c8d12bc80dba8345590673b751ccf2"
+      "bytes": 16342,
+      "sha256": "39f7305bc82b7c9364eea6a856ec597b4ddf349e9e6fc9d7129b2150ffb157c0"
     },
     {
       "path": "apps/admin/permission-guard.js",
@@ -356,22 +370,22 @@
       "path": "apps/admin/README.md",
       "area": "apps/admin",
       "status": "DOCUMENTATION",
-      "bytes": 1180,
-      "sha256": "450d6d9a567517e67e6c1ea2e1987fa9414e2a18f445f479fd435432003311e0"
+      "bytes": 1444,
+      "sha256": "3c9b2035ccec82b622d1655fd6d5dd53518c68dfcb947385163f763f973c0452"
     },
     {
       "path": "apps/admin/styles/admin-components.css",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL PARTS)",
-      "bytes": 27946,
-      "sha256": "22c044d39e2012bc0369c62130907d30fa239e60e6316589c3f5f057f99506e3"
+      "bytes": 29843,
+      "sha256": "5e49ba25a736563948a9b0c9799f8990606dc5082b960be52e9e0eabb0066de6"
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL)",
-      "bytes": 1461,
-      "sha256": "f80b230c4fde7a8d59946a5149f61eb575c637f87b48ecad89ea8152a82e5a3b"
+      "bytes": 1708,
+      "sha256": "060589c6eb70613394472e23b0dd82fc919c169e31e1fe02b703839ecbee90ba"
     },
     {
       "path": "apps/admin/styles/admin.css",
@@ -384,8 +398,8 @@
       "path": "apps/customer/app.js",
       "area": "apps/customer",
       "status": "PARTIALLY IMPLEMENTED",
-      "bytes": 75002,
-      "sha256": "319c1fc3782f24a351fb20a242539510390cac5d523b54dcb56a29f9c63a7503"
+      "bytes": 73441,
+      "sha256": "13b3538d4e6b3e42dbfc4ac7b0b2ba845d1b6b7d2c9a71aca2ffad455cb81c1d"
     },
     {
       "path": "apps/customer/customer-router.js",
@@ -398,22 +412,29 @@
       "path": "apps/customer/customer-session.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 2822,
-      "sha256": "dc6c23cab4688df45b6ac6109e28760cc3507ca513005b66306d685b93391ff4"
+      "bytes": 3805,
+      "sha256": "fc6081af734858534502f7b485e7d7f7c70a3a23b7acf38c1d7685a6c943b0ed"
     },
     {
       "path": "apps/customer/index.html",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 9386,
-      "sha256": "3f1f58febbe6c01ce21ee2858a4d6427aca1a70c34169fb2d4d1684733ef0db8"
+      "bytes": 9956,
+      "sha256": "0c7498cfddf8e552e2dd37df9c8cbbd253a3ccfd7a22b89d2ba2292d462986fd"
+    },
+    {
+      "path": "apps/customer/intro-3d.js",
+      "area": "apps/customer",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7279,
+      "sha256": "592eaf9ff8b885c6327ab26e71313101efc48c9390f930034377d3a8c775ac68"
     },
     {
       "path": "apps/customer/pages/account.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 21780,
-      "sha256": "f9fbd643e75ade183b1da675e6df0e9608ce619e0c6724de0500717a05ad71a3"
+      "bytes": 22168,
+      "sha256": "a6177dbf3645951302f228b6ab045032ebb0b01aae5ad644221d73e1c98836d1"
     },
     {
       "path": "apps/customer/pages/addresses.page.js",
@@ -433,15 +454,15 @@
       "path": "apps/customer/pages/home.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 2800,
-      "sha256": "f40108b444070f1f62cae0720cab16be6999178f768ba3114f13566cb46704a9"
+      "bytes": 4797,
+      "sha256": "be29e6a2877c1e566823051775d4463eac9e9cde4ad63df4fa5cbbda10ecf7ad"
     },
     {
       "path": "apps/customer/pages/market-ui.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 23107,
-      "sha256": "673b0906746823a23347675c43443871c23d02a83d0b130435752582a23bae23"
+      "bytes": 23477,
+      "sha256": "52c986eb4aa7adf5dad74346edf0ad052462d5db8ee8bc0353abfadc1c1a7a9a"
     },
     {
       "path": "apps/customer/pages/order-details.page.js",
@@ -475,8 +496,8 @@
       "path": "apps/customer/pages/request-wizard.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 52175,
-      "sha256": "673895c52971d03644ae7e4bf72125aadd8494505351db0e19bc29fedff54cc4"
+      "bytes": 52408,
+      "sha256": "accebb5e7f1749085a5ef99864030dd48dd6c857e4c2ae406c4827f84824aeb6"
     },
     {
       "path": "apps/customer/pages/search.page.js",
@@ -503,8 +524,8 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 91726,
-      "sha256": "37b4df658cef798047bd1b9bb996010739f4b6285293281cda8e5bf757aac7a6"
+      "bytes": 92182,
+      "sha256": "9878825e7e73f66f4451a123d2650d34e93fc139bd6a0e015c18e395f47762db"
     },
     {
       "path": "apps/guest/guest-entry.js",
@@ -531,15 +552,15 @@
       "path": "apps/provider/app.js",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 34578,
-      "sha256": "ee47d2977bd01c10edd759bff43e188c71106053b8e591bbf075cb4100f28ea2"
+      "bytes": 36736,
+      "sha256": "b7fcac3b81919c47bc0f0e7ae6ee3836dd4e904dbb72fce274a2c826b2d27444"
     },
     {
       "path": "apps/provider/index.html",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 2622,
-      "sha256": "c76effe51f5bcd0dbb35f26c8aedc2a9d67888c92407f802e7719142af55cb9b"
+      "bytes": 2904,
+      "sha256": "4b1441c0a4f91356ca2c1a29aca4a9c661fc0e6d19a21beb5e2288b6b2982883"
     },
     {
       "path": "apps/provider/login.html",
@@ -671,22 +692,57 @@
       "path": "apps/provider/provider-shell.js",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND SHELL)",
-      "bytes": 1079,
-      "sha256": "4a4b5a4f2afdc7cc4d735fb435b8d90b652c9893c69898d5ce64d35b254b4c01"
+      "bytes": 1162,
+      "sha256": "3bf4268db88e1f680411711a40011e864aa667d48fd1071c676c38d4a82f6326"
     },
     {
       "path": "apps/provider/README.md",
       "area": "apps/provider",
       "status": "CONFIGURATION",
-      "bytes": 2029,
-      "sha256": "c898802447fa22cde5c579899e088efe910d253e6e5f12fed08dae7d364b1411"
+      "bytes": 2115,
+      "sha256": "73723425028b88330ec435b6d70bd0f048c5f8938bb0cd2f5be19b36b25f3a8e"
     },
     {
       "path": "apps/provider/styles/provider.css",
       "area": "apps/provider",
       "status": "IMPLEMENTED (RESPONSIVE FRONTEND)",
-      "bytes": 12529,
-      "sha256": "4295f3682f335204dfd5d0b9d04a97f2b11c1b8438f5c3b949fe8cf62328fa3e"
+      "bytes": 21034,
+      "sha256": "3a555f9cd50215301289732609159e71f37262444f7dc645921e012955a457b4"
+    },
+    {
+      "path": "assets/brand/hero-technician.jpg",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 73867,
+      "sha256": "17ecff3bcde6648c0af2a288454856fdf669f4bf437eb60bd9d48e98a0c66f6a"
+    },
+    {
+      "path": "assets/brand/logo-wordmark-light.png",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 11899,
+      "sha256": "5afe1a7d3793aa82aabf8eb064f812fcd4e28f6721439e74f30f2dd1a01ce71e"
+    },
+    {
+      "path": "assets/brand/logo-wordmark.png",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 12833,
+      "sha256": "900a08bc0c210a8c2ceab1cc798415fa4f2e0d0cc5cfb2464e386b59662f0210"
+    },
+    {
+      "path": "assets/brand/README.md",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 907,
+      "sha256": "ba757208aa507a386d1b26ec114cad35d4ee02cf5fa4fddbe6ce4cf8ce66df41"
+    },
+    {
+      "path": "assets/brand/trust-handshake.jpg",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 61382,
+      "sha256": "186d1860246fd807aed04f6a97fb0c60db8a431302c4c0875aa994f7c9e15d48"
     },
     {
       "path": "assets/icon.svg",
@@ -729,6 +785,76 @@
       "status": "IMPLEMENTED",
       "bytes": 5228,
       "sha256": "9be953308743fd5c87b0cbedc0196b49588cd995f01d0c4e4847b5732eaf6267"
+    },
+    {
+      "path": "assets/vendor/firebase/13.1.0/firebase-app-check.js",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 26281,
+      "sha256": "f82bfa8484550dbf4666335d6477b60bc6bb123145dc5d748dd1a83167f1d187"
+    },
+    {
+      "path": "assets/vendor/firebase/13.1.0/firebase-app.js",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 106474,
+      "sha256": "fe8e262624b540d541a1e55e30370ac8eb485a5fb95eeab9851624e37745322b"
+    },
+    {
+      "path": "assets/vendor/firebase/13.1.0/firebase-auth.js",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 157079,
+      "sha256": "59952569de12f7f21f0efac65d4fa1b9a9e65b824c3f392fc563a733731267b7"
+    },
+    {
+      "path": "assets/vendor/firebase/13.1.0/firebase-database.js",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 187085,
+      "sha256": "56bfa1828433e47292b50a8c36919320f85950452e26e04a9101b73f8c609d5b"
+    },
+    {
+      "path": "assets/vendor/firebase/13.1.0/firebase-functions.js",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 15520,
+      "sha256": "5ecf3c865ca9220eaf7a9a1cafc7c502453ad6f948fb2f4922edefcec209f2fb"
+    },
+    {
+      "path": "assets/vendor/gsap.min.js",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 72214,
+      "sha256": "28033e449a31ebcc396e5be8b13b63152bf03094288fb5867034321927bce087"
+    },
+    {
+      "path": "assets/vendor/lucide.LICENSE.txt",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 880,
+      "sha256": "1e7290b35280a048667bbf0ebabac1c7fd52a75300e8b2946ac165715997f2bc"
+    },
+    {
+      "path": "assets/vendor/README.md",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 1095,
+      "sha256": "6bc8856125b2620ce68277df2e221272989afc1e848dd2e2073a5151fc673a9b"
+    },
+    {
+      "path": "assets/vendor/three.LICENSE.txt",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 1081,
+      "sha256": "852e0e8699169bf9f6fdc6bda3e682d078dcbc738b5d33e74df594721bff271d"
+    },
+    {
+      "path": "assets/vendor/three.module.min.js",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 670681,
+      "sha256": "3e690ac7d180b0aadf0891bea39eec643e29e2d3e75c99b18689518665f69ba6"
     },
     {
       "path": "backend/README.md",
@@ -1032,6 +1158,13 @@
       "sha256": "20a78d5704c721b103496d34b742f5c17643f7585b8858ce216ad6c2ac5b60e5"
     },
     {
+      "path": "database.rules.json",
+      "area": "database.rules.json",
+      "status": "NEEDS_REVIEW",
+      "bytes": 187,
+      "sha256": "5ff58dbb123cedd88f919dd0dda74042b0f4e87a021d653cd9dfd9fd9b7187bf"
+    },
+    {
       "path": "database/migrations/README.md",
       "area": "database",
       "status": "CONFIGURATION",
@@ -1165,18 +1298,25 @@
       "sha256": "cd02917ad2958a4be0bb215003361dd0287f5986ed23da8627867820db9277b9"
     },
     {
+      "path": "docs/ADMIN_BACKEND_STATUS.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 3875,
+      "sha256": "6c718ad6470ba398dab404a7280b169ae453a71636c19e2f40ad9122c08e8cbc"
+    },
+    {
       "path": "docs/ADMIN_MODULES.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 1229,
-      "sha256": "0be74f54e5af6293d98fe00282bdd75d046fb03768b819f64338b7a09354d454"
+      "bytes": 1309,
+      "sha256": "b1226d858f657376570cbf6a57377a866df7407bf4563df7c027271d8de9e739"
     },
     {
       "path": "docs/AI_AGENT_CONTINUATION_PROTOCOL.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 12920,
-      "sha256": "9726bdaf8e55d8d4061564f7cfe84fb7e875a8f43ee10e1671410f7604b67467"
+      "bytes": 12910,
+      "sha256": "21d3e81aba8a52342a6282690f604aaea3a923cbf251ce7c042d969ae1642840"
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md",
@@ -1224,15 +1364,15 @@
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/TESTING.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 4894,
-      "sha256": "a78cfadd6b7032a92ebeab8cf48ecf36ea7e1d9f565dcd523475b6c2657d639a"
+      "bytes": 5646,
+      "sha256": "4098a113783af9486b2d94e65062c154b4ae2d6ae1856e12a0a346eca0eba343"
     },
     {
       "path": "docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 5814,
-      "sha256": "427a722cac7459caf43337474bcbcb07222bc9feb108219191d6f54ed543809b"
+      "bytes": 7594,
+      "sha256": "8e9510acdef09074dd0983b3dd028afc10916d7f280b8a2ffac632317d633dc3"
     },
     {
       "path": "docs/AI_CONTEXT/FILE_INDEX.json",
@@ -1252,8 +1392,8 @@
       "path": "docs/AI_CONTEXT/START_HERE.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 4532,
-      "sha256": "437b42c19f05d5541829b2fd87a9b21c5af10e9bd6165673562b30f92fc47f68"
+      "bytes": 5361,
+      "sha256": "b54e0bcb07883ae9a782b041627275343a23541eda6642882a7446d73bf7bc0c"
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -1273,8 +1413,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 238970,
-      "sha256": "b49fe298cc03afc1cef60ff1c60c42f51de7615a03f2f49cf6b3daabf5021913"
+      "bytes": 256661,
+      "sha256": "1f7c5c3f9044340d9fd94635d4d1e6b64076313c194404c7680d22566e0ede41"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -1287,29 +1427,29 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 104262,
-      "sha256": "5d096c9ac0ec888ad1652723d1435a7289e437cb14719b53ce030920449ddc5d"
+      "bytes": 120191,
+      "sha256": "5b65874977996c97609fa23293818262c26bff486e3dc20c12767d5bd574cfc1"
     },
     {
       "path": "docs/API_CONTRACTS.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 14264,
-      "sha256": "2c270489b4c65e4c001e1ff2cb4f10e367fe06347464b93cafe55d9914f66efa"
+      "bytes": 14813,
+      "sha256": "968b0a2e92cbf5e175da1f8e65c8e7246140ce86003526eb35c3e3f96d008218"
     },
     {
       "path": "docs/ARCHITECTURE_BLUEPRINT_V1.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 54120,
-      "sha256": "fa7868ef900577bd2cf1619c84e08260ed546fe4182e6cb5486c636fc8b332a4"
+      "bytes": 54657,
+      "sha256": "5ef5cd65c26d944db1dfa093c6c0d61dc9faaf04c4f28cfb8a5793d5d22bb83f"
     },
     {
       "path": "docs/ARCHITECTURE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 1408,
-      "sha256": "e6d097aa2f2592defb1d799c0fc41beba1af7d9f817a0c7a1e1b122eef2db5ac"
+      "bytes": 1980,
+      "sha256": "c754190a1d2b0b7ac7e3b3b76f5ea4ca294c1752b7c97590a502c7fafefad636"
     },
     {
       "path": "docs/AUTHENTICATION.md",
@@ -1378,8 +1518,8 @@
       "path": "docs/DEPENDENCY_GRAPH.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 2465,
-      "sha256": "e44dd6dfd91a7307ede090a0a62b9ace4d3b13355b52f543836a0eabac2d7724"
+      "bytes": 3030,
+      "sha256": "eaf4f87f65dca6d7fca18af5fe3417e86039417aea351e663f109aec3d3a1ef7"
     },
     {
       "path": "docs/DESIGN_SYSTEM_AUDIT.md",
@@ -1387,6 +1527,13 @@
       "status": "DOCUMENTATION",
       "bytes": 7383,
       "sha256": "88efa953edb754f66ad1f57aff7eb8512626c3e7f7d1a90b891945448afc1a4c"
+    },
+    {
+      "path": "docs/DESIGN_SYSTEM_V9.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 6789,
+      "sha256": "d3fa0fb148f733445f70411ad199ce46bdaaf429d6c2bb69732ed2153c3d881e"
     },
     {
       "path": "docs/DEVELOPMENT_PROGRESS.md",
@@ -1413,22 +1560,64 @@
       "path": "docs/FILE_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 86364,
-      "sha256": "7caaa92f31ed98a177610e24585836ff7af4c1a9c3a25c9f8f0732369f7f6a02"
+      "bytes": 86240,
+      "sha256": "0b245e9bf3c98810c64f16b4b2a615c59cd9745764789d8ec04e76ea45e4f61e"
+    },
+    {
+      "path": "docs/FINAL_8_PERCENT_ENGINEERING_FINDINGS.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7588,
+      "sha256": "60b87be37007cbe92477308577d1a4337c5b1d01af8d6a2cf6a6ac902927e47d"
     },
     {
       "path": "docs/FINAL_AUDIT.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 3460,
-      "sha256": "08d378f9e4a8ddcc600455de9b213f82d7837024f9ea51be108f09ce8c949477"
+      "bytes": 3993,
+      "sha256": "c713686ea99eca7b72eceaf0700155b46763d97ebc345a2eae96e34f4426bf35"
+    },
+    {
+      "path": "docs/FIREBASE_BACKEND_BLUEPRINT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 17300,
+      "sha256": "0f3e46830d4cf74e9a112fda7ec7ce398f0414b8cb8a99e1f9920f9f50286f38"
+    },
+    {
+      "path": "docs/FIREBASE_BACKEND.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 12592,
+      "sha256": "502f6d35e2d1eb79194430662c9a0a28d29d38cdc0cd11e287498def5c8ef617"
+    },
+    {
+      "path": "docs/FIREBASE_DATA_INVENTORY.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 6346,
+      "sha256": "d19afaf517074ef6bdd1adacb33a4f3d92773742f95032f27dabc5660f89eeb5"
+    },
+    {
+      "path": "docs/FIREBASE_MIGRATION_PLAN.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 3491,
+      "sha256": "7a078dfabfbf0e47256ef6cd95d8f51881965938ccbd40b11d35618f9314cb24"
+    },
+    {
+      "path": "docs/FIREBASE_SCHEMA.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7075,
+      "sha256": "1b9c310836a97f2de200e22a68ab81d24b8682abe479f279ee55982e2cc5cf11"
     },
     {
       "path": "docs/FRONTEND_ARCHITECTURE.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 4620,
-      "sha256": "759cd79a10029c45ce52aa00160493167a0a2e40a020e9b30cc550af68331061"
+      "bytes": 4873,
+      "sha256": "fd4e11f60f05d55ed8be69b27c1fd91a4fc32f81e58888a67b308b9e2f84e535"
     },
     {
       "path": "docs/FRONTEND_COMPONENT_CATALOG.md",
@@ -1448,8 +1637,8 @@
       "path": "docs/FRONTEND_FILE_CATALOG.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 55408,
-      "sha256": "94214f00bb6b101a6f49b5002c34305ad39537f0f30135f4e1e9e22407ca7b3b"
+      "bytes": 55284,
+      "sha256": "bf9b926484d70607ff8a6ebe6c716bd418b80dc297298a8d6b0249e8c3b38933"
     },
     {
       "path": "docs/FRONTEND_INTERACTION_SPEC.md",
@@ -1462,8 +1651,8 @@
       "path": "docs/FRONTEND_PAGE_CATALOG.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 14636,
-      "sha256": "0e6bf43af7ca0d6fbaacbe4075d846f580c164b9271c8eeb590692137ed9fa44"
+      "bytes": 14612,
+      "sha256": "d8caf1e85998290616196bd95cb6f08bf7e4cd9d6e7116ee992d98512dc79fa2"
     },
     {
       "path": "docs/FRONTEND_QA_ACCEPTANCE.md",
@@ -1497,15 +1686,15 @@
       "path": "docs/HANSALHLAK_V8_PROGRESS.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 28949,
-      "sha256": "a8c2b06b4642f0f97e5125e9fd242a3d8aaea1b3305412e1622b5531dcae130d"
+      "bytes": 29460,
+      "sha256": "f3531da4d3dbd915e483b26b3b4c799e871a335a67fa261fe357aa8917ea9ca5"
     },
     {
       "path": "docs/ICON_ASSET_AUDIT.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 4792,
-      "sha256": "9991f133534095d3d5f554b684c48815eadcd7e79cf9a128c0ff6dbc2dff069d"
+      "bytes": 4834,
+      "sha256": "1fdb91a53318480179b416b179ada7ee7b828b8120b84fa8b678592ab9e5faa4"
     },
     {
       "path": "docs/ICON_SYSTEM_REPORT.md",
@@ -1518,8 +1707,8 @@
       "path": "docs/IMPLEMENTATION_STATUS.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 29113,
-      "sha256": "6cc917a74cd720a199ac5b9c8c827dc1de7a81b1ed0e8330bb94794b8221154e"
+      "bytes": 29171,
+      "sha256": "2935677c1fe522d8b78b5689f8072083178ffd617696ca9c6e8570d91fddc350"
     },
     {
       "path": "docs/INTRO_V2_REPORT.md",
@@ -1539,15 +1728,15 @@
       "path": "docs/MIGRATION_PLAN.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 1288,
-      "sha256": "8be1bcdd9029a326821a35ec2e5e39948777caff6d0c99725f644bb218f01624"
+      "bytes": 1820,
+      "sha256": "7dd6a5cfb498f4ab6a42a17370098eb0ed818ee8e40e45d0c337e172f43d1ff8"
     },
     {
       "path": "docs/MIGRATION_REPORT.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 5713,
-      "sha256": "bbaee33d4f18e543d55ba936c1ce4d28ca3373c5b9d6ac816311e91b1ec71fd3"
+      "bytes": 6236,
+      "sha256": "492b25b5fc14d18d6f9f007b83385b132f04b250aeddfa6bb5e135f084dfa730"
     },
     {
       "path": "docs/NEW_FILES_REPORT.md",
@@ -1581,8 +1770,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 18105,
-      "sha256": "f5925fa45377598826bb88489fc91c87d15051b41ff3ca2654cafd83b4859322"
+      "bytes": 21572,
+      "sha256": "6292321f7c5388f26444bdceac39d489fdfa00035754b8d765dd144e2bb8126c"
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -1609,8 +1798,8 @@
       "path": "docs/RESPONSIVE_AUDIT.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 5449,
-      "sha256": "bad983bc896f5eafe2d3223130560dc03301df705c41d4c7c8c43aab2f5ff8f7"
+      "bytes": 5797,
+      "sha256": "bc3464923ae195f5332b0de60e6d070aad58e76df7e66c355fc18c015df9e9f9"
     },
     {
       "path": "docs/SECURITY_MODEL.md",
@@ -1623,8 +1812,8 @@
       "path": "docs/TEST_RESULTS.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 16508,
-      "sha256": "7fbaa114e52ae65448ccc0b725d68a74ceac57fc2e51116eed1bd789606da90a"
+      "bytes": 16582,
+      "sha256": "030b9f7e73164dc317da4340f3358309027b7e8286b12ef4f20101d93cf723df"
     },
     {
       "path": "docs/TESTING_STRATEGY.md",
@@ -1632,6 +1821,265 @@
       "status": "DOCUMENTATION",
       "bytes": 7738,
       "sha256": "41277d5bbf1dc378efb6f6cb14709e255e2089acde3c44239f728cd56ea94c35"
+    },
+    {
+      "path": "firebase.json",
+      "area": "firebase.json",
+      "status": "NEEDS_REVIEW",
+      "bytes": 1739,
+      "sha256": "5d6d00ffd349a95d3a91f25e8f417d231b6bb8b78480a2d54f9892723886b059"
+    },
+    {
+      "path": "firestore.indexes.json",
+      "area": "firestore.indexes.json",
+      "status": "NEEDS_REVIEW",
+      "bytes": 11257,
+      "sha256": "5bf9ddfec5824292ce7fbf6f8129ec3d1a95c7d51ab5ad1cb58981b42b14d713"
+    },
+    {
+      "path": "firestore.rules",
+      "area": "firestore.rules",
+      "status": "NEEDS_REVIEW",
+      "bytes": 931,
+      "sha256": "f11dbf7ed978c59039dfcd88dd86545e3b7b2d5fd469a6bdfd3710c4ca590d73"
+    },
+    {
+      "path": "functions/.env.example",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 249,
+      "sha256": "1850541e7e9e648300c9e58db620966c44c825d056ffc15ecd06b0b853205977"
+    },
+    {
+      "path": "functions/.gitignore",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 21,
+      "sha256": "e7c878f1962b5d93d05eb30ef6cb9f15afd803595a5d47208c7d62c10213d3a9"
+    },
+    {
+      "path": "functions/domain/apps/admin/modules/workforce/employee-form.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 4303,
+      "sha256": "83e3e86d97edce0b967cb48ad1a6d0f4e4f304a9d1c19da18f3790ee2f5e478a"
+    },
+    {
+      "path": "functions/domain/apps/admin/modules/workforce/employee-invitation.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 1386,
+      "sha256": "ef3a7a7400c5d4541ddc09647e74a6ce20695077dc60a1e0f9dd4995af1655d3"
+    },
+    {
+      "path": "functions/domain/apps/admin/modules/workforce/employee-status.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2235,
+      "sha256": "f61a20957671b072818ee6704346fa087f7f3dace03537b6c6bfdac420437472"
+    },
+    {
+      "path": "functions/domain/apps/admin/permission-guard.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2507,
+      "sha256": "155783b0aa24a1e02d3e8045ae243f4c31f02155a8a3b25072c59f743ebace71"
+    },
+    {
+      "path": "functions/domain/apps/admin/rbac-store.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 15489,
+      "sha256": "ccc0e6ee029a3a6ba6fb5e41e747695fa1811e7d8ea2ed80747cafb4134d90eb"
+    },
+    {
+      "path": "functions/domain/manifest.json",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2051,
+      "sha256": "aaafaed6d1e0b3ad9c77a01888f6b044b0f0c59dcecf92161a77fa5d04098ae0"
+    },
+    {
+      "path": "functions/domain/services/admin-api.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7276,
+      "sha256": "836795f30a7f5f6ccbc3ee72ba7ffee2771e2b7de9d69ec9d4963416ec438f62"
+    },
+    {
+      "path": "functions/domain/services/api-client.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 9021,
+      "sha256": "ccfe35d113d01ea2561196c47ada1e10f3791bda09a5ce186d25146a8a12ac9a"
+    },
+    {
+      "path": "functions/domain/services/auth-api.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 4274,
+      "sha256": "7221c02eb6559ce21c465fc5f1987ca47ce43ecefdf963fc901a8e2b3bfd587b"
+    },
+    {
+      "path": "functions/domain/services/catalog-api.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 3962,
+      "sha256": "6abb139a23f9c5730fb1295f305359fe6647fbb49aa74669d1b73963374310b7"
+    },
+    {
+      "path": "functions/domain/services/customer-api.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7265,
+      "sha256": "ebad855b2bd8103f38cd5f9cdae520095adabe1033851c03b9c05f79a9ce684b"
+    },
+    {
+      "path": "functions/domain/services/finance-api.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 5162,
+      "sha256": "747948faa4a84352de265d150746b4fd47294b42cfbcf175c78c365cc83ea42f"
+    },
+    {
+      "path": "functions/domain/services/local-catalog.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 51241,
+      "sha256": "de3fcd80ef8de84667bada846d511897d05e285048cad59b10d9d6fdb69e8151"
+    },
+    {
+      "path": "functions/domain/services/local-market-store.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 41223,
+      "sha256": "eec29c466f8c1622fe2ba7b79195d3e5c92fae58a8a01e81e01afc0fe5c2432b"
+    },
+    {
+      "path": "functions/domain/services/notifications-api.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 1769,
+      "sha256": "3db9b04eb3396796eb1a84bc37e87e4d7ba417140251ff5b43024e1af79e41a9"
+    },
+    {
+      "path": "functions/domain/services/orders-api.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 12038,
+      "sha256": "98082ef9e08bdb5e72f7d3025008725a3b0ee14db52a5faf3d1597ff9a78dcb0"
+    },
+    {
+      "path": "functions/domain/services/provider-api.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 5961,
+      "sha256": "d436f657c2923c92162069e02259afa88c4701a0b1eeadb38d27479422e09782"
+    },
+    {
+      "path": "functions/domain/services/quotes-api.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7074,
+      "sha256": "81629b0682010cfef34d798ce60bbbe60ff77f5ef8471ba4bf21e995b5f4000f"
+    },
+    {
+      "path": "functions/domain/services/support-api.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 4297,
+      "sha256": "a206923cc18bdadd7310b1932eacff6b3fa2ae81bc621f56b47dc59a2e20a40f"
+    },
+    {
+      "path": "functions/domain/shared/config/legacy-data.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 37573,
+      "sha256": "74e266afbc3500f0ccc9cadc740cdfec4e16964a5bace6a5fc602a47fba9c338"
+    },
+    {
+      "path": "functions/index.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2869,
+      "sha256": "147f86cf8773406948fc08aa726108349b8104ad2bb85ebcfb9d88b1ea855b50"
+    },
+    {
+      "path": "functions/package-lock.json",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 317684,
+      "sha256": "0a107bf2c6c4bee26fc3c18ab8992bc01312b7e24dc952904b019327e006236c"
+    },
+    {
+      "path": "functions/package.json",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 835,
+      "sha256": "88002583b822b10c4eb7666fa1208fadeea303c1f1030099e0b54ea9cc0447d1"
+    },
+    {
+      "path": "functions/src/identity.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2012,
+      "sha256": "c7d769f8ebdfa14ba58e3b228fe16a9df46c3dee8677b4f62f9909896d667dd5"
+    },
+    {
+      "path": "functions/src/limits.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2572,
+      "sha256": "83a98e6658723f5764b041bc5ffdb4030265d5eb6c5a7d31f56e790dbb5818df"
+    },
+    {
+      "path": "functions/src/partial.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 8022,
+      "sha256": "6cb53259f7bad9f2b80c3b9d373eb23867461b3fcfed220c2b0af745f93c916b"
+    },
+    {
+      "path": "functions/src/plan.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 10355,
+      "sha256": "ca114c269b6a387876eab1921dd072c9423dd56ec5cbce9b7be1e8ba699b1974"
+    },
+    {
+      "path": "functions/src/runtime.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 4332,
+      "sha256": "ead3ae76a93065005dbb6e8518ec64db4a6754d3b574029ed0106b7a03738e41"
+    },
+    {
+      "path": "functions/src/scope.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 4150,
+      "sha256": "2dcb04c1b7cfc2fc785aeb82bc6ae0c16d8a69fe173cd6cf2665388963631c8d"
+    },
+    {
+      "path": "functions/src/service.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 18652,
+      "sha256": "e4fd865474ee22b44209ea1227ef730ce05cd408fe0e408095b53cb3ed663e84"
+    },
+    {
+      "path": "functions/src/store.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 5293,
+      "sha256": "ea6b9da6a9516b18f1e9b1360ab84ad9ef495cb9419f658e5163d3e67e6cf080"
+    },
+    {
+      "path": "functions/src/workforce.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 9869,
+      "sha256": "9c74a98425bf405586c2863e4136dd7f8962358cabcdc475d5ee59eff16c58b0"
     },
     {
       "path": "HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md",
@@ -1652,14 +2100,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 540,
-      "sha256": "f0d08817a00d47c7e00eab353fb33c093dde88684c9a2d1a768cf898b53998d0"
+      "sha256": "356a16b1d3407e825cd1b7b5d252b2d2cfde0e75b42334f9bf29785be35081d5"
     },
     {
       "path": "package.json",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 496,
-      "sha256": "a5aa44935b034a3c236f32d864b864bd01ee5295eaa7598f881c86c49143b65a"
+      "bytes": 1134,
+      "sha256": "d8bb07a89da243cb9d508e720028aade70d9299fbe116ddb7968fff0b38a3026"
     },
     {
       "path": "PROJECT_CONTROL_CENTER.html",
@@ -1676,6 +2124,13 @@
       "sha256": "0b3a5a994f2cb127f574cfcc37e6aadf058561f81300ef2e3319a2be5af88955"
     },
     {
+      "path": "scripts/build-lucide-icons.cjs",
+      "area": "scripts",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7133,
+      "sha256": "752e1f35b8ec41530f8ec59ffb3f7cb62edb0d441021bc178cc7d1eb82824a35"
+    },
+    {
       "path": "scripts/inventory-files.mjs",
       "area": "scripts",
       "status": "IMPLEMENTED",
@@ -1690,6 +2145,13 @@
       "sha256": "35a46edddbbc598d0adf75e68e6998c67600424425cdc12461843ab539ac6de7"
     },
     {
+      "path": "scripts/sync-functions-domain.cjs",
+      "area": "scripts",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2238,
+      "sha256": "5f56eb5ac0558db1e63ec8299e936b7a6e08e4d45c8bc3339e104e98d03d36ad"
+    },
+    {
       "path": "scripts/verify-project-inventory.mjs",
       "area": "scripts",
       "status": "CONFIGURATION",
@@ -1700,8 +2162,8 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 7262,
-      "sha256": "a89dc177a7d417c84cea4d34096cf01fbb73a7c0fdcb51084130db2b1b39466c"
+      "bytes": 8258,
+      "sha256": "44d3679b3441acf47ae8d6e4791efbf68af515e7f5124a27c1eaecce33dbacfd"
     },
     {
       "path": "services/admin-api.js",
@@ -1735,8 +2197,8 @@
       "path": "services/customer-api.js",
       "area": "services",
       "status": "IMPLEMENTED (MOCK ADAPTER)",
-      "bytes": 4735,
-      "sha256": "39d00d12638461a5399f9e5fa7d4c9a3f126d3c85a74bcba4efacc514aceae70"
+      "bytes": 7265,
+      "sha256": "ebad855b2bd8103f38cd5f9cdae520095adabe1033851c03b9c05f79a9ce684b"
     },
     {
       "path": "services/finance-api.js",
@@ -1744,6 +2206,20 @@
       "status": "IMPLEMENTED (MOCK ADAPTER)",
       "bytes": 5162,
       "sha256": "747948faa4a84352de265d150746b4fd47294b42cfbcf175c78c365cc83ea42f"
+    },
+    {
+      "path": "services/firebase-backend.js",
+      "area": "services",
+      "status": "NEEDS_REVIEW",
+      "bytes": 15048,
+      "sha256": "98fcc60495909ad08758b1258088611f62e2ddbf95c40859316b25b3b0be85cf"
+    },
+    {
+      "path": "services/firebase-config.js",
+      "area": "services",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2290,
+      "sha256": "be4b9730dd62fc393e7e4f3806028bf6f49ee036e2f81b0f686453cb0884c6de"
     },
     {
       "path": "services/local-attachments.js",
@@ -1763,8 +2239,8 @@
       "path": "services/local-market-store.js",
       "area": "services",
       "status": "IMPLEMENTED",
-      "bytes": 40362,
-      "sha256": "8924e98ba0418d833878cca98e1c986c00255a1f69c96662a05c1b4dac1ef6f6"
+      "bytes": 41223,
+      "sha256": "eec29c466f8c1622fe2ba7b79195d3e5c92fae58a8a01e81e01afc0fe5c2432b"
     },
     {
       "path": "services/notifications-api.js",
@@ -1777,8 +2253,8 @@
       "path": "services/orders-api.js",
       "area": "services",
       "status": "IMPLEMENTED (MOCK ADAPTER)",
-      "bytes": 10566,
-      "sha256": "536030615131cf1e0d0f982d57c0830ffb6f4dfdd549e7456ade398e88ab1ae7"
+      "bytes": 12038,
+      "sha256": "98082ef9e08bdb5e72f7d3025008725a3b0ee14db52a5faf3d1597ff9a78dcb0"
     },
     {
       "path": "services/provider-api.js",
@@ -1924,8 +2400,8 @@
       "path": "shared/design-system/design-system.css",
       "area": "shared",
       "status": "IMPLEMENTED",
-      "bytes": 19010,
-      "sha256": "1137eac53f1829da7da1598a018035aae90d4c56180e2a3b6c97ccc28319558f"
+      "bytes": 44845,
+      "sha256": "615daf218d14c1ecde1e62c63c3fc01651dd1e13ef791b5cee9bcc54acb821e0"
     },
     {
       "path": "shared/design-system/layout.css",
@@ -1952,8 +2428,8 @@
       "path": "shared/icons/icon-registry.js",
       "area": "shared",
       "status": "IMPLEMENTED",
-      "bytes": 51857,
-      "sha256": "14d6efdb1e24efc314e6b0b072c2e82a11800ca306b773cd25450e841ce13d7c"
+      "bytes": 90162,
+      "sha256": "0712c1509c1277b2cfb44a4a50be8c181423fac295626a0f96e79e28aa3c6d4b"
     },
     {
       "path": "shared/README.md",
@@ -2089,11 +2565,25 @@
       "sha256": "a8ca2b930089c4e29f661ff812da92c52f96bd84cd307bcbd1d6314a146bbbfa"
     },
     {
+      "path": "tests/e2e/firebase-emulator.cdp.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 15759,
+      "sha256": "97b81892a2e0056a17ad98e5f930032a9328db7db4c27e3ec065e00cfcac8fa5"
+    },
+    {
       "path": "tests/e2e/guest.cdp.js",
       "area": "tests",
       "status": "TEST",
       "bytes": 9786,
       "sha256": "2e7fb722b59e861e07bb974fba15edfac5ba52410f053fd646713e7ef3167c24"
+    },
+    {
+      "path": "tests/e2e/interaction.cdp.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 12934,
+      "sha256": "b2a7a1b1d2e29dcddd0fea12b5532b37e28d57b9271dd32c8281a75f060b44cf"
     },
     {
       "path": "tests/e2e/lib/a11y-audit.js",
@@ -2106,8 +2596,8 @@
       "path": "tests/e2e/lib/cdp.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 5691,
-      "sha256": "262dfbfe53fed9f651240f210358cddf661fc6aab7a489eeebd279b4769b3012"
+      "bytes": 6507,
+      "sha256": "6dd97dd86a2afd326151432ed5859b92454561b6ca264046c52f37d0da131044"
     },
     {
       "path": "tests/e2e/provider-standalone.cdp.js",
@@ -2127,8 +2617,8 @@
       "path": "tests/e2e/README.md",
       "area": "tests",
       "status": "PLACEHOLDER",
-      "bytes": 7223,
-      "sha256": "b2f1af03765d94d09327514e40c735903b8235be778afdef0caba6eea5ac88e3"
+      "bytes": 8434,
+      "sha256": "85eec7c09a5d04bb7427c7e1d37c6f14f511f6e4d254402b138c4c7bd2e74d95"
     },
     {
       "path": "tests/e2e/reports.browser.js",
@@ -2166,6 +2656,13 @@
       "sha256": "4683df683609a902a3fab28c735efbb613ae08675a57dbec3792f87aa7c62e60"
     },
     {
+      "path": "tests/emulator/firebase-emulator.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 10997,
+      "sha256": "1934b5bf7470b2f67d2eb653f8099ed9ef66a80e27f556de8547cf5568699877"
+    },
+    {
       "path": "tests/fixtures/README.md",
       "area": "tests",
       "status": "CONFIGURATION",
@@ -2176,8 +2673,8 @@
       "path": "tests/helpers/customer-app-harness.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 8025,
-      "sha256": "1f3f047582a955ab0978be642168f8da3cb244bf0d438f8f40f6707a6c917a98"
+      "bytes": 8169,
+      "sha256": "871ed45135eaab21d9e7e4a95d44e312e90f2e258196d3341e365deef3e4f499"
     },
     {
       "path": "tests/helpers/design-token-audit.js",
@@ -2190,8 +2687,8 @@
       "path": "tests/helpers/provider-app-harness.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 10842,
-      "sha256": "ddbb4e3ae9d23b27925277a782cf8f706e5c31960a435c1eabe7ad9fd727a6fb"
+      "bytes": 11034,
+      "sha256": "9c7139c955c41ccb43f588dc985f26cb4f0e0d30b3e1d99802d8777b02420cb1"
     },
     {
       "path": "tests/integration/README.md",
@@ -2211,15 +2708,15 @@
       "path": "tests/unit/a11y-markup.test.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 3632,
-      "sha256": "bebd4b678979390961ea718ed076693c42f3dfd70f40fd6a844d6f04e43a05e0"
+      "bytes": 3849,
+      "sha256": "7e72e9e6a866416cacfb8117f67579a297f905118c4d8b7d7639fbb84c88d5d2"
     },
     {
       "path": "tests/unit/accessible-tabs-contract.test.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 1342,
-      "sha256": "ddacc6149b2eeaf689090fba19b45ee7f29b75bbf26da4c12e5a46c02b9d4edd"
+      "bytes": 1338,
+      "sha256": "5c63288204379db779e76b9e7d8cbeeb95b37b71a595e082db8701c9285a846d"
     },
     {
       "path": "tests/unit/accessible-tabs.test.js",
@@ -2323,8 +2820,8 @@
       "path": "tests/unit/customer-routing-session.test.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 12896,
-      "sha256": "479e985ea39267d9cd89dd066550a3a9bfa8d0d3430cfc5df6044ff3a9be7cf6"
+      "bytes": 13262,
+      "sha256": "ac4995c1ef6df38add4334435e23fbd2dbbd4992fae8af7a70b89fa2dffdf174"
     },
     {
       "path": "tests/unit/customer-screen-focus.test.js",
@@ -2365,8 +2862,8 @@
       "path": "tests/unit/design-system.test.js",
       "area": "tests",
       "status": "IMPLEMENTED",
-      "bytes": 2290,
-      "sha256": "26e0f05c848e1401bad915886cae926b8b23027d9e4e95f90507ae9f6d66df91"
+      "bytes": 2286,
+      "sha256": "05efe743e7654acfd5db643f7ff02c6d04dc4f55a5f5259182dd1b7811d7d633"
     },
     {
       "path": "tests/unit/design-token-audit.test.js",
@@ -2395,6 +2892,27 @@
       "status": "TEST",
       "bytes": 4333,
       "sha256": "289f112e9bdff717824fdbd6eece0646838cfef1b18fa099ac81ec0b2dd5fdd2"
+    },
+    {
+      "path": "tests/unit/firebase-backend.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 28820,
+      "sha256": "4937f69fc6b826eba3df935b5ebf9e1f4c7bdbf47f463105d71cb8ddbd726db6"
+    },
+    {
+      "path": "tests/unit/firebase-integration-contract.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7433,
+      "sha256": "57a3d339974400e985545ea2f9a0343402c18d6700b82713291931050c0180a0"
+    },
+    {
+      "path": "tests/unit/firebase-mode-data.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 9574,
+      "sha256": "1b23a0f6a63fb2d482d6ffa95ce733ed38c17d5d8d811a4f7d2fb1f336d405b9"
     },
     {
       "path": "tests/unit/frontend-contracts.test.js",
@@ -2498,8 +3016,8 @@
       "path": "tests/unit/provider-pages.test.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 6785,
-      "sha256": "72f5700f446b09f90b1a8fc2150435e1bbee081868d744ca0397d3ce23103886"
+      "bytes": 6781,
+      "sha256": "9afd4566cb9063951e42ff11b40b4cdbea38f0b749f122bd877e590c3336ef9e"
     },
     {
       "path": "tests/unit/provider-request-domain.test.js",
@@ -2624,8 +3142,8 @@
       "path": "tests/unit/static-audit.test.js",
       "area": "tests",
       "status": "IMPLEMENTED",
-      "bytes": 2063,
-      "sha256": "bde21a39c0f6d642ec6a87231e16e828dfb97d601608530ce46f79c9a55df793"
+      "bytes": 2105,
+      "sha256": "d0aab04659b6463e98dbe2ba0fabe9a23a7a207b324d838d5a39ad554a34a2c3"
     },
     {
       "path": "tests/unit/status-badge.test.js",
@@ -2659,8 +3177,8 @@
       "path": "tests/unit/ui-adapter-integration.test.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 9465,
-      "sha256": "5f5516dabde85e6e6d8eed95792f680a3a7848349a161ee9eae7ab63d30f7960"
+      "bytes": 9665,
+      "sha256": "74d00d7df93b4447921277b8717d056783a7bce72a44fe9c15d562c040b8d197"
     },
     {
       "path": "tests/unit/ui-kit.test.js",

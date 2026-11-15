@@ -19,13 +19,13 @@ const directWrites = src => [...src.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(ne
 const ALLOWED = {
   'apps/provider/app.js': [],
   'apps/admin/pages/marketplace.page.js': ['reset'],
-  'apps/customer/pages/market-ui.page.js': ['save'],
+  'apps/customer/pages/market-ui.page.js': [],                 // review quality/photos now travel with the review route
   'apps/customer/pages/addresses.page.js': [],
   'apps/customer/pages/support.page.js': [],
   'apps/customer/pages/request-wizard.page.js': ['saveDraft', 'clearDraft', 'save'],
   'apps/customer/pages/search.page.js': ['addSearch', 'addSearch', 'save'],
-  'apps/customer/app.js': ['addSearch', 'repeatRequest'],
-  'apps/customer/pages/account.page.js': ['save', 'save', 'save', 'save'],
+  'apps/customer/app.js': ['addSearch'],                       // repeat goes through POST /requests/:id/repeat
+  'apps/customer/pages/account.page.js': ['save'],             // only device-local drafts/searches on deletion; profile/prefs/deletion use customer-api
   'apps/customer/customer-session.js': []   // signIn uses MP.customerFor through a local alias (demo identity, not a marketplace write)
 };
 

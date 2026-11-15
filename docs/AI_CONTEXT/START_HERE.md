@@ -1,63 +1,72 @@
 # HANSALEHLAK V8 — START HERE
 
-**Current phase:** FRONTEND ONLY  
-**Latest verified baseline (2026-11-14, commit after `67a316a`):** `npm test` → 326/326 passed. Real-browser QA (CDP runners at
-1280/768/430/390/320): Customer 145/145 (incl. Guest + isolation), Provider 261/261, Admin 124/124.  
-**Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md`  
-**Current handoff:** `docs/HANDOFF_NEXT_AI.md`  
-**Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`  
-**Project skills:** `.claude/skills/`: `finish-gate`, `vm-script-test`, `browser-qa`
+**Current phase:** FRONTEND ONLY (no backend, database, real auth, payments or network APIs).  
+**Latest verified baseline (2026-11-14):**
+- `npm test`: 348/348 passed.
+- Real-browser CDP runners (`tests/e2e/*.cdp.js`):
+
+  | Runner | Checks |
+  |---|---|
+  | Customer | 160 |
+  | Guest | 165 |
+  | Provider | 261 |
+  | Admin | 124 |
+  | Accessibility | 112 |
+  | Responsive sweep (5 widths) | 280 |
+  | Interaction QA | 206 distinct controls, 0 inert |
+
+- Inventory reproduces from a clean clone (0/0/0).
+
+**Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md` · **Handoff:** `docs/HANDOFF_NEXT_AI.md` (newest entry on top)  
+**Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md` · **Project skills:** `.claude/skills/` (`finish-gate`, `vm-script-test`, `browser-qa`)
 
 ## Mandatory first steps
-1. Read `CLAUDE.md`.
-2. Read this file and `docs/AI_CONTEXT/WORKFLOW.md`.
-3. Read `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`.
-4. Read only the relevant `docs/AI_CONTEXT/DOMAIN_MAPS/<domain>.md`.
-5. Use `docs/AI_CONTEXT/FILE_INDEX.json` to locate source/tests.
-6. Read `docs/HANDOFF_NEXT_AI.md` and `docs/AI_NEXT_IMPLEMENTATION_ORDER.md`.
-7. Inspect source, direct dependencies, script order, callers and tests. Source code wins over docs.
-8. Run `npm test` before editing to establish the actual baseline.
+1. Read `CLAUDE.md`, this file and `docs/AI_CONTEXT/WORKFLOW.md`.
+2. Read only the relevant `docs/AI_CONTEXT/DOMAIN_MAPS/<domain>.md`; locate files with `docs/AI_CONTEXT/FILE_INDEX.json`.
+3. Inspect source, script order, callers and tests. **Source code wins over docs.**
+4. Run `npm test` before editing to establish the baseline.
 
 ## Project reality: one marketplace, three apps, one shared local store
-- **Shared store:** `services/local-market-store.js` (`MP`, localStorage `hs_mp_db`). Customer, Provider and Admin run on
-  one origin, so a customer request reaches the provider and the Admin «تشغيل السوق» page through the same data.
-- **Customer** (`apps/customer/`): browse, request, quotes, tracking and reviews. Guest is the same app in a restricted
-  mode (HSGuestEntry). **No Admin links, switching or role buttons.** The only route to providers is the invitation
-  «عايز تقدم خدماتك؟ انضم كمقدم خدمة» (menu and home) → `apps/provider/index.html#/join`. Registering grants nothing until
-  Admin approves.
-- **Provider** (`apps/provider/`): standalone app with onboarding (`#/join`), **profile editing (enabled)**, requests,
-  quotes, status flow, earnings and the **free-service workflow**. The legacy in-Customer bridge (`portal-compat.js`,
-  `provider-workspace.js`) was **removed** on 2026-11-14 after its capabilities were migrated.
-- **Admin** (`apps/admin/`): demo account picker → shell → role-filtered nav and guard. All pages are registered.
-  `pages/marketplace.page.js` runs live operations on `MP`: approvals, assignment, complaints and commissions (the
-  former legacy console). Admin is reachable only from its own entry.
-- **Business rules:** zero-value quotes are refused (on submit and approve, in the store and the UI). Free service is a
-  separate flow (`MP.proposeFree/respondFree/completeFree`, value 0, no commission).
-- **Backend-ready boundary:** `services/api-client.js` + 11 `*-api.js` + `realtime-client.js` are **mock adapters**
-  (50 routes, envelope, role and ownership checks, no network). Contract: `docs/API_CONTRACTS.md`. Screens still call
-  `MP` directly.
+| Entry | What it is |
+|---|---|
+| `index.html` (root) | Redirect to the Customer app |
+| `apps/customer/index.html` | Customer app; **Guest** is its restricted mode (`apps/guest/guest-policy.js`, `guest-entry.js`) |
+| `apps/provider/index.html` (+ `login.html` hand-off) | Standalone Provider app (the only Provider UI) |
+| `apps/admin/index.html` (+ `login.html` hand-off) | Isolated Admin Center (demo account picker → shell → RBAC-filtered nav) |
+| `PROJECT_CONTROL_CENTER.html` | Project documentation viewer (not an app) |
+
+- **Data:** `services/local-market-store.js` (`MP`, localStorage `hs_mp_db`) is shared by all apps.
+  - **Writes** go through the mock API adapters `services/api-client.js` + `*-api.js`: one envelope, role and
+    ownership checks, no network. The contract is `docs/API_CONTRACTS.md`.
+  - **Reads** use `MP` as the local read model; `realtime-client.js` refreshes it across tabs.
+- **Isolation:** Customer and Provider contain no Admin links, role switching or Admin code (enforced by
+  `legacy-migration.test.js` and `guest.cdp.js`). Customer → Provider only via «عايز تقدم خدماتك؟ انضم كمقدم خدمة» →
+  `apps/provider/index.html#/join`; a registration stays `pending` (no provider role) until Admin approves it.
+- **Legacy:** `apps/provider/legacy/portal-compat.js` and `apps/provider/provider-workspace.js` were **removed**
+  (2026-11-14) after capability migration. Do not restore them.
+- **Order lifecycle:** quote → customer approves (agreed price, still in progress) → provider completes →
+  customer confirms. Zero-value quotes are forbidden. Free service is a separate flow (value 0, no commission).
+  Full state diagram: `docs/API_CONTRACTS.md`.
 - `backend/` and `database/` are future scaffolding and OUT OF SCOPE.
 
-## Exact next task: Customer Addresses and Support keyboard & accessibility (Phase 5 item 4)
-Audit `apps/customer/pages/addresses.page.js` and `support.page.js` (forms, sheets, list actions) for keyboard operation,
-labels, error association and announcement, and focus after add/edit/delete/submit. Reuse `show()`'s
-`requestFocusAfterShow(selector)` and the sheet focus manager. Write tests in the `customer-screen-focus.test.js` harness
-style and add a real-browser check on `tests/e2e/lib/cdp.js`. Preserve Customer globals, script order and storage keys.
-After that, the optional track is migrating screens onto the mock adapters one at a time with parity tests (see
-`HANDOFF_NEXT_AI.md`).
+## Next task
+**Firebase backend (2026-11-15): DEPLOYED and ACTIVATED** — all three apps default to the production backend (`?backend=local` = offline demo for dev/tests); Functions `api`/`session` in `me-central1`; PITR + delete protection on. Super Admin verified and owner claimed (employees/e9001). Production data is clean (inventory: `docs/FIREBASE_DATA_INVENTORY.md`). Admin: 10 of 24 pages live on server data (marketplace, workforce, employee details, roles, permissions, orders, customers, providers, complaints, reviews via `apps/admin/modules/admin-live.js`); 14 remain gated pending backend pieces or business rules (see `docs/ADMIN_BACKEND_STATUS.md`). Docs: `docs/FIREBASE_BACKEND.md`, `docs/FIREBASE_MIGRATION_PLAN.md` (migration NOT executed). Browser runners are pinned to local mode and block production hosts. After editing a domain file run `npm run functions:sync` and redeploy functions.
+
+The approved visual identity (boards in `design-reference/approved/`) is implemented and uncommitted; see
+`docs/DESIGN_SYSTEM_V9.md` (tokens sampled from the boards, brand assets in `assets/brand/`, known gaps). Open items:
+- category photography, the Account board's desktop sidebar layout, and screen-by-screen rebuilds of the wizard/search/discovery;
+- `audit:refresh` / `audit:inventory` before committing (exclude the owner's untracked folders);
+- three minor a11y notes (brand/breadcrumb links to the current page lack `aria-current`);
+- screen readers, WebKit/Firefox and real devices not verified.
 
 ## Required finish gate
-Run targeted tests, then `npm test`; browser QA when available; update domain/page/status/handoff docs; run:
-```bash
-npm run audit:refresh
-npm run audit:inventory
-```
-Bump `CACHE` in `service-worker.js` whenever a precached asset changes (currently `hansalhlak-v8-architecture-18`; four
-tests pin the literal). Report exact changed files, test counts, browser viewports actually checked, inventory result
-and remaining risks.
+Targeted tests → `npm test` → relevant CDP runners (`python -m http.server 8099 --bind 127.0.0.1`, then
+`node tests/e2e/<runner>.cdp.js http://127.0.0.1:8099`) → `npm run audit:refresh` → `npm run audit:inventory`.
+Bump `CACHE` in `service-worker.js` whenever a precached asset changes (now `hansalhlak-v11-firebase-1`; four tests
+pin the literal). The inventory is the git file set (tracked + untracked-unignored); untracked files that should not be
+committed will show as "untracked".
 
 ## Absolute constraints
-Frontend only. No backend/database/API/production auth/authorization/payment work. Local demo actions must be labelled
-as such. Admin must never appear in Customer or Provider (`tests/unit/legacy-migration.test.js` enforces it). Do not delete
-code or change routes, globals, DOM hooks, storage keys, script order or product rules without tracing callers and adding
+Frontend only. Label every local demo action as such. Never put Admin into Customer or Provider. Do not delete code or
+change routes, globals, DOM hooks, storage keys, script order or product rules without tracing callers and adding
 regression tests.

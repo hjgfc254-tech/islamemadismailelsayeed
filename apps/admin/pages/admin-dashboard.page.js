@@ -142,6 +142,9 @@
     return wrap;
   };
 
+  /* Toolbar actions re-render identical demo data: announce the result so the user gets feedback (shell live region). */
+  function announce(msg) { const l = root.document && root.document.getElementById('adm-live'); if (!l) return; l.textContent = ''; setTimeout(() => { l.textContent = msg; }, 60); }
+
   const api = { buildModel, PERIODS, resetState() { state = fresh(); }, _state: () => state };
   root.HSAdminDashboardPage = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
@@ -150,8 +153,8 @@
       title: 'لوحة الإدارة',
       description: 'نظرة تشغيلية سريعة: المؤشرات والمهام والتنبيهات واختصارات الوحدات.',
       actions: [
-        { id: 'reset', label: 'استعادة البيانات التجريبية', onClick: (ctx) => { state = fresh(); ctx.shell.refresh(); } },
-        { id: 'refresh', label: 'تحديث', kind: 'primary', onClick: (ctx) => ctx.shell.refresh() }
+        { id: 'reset', label: 'استعادة البيانات التجريبية', hidden: () => !!(root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase'), onClick: (ctx) => { state = fresh(); ctx.shell.refresh(); announce('تمت استعادة بيانات اللوحة التجريبية.'); } },
+        { id: 'refresh', label: 'تحديث', kind: 'primary', onClick: (ctx) => { ctx.shell.refresh(); announce('تم تحديث اللوحة.'); } }
       ],
       render
     });

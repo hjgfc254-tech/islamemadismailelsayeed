@@ -1,0 +1,17 @@
+rules_version = '2';
+
+// HANSALEHLAK — Firestore security rules (application access model, 2026-11-15).
+// Every read and write of marketplace data goes through the Cloud Functions `api` and `session`, which verify the
+// Firebase Auth token, resolve the actor server-side, apply the application's business rules and return an
+// actor-scoped read model. Clients therefore get NO direct Firestore access: this removes every client-side
+// privilege-escalation and cross-tenant read path. The Admin SDK used by Functions bypasses these rules.
+// Collections: customers, providers, requests, assignments, transactions, reviews, complaints, notifications,
+// addresses, quotes, favorites, serviceAreas, system, users, admins, audit, migrations, rateLimits
+// (see docs/FIREBASE_SCHEMA.md).
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

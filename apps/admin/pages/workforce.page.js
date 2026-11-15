@@ -41,7 +41,10 @@
 
   let staff = buildFixtures();
   let grid = null, createHook = null;
+  const firebaseMode = () => !!(root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase');   /* demo-data restore is local-only: hidden with the Firebase backend */
   const resetState = () => { staff = buildFixtures(); };
+  /** Firebase backend: replaces the local fixtures with the server's employees (called by services/firebase-backend.js). */
+  const setStaff = (list) => { if (Array.isArray(list)) staff = list.map((e) => ({ log: [], ...e })); };
 
   /* ───── Pure logic (unit-tested) ───── */
   const counts = (list) => ({ total: list.length, active: list.filter((e) => e.status === 'active').length, invited: list.filter((e) => e.status === 'invited').length, disabled: list.filter((e) => e.status === 'disabled').length, departments: new Set(list.map((e) => e.department)).size });
@@ -103,8 +106,16 @@
       onClose: () => { openId = null; st = {}; }
     });
     createHook = () => { openId = null; st = {}; paintDlg(); d.open(root.document.activeElement); const f = dlgEl.querySelector('#wf-name'); if (f) f.focus(); };
+    /* Firebase backend: the server owns employees (validation, last-owner rule, RBAC); the grid repaints from its result. */
+    const remote = root.HSBackend && root.HSBackend.mode === 'firebase' ? root.HSBackend : null;
+    const remoteRun = (method, path, body, values, okMsg, focus) => remote.admin(method, path, body).then((res) => {
+      if (res.ok) { if (!openId && res.data && res.data.id) openId = res.data.id; st = { message: okMsg }; }
+      else st = { values, errors: (res.error && res.error.details) || {}, message: res.error && res.error.details ? undefined : ((res.error && res.error.message) || 'تعذر تنفيذ الإجراء.') };
+      sync(); paintDlg(focus);
+    });
     const save = () => {
       const values = read();
+      if (remote) return remoteRun(openId ? 'PATCH' : 'POST', '/admin/employees' + (openId ? '/' + encodeURIComponent(openId) : ''), values, values, openId ? 'تم حفظ التعديلات على الخادم.' : 'أُضيف الموظف بدعوة معلّقة — يفعّل حسابه بالدخول ببريده بعد تأكيده.', '#wf-name');
       try {
         if (openId) { staff = updateEmployee(staff, openId, values); st = { message: 'تم حفظ التعديلات محليًا.' }; sync(); paintDlg('#wf-name'); }
         else { staff = createEmployee(staff, values); openId = staff[staff.length - 1].id; st = { message: 'أُضيف الموظف ودُعي محليًا (لم تُرسل دعوة).' }; sync(); paintDlg('[data-ord-close]'); }
@@ -118,6 +129,8 @@
     d.onClick((b) => {
       try {
         if (b.hasAttribute('data-wf-save')) return; /* submit button: handled once by the form's submit event (also covers Enter) */
+        if (remote && b.dataset.ordStatus) return void remoteRun('POST', '/admin/employees/' + encodeURIComponent(openId) + '/status', { status: b.dataset.ordStatus }, undefined, 'تم تحديث الحالة على الخادم.', '[data-ord-close]');
+        if (remote && b.hasAttribute('data-wf-resend')) return void remoteRun('POST', '/admin/employees/' + encodeURIComponent(openId) + '/resend', {}, undefined, 'سُجّلت إعادة الدعوة على الخادم.', '[data-ord-close]');
         if (b.dataset.ordStatus) { staff = setStatus(staff, openId, b.dataset.ordStatus); st = {}; sync(); paintDlg('[data-ord-close]'); }
         else if (b.hasAttribute('data-wf-resend')) { staff = resendInvite(staff, openId); st = { message: 'سُجّلت إعادة الإرسال محليًا (لم تُرسل دعوة).' }; sync(); paintDlg('[data-ord-close]'); }
       } catch (err) { st = { message: err.message === 'Last owner' ? 'لا يمكن تعطيل آخر مالك مفعّل (قاعدة تجريبية).' : 'تعذر تنفيذ الإجراء على هذا الموظف.' }; paintDlg(); }
@@ -125,7 +138,7 @@
     return wrap;
   };
 
-  const api = { STATUS, DEPARTMENTS, ROLES, LIMITS, counts, isLastActiveOwner, validate, createEmployee, updateEmployee, allowedNext, setStatus, resendInvite, buildFixtures, resetState, _staff: () => staff };
+  const api = { STATUS, DEPARTMENTS, ROLES, LIMITS, counts, isLastActiveOwner, validate, createEmployee, updateEmployee, allowedNext, setStatus, resendInvite, buildFixtures, resetState, setStaff, _staff: () => staff };
   root.HSAdminWorkforcePage = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (root.HSAdminShell && typeof root.HSAdminShell.registerPage === 'function') {
@@ -134,7 +147,7 @@
       description: 'قائمة الموظفين والإدارات والأدوار والحالات والدعوات، مع إضافة ودعوة وتعديل وتفعيل/تعطيل تجريبي محلي بلا صلاحيات فعلية.',
       actions: [
         { id: 'create', label: 'إضافة موظف', kind: 'primary', onClick: () => { if (createHook) createHook(); } },
-        { id: 'reset', label: 'استعادة البيانات التجريبية', onClick: (ctx) => { resetState(); ctx.shell.refresh(); } }
+        { id: 'reset', label: 'استعادة البيانات التجريبية', hidden: firebaseMode, onClick: (ctx) => { resetState(); ctx.shell.refresh(); } }
       ],
       render
     });

@@ -22,7 +22,7 @@ function entryScripts() {
 function storage(seed = {}) {
   const m = new Map(Object.entries(seed));
   return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)),
-    removeItem: k => m.delete(k), clear: () => m.clear(), keys: () => [...m.keys()], _map: m };
+    removeItem: k => m.delete(k), clear: () => m.clear(), keys: () => [...m.keys()].filter(k => k !== 'hs_backend'), _map: m };   /* hs_backend is harness-seeded configuration, not an app write */
 }
 
 function element(extra = {}) {
@@ -45,8 +45,8 @@ function findTag(html, attrs) {
 const toDataset = attrs => Object.fromEntries(Object.entries(attrs).filter(([k]) => k.startsWith('data-'))
   .map(([k, v]) => [k.slice(5).replace(/-(\w)/g, (_, c) => c.toUpperCase()), v.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'")]));
 
-function boot({ session = '', hash = '', store = null, setup } = {}) {
-  const local = storage(store ? { [STORE_KEY]: store } : {}), sessionStore = storage(session ? { [SESSION_KEY]: session } : {});
+function boot({ session = '', hash = '', store = null, setup, backend = 'local' } = {}) {
+  const local = storage({ hs_backend: backend, ...(store ? { [STORE_KEY]: store } : {}) }),   /* offline demo, like ?backend=local */ sessionStore = storage(session ? { [SESSION_KEY]: session } : {});
   const listeners = { host: {}, window: {} };
   const fetchCalls = [];
   const focus = { current: null, history: [], scrollBehaviors: [] };

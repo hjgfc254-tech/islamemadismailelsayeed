@@ -1,0 +1,115 @@
+'use strict';
+/* Real-data enforcement in Firebase mode (the production default): no demo/mock data and no demo notices reach the
+   UI, local-mode data is kept only as a migration backup, demo account pickers are replaced by real sign-in, and
+   Admin pages still built on local fixtures never render those fixtures. Local mode (dev/tests) is unchanged. */
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const customer = require('../helpers/customer-app-harness.js');
+const provider = require('../helpers/provider-app-harness.js');
+const ROOT = path.resolve(__dirname, '../..');
+const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
+
+test('customer, firebase mode: the store starts empty (no demo providers), local-mode data becomes a migration backup, no demo notices', async () => {
+  const localModeDb = JSON.stringify({ v: 2, meta: { lastReqNo: 1003 }, customers: [{ id: 'c_x', name: 'محلي', phone: '01011112222', status: 'active' }], providers: [{ id: 'p_demo1', name: 'تجريبي', demo: true, status: 'approved', cats: ['electric'], govs: ['القاهرة'] }], serviceRequests: [], assignments: [], transactions: [], reviews: [], complaints: [], notifications: [], addresses: [], quotes: [], favorites: [], drafts: [], searchHistory: [], serviceAreas: [{ gov: 'القاهرة', areas: [], demo: true }], settings: { defaultRate: 15, rates: {} } });
+  const app = customer.boot({ hash: '#/home', local: { hs_backend: 'firebase', hs_mp_db: localModeDb } });
+  await app.settle();
+  const db = app.run('MP.db()');
+  assert.equal(db.providers.length, 0, 'no demo providers in firebase mode');
+  assert.equal(db.customers.length, 0, 'local-mode records are not presented as server data');
+  assert.equal(db._source, 'firebase');
+  assert.equal(app.local.getItem('hs_mp_db_backup_before_firebase'), localModeDb, 'local-mode data is preserved for the owner migration');
+  assert.doesNotMatch(app.html(), /بيانات تجريبية — المناطق الفعلية/, 'no demo service-area notice');
+  assert.doesNotMatch(app.html(), /وضع العرض التجريبي/, 'no demo-mode banner');
+  assert.equal(app.run("HSFirebaseConfig.mode"), 'firebase');
+});
+
+test('customer, local mode (dev/tests) keeps the offline demo intact', async () => {
+  const app = customer.boot({ hash: '#/home' });
+  await app.settle();
+  assert.ok(app.run('MP.db().providers.length') > 0, 'demo providers still seed the offline demo');
+  assert.equal(app.run('HSFirebaseConfig.mode'), 'local');
+});
+
+test('customer, firebase mode: sign-in cannot fall back to a local demo identity', async () => {
+  const app = customer.boot({ hash: '#/home', local: { hs_backend: 'firebase' } });
+  await app.settle();
+  const res = app.run("HSCustomerSession.signIn('سارة', '01011112222')");
+  assert.equal(res.ok, false, 'no backend bridge → no local sign-in');
+  assert.equal(app.local.getItem('hs_user'), null);
+  assert.equal(app.run("MP.db().customers.length"), 0, 'no local customer record is created');
+});
+
+test('provider, firebase mode: the demo account picker is replaced by phone sign-in; no demo badge; no demo providers', () => {
+  const app = provider.boot({ backend: 'firebase' });
+  assert.match(app.html(), /data-pv-signin-screen/);
+  assert.match(app.html(), /data-pv-fb-signin/);
+  assert.doesNotMatch(app.html(), /pv-account-list|data-pv-action="select"/, 'no demo account list');
+  assert.equal(app.MP.db().providers.length, 0);
+  assert.doesNotMatch(read('apps/provider/provider-shell.js').match(/pv-top-actions">([^<]*)</)[1] || '', /بيئة تجريبية/);
+  const local = provider.boot({});
+  assert.match(local.html(), /pv-account-list/, 'local mode keeps the demo picker');
+});
+
+test('admin, firebase mode: identity from the server only; fixture pages gated; live summary from the server', () => {
+  const app = read('apps/admin/app.js');
+  assert.match(app, /if \(root\.HSFirebaseConfig && root\.HSFirebaseConfig\.mode === 'firebase'\) return startFirebase\(host, d\);/, 'no demo roster picker in firebase mode');
+  assert.match(app, /d\.session\.select\(a\.employeeId\)/, 'the shell opens for the server-resolved employee');
+  const shell = read('apps/admin/admin-shell.js');
+  assert.match(shell, /const LIVE_PAGES = new Set\(\['marketplace', 'workforce', 'employee-details', 'roles', 'permissions',\s*'orders', 'customers', 'providers', 'complaints', 'reviews'\]\);/);
+  assert.match(shell, /else if \(firebaseMode\(\) && !LIVE_PAGES\.has\(id\)\) \{/, 'fixture-backed pages never render fixtures in firebase mode');
+  assert.match(shell, /C\.request\('GET', '\/admin\/summary'\)/, 'the dashboard shows live server counts instead of fixture KPIs');
+  assert.match(shell, /\$\{firebaseMode\(\) \? '' : '<span class="adm-chip" role="note">واجهة تجريبية<\/span>'\}/);
+  for (const page of ['admin-dashboard', 'orders-management', 'customers-management', 'finance-dashboard', 'reports']) {
+    assert.ok(fs.existsSync(path.join(ROOT, `apps/admin/pages/${page}.page.js`)), page + ' fixtures are kept for local mode/tests');
+  }
+});
+
+test('the demo-mode banner and hardcoded service areas are disabled in firebase mode at the source', () => {
+  assert.match(read('apps/customer/pages/market-ui.page.js'), /const demoBanner = \(\) => \(typeof HSFirebaseConfig !== 'undefined' && HSFirebaseConfig\.mode === 'firebase'\) \? '' :/);
+  assert.match(read('apps/customer/app.js'), /service areas are server data — no hardcoded fallback/);
+});
+
+test('HSAdminLive: Admin pages read the server read model and act only through real routes', async () => {
+  const vm = require('node:vm');
+  const calls = [];
+  const mem = new Map(Object.entries({ hs_backend: 'firebase' }));
+  const ctx = { console, Date, Math, JSON, Promise, localStorage: { getItem: k => (mem.has(k) ? mem.get(k) : null), setItem: (k, v) => mem.set(k, String(v)), removeItem: k => mem.delete(k) }, location: { search: '' } };
+  ctx.globalThis = ctx; vm.createContext(ctx);
+  for (const f of ['services/firebase-config.js', 'shared/config/legacy-data.js', 'services/local-catalog.js', 'services/local-market-store.js', 'apps/admin/modules/admin-live.js']) vm.runInContext(read(f), ctx, { filename: f });
+  ctx.HSApiClient = { request: (method, p, o) => { calls.push([method, p, o && o.body]); return Promise.resolve({ ok: true, status: 200, data: {} }); } };
+  vm.runInContext(`(() => { const d = MP.db();
+    d.customers.push({ id: 'c1', name: 'سارة', phone: '01011112222', status: 'active', createdAt: '2026-11-01T10:00:00Z' });
+    d.providers.push({ id: 'p1', name: 'كريم', phone: '01099998888', status: 'approved', cats: ['electric'], govs: ['القاهرة'], areas: ['مدينة نصر'], docs: 'بطاقة', jobs: 3, createdAt: '2026-11-01T09:00:00Z' },
+                     { id: 'p2', name: 'هاني', phone: '01077776666', status: 'pending', cats: ['electric'], govs: ['القاهرة'], docs: '' });
+    d.serviceRequests.push({ id: 'r1', no: 'HS-2026-1001', customerId: 'c1', serviceName: 'إصلاح', cat: 'electric', gov: 'القاهرة', area: 'مدينة نصر', status: 'closed', createdAt: '2026-11-02T10:00:00Z', history: [{ s: 'received', at: '2026-11-02T10:00:00Z', note: '' }] });
+    d.assignments.push({ id: 'a1', reqId: 'r1', providerId: 'p1', status: 'accepted' });
+    d.transactions.push({ id: 't1', reqId: 'r1', providerId: 'p1', customerId: 'c1', value: 350 });
+    d.reviews.push({ id: 'v1', reqId: 'r1', providerId: 'p1', customerId: 'c1', stars: 5, comment: 'ممتاز', at: '2026-11-03T10:00:00Z' });
+    d.complaints.push({ id: 'k1', reqId: 'r1', by: 'customer:c1', text: 'تأخير في الموعد', status: 'open', at: '2026-11-03T11:00:00Z' }); })()`, ctx);
+  const L = ctx.HSAdminLive;
+  assert.equal(L.enabled(), true);
+  const o = L.rows('orders')[0];
+  assert.equal(o.customer, 'سارة'); assert.equal(o.provider, 'كريم'); assert.equal(o.amount, 350, 'amount from the real transaction'); assert.equal(o.status, 'closed');
+  const c = L.rows('customers')[0];
+  assert.equal(c.orders, 1); assert.equal(c.spent, 350); assert.equal(c.recent[0].no, 'HS-2026-1001');
+  const ps = L.rows('providers');
+  assert.equal(ps.find(p => p.id === 'p1').docs.id, true); assert.equal(ps.find(p => p.id === 'p2').docs.id, false, 'no invented document state');
+  assert.equal(ps.find(p => p.id === 'p1').rating, 5, 'rating computed from real reviews');
+  assert.equal(L.rows('complaints', { TYPES: ['أخرى'] })[0].status, 'review', 'open complaints await admin review');
+  assert.equal(L.rows('reviews')[0].rating, 5);
+  assert.equal(L.rows('demo-only-entity').length, 0);
+
+  await L.status('orders', 'r1', 'cancelled');
+  await L.status('customers', 'c1', 'suspended');
+  await L.status('providers', 'p2', 'approved');
+  await L.status('complaints', 'k1', 'resolved');
+  assert.deepEqual(calls.map(x => x[0] + ' ' + x[1]), ['POST /requests/r1/cancel', 'POST /admin/customers/c1/status', 'POST /admin/providers/p2/status', 'POST /complaints/k1/resolve']);
+  const before = calls.length;
+  const un = await L.status('orders', 'r1', 'enroute');
+  assert.equal(un.ok, false); assert.equal(un.status, 501, 'admin cannot fake a provider transition');
+  assert.equal((await L.status('complaints', 'k1', 'dismissed')).status, 501);
+  assert.equal((await L.status('reviews', 'v1', 'hidden')).status, 501, 'no review moderation route');
+  assert.equal(calls.length, before, 'unsupported actions never reach the network or the local store');
+});

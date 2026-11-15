@@ -18,7 +18,8 @@
 'use strict';
 
 const DEMO_NOTE = 'وضع العرض التجريبي — لا تُرسل الطلبات لفنيين حقيقيين، والإسناد محاكاة داخل هذا الجهاز فقط.';
-const demoBanner = () => `<div class="demo-banner">${ic('info')}<span>${DEMO_NOTE}</span></div>`;
+/* the demo notice describes the offline demo only; with the Firebase backend requests are real */
+const demoBanner = () => (typeof HSFirebaseConfig !== 'undefined' && HSFirebaseConfig.mode === 'firebase') ? '' : `<div class="demo-banner">${ic('info')}<span>${DEMO_NOTE}</span></div>`;
 const fmtDT = s => { try{ if(!s) return ''; const d = new Date(s); if(Number.isNaN(d.getTime())) return ''; return d.toLocaleString('ar-EG',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}); }catch{ return ''; } };
 const fmtDateOnly = s => { try{ return new Date(s).toLocaleDateString('ar-EG',{day:'numeric',month:'long',weekday:'short'}); }catch{ return s||''; } };
 const money = n => (+n||0).toLocaleString('ar-EG',{maximumFractionDigits:2})+' ج.م';
@@ -188,7 +189,8 @@ document.addEventListener('click', e => {
           WZ.contact.phone = r.phone || '';
           WZ.contact.name = r.phone ? (MP.get('customers', r.customerId)||{}).name || '' : '';
           WZ.contact.method = r.contactMethod || 'call';
-          WZ.step = 2;
+          /* Requests without a catalogue item (e.g. created outside the wizard) resume at item selection instead of crashing the problem step. */
+          WZ.step = r.itemId && CAT.item(r.itemId) ? 2 : (r.cat && CAT.category(r.cat) ? 1 : 0);
           if (typeof show === 'function') show('wizard');
         }
       }
@@ -313,10 +315,9 @@ document.addEventListener('submit', e => {
     const d = new FormData(f), s = +d.get('stars');
     if (!s) return toast('اختر عدد النجوم');
     const id = f.dataset.id;
-    apiCall('review:' + id, f.querySelector('[type=submit]'), () => HSOrdersApi.review(id, s, String(d.get('comment') || '')), () => {
-      /* quality + photo attachments are presentation extras kept on the local review record */
-      const rv = MP.db().reviews.find(x => x.reqId === id);
-      if (rv) { rv.quality = d.get('quality'); rv.attachments = _rvPhotos.map(x => x.id); MP.save(); }
+    /* quality + photo attachment ids travel with the review (stored by the review route, local or Firebase) */
+    const extra = { quality: d.get('quality') || undefined, attachments: _rvPhotos.map(x => x.id) };
+    apiCall('review:' + id, f.querySelector('[type=submit]'), () => HSOrdersApi.review(id, s, String(d.get('comment') || ''), extra), () => {
       _rvPhotos = [];
       closeSheet();
       show('tracking', id);

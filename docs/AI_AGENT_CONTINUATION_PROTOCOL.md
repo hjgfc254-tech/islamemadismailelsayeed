@@ -85,7 +85,7 @@ Runtime ownership:
 - The standalone entry must not load Customer app scripts or the legacy compatibility bridge.
 
 Legacy compatibility:
-- `apps/provider/legacy/portal-compat.js` and `apps/provider/provider-workspace.js` remain for the Customer app's legacy Provider experience.
+- *(Updated 2026-11-14)* `portal-compat.js` and `provider-workspace.js` were removed after the parity audit and capability migration; do not restore them.
 - Do not delete, rename, or merge them into the standalone app until a separate parity task inventories every route, state, action, global, selector, script dependency and consumer, then proves behavior parity with regression/browser tests.
 - A standalone renderer does not prove legacy parity.
 
@@ -110,7 +110,7 @@ Current standalone renderer modules:
 - If browser navigation is blocked, record the exact limitation; do not report a browser pass.
 
 **P3 — legacy bridge parity audit**
-- Inventory `portal-compat.js` and `provider-workspace.js` dependencies/callers and Customer entry script order.
+- *(Done 2026-11-14)* Legacy bridge inventoried, migrated and removed.
 - Build a behavior matrix comparing legacy and standalone paths.
 - Keep legacy code until every required behavior is covered and an explicit removal decision is recorded.
 
@@ -194,7 +194,7 @@ THEN:
 - Package only after integrity verification.
 
 NEXT PROVIDER TASK:
-Add behavioral tests for Provider request actions and route/deep-link workflows first. Then perform keyboard/focus audit, responsive browser QA, and finally a separate legacy bridge parity audit. Keep portal-compat.js and provider-workspace.js intact until parity is proven.
+Add behavioral tests for Provider request actions and route/deep-link workflows first. Then perform keyboard/focus audit, responsive browser QA, and finally a separate legacy bridge parity audit. *(Done 2026-11-14: parity proven, capabilities migrated, both files removed — do not restore.)*
 ```
 
 ## 11. Stop conditions

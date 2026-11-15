@@ -203,3 +203,10 @@ test('app: logout and account deletion clear the demo identity through the sessi
   assert.equal(app.run('HSCustomerSession.current()'), null);
   assert.equal(app.local._map.get('hs_user'), 'null', 'same stored shape as before (store.set(user,null))');
 });
+
+test('account screen survives an unknown/stale tab key (falls back to orders instead of throwing)', () => {
+  const app = boot({ local: SIGNED_IN });
+  app.run("MP.customerFor('سارة أحمد','01011112222')");
+  assert.doesNotThrow(() => app.run("state.accountTab='notifications'; show('account')"));
+  assert.match(app.html(), /data-account-tab="orders"/);
+});

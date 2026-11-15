@@ -15,13 +15,29 @@
 - Accessibility: partial; a complete automated accessibility runner is not currently established.
 
 ## Current baseline
-- `npm test`: **326 passed, 0 failed** after the final completion batch (2026-11-14). CDP runners at 1280/768/430/390/320: Customer 145/145 (includes the Guest + Admin-isolation loop), Provider 261/261, Admin 124/124 (shared `tests/e2e/lib/cdp.js`).
+- `npm test`: **348 passed, 0 failed** (2026-11-14, final completion sprint).
+- CDP runners (`tests/e2e/*.cdp.js`, shared `tests/e2e/lib/cdp.js`; serve with `python -m http.server 8099 --bind 127.0.0.1`):
+
+  | Runner | Result | Coverage |
+  |---|---|---|
+  | `customer-orders` | 160/160 | |
+  | `guest` | 165/165 | |
+  | `provider-standalone` | 261/261 | |
+  | `admin-app` | 124/124 | |
+  | `a11y` | 112/112 | 1280/390 |
+  | `responsive-sweep` | 280/280 | All 4 modes |
+  | `interaction` | 206 distinct controls clicked, 0 inert | |
+
+  All runners except `a11y` use 1280/768/430/390/320.
+- Async UI: marketplace writes go through the async API adapters. The vm harnesses expose `settle()`, and
+  `click`/`submit`/`clickDoc`/`submitDoc` return promises, so tests must `await` them before asserting.
+- Inventory reproducibility: `tests/unit/inventory-reproducibility.test.js`. The inventory is the git file set, LF is
+  pinned by `.gitattributes`, and the result was verified from a clean clone.
 - Contract suites added 2026-11-14:
   - `marketplace-rules.test.js`: business rules;
   - `legacy-migration.test.js`: role isolation and legacy capability parity;
   - `api-adapters.test.js`: mock API contract; it fails on any route missing from `docs/API_CONTRACTS.md`.
-- The manual Playwright scripts (`tests/e2e/*.browser.js`) need Playwright, which is not installed. They are kept as
-  references only; the CDP runners are the executable browser checks.
+- The remaining manual Playwright scripts (`tests/e2e/*.browser.js`, Admin page checks) need Playwright, which is not installed; they are references only. The responsive sweep was ported to CDP.
 - CDP lesson: `Page.navigate` to a fragment-only change is same-document — use `about:blank` first for a true fresh deep-link load.
 - Customer full-app harness: `tests/helpers/customer-app-harness.js` (`boot({hash, local, session})`, `clickDoc`, `submitDoc`, `navigate`, history/focus recording).
 - CDP lesson: assert what is *rendered*, not DOM state — `el.hidden === true` passed while CSS still displayed the element; use `getComputedStyle(...).display` and `document.elementFromPoint` for occlusion.

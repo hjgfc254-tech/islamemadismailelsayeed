@@ -37,6 +37,39 @@
     const c = store.get('customers', actor.id);
     return c ? { id: c.id, name: c.name, phone: c.phone, status: c.status } : fail('NOT_FOUND');
   });
+  const PREF_KEYS = ['notifyStatus', 'notifyQuotes', 'notifyReminders'];
+  const CONTACTS = ['call', 'whatsapp', 'sms'];
+  client.define('PATCH', '/customers/me', { roles: C, summary: 'Edit own profile {name, phone, email, prefs}.' }, ({ body, actor, store }) => {
+    const c = store.get('customers', actor.id);
+    if (!c) return fail('NOT_FOUND');
+    const errors = {};
+    const name = body.name === undefined ? c.name : String(body.name).replace(/\s+/g, ' ').trim();
+    const phone = body.phone === undefined ? c.phone : String(body.phone).trim();
+    const email = body.email === undefined ? (c.email || '') : String(body.email).trim();
+    if (!name || name.length > 80) errors.name = 'الاسم مطلوب (حتى 80 حرفًا)';
+    if (!/^[0-9+ ]{8,15}$/.test(phone)) errors.phone = 'رقم الهاتف غير صحيح';
+    else if (store.db().customers.some(x => x.phone === phone && x.id !== c.id)) errors.phone = 'الرقم مستخدم لحساب آخر';
+    if (email && (email.length > 80 || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email))) errors.email = 'بريد غير صالح';
+    if (Object.keys(errors).length) return fail('VALIDATION', 'راجع بيانات الملف الشخصي', errors);
+    let prefs = c.prefs;
+    if (body.prefs && typeof body.prefs === 'object') {
+      prefs = { notifyStatus: true, notifyQuotes: true, notifyReminders: true, preferredContact: 'call', ...(c.prefs || {}) };
+      for (const k of PREF_KEYS) if (typeof body.prefs[k] === 'boolean') prefs[k] = body.prefs[k];
+      if (CONTACTS.includes(body.prefs.preferredContact)) prefs.preferredContact = body.prefs.preferredContact;
+    }
+    Object.assign(c, { name, phone, email }, prefs ? { prefs } : {});
+    store.save();
+    return { id: c.id, name: c.name, phone: c.phone, email: c.email || '', status: c.status, prefs: c.prefs || null };
+  });
+  client.define('DELETE', '/customers/me', { roles: C, summary: 'Delete own account (profile, addresses, favorites; past requests are kept for the record).' }, ({ actor, store }) => {
+    const db = store.db();
+    if (!store.get('customers', actor.id)) return fail('NOT_FOUND');
+    db.customers = db.customers.filter(c => c.id !== actor.id);
+    db.addresses = db.addresses.filter(a => a.customerId !== actor.id);
+    db.favorites = db.favorites.filter(f => f.customerId !== actor.id);
+    store.save();
+    return { id: actor.id, deleted: true };
+  });
   client.define('GET', '/customers/me/addresses', { roles: C, summary: 'Saved addresses.' }, ({ actor, store }) => store.addressesFor(actor.id));
   client.define('POST', '/customers/me/addresses', { roles: C, summary: 'Add an address.' }, ({ body, actor, store }) => {
     const errors = validateAddress(body, false);
@@ -66,6 +99,8 @@
   return {
     validateAddress,
     me: () => client.get('/customers/me'),
+    updateMe: patch => client.patch('/customers/me', patch),
+    deleteMe: () => client.del('/customers/me'),
     addresses: () => client.get('/customers/me/addresses'),
     addAddress: a => client.post('/customers/me/addresses', a),
     updateAddress: (aid, patch) => client.patch('/customers/me/addresses/' + id(aid), patch),

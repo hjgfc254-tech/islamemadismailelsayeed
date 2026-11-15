@@ -1,0 +1,230 @@
+{
+    "indexes":  [
+                    {
+                        "collectionGroup":  "requests",
+                        "queryScope":  "COLLECTION",
+                        "fields":  [
+                                       {
+                                           "fieldPath":  "customerId",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "createdAt",
+                                           "order":  "DESCENDING"
+                                       }
+                                   ]
+                    },
+                    {
+                        "collectionGroup":  "requests",
+                        "queryScope":  "COLLECTION",
+                        "fields":  [
+                                       {
+                                           "fieldPath":  "status",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "createdAt",
+                                           "order":  "DESCENDING"
+                                       }
+                                   ]
+                    },
+                    {
+                        "collectionGroup":  "assignments",
+                        "queryScope":  "COLLECTION",
+                        "fields":  [
+                                       {
+                                           "fieldPath":  "providerId",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "at",
+                                           "order":  "DESCENDING"
+                                       }
+                                   ]
+                    },
+                    {
+                        "collectionGroup":  "notifications",
+                        "queryScope":  "COLLECTION",
+                        "fields":  [
+                                       {
+                                           "fieldPath":  "to",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "at",
+                                           "order":  "DESCENDING"
+                                       }
+                                   ]
+                    },
+                    {
+                        "collectionGroup":  "complaints",
+                        "queryScope":  "COLLECTION",
+                        "fields":  [
+                                       {
+                                           "fieldPath":  "by",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "at",
+                                           "order":  "DESCENDING"
+                                       }
+                                   ]
+                    },
+                    {
+                        "collectionGroup":  "complaints",
+                        "queryScope":  "COLLECTION",
+                        "fields":  [
+                                       {
+                                           "fieldPath":  "status",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "at",
+                                           "order":  "DESCENDING"
+                                       }
+                                   ]
+                    },
+                    {
+                        "collectionGroup":  "complaints",
+                        "queryScope":  "COLLECTION",
+                        "fields":  [
+                                       {
+                                           "fieldPath":  "by",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "status",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "at",
+                                           "order":  "DESCENDING"
+                                       }
+                                   ]
+                    },
+                    {
+                        "collectionGroup":  "transactions",
+                        "queryScope":  "COLLECTION",
+                        "fields":  [
+                                       {
+                                           "fieldPath":  "providerId",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "at",
+                                           "order":  "DESCENDING"
+                                       }
+                                   ]
+                    },
+                    {
+                        "collectionGroup":  "transactions",
+                        "queryScope":  "COLLECTION",
+                        "fields":  [
+                                       {
+                                           "fieldPath":  "customerId",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "at",
+                                           "order":  "DESCENDING"
+                                       }
+                                   ]
+                    },
+                    {
+                        "collectionGroup":  "transactions",
+                        "queryScope":  "COLLECTION",
+                        "fields":  [
+                                       {
+                                           "fieldPath":  "collection",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "at",
+                                           "order":  "DESCENDING"
+                                       }
+                                   ]
+                    },
+                    {
+                        "collectionGroup":  "providers",
+                        "queryScope":  "COLLECTION",
+                        "fields":  [
+                                       {
+                                           "fieldPath":  "status",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "createdAt",
+                                           "order":  "DESCENDING"
+                                       }
+                                   ]
+                    },
+                    {
+                        "collectionGroup":  "providers",
+                        "queryScope":  "COLLECTION",
+                        "fields":  [
+                                       {
+                                           "fieldPath":  "status",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "cats",
+                                           "arrayConfig":  "CONTAINS"
+                                       }
+                                   ]
+                    },
+                    {
+                        "collectionGroup":  "reviews",
+                        "queryScope":  "COLLECTION",
+                        "fields":  [
+                                       {
+                                           "fieldPath":  "providerId",
+                                           "order":  "ASCENDING"
+                                       },
+                                       {
+                                           "fieldPath":  "at",
+                                           "order":  "DESCENDING"
+                                       }
+                                   ]
+                    }
+                ],
+    "fieldOverrides":  [
+                           {
+                               "collectionGroup":  "idempotency",
+                               "fieldPath":  "expiresAt",
+                               "ttl":  true,
+                               "indexes":  [
+                                               {
+                                                   "order":  "ASCENDING",
+                                                   "queryScope":  "COLLECTION"
+                                               },
+                                               {
+                                                   "order":  "DESCENDING",
+                                                   "queryScope":  "COLLECTION"
+                                               },
+                                               {
+                                                   "arrayConfig":  "CONTAINS",
+                                                   "queryScope":  "COLLECTION"
+                                               }
+                                           ]
+                           },
+                           {
+                               "collectionGroup":  "rateLimits",
+                               "fieldPath":  "expiresAt",
+                               "ttl":  true,
+                               "indexes":  [
+                                               {
+                                                   "order":  "ASCENDING",
+                                                   "queryScope":  "COLLECTION"
+                                               },
+                                               {
+                                                   "order":  "DESCENDING",
+                                                   "queryScope":  "COLLECTION"
+                                               },
+                                               {
+                                                   "arrayConfig":  "CONTAINS",
+                                                   "queryScope":  "COLLECTION"
+                                               }
+                                           ]
+                           }
+                       ]
+}

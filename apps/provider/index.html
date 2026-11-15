@@ -2,15 +2,16 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0f1426"><link rel="manifest" href="../../manifest.json"><link rel="icon" href="../../assets/icon.svg"><title>مساحة مقدم الخدمة | هنصلحلك</title>
+<meta name="theme-color" content="#135049"><link rel="manifest" href="../../manifest.json"><link rel="icon" href="../../assets/icon.svg"><title>مساحة مقدم الخدمة | هنصلحلك</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../shared/design-system/design-system.css"><link rel="stylesheet" href="styles/provider.css">
 </head><body>
 <main id="provider-app"><div class="pv-boot"><span class="pv-boot-mark">هـ</span><h1>مساحة مقدم الخدمة</h1><p>جارٍ تجهيز مساحة العمل…</p></div></main>
 <script src="../../shared/icons/icon-registry.js"></script>
 <script src="../../shared/config/legacy-data.js"></script>
 <script src="../../services/local-catalog.js"></script>
+<script src="../../services/firebase-config.js"></script>
 <script src="../../services/local-market-store.js"></script>
 <!-- API adapter boundary (mock transport over MP; no network): all Provider mutations go through these. -->
 <script src="../../services/api-client.js"></script><script src="../../services/auth-api.js"></script><script src="../../services/orders-api.js"></script><script src="../../services/quotes-api.js"></script><script src="../../services/provider-api.js"></script><script src="../../services/realtime-client.js"></script>
@@ -19,4 +20,6 @@
 <script src="pages/dashboard.page.js"></script><script src="pages/incoming-requests.page.js"></script><script src="pages/active-jobs.page.js"></script><script src="pages/quotes.page.js"></script><script src="pages/schedule.page.js"></script><script src="pages/reviews.page.js"></script><script src="pages/transactions.page.js"></script><script src="pages/earnings.page.js"></script><script src="pages/profile.page.js"></script><script src="pages/services.page.js"></script><script src="pages/notifications.page.js"></script><script src="pages/request-details.page.js"></script>
 <script src="app.js"></script>
 <script>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('../../service-worker.js').catch(function () {}); }</script>
+<!-- Firebase backend (opt-in: ?backend=firebase). Local demo mode is unchanged when not selected. -->
+<script type="module" src="../../services/firebase-backend.js"></script>
 </body></html>

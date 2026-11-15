@@ -1,6 +1,21 @@
 # End-to-end tests
 
-Reserved for browser-level journey tests. Existing tests are Node-based static/VM tests; no browser runner is configured.
+Real-browser QA runs on dependency-free CDP runners (`*.cdp.js`, shared `lib/cdp.js`, `lib/a11y-audit.js`). The runner
+launches a local Edge or Chrome over the DevTools Protocol, so no packages are needed. Serve the project with
+`python -m http.server 8099 --bind 127.0.0.1`, then run `node tests/e2e/<runner>.cdp.js http://127.0.0.1:8099`.
+
+| Runner | What it covers | Last run (2026-11-14) |
+|---|---|---|
+| `customer-orders.cdp.js` | Customer orders, tracking, the paid lifecycle, isolation | 160/160 |
+| `guest.cdp.js` | Guest restricted mode: public screens, blocked routes, 401s, sign-in/out | 165/165 |
+| `provider-standalone.cdp.js` | Provider app: routes, actions, forms, onboarding, profile | 261/261 |
+| `admin-app.cdp.js` | Admin picker, shell, guard, modules, «تشغيل السوق» | 124/124 |
+| `a11y.cdp.js` | Structural + contrast audit, focus trap, Escape, tablist, live regions, reduced motion (1280/390) | 112/112 |
+| `responsive-sweep.cdp.js` | All 4 modes: overflow, clipping, covered controls, touch targets, tables, dialogs | 280/280 |
+| `interaction.cdp.js` | Every visible control responds (206 distinct controls, 0 inert) | pass |
+
+All runners except `a11y` use 1280/768/430/390/320. The `*.browser.js` / `*.browser.py` scripts below are older manual
+Playwright references; Playwright is not installed.
 
 ## Manual browser scripts
 - `reports.browser.js` — optional Playwright/Chromium journey for the admin Reports page at 1280/768/390px (report/period/category switching, empty state, CSV download, export log, keyboard, overflow, JS errors, external requests). It is **not** run by `npm test` and Playwright is **not** a project dependency: it needs a globally available Playwright + Chromium and a static server (`python3 -m http.server 8099` from the project root, then `node tests/e2e/reports.browser.js http://127.0.0.1:8099`). Last run: 2026-11-09, all checks passed.

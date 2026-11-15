@@ -34,6 +34,21 @@
     const error = validate(name, phone);
     if (error) return { ok: false, error };
     const user = { name: String(name).trim(), phone: String(phone).trim() };
+    /* Firebase backend: the phone must be verified (OTP) and the customer registered server-side first. */
+    const cfg = root.HSFirebaseConfig;
+    if (cfg && cfg.mode === 'firebase') {
+      const B = root.HSBackend;
+      if (!B) return { ok: false, error: 'جارٍ الاتصال بالخادم — حاول بعد لحظة' };
+      if (!B.verifiedCustomer(user.phone)) {
+        const say = m => { try { if (typeof root.toast === 'function') root.toast(m); } catch {} };
+        B.verifyCustomer(user.name, user.phone)
+          .then(() => say('تم التحقق من رقمك — اضغط مرة أخرى للمتابعة'))
+          .catch(e => say(e && e.message === 'cancelled' ? 'تم إلغاء التحقق' : 'تعذّر التحقق من الرقم'));
+        return { ok: false, pending: true, error: 'أرسلنا رمز تحقق إلى رقمك — أدخله ثم أعد المحاولة' };
+      }
+      write(user);
+      return { ok: true, user };
+    }
     write(user);
     try { const m = mp(); if (m && typeof m.customerFor === 'function') m.customerFor(user.name, user.phone); } catch {}
     return { ok: true, user };

@@ -3,11 +3,11 @@ const fs=require('fs'),path=require('path'),cp=require('child_process'),assert=r
 const root=path.join(__dirname,'../..');
 const html=fs.readFileSync(path.join(root,'apps/customer/index.html'),'utf8');
 let passed=0; const test=(name,fn)=>{try{fn();passed++;console.log('✓ '+name)}catch(e){console.error('✗ '+name+'\n '+e.message);process.exitCode=1;}};
-const allFiles=()=>{const out=[];const walk=d=>{for(const e of fs.readdirSync(d,{withFileTypes:true})){const p=path.join(d,e.name);if(e.isDirectory())walk(p);else out.push(p)}};walk(root);return out};
+const allFiles=()=>{const out=[];const walk=d=>{for(const e of fs.readdirSync(d,{withFileTypes:true})){const p=path.join(d,e.name);if(e.isDirectory()){if(e.name!=='node_modules'&&e.name!=='.git')walk(p);}else out.push(p)}};walk(root);return out};
 test('all local script references resolve relative to customer entry',()=>{const refs=[...html.matchAll(/<script[^>]+src=["']([^"']+)["']/g)].map(x=>x[1]);for(const ref of refs)assert(fs.existsSync(path.resolve(root,'apps/customer',ref)),ref)});
 test('all local stylesheet references resolve relative to customer entry',()=>{const refs=[...html.matchAll(/<link[^>]+href=["']([^"']+\.css)["']/g)].map(x=>x[1]);for(const ref of refs)assert(fs.existsSync(path.resolve(root,'apps/customer',ref)),ref)});
 test('customer HTML has no duplicate IDs',()=>{const ids=[...html.matchAll(/\bid=["']([^"']+)["']/g)].map(x=>x[1]);const dup=ids.filter((x,i)=>ids.indexOf(x)!==i);assert.deepStrictEqual([...new Set(dup)],[])});
 test('every project JavaScript file passes Node syntax validation',()=>{for(const f of allFiles().filter(x=>x.endsWith('.js')))cp.execFileSync(process.execPath,['--check',f],{stdio:'pipe'})});
-test('service worker precaches relocated customer and provider modules',()=>{const sw=fs.readFileSync(path.join(root,'service-worker.js'),'utf8');assert(sw.includes("'apps/provider/app.js'"));assert(!sw.includes('provider-workspace.js'));assert(sw.includes("'apps/customer/app.js'"));assert(sw.includes('hansalhlak-v8-architecture-22'))});
+test('service worker precaches relocated customer and provider modules',()=>{const sw=fs.readFileSync(path.join(root,'service-worker.js'),'utf8');assert(sw.includes("'apps/provider/app.js'"));assert(!sw.includes('provider-workspace.js'));assert(sw.includes("'apps/customer/app.js'"));assert(sw.includes('hansalhlak-v11-firebase-1'))});
 test('no backend or production auth is falsely represented',()=>{const auth=fs.readFileSync(path.join(root,'apps/admin/login.html'),'utf8');assert(auth.includes('غير منفذة'))});
 console.log(`\n${passed} passed, 0 failed`);

@@ -704,7 +704,8 @@ async function wzSubmit(){
       const list = (typeof AT !== 'undefined') ? await AT.listForReq(r.id) : [];
       r.attachments = list.map(x => x.id);
       r.photos = list.filter(x => x.kind === 'image').map(x => x.thumb).filter(Boolean);
-      MP.save();
+      MP.save();                                   /* device-local thumbnails (files stay on the device: Storage is deferred) */
+      if (r.attachments.length) await HSOrdersApi.attachments(r.id, r.attachments);   /* ids persisted by the backend */
     } catch (e) { /* المرفقات قد تفشل — لا نُفشل الطلب */ }
 
     /* تحديث store المستخدم */

@@ -34,3 +34,13 @@ Thumbs.db
 playwright-report/
 test-results/
 screenshots/
+
+# Firebase: never commit service-account keys or emulator exports
+*-adminsdk-*.json
+service-account*.json
+.firebase/
+firebase-debug*.log
+database-debug.log
+ui-debug.log
+functions/.env*
+!functions/.env.example

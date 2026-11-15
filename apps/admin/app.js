@@ -60,8 +60,27 @@
     const d = deps();
     if (!host || !d.shell || !d.session || !d.auth || !d.guard) return;
     host.addEventListener('click', onHostClick);
+    if (root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase') return startFirebase(host, d);
     const emp = d.session.current();
     if (emp) startShell(host, emp); else showPicker(host);
+  }
+
+  /* Firebase backend: the employee comes from the server (verified email → admins/{uid} → employees/{id}); the local
+     demo roster/picker is never used. The shell starts after the bridge has synced the server workforce. */
+  function startFirebase(host, d) {
+    host.innerHTML = '<div class="adm-state" data-adm-fb-wait><h2>جارٍ التحقق من حساب الإدارة…</h2><p>يتم الاتصال بالخادم.</p></div>';
+    let started = false;
+    root.document.addEventListener('hs:backend-sync', (e) => {
+      const a = e.detail && e.detail.actor;
+      if (started) return;
+      if (a && a.role === 'admin' && a.employeeId) {
+        const emp = d.session.select(a.employeeId);
+        if (emp) { started = true; host.innerHTML = ''; startShell(host, emp); return; }
+      }
+      host.innerHTML = '<div class="adm-state" data-adm-fb-signin><h2>دخول مركز الإدارة</h2><p>سجّل الدخول ببريدك الإلكتروني المؤكَّد. الصلاحيات يحددها الخادم وحده.</p><button type="button" class="adm-btn adm-btn-p" data-adm-fb-login>تسجيل الدخول</button></div>';
+      const b = host.querySelector('[data-adm-fb-login]');
+      if (b) b.addEventListener('click', () => { if (root.HSBackend) root.HSBackend.signInAdmin().catch(() => {}); });
+    });
   }
 
   root.HSAdminApp = Object.freeze({ start, pickerHtml, accountHtml });

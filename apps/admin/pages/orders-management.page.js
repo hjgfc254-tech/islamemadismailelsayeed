@@ -130,6 +130,8 @@
   };
 
   const render = (ctx) => {
+    const L = root.HSAdminLive && root.HSAdminLive.enabled() ? root.HSAdminLive : null;   /* Firebase mode: real data + real routes only */
+    if (L) orders = L.rows('orders');
     const wrap = root.document.createElement('div');
     wrap.className = 'ord';
     wrap.innerHTML = `<p class="dash-note">بيانات تجريبية محلية — ليست طلبات حقيقية، وأي تغيير يُفقد عند إعادة التحميل.</p>
@@ -173,6 +175,8 @@
     dlg.addEventListener('click', (e) => {
       const b = e.target.closest('button'); if (!b) return;
       if (b.hasAttribute('data-ord-close')) { close(); return; }
+      if (L && b.hasAttribute('data-ord-apply')) { const next = dlg.querySelector('#ord-next').value; L.status('orders', openId, next).then((res) => { if (res.ok) { orders = L.rows('orders'); sync(); paintDlg('[data-ord-close]'); } else showErr(L.errorText(res)); }); return; }
+      if (L && b.hasAttribute('data-ord-note')) { showErr(L.UNSUPPORTED); return; }
       try {
         if (b.hasAttribute('data-ord-apply')) {
           orders = applyTransition(orders, openId, dlg.querySelector('#ord-next').value); sync(); paintDlg('[data-ord-close]');

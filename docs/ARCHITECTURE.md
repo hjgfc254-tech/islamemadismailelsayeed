@@ -6,7 +6,12 @@ The repository is organized into Customer, Provider, Admin and Guest application
 
 ## Current runtime reality
 
-The customer application is the only fully bootable experience. It loads classic scripts in an intentional order and depends on browser globals. The provider workspace implementation was moved to `apps/provider/provider-workspace.js`, but it still depends on `MP`, `screens`, `show`, `ic`, `STATUS_LABEL`, `providerForm` and the portal compatibility module. The demo admin screen remains in `apps/provider/legacy/portal-compat.js` because its source file contained mixed provider/admin behavior. It is not represented as production Admin Center functionality.
+*(Current as of 2026-11-14.)* Three bootable frontend demos share one local marketplace store (`services/local-market-store.js`, `MP`, localStorage `hs_mp_db`), each loading classic scripts in an intentional order:
+- **Customer** (`apps/customer/`). Guest is a restricted mode of it (`apps/guest/guest-policy.js` + `guest-entry.js`). Its only route to providers is the onboarding link `apps/provider/index.html#/join`; there is no role switching.
+- **Provider** (`apps/provider/`), the standalone app. The former in-Customer workspace (`provider-workspace.js`) and the role bridge (`legacy/portal-compat.js`) were removed after capability migration.
+- **Admin** (`apps/admin/`), isolated and reachable only from its own entry. The former legacy console's live operations are `pages/marketplace.page.js`.
+
+All marketplace writes go through the mock API adapters (`services/api-client.js` + `*-api.js`, in-process over `MP`, no network). Reads use `MP` as the local read model, refreshed across tabs by `services/realtime-client.js`. See `docs/API_CONTRACTS.md`. Nothing here is a production backend, authentication or authorization.
 
 ## Dependency direction
 

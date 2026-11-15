@@ -113,6 +113,8 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /requests/:id/advance` | provider | orders-api.js | Move to the next FLOW status {to}. |
 | `POST /requests/:id/complete` | provider | orders-api.js | Complete a paid job: {value>0, deductions} or the approved quote. |
 | `POST /requests/:id/close` | customer | orders-api.js | Customer confirms completion. |
+| `POST /requests/:id/attachments` | customer | orders-api.js | Link uploaded attachment ids to an own open request {ids[]}. |
+| `POST /requests/:id/repeat` | customer | orders-api.js | Create a new request from an own previous one. |
 | `POST /requests/:id/review` | customer | orders-api.js | Rate the provider once {stars 1–5, comment}. |
 | `POST /requests/:id/quotes` | provider | quotes-api.js | Submit a quote (total > 0). |
 | `POST /requests/:id/quote/approve` | customer | quotes-api.js | Approve the current quote (refused when total is 0). |
@@ -130,6 +132,8 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `PATCH /providers/me` | provider | provider-api.js | Edit allow-listed own profile fields. |
 | `PATCH /providers/me/availability` | provider | provider-api.js | Toggle availability for new requests. |
 | `GET /customers/me` | customer | customer-api.js | Own customer profile. |
+| `PATCH /customers/me` | customer | customer-api.js | Edit own profile {name, phone, email, prefs}. On the Firebase backend the phone must stay the verified one. |
+| `DELETE /customers/me` | customer | customer-api.js | Delete own account (profile, addresses, favorites; past requests are kept for the record). |
 | `GET /customers/me/addresses` | customer | customer-api.js | Saved addresses. |
 | `POST /customers/me/addresses` | customer | customer-api.js | Add an address. |
 | `PATCH /customers/me/addresses/:id` | customer | customer-api.js | Edit an own address. |

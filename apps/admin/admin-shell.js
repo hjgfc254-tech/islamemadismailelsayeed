@@ -113,7 +113,7 @@
   <header class="adm-head">
     <button type="button" class="adm-btn adm-toggle" id="adm-toggle" aria-controls="adm-side" aria-expanded="false" aria-label="فتح القائمة">${icon('menu')}</button>
     <a class="adm-brand" href="#/${DEFAULT_ROUTE}" aria-label="مركز الإدارة — هنصلحلك"><span class="adm-brand-t">هنصلحلك</span><small>مركز الإدارة</small></a>
-    <span class="adm-chip" role="note">واجهة تجريبية</span>
+    ${firebaseMode() ? '' : '<span class="adm-chip" role="note">واجهة تجريبية</span>'}
     <div class="adm-account" id="adm-account" hidden></div>
     <a class="adm-btn adm-site" href="../customer/index.html">العودة للموقع</a>
   </header>
@@ -141,7 +141,22 @@
 </div>`;
 
   /* ───────────── State views (loading / empty / error) ───────────── */
-  const stateView = {
+  /* ───────────── Firebase backend: only pages backed by server data render in production ───────────── */
+  const firebaseMode = () => !!(root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase');
+  /* marketplace = providers/requests/assignment/finance/complaints on the API; workforce/roles/permissions = server RBAC */
+  const LIVE_PAGES = new Set(['marketplace', 'workforce', 'employee-details', 'roles', 'permissions',
+    'orders', 'customers', 'providers', 'complaints', 'reviews']);   /* the last five read server data via HSAdminLive (modules/admin-live.js) */
+  const notConnectedView = (id, title) => `<div class="adm-state is-soon" data-adm-not-connected="${esc(id)}">${icon('info')}<h2>${esc(title)} — غير مرتبطة بالخادم بعد</h2><p>هذه الصفحة ما زالت مبنية على بيانات تجريبية محلية، لذلك لا تُعرض في بيئة الإنتاج. العمليات الحية متاحة في «تشغيل السوق» و«فريق العمل».</p>${id === DEFAULT_ROUTE ? '<div data-adm-live-summary role="status" aria-live="polite"><p>جارٍ تحميل الأرقام الحية من الخادم…</p></div>' : ''}<a class="adm-btn adm-btn-p" href="#/marketplace">فتح تشغيل السوق</a></div>`;
+  const SUMMARY_LABELS = { requests: 'كل الطلبات', unassigned: 'طلبات بلا مقدم خدمة', providers: 'مقدمو الخدمة', pending: 'تسجيلات بانتظار المراجعة', openComplaints: 'شكاوى مفتوحة', uncollected: 'عمولات غير محصّلة' };
+  const fillLiveSummary = (token) => {
+    const C = root.HSApiClient; if (!C) return;
+    C.request('GET', '/admin/summary').then((res) => {
+      if (token !== renderToken) return;
+      const box = els.content.querySelector('[data-adm-live-summary]'); if (!box) return;
+      if (!res.ok) { box.innerHTML = `<p>${esc((res.error && res.error.message) || 'تعذّر تحميل الأرقام الحية.')}</p>`; return; }
+      box.innerHTML = '<dl class="adm-live-summary">' + Object.keys(SUMMARY_LABELS).map((k) => `<div><dt>${SUMMARY_LABELS[k]}</dt><dd>${esc(String(res.data[k] == null ? 0 : res.data[k]))}</dd></div>`).join('') + '</dl><p class="ord-muted">أرقام حية من الخادم.</p>';
+    });
+  };  const stateView = {
     loading: (t) => `<div class="adm-state is-loading" role="status"><div class="adm-spin" aria-hidden="true"></div><p>${esc(t || 'جارٍ التحميل…')}</p></div>`,
     soon: (label) => `<div class="adm-state is-soon">${icon('info')}<h2>${esc(label)} — غير منفذة بعد</h2><p>هذه الصفحة ما زالت قيد التنفيذ ولا تحتوي على وظائف حتى الآن.</p><a class="adm-btn adm-btn-p" href="#/${DEFAULT_ROUTE}" data-state-home>العودة للوحة الإدارة</a></div>`,
     unknown: () => `<div class="adm-state is-empty">${icon('search')}<h2>الصفحة غير موجودة</h2><p>الرابط الذي فتحته لا يطابق أي صفحة في مركز الإدارة.</p><a class="adm-btn adm-btn-p" href="#/${DEFAULT_ROUTE}">العودة للوحة الإدارة</a></div>`,
@@ -163,6 +178,8 @@
   const setActions = (list, ctx) => {
     els.actions.innerHTML = '';
     (list || []).forEach((a) => {
+      if (typeof a.hidden === 'function' && a.hidden()) return;   /* e.g. local demo actions while the Firebase backend is active */
+      if (a.id === 'reset' && firebaseMode()) return;              /* demo-data restore never applies to server data */
       const b = root.document.createElement('button');
       b.type = 'button';
       b.className = 'adm-btn ' + (a.kind === 'primary' ? 'adm-btn-p' : a.kind === 'danger' ? 'adm-btn-d' : '');
@@ -219,6 +236,12 @@
 
     if (denied) { mountContent(stateView.denied()); }
     else if (!page) { mountContent(meta || hidden ? stateView.soon(title) : stateView.unknown()); }
+    else if (firebaseMode() && !LIVE_PAGES.has(id)) {
+      /* Firebase backend: pages still built on local demo fixtures never show those fixtures as real data */
+      setActions(null, ctx);
+      mountContent(notConnectedView(id, title));
+      if (id === DEFAULT_ROUTE) fillLiveSummary(token);
+    }
     else {
       els.content.setAttribute('aria-busy', 'true');
       mountContent(stateView.loading());

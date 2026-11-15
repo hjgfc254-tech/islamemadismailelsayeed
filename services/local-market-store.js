@@ -167,10 +167,18 @@ const MP = (() => {
     }
   };
 
+  /* Firebase mode (services/firebase-config.js loads first): the local store is only a cache of the server's scoped
+     read model. Never seed demo providers and never present local-mode data as server data — it is kept as a backup
+     (hs_mp_db_backup_before_firebase) for the owner's migration, and the cache starts empty until the first sync. */
+  const firebaseMode = () => { try { return !!(typeof globalThis !== 'undefined' && globalThis.HSFirebaseConfig && globalThis.HSFirebaseConfig.mode === 'firebase'); } catch { return false; } };
   const load = () => {
     try { const r = localStorage.getItem(KEY); db = r ? JSON.parse(r) : seed(); }
     catch { db = seed(); }
     if (!db || (db.v !== 1 && db.v !== 2)) db = seed();
+    if (firebaseMode() && db._source !== 'firebase') {
+      try { const raw = localStorage.getItem(KEY); if (raw && !localStorage.getItem(KEY + '_backup_before_firebase')) localStorage.setItem(KEY + '_backup_before_firebase', raw); } catch {}
+      db = seed(); db.providers = []; db._source = 'firebase';
+    }
     migrate();
     buildServices();
   };

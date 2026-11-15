@@ -49,6 +49,14 @@
     wrap.addEventListener('submit', (ev) => {
       ev.preventDefault();
       const cur = S.roster.find((e) => e.id === emp.id), fields = { role: wrap.querySelector('#ed-role').value, department: wrap.querySelector('#ed-dep').value };
+      const remote = root.HSBackend && root.HSBackend.mode === 'firebase' ? root.HSBackend : null;
+      if (remote) {                                   /* Firebase backend: the server validates and applies the change */
+        remote.admin('PATCH', '/admin/employees/' + encodeURIComponent(emp.id), fields).then((res) => {
+          st = res.ok ? { message: 'تم حفظ التعديلات على الخادم.' } : { values: fields, errors: (res.error && res.error.details) || {}, message: res.error && res.error.details ? undefined : ((res.error && res.error.message) || 'تعذر تنفيذ الإجراء.') };
+          paint(res.ok ? '#ed-role' : '[data-ed-save]');
+        });
+        return;
+      }
       try {
         S.roster = R.changeEmployee(S.roles, S.roster, S.actor, emp.id, fields);
         const parts = []; if (cur.role !== fields.role) parts.push('الدور: «' + R.roleById(S.roles, cur.role).name + '» ← «' + R.roleById(S.roles, fields.role).name + '»'); if (cur.department !== fields.department) parts.push('الإدارة: «' + R.DEPARTMENTS[cur.department] + '» ← «' + R.DEPARTMENTS[fields.department] + '»');

@@ -100,7 +100,7 @@
 
   const RENDER = { providers: providersTab, orders: ordersTab, customers: customersTab, complaints: complaintsTab, commissions: commissionsTab };
 
-  function render() {
+  function render(ctx) {
     if (root.HSAuthApi) root.HSAuthApi.useApp('admin');   // API actor = the signed-in demo employee
     const M = mp();
     const wrap = root.document.createElement('div'); wrap.className = 'ord mk';
@@ -113,7 +113,7 @@
         <div role="tablist" aria-label="أقسام تشغيل السوق" class="cat-tools">${TABS.map(([id, l]) => `<button type="button" role="tab" class="adm-btn" id="mk-tab-${id}" aria-controls="mk-panel" aria-selected="${tab === id}" tabindex="${tab === id ? 0 : -1}" data-mk-tab="${id}">${l}</button>`).join('')}</div>
         <div id="mk-panel" role="tabpanel" aria-labelledby="mk-tab-${tab}">${RENDER[tab](M)}</div>
         <p class="ord-muted" role="status" id="mk-live" aria-live="polite"></p>
-        <p>${confirmReset ? `<span>سيُعاد إنشاء بيانات السوق التجريبية بالكامل (تُفقد الطلبات والتسجيلات المحلية). </span>${btn('data-mk="reset-yes"', 'تأكيد الاستعادة', 'adm-btn-d')}${btn('data-mk="reset-no"', 'تراجع', '')}` : btn('data-mk="reset"', 'استعادة بيانات السوق التجريبية', '')}</p>`;
+        <p>${confirmReset ? `<span>سيُعاد إنشاء بيانات السوق التجريبية بالكامل (تُفقد الطلبات والتسجيلات المحلية). </span>${btn('data-mk="reset-yes"', 'تأكيد الاستعادة', 'adm-btn-d')}${btn('data-mk="reset-no"', 'تراجع', '')}` : (root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase' ? '' : btn('data-mk="reset"', 'استعادة بيانات السوق التجريبية', ''))}</p>`;
       if (root.HSA11yTabs) root.HSA11yTabs.attach(wrap.querySelector('[role=tablist]'));
       const f = focusSel && wrap.querySelector(focusSel); if (f) f.focus();
     };
@@ -151,6 +151,7 @@
       if (a === 'cancel') return run(a + id, t, () => A.orders.cancel(id, 'إلغاء من الإدارة'), 'تم إلغاء الطلب.');
       if (a === 'csusp') { const was = (M.get('customers', id) || {}).status; return run(a + id, t, () => A.admin.setCustomerStatus(id, was === 'suspended' ? 'active' : 'suspended'), 'تم تحديث حالة العميل.'); }
       if (a === 'cresolve') { const note = String((wrap.querySelector(`[data-mk-res="${id}"]`) || {}).value || '').trim(); if (!note) return say('اكتب ملاحظة الحل أولًا.', `[data-mk-res="${id}"]`); return run(a + id, t, () => A.support.resolve(id, note), 'تم تسجيل الشكوى كمحلولة.'); }
+      if ((a === 'reset' || a === 'reset-yes') && root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase') return;   /* never wipe the local cache of server data */
       if (a === 'reset') { confirmReset = true; return paint('[data-mk="reset-yes"]'); }
       if (a === 'reset-no') { confirmReset = false; return paint('[data-mk="reset"]'); }
       /* Restoring the seeded demo data is a local demo tool, not a marketplace operation: no API route by design. */
@@ -175,6 +176,8 @@
         if (!wrap.isConnected) { off(); return; }
         if (ev.source === 'storage' && !inFlight.size) say('تم تحديث بيانات السوق من نافذة أخرى.');
       });
+      /* release immediately when the shell leaves this page (no accumulating subscriptions across visits) */
+      if (ctx && ctx.signal && typeof ctx.signal.addEventListener === 'function') ctx.signal.addEventListener('abort', off, { once: true });
     }
     return wrap;
   }

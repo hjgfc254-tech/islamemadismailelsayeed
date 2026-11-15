@@ -123,7 +123,8 @@
       <nav id="dp-tree" class="cat-tree" aria-label="شجرة الإدارات"></nav><dialog class="ord-dlg" id="ord-dlg" aria-labelledby="ord-dlg-t"></dialog>`;
     const sum = wrap.querySelector('#ord-sum'), tree = wrap.querySelector('#dp-tree'), dlgEl = wrap.querySelector('#ord-dlg');
     const collapsed = new Set(); let openId = null, st = {};
-    const paintTree = () => { tree.innerHTML = treeHtml(collapsed); };
+    /* Expand/collapse-all reflect the current state (disabled when there is nothing to do) instead of silently doing nothing. */
+  const paintTree = () => { tree.innerHTML = treeHtml(collapsed); const box = tree.parentElement, parents = depts.filter((d) => depts.some((x) => x.parentId === d.id)); const ex = box && box.querySelector('[data-dp-all="expand"]'), co = box && box.querySelector('[data-dp-all="collapse"]'); if (ex) ex.disabled = collapsed.size === 0; if (co) co.disabled = parents.every((d) => collapsed.has(d.id)); };
     const sync = () => { sum.innerHTML = summaryHtml(); paintTree(); }; sync();
     const paintDlg = (sel) => { const d = openId ? T.byId(depts, openId) : null; if (openId && !d) return; dlgEl.innerHTML = dialogHtml(d, st); const f = sel && dlgEl.querySelector(sel); if (f) f.focus(); };
     const dlg = root.HSDialog.attach(dlgEl, {

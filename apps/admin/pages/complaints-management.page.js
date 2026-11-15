@@ -141,6 +141,8 @@
   };
 
   const render = () => {
+    const L = root.HSAdminLive && root.HSAdminLive.enabled() ? root.HSAdminLive : null;   /* Firebase mode: real data + real routes only */
+    if (L) items = L.rows('complaints', { TYPES });
     const wrap = root.document.createElement('div'); wrap.className = 'ord';
     wrap.innerHTML = `<p class="dash-note">بيانات تجريبية محلية — ليست شكاوى حقيقية، وأي تغيير يُفقد عند إعادة التحميل.</p>
       <div id="ord-sum"></div><div id="ord-grid"></div><dialog class="ord-dlg" id="ord-dlg" aria-labelledby="ord-dlg-t"></dialog>`;
@@ -165,6 +167,8 @@
     });
     d.onClick((b) => {
       const v = (s) => dlgEl.querySelector(s).value;
+      if (L && b.dataset.ordStatus) { L.status('complaints', openId, b.dataset.ordStatus).then((res) => { if (res.ok) { items = L.rows('complaints', { TYPES }); sync(); paintDlg('[data-ord-close]'); } else showErr(L.errorText(res)); }); return; }
+      if (L && (b.hasAttribute('data-cmp-classify') || b.hasAttribute('data-cmp-assign') || b.hasAttribute('data-ord-note'))) { showErr(L.UNSUPPORTED); return; }
       try {
         if (b.dataset.ordStatus) { items = setStatus(items, openId, b.dataset.ordStatus); sync(); paintDlg('[data-ord-close]'); }
         else if (b.hasAttribute('data-cmp-classify')) { items = classify(items, openId, v('#cmp-type'), v('#cmp-pri')); sync(); paintDlg('#cmp-type'); }

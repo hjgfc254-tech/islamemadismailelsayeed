@@ -58,7 +58,8 @@ function boot({ hash = '', local = {}, session = {}, override = {} } = {}) {
     pushState(state, _t, url) { historyLog.push(['push', url ?? null]); history.state = state; if (url) location.hash = String(url).slice(String(url).indexOf('#')); },
     replaceState(state, _t, url) { historyLog.push(['replace', url ?? null]); history.state = state; if (url) location.hash = String(url).slice(String(url).indexOf('#')); },
     back() { historyLog.push(['back']); } };
-  const local$ = storage(local), session$ = storage({ hs_intro_v1: '1', ...session });
+  /* the app defaults to the production Firebase backend; the harness runs the offline demo, like ?backend=local */
+  const local$ = storage({ hs_backend: 'local', ...local }), session$ = storage({ hs_intro_v1: '1', ...session });
   const win = { addEventListener: (t, f) => (winListeners[t] = winListeners[t] || []).push(f), removeEventListener() {} };
   const ctx = { console, setTimeout: () => 0, clearTimeout() {}, setInterval: () => 0, clearInterval() {},
     localStorage: local$, sessionStorage: session$, document: doc, window: win, history, navigator: {}, location,

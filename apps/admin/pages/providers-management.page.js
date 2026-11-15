@@ -114,6 +114,8 @@
   };
 
   const render = () => {
+    const L = root.HSAdminLive && root.HSAdminLive.enabled() ? root.HSAdminLive : null;   /* Firebase mode: real data + real routes only */
+    if (L) providers = L.rows('providers');
     const wrap = root.document.createElement('div');
     wrap.className = 'ord';
     wrap.innerHTML = `<p class="dash-note">بيانات تجريبية محلية — ليست بيانات مقدمي خدمة حقيقية، وأي تغيير يُفقد عند إعادة التحميل.</p>
@@ -138,6 +140,8 @@
       onClose: () => { openId = null; }
     });
     d.onClick((b) => {
+      if (L && b.dataset.ordStatus) { L.status('providers', openId, b.dataset.ordStatus).then((res) => { if (res.ok) { providers = L.rows('providers'); sync(); paintDlg('[data-ord-close]'); } else showErr(L.errorText(res)); }); return; }
+      if (L && b.hasAttribute('data-ord-note')) { showErr(L.UNSUPPORTED); return; }
       try {
         if (b.dataset.ordStatus) { providers = setStatus(providers, openId, b.dataset.ordStatus); sync(); paintDlg('[data-ord-close]'); }
         else if (b.hasAttribute('data-ord-note')) { providers = addNote(providers, openId, dlgEl.querySelector('#ord-note').value); sync(); paintDlg('#ord-note'); }

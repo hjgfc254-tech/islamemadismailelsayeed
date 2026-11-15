@@ -52,8 +52,8 @@
 ## 8. Files that require extra caution
 - `apps/customer/app.js`: bootstrap/navigation/home behavior may still be concentrated here.
 - `apps/customer/pages/market-ui.page.js`: several customer views remain grouped here.
-- `apps/provider/provider-workspace.js`: provider runtime is not yet cleanly separated.
-- `apps/provider/legacy/portal-compat.js`: compatibility bridge with legacy role behavior.
+- Provider runtime is the standalone app `apps/provider/` (entry, shell, router, 12 renderers, runtime in `app.js`); the former in-Customer workspace was removed on 2026-11-14.
+- No role bridge remains: Customer links to Provider onboarding (`apps/provider/index.html#/join`) only; Admin is reachable only from `apps/admin/index.html`. Marketplace writes go through `services/*-api.js` (mock adapters, see `docs/API_CONTRACTS.md`).
 - `shared/design-system/design-system.css`: shared visual impact across apps.
 - `shared/icons/icon-registry.js`: icon rendering contract.
 - `services/local-market-store.js` and `services/local-catalog.js`: local demo data behavior.

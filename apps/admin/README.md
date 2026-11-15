@@ -9,5 +9,5 @@ selected demo employee with a presentation-only permission guard (`permission-gu
 - Styles: `styles/admin.css`, `admin-components.css`, `admin-responsive.css` (design-system tokens; literal baseline guarded by `design-token-audit.test.js`).
 
 Everything is local demo behavior: no real authentication, authorization enforcement, invitations, payments or backend.
-The legacy Admin console inside `apps/provider/legacy/portal-compat.js` (reached from the Customer menu) is separate.
+The former legacy Admin console (inside `apps/provider/legacy/portal-compat.js`, reachable from the Customer menu) was **removed on 2026-11-14**. Its live marketplace operations are `pages/marketplace.page.js` («تشغيل السوق»), which writes through `services/admin-api.js`, `finance-api.js`, `support-api.js` and `orders-api.js`. Admin is reachable only from this entry.
 See `docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md`.

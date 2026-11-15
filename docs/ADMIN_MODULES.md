@@ -1,6 +1,6 @@
 # Admin Modules
 
-The current `portal-compat.js` contains a demo administration screen and mixed provider/admin legacy behavior. The planned Admin Center page and module files are placeholders. Planned domains include workforce, access control, departments, catalog/services, providers, customers, orders, quotes, complaints, reviews, finance, reports, notifications, audit, security and system settings. No workforce or permission workflow is implemented.
+The former legacy Admin console (`portal-compat.js`) was removed on 2026-11-14; its live operations are `apps/admin/pages/marketplace.page.js`. Admin Center pages and `modules/*` are implemented as local demos (see `docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md`). Planned domains include workforce, access control, departments, catalog/services, providers, customers, orders, quotes, complaints, reviews, finance, reports, notifications, audit, security and system settings. No workforce or permission workflow is implemented.
 
 
 ## Admin shell (implemented, demo)

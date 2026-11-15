@@ -112,6 +112,8 @@
   };
 
   const render = () => {
+    const L = root.HSAdminLive && root.HSAdminLive.enabled() ? root.HSAdminLive : null;   /* Firebase mode: real data + real routes only */
+    if (L) customers = L.rows('customers');
     const wrap = root.document.createElement('div');
     wrap.className = 'ord';
     wrap.innerHTML = `<p class="dash-note">بيانات تجريبية محلية — ليست بيانات عملاء حقيقية، وأي تغيير يُفقد عند إعادة التحميل.</p>
@@ -145,6 +147,8 @@
       if (e.target === dlg) { close(); return; }
       const b = e.target.closest('button'); if (!b) return;
       if (b.hasAttribute('data-ord-close')) { close(); return; }
+      if (L && b.dataset.ordStatus) { L.status('customers', openId, b.dataset.ordStatus).then((res) => { if (res.ok) { customers = L.rows('customers'); sync(); paintDlg('[data-ord-close]'); } else showErr(L.errorText(res)); }); return; }
+      if (L && b.hasAttribute('data-ord-note')) { showErr(L.UNSUPPORTED); return; }
       try {
         if (b.dataset.ordStatus) { customers = setStatus(customers, openId, b.dataset.ordStatus); sync(); paintDlg('[data-ord-close]'); }
         else if (b.hasAttribute('data-ord-note')) { customers = addNote(customers, openId, dlg.querySelector('#ord-note').value); sync(); paintDlg('#ord-note'); }

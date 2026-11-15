@@ -4,7 +4,7 @@
 .adm-btn svg.i{font-size:22px}
 .adm-btn-p{background:var(--grad-pink);border-color:transparent;color:#fff}
 .adm-btn-p:hover{filter:brightness(1.07);background:var(--grad-pink)}
-.adm-btn-d{background:var(--danger);border-color:transparent;color:#141a2e}
+.adm-btn-d{background:var(--danger);border-color:transparent;color:#fff}
 .adm-banner{display:flex;align-items:flex-start;gap:var(--sp-2);padding:10px 14px;border:1px solid rgba(251,191,36,.35);border-radius:var(--r-md);background:rgba(251,191,36,.06);color:var(--text-secondary);font-size:var(--fs-sm)}
 .adm-banner svg.i{flex:none;margin-top:3px;font-size:18px;color:var(--warning)}
 .adm-crumbs{margin-top:var(--sp-4);font-size:var(--fs-sm);color:var(--text-muted)}
@@ -274,3 +274,28 @@ th[aria-sort="ascending"] .hs-grid-sort,th[aria-sort="descending"] .hs-grid-sort
 .adm-login{display:grid;gap:var(--sp-4);max-width:60ch;margin:0 auto;padding:var(--sp-8) var(--sp-4);outline:none}.adm-login h1{margin:0;font-size:var(--fs-lg)}.adm-login-note{margin:0;color:var(--text-secondary)}.adm-login-list{display:grid;gap:var(--sp-2);margin:0;padding:0;list-style:none}.adm-login-acc{display:grid;gap:var(--sp-1);width:100%;padding:var(--sp-3) var(--sp-4);border:1px solid var(--border-default);border-radius:var(--r-lg);background:var(--surface-primary);color:var(--text-primary);text-align:start;font:inherit;cursor:pointer}.adm-login-acc small{color:var(--text-secondary)}.adm-login-acc:hover{border-color:var(--brand-primary)}.adm-account{display:flex;align-items:center;gap:var(--sp-2)}.adm-acc-name{display:grid;line-height:1.3}.adm-acc-name small{color:var(--text-secondary)}
 /* Live marketplace operations page (pages/marketplace-live.page.js). Tokens only. */
 .mk-rate{display:inline-flex;align-items:center;gap:var(--sp-2);margin-inline-end:var(--sp-2);color:var(--text-secondary);font-size:var(--fs-xs)}.mk-rate input,.mk-rate select{min-width:0;max-width:16ch;padding:var(--sp-1) var(--sp-2);border:1px solid var(--border-default);border-radius:var(--r-sm);background:var(--surface-secondary);color:var(--text-primary);font:inherit}.mk-acts{display:flex;flex-wrap:wrap;gap:var(--sp-2)}.mk-form fieldset{display:flex;flex-wrap:wrap;gap:var(--sp-3);margin:0 0 var(--sp-4);padding:var(--sp-3);border:1px solid var(--border-default);border-radius:var(--r-lg)}.mk-form legend{padding:0 var(--sp-2);color:var(--text-secondary)}
+
+/* ════════ Approved identity (Admin Dashboard board): deep primary-green sidebar, light work area,
+   pastel panel tints (sand / sage / sky / lilac) on the KPI plates. ════════ */
+.adm-brand-t{display:inline-block;width:104px;height:32px;font-size:0;color:transparent;background:url(../../../assets/brand/logo-wordmark.png) no-repeat center/contain;vertical-align:middle}
+.adm-side{background:var(--nav-dark-bg);border-inline-end:0;color:var(--on-brand)}
+.adm-side-top{border-bottom-color:var(--nav-dark-line)!important;color:var(--on-brand)}
+.adm-side-top .adm-brand,.adm-side-top .adm-brand small{color:var(--on-brand)}
+.adm-side-top .adm-brand-t{background-image:url(../../../assets/brand/logo-wordmark-light.png)}
+.adm-group-t{color:var(--nav-dark-muted)}
+.adm-link{color:var(--nav-dark-text)}
+.adm-link svg.i,.adm-link .adm-ico{color:var(--nav-dark-text)}
+a.adm-link:hover{background:var(--nav-dark-hover);color:var(--on-brand)}
+.adm-link.is-active,[dir="rtl"] .adm-link.is-active{background:var(--nav-dark-active);color:var(--on-brand);box-shadow:none}
+.adm-link.is-active svg.i,.adm-link.is-active .adm-ico{color:var(--on-brand)}
+.adm-link.is-soon{color:var(--nav-dark-muted)}
+.adm-soon{background:var(--nav-dark-chip);color:var(--nav-dark-text)}
+.adm-collapse{background:var(--nav-dark-hover);border-color:var(--nav-dark-line);color:var(--on-brand)}
+.adm-collapse:hover{background:var(--nav-dark-line)}
+.adm-side ::-webkit-scrollbar-thumb{background:var(--nav-dark-line)}
+.adm-side .adm-nav{scrollbar-color:var(--nav-dark-line) transparent}
+.dash-kpi:nth-child(4n+1) .dash-kpi-ico{background:var(--tint-sand)}
+.dash-kpi:nth-child(4n+2) .dash-kpi-ico{background:var(--tint-sage)}
+.dash-kpi:nth-child(4n+3) .dash-kpi-ico{background:var(--tint-sky)}
+.dash-kpi:nth-child(4n+4) .dash-kpi-ico{background:var(--tint-lilac)}
+.dash-kpi-ico{color:var(--brand-primary)}

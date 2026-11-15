@@ -110,6 +110,8 @@
   };
 
   const render = () => {
+    const L = root.HSAdminLive && root.HSAdminLive.enabled() ? root.HSAdminLive : null;   /* Firebase mode: real data + real routes only */
+    if (L) items = L.rows('reviews');
     const wrap = root.document.createElement('div'); wrap.className = 'ord';
     wrap.innerHTML = `<p class="dash-note">بيانات تجريبية محلية — ليست مراجعات حقيقية، وأي تغيير يُفقد عند إعادة التحميل.</p>
       <div id="ord-sum"></div><div id="ord-grid"></div><dialog class="ord-dlg" id="ord-dlg" aria-labelledby="ord-dlg-t"></dialog>`;
@@ -133,6 +135,7 @@
       onClose: () => { openId = null; st = {}; }
     });
     d.onClick((b) => {
+      if (L && (b.dataset.ordStatus || b.hasAttribute('data-ord-note'))) { showErr(L.UNSUPPORTED); return; }   /* no review moderation route on the server */
       try {
         if (b.dataset.ordStatus) {
           const reason = dlgEl.querySelector('#rv-reason').value;

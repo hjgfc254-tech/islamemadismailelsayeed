@@ -59,6 +59,15 @@
     pe.addEventListener('submit', (e) => {
       e.preventDefault(); const id = S.selectedEmployee || S.roster[0].id;
       const keys = Array.from(pe.querySelectorAll('input[name=perm]:checked:not(:disabled)')).map((c2) => c2.value);
+      const remote = root.HSBackend && root.HSBackend.mode === 'firebase' ? root.HSBackend : null;
+      if (remote) {                                   /* Firebase backend: overrides are stored and enforced server-side */
+        remote.admin('POST', '/admin/rbac/overrides/' + encodeURIComponent(id), { keys }).then((res) => {
+          st = res.ok ? { message: 'تم حفظ الصلاحيات الإضافية على الخادم.' } : { values: keys, errors: (res.error && res.error.details) || {}, message: (res.error && res.error.message) || 'تعذر تنفيذ الإجراء.' };
+          if (res.ok) refreshExtra();
+          paintE('[data-pm-save]');
+        });
+        return;
+      }
       try {
         const before = S.overrides[id] || []; S.overrides = R.setOverrides(S.roles, S.overrides, S.roster, S.actor, id, keys);
         const after = S.overrides[id], add = after.filter((k) => !before.includes(k)).length, rem = before.filter((k) => !after.includes(k)).length;

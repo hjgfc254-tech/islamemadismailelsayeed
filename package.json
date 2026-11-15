@@ -1,13 +1,17 @@
 {
-  "name": "hansalhlak-v8-frontend",
-  "version": "8.0.0-architecture",
-  "private": true,
-  "description": "Reorganized frontend demo for HANSALEHLAK",
-  "scripts": {
-    "test": "node --test tests/unit/*.test.js",
-    "test:unit": "node --test tests/unit/*.test.js",
-    "test:coverage": "node --experimental-test-coverage --test tests/unit/*.test.js",
-    "audit:inventory": "node scripts/verify-project-inventory.mjs",
-    "audit:refresh": "node scripts/refresh-project-inventory.mjs"
-  }
+    "name":  "hansalhlak-v8-frontend",
+    "version":  "8.0.0-architecture",
+    "private":  true,
+    "description":  "Reorganized frontend demo for HANSALEHLAK",
+    "scripts":  {
+                    "test":  "node --test tests/unit/*.test.js",
+                    "test:unit":  "node --test tests/unit/*.test.js",
+                    "test:coverage":  "node --experimental-test-coverage --test tests/unit/*.test.js",
+                    "audit:inventory":  "node scripts/verify-project-inventory.mjs",
+                    "audit:refresh":  "node scripts/refresh-project-inventory.mjs",
+                    "functions:sync":  "node scripts/sync-functions-domain.cjs",
+                    "functions:check":  "node scripts/sync-functions-domain.cjs --check",
+                    "test:emulators":  "firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak \"node --test tests/emulator/\"",
+                    "test:emulators:e2e":  "firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak \"node tests/e2e/firebase-emulator.cdp.js\""
+                }
 }
