@@ -57,7 +57,7 @@ test('admin, firebase mode: identity from the server only; fixture pages gated; 
   assert.match(app, /if \(root\.HSFirebaseConfig && root\.HSFirebaseConfig\.mode === 'firebase'\) return startFirebase\(host, d\);/, 'no demo roster picker in firebase mode');
   assert.match(app, /d\.session\.select\(a\.employeeId\)/, 'the shell opens for the server-resolved employee');
   const shell = read('apps/admin/admin-shell.js');
-  assert.match(shell, /const LIVE_PAGES = new Set\(\['marketplace', 'workforce', 'employee-details', 'roles', 'permissions',\s*'orders', 'customers', 'providers', 'complaints', 'reviews', 'categories', 'quotes', 'finance'\]\);/);
+  assert.match(shell, /const LIVE_PAGES = new Set\(\['marketplace', 'workforce', 'employee-details', 'roles', 'permissions',\s*'orders', 'customers', 'providers', 'complaints', 'reviews', 'categories', 'quotes', 'finance', 'dashboard'\]\);/);
   assert.match(shell, /else if \(firebaseMode\(\) && !LIVE_PAGES\.has\(id\)\) \{/, 'fixture-backed pages never render fixtures in firebase mode');
   assert.match(shell, /C\.request\('GET', '\/admin\/summary'\)/, 'the dashboard shows live server counts instead of fixture KPIs');
   assert.match(shell, /\$\{firebaseMode\(\) \? '' : '<span class="adm-chip" role="note">واجهة تجريبية<\/span>'\}/);
@@ -106,6 +106,9 @@ test('HSAdminLive: Admin pages read the server read model and act only through r
   const fin = L.financeRows(30, ['electric', 'plumbing', 'carpentry', 'other'], {});
   assert.deepEqual(JSON.parse(JSON.stringify(fin.find(r => r.id === 'electric'))), { id: 'electric', label: 'electric', gmv: 350, commission: 52.5, collected: 0, uncollected: 52.5, providerNet: 297.5, settled: 0, pendingDues: 0 }, 'finance from real transaction fields; free services excluded');
   assert.equal(fin.find(r => r.id === 'other').collected, 30, 'categories outside the page buckets fall under other');
+  const k = L.dashboardKpis(30);
+  assert.equal(k.revenue[0], 83, 'revenue = commission of paid transactions in the period (52.5 + 30, rounded)');
+  assert.equal(k.providers[0], 1, 'approved providers'); assert.equal(k.complaints[0], 1, 'open complaints'); assert.equal(k.rating[0], 5, 'average stars of reviews in the period');
   const qs = L.rows('quotes');
   assert.equal(qs.find(q => q.id === 'q1').status, 'approved'); assert.equal(qs.find(q => q.id === 'q1').amount, 350); assert.equal(qs.find(q => q.id === 'q1').provider, 'كريم');
   assert.equal(qs.find(q => q.id === 'q0').status, 'returned', 'a superseded quote is shown as returned for a new offer');

@@ -120,6 +120,31 @@
     return (bucketIds || []).map((id) => rowsBy[id]);
   }
 
+  /**
+   * Dashboard KPIs from real records: { id: [value, deltaPercentVsPreviousPeriod] }.
+   * orders = requests created in the period; customers = new customers; providers = approved providers (new ones drive
+   * the delta); revenue = commission of paid transactions; rating = average stars of reviews; complaints = open now
+   * (delta = complaints filed). Delta: (current − previous) / previous × 100 over the preceding period of equal length.
+   */
+  function dashboardKpis(days) {
+    const d = +days || 30, now = Date.now(), from = now - d * 86400000, prevFrom = from - d * 86400000;
+    const inP = (iso) => { const t = Date.parse(iso); return t >= from && t <= now; };
+    const inPrev = (iso) => { const t = Date.parse(iso); return t >= prevFrom && t < from; };
+    const delta = (cur, prev) => (prev > 0 ? Math.round(((cur - prev) / prev) * 100) : 0);
+    const reqs = db().serviceRequests || [], custs = db().customers || [], provs = db().providers || [], txs = (db().transactions || []).filter((t) => !t.free);
+    const revs = db().reviews || [], comps = db().complaints || [];
+    const sumC = (f) => Math.round(txs.filter((t) => f(t.at)).reduce((a, t) => a + (+t.commission || 0), 0));
+    const avg = (f) => { const r = revs.filter((v) => f(v.at)); return r.length ? Math.round((r.reduce((a, v) => a + (+v.stars || 0), 0) / r.length) * 10) / 10 : 0; };
+    return {
+      orders: [reqs.filter((r) => inP(r.createdAt)).length, delta(reqs.filter((r) => inP(r.createdAt)).length, reqs.filter((r) => inPrev(r.createdAt)).length)],
+      customers: [custs.filter((c) => inP(c.createdAt)).length, delta(custs.filter((c) => inP(c.createdAt)).length, custs.filter((c) => inPrev(c.createdAt)).length)],
+      providers: [provs.filter((p) => p.status === 'approved').length, delta(provs.filter((p) => inP(p.createdAt)).length, provs.filter((p) => inPrev(p.createdAt)).length)],
+      revenue: [sumC(inP), delta(sumC(inP), sumC(inPrev))],
+      rating: [avg(inP), delta(avg(inP), avg(inPrev))],
+      complaints: [comps.filter((k) => k.status !== 'resolved').length, delta(comps.filter((k) => inP(k.at)).length, comps.filter((k) => inPrev(k.at)).length)]
+    };
+  }
+
   /** Rows for a page entity, from the server read model. */
   function rows(entity, opts) { return MAP[entity] ? MAP[entity](opts) : []; }
 
@@ -136,7 +161,7 @@
   }
   const errorText = (res) => (res && res.error && res.error.message) || 'تعذّر تنفيذ الإجراء.';
 
-  const api = Object.freeze({ enabled, rows, status, errorText, financeRows, UNSUPPORTED, ENTITIES: Object.keys(MAP) });
+  const api = Object.freeze({ enabled, rows, status, errorText, financeRows, dashboardKpis, UNSUPPORTED, ENTITIES: Object.keys(MAP) });
   root.HSAdminLive = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

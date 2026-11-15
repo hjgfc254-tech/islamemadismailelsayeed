@@ -52,16 +52,18 @@
   const buildModel = (period, st) => {
     st = st || state;
     const p = PERIODS.some((x) => x.id === period) ? period : '30';
+    const L = root.HSAdminLive && root.HSAdminLive.enabled() ? root.HSAdminLive : null;   /* server backend mode: KPIs from real records */
+    const live = L ? L.dashboardKpis(Number(p)) : null;
     return {
       period: p,
       kpis: KPI_DEFS.map((k) => {
-        const [value, delta] = k.v[p];
+        const [value, delta] = live ? (live[k.id] || [0, 0]) : k.v[p];
         const good = k.invert ? delta <= 0 : delta >= 0;
         return { id: k.id, label: k.label, icon: k.icon, unit: k.unit, module: k.module, value, valueText: fmtValue(k, value), delta, good,
-          detail: k.detail.map(([label, share]) => ({ label, share, amount: k.decimal ? null : Math.round(value * share) })) };
+          detail: live ? [] : k.detail.map(([label, share]) => ({ label, share, amount: k.decimal ? null : Math.round(value * share) })) };
       }),
-      tasks: TASKS.map((t) => Object.assign({}, t, { done: !!st.done[t.id] })),
-      alerts: ALERTS.filter((a) => !st.dismissed[a.id])
+      tasks: live ? [] : TASKS.map((t) => Object.assign({}, t, { done: !!st.done[t.id] })),
+      alerts: live ? [] : ALERTS.filter((a) => !st.dismissed[a.id])
     };
   };
 

@@ -6,7 +6,7 @@ refused with an explicit message (HTTP-like 501), never simulated. Pages that ar
 show "not connected to the server yet" instead of fixtures. In local mode (development and tests) every page keeps
 its fixtures.
 
-## Live (13 of 24 pages)
+## Live (14 of 24 pages)
 
 | Page | Data (collections) | Real actions (routes) | Refused (no server route) |
 |---|---|---|---|
@@ -17,16 +17,16 @@ its fixtures.
 | complaints | complaints (+ requests, customers, providers) | Resolve (`POST /complaints/:id/resolve`) | Dismiss, classify, assign, notes |
 | reviews | reviews (+ requests, customers, providers) | — (read-only) | Hide/publish moderation: no route exists |
 | quotes | quotes (+ requests, customers, providers) | — (read-only) | Approve/reject/return: on the server the decision belongs to the customer (`/quote/approve`, `/quote/reject`); the backend has no quote expiry, so none is shown |
+| dashboard | KPIs from real records: requests, new customers, approved providers, commission of paid transactions, average review stars, open complaints; delta vs the preceding period of equal length | — | Fixture tasks/alerts and split details are not shown |
 | finance (dashboard) | transactions (value, commission, net, collection; free services excluded), bucketed into the page categories | — (read-only) | Discrepancy review (no discrepancy records exist). Settled/pending dues are 0: in the current collection model the platform makes no payouts (see the payout decision) |
 | categories | The real service catalogue (`CAT`: categories → devices/work types, problem counts) | — (read-only) | Create, edit, move, activate: the catalogue is code; editing needs a server catalogue |
 | workforce, employee details, roles, permissions | employees, admins, system/rbac | Invite, edit, status, re-invite; roles; overrides | — |
 
-The dashboard route shows live counts (`GET /admin/summary`, aggregation queries) inside its gate.
 
-## Gated (11 pages): what each needs
+## Gated (10 pages): what each needs
 | Page | Missing backend piece or business rule |
 |---|---|
-| dashboard (full page), super-dashboard | KPI definitions beyond the 6 live counts (trend periods, targets) are not specified; the live counts are shown |
+| super-dashboard | Owner-level targets and trend definitions are not specified |
 | commissions, settlements, reports | Settlement entity and payout workflow are not defined in the business rules. Collection and commission routes exist and are used by the marketplace page. Mapping the fixture KPIs needs an agreed formula set (see `docs/API_CONTRACTS.md` business rules). |
 | notifications | Broadcast campaigns and delivery logs have no backend (no SMS, email or push provider) |
 | services | The page's fixed category list does not match the real 7 categories; it needs the real catalogue as its category source and a server catalogue for editing |
