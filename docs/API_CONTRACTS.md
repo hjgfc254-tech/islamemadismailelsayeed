@@ -104,7 +104,7 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | Route | Roles | Module | Summary |
 |---|---|---|---|
 | `GET /auth/me` | public | auth-api.js | Current demo actor for the running app, or null. |
-| `POST /requests` | customer | orders-api.js | Create a service request for the signed-in customer. |
+| `POST /requests` | customer | orders-api.js | Create a service request for the signed-in customer. Optional `geo {lat,lng}`: finite and in range or 422 `geo`; stored rounded to 5 decimals, nothing else kept. Phone, address and geo reach a provider only after they accept. |
 | `GET /requests` | customer, provider, admin | orders-api.js | List requests visible to the actor (?status=). |
 | `GET /requests/:id` | customer, provider, admin | orders-api.js | One request (with current quote). |
 | `POST /requests/:id/cancel` | customer, admin | orders-api.js | Cancel before work starts. |

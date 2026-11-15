@@ -17,6 +17,8 @@
   const BASE_TITLE = 'مساحة مقدم الخدمة | هنصلحلك';
   let lastRouteKey = null, formTrigger = null;
   const actionSel = (action,id) => `[data-pv-action="${action}"][data-id="${id}"]`;
+  const loc = root.HSProviderLocation;   /* customer location panel: address, contact, map link, distance (no live tracking) */
+  const locState = {};                   /* reqId -> {status, km?}; kept only in memory on this device */
   const detailsSel = id => `[data-pv-route="request/${encodeURIComponent(id)}"]`;
   const reduceMotion = () => typeof matchMedia==='function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
   /* Focus the first matching control in the view, falling back to the view itself (tabindex="-1"). */
@@ -101,6 +103,7 @@
       if(r.status==='scheduled') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="enroute" data-id="${esc(r.id)}">أنا في الطريق</button>`);
       if(r.status==='enroute') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="arrived" data-id="${esc(r.id)}">وصلت</button>`);
       if(r.status==='arrived') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="started" data-id="${esc(r.id)}">بدأت الخدمة</button>`);
+      if(loc&&loc.available(r,a)) actions.push(`<button class="pv-btn" data-pv-action="customer-location" data-id="${esc(r.id)}">${icon('pin')} موقع العميل</button>`);
       const fs=r.freeService&&r.freeService.status;
       if(fs==='accepted'&&['scheduled','enroute','arrived','started'].includes(r.status)) actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="complete-free" data-id="${esc(r.id)}">تسجيل إكمال الخدمة المجانية</button>`);
       else if(fs!=='proposed'&&['started','quote'].includes(r.status)) {
@@ -113,7 +116,7 @@
     }
     const freeNote=r.freeService?`<p class="pv-note">خدمة مجانية (${esc((MP.FREE_REASONS||{})[r.freeService.reason]||'')}): ${({proposed:'بانتظار موافقة العميل',accepted:'وافق العميل — نفّذ وسجّل الإكمال',declined:'رفض العميل؛ يمكن إرسال عرض سعر',completed:'اكتملت بلا مقابل'})[r.freeService.status]||''}</p>`:'';
     const address=a.status==='accepted'?`${esc(r.gov)} · ${esc(r.area)} · ${esc(r.addr)}`:`${esc(r.gov)} · ${esc(r.area)} — يظهر العنوان التفصيلي بعد قبول الطلب`;
-    return `<article class="pv-request"><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header><p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.pricing&&r.pricing.providerAmount!=null?`<p class="pv-note">مبلغك المحدد عند الحجز: <b>${money(r.pricing.providerAmount)}</b> — يدفع العميل ${money(r.pricing.customerPrice)} شاملًا رسوم المنصة</p>`:''}${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}<div class="pv-actions"><button class="pv-btn" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">عرض التفاصيل</button>${actions.join('')}</div></article>`;
+    return `<article class="pv-request"><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header><p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.pricing&&r.pricing.providerAmount!=null?`<p class="pv-note">مبلغك المحدد عند الحجز: <b>${money(r.pricing.providerAmount)}</b> — يدفع العميل ${money(r.pricing.customerPrice)} شاملًا رسوم المنصة</p>`:''}${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}<div class="pv-actions"><button class="pv-btn" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">عرض التفاصيل</button>${actions.join('')}</div>${locPanel(r,a)}</article>`;
   }
 
   function sectionFor(page,p,groups,transactions) {
@@ -226,6 +229,8 @@
     if(action==='cancel-form') { cancelForm(); return; } // also needed on the picker, where no provider is selected
     const p=currentProvider(); if(!p)return;
     const nearRequest=[actionSel('advance',id),detailsSel(id)];
+    if(action==='customer-location'){showCustomerLocation(id);return;}
+    if(action==='customer-location-close'){delete locState[id];render([actionSel('customer-location',id)]);return;}
     if(action==='reject'||action==='propose'||action==='quote'||action==='complete'||action==='free'){openForm(action,id);return;}
     if(action==='edit-profile'){openProfileForm(p);return;}
     /* Mutations go through the API adapters (services/*-api.js); MP stays the local read model. */
@@ -284,6 +289,28 @@
   }
 
   /* After a status change on a group list, follow the request to the group it now belongs to (as accept/reject/quote/complete do). */
+  function locPanel(r,a) {
+    if(!loc||!locState[r.id]||!loc.available(r,a)) return '';
+    const c=MP.get('customers',r.customerId);
+    return loc.panelHtml(r,c&&c.name,locState[r.id],esc);
+  }
+
+  /* Each press re-reads the provider's position once (permission prompt on first use) and recomputes the distance. */
+  function showCustomerLocation(id) {
+    const r=MP.get('serviceRequests',id), focus=[actionSel('customer-location',id)];
+    if(!r) return;
+    const set=st=>{locState[id]=st;render(focus);};
+    const target=loc.validGeo(r.geo);
+    if(!target) return set({status:'nogeo'});
+    const geo=root.navigator&&root.navigator.geolocation;
+    if(!geo||typeof geo.getCurrentPosition!=='function') return set({status:'unsupported'});
+    set({status:'locating'});
+    geo.getCurrentPosition(
+      pos=>{const me=loc.validGeo({lat:pos&&pos.coords&&pos.coords.latitude,lng:pos&&pos.coords&&pos.coords.longitude});set(me?{status:'ok',km:loc.distanceKm(me,target)}:{status:'error'});},
+      err=>set({status:err&&err.code===1?'denied':'error'}),
+      {enableHighAccuracy:true,timeout:15000,maximumAge:30000});
+  }
+
   function followToGroup(id,p) {
     const {page}=router.parse(location.hash);
     if(!Object.prototype.hasOwnProperty.call(domain.GROUPS,page)) return;

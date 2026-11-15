@@ -11,6 +11,7 @@ The HTML script order is intentional:
 4. `services/local-market-store.js` (`MP`)
 5. `provider-request-domain.js`
 6. `provider-domain.js`
+6a. `provider-location.js` (`HSProviderLocation`; before `app.js`)
 7. `provider-auth.js`
 8. `provider-session.js`
 9. `provider-router.js`
@@ -31,6 +32,7 @@ When adding/reordering scripts, inspect actual globals and run script-order/cont
 | `provider-session.js` | Stores/clears selected demo provider ID; NOT secure authentication/session |
 | `provider-request-domain.js` | Request grouping/derived provider request state |
 | `provider-domain.js` | Provider domain adapter/constants consumed by app |
+| `provider-location.js` | "موقع العميل" panel on accepted, active jobs. Shows address, call/WhatsApp/map links (plain URLs, no paid Maps API) and the straight-line distance in km. The provider's position is read once per press via `navigator.geolocation`, kept only in memory, and never sent or stored. No live tracking; the customer sees status only. |
 | `pages/*.page.js` | Presentation-only renderers; receive explicit context, return markup |
 | `styles/provider.css` | Standalone Provider responsive visual system |
 | `services/local-market-store.js` | LocalStorage-backed `MP` demo store; not an API/backend |
@@ -66,6 +68,7 @@ The Customer-loaded legacy Provider route no longer exists. Customer reaches Pro
 
 ## 6. Current test references
 - `tests/unit/provider-pages.test.js`
+- `tests/unit/provider-customer-location.test.js`: location panel (offered vs accepted, distance, denied/unsupported/no-pin, hide, escaping, clean pin storage). Server pin validation and post-acceptance release are covered in `firebase-backend.test.js`; the CDP runner checks the panel at every viewport.
 - `tests/unit/provider-domain.test.js`
 - `tests/unit/provider-request-domain.test.js`
 - `tests/unit/marketplace-rules.test.js`: zero-quote refusal, free-service flow (store + Provider UI + Customer accept), profile editing, `#/join` onboarding, scroll reset on screen change.

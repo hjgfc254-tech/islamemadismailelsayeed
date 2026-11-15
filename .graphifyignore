@@ -1,0 +1,38 @@
+# Graphify exclusions (defence in depth; .gitignore and .git/info/exclude are also honoured)
+# Secrets and credentials
+.env
+.env.*
+**/.env
+**/.env.*
+functions/.env*
+*.pem
+*.key
+*-adminsdk-*.json
+service-account*.json
+.firebaserc
+.firebase/
+
+# Backups and owner-only material
+firebase-*-backup-*/
+*.bak
+*.zip
+design-reference/
+ai-workforce/
+.github/
+
+# Generated output, caches and tool state
+node_modules/
+coverage/
+dist/
+build/
+graphify-out/
+.serena/
+.claude/
+.mcp.json
+test-results/
+playwright-report/
+screenshots/
+*.log
+
+# Third-party vendored libraries (not project code)
+assets/vendor/

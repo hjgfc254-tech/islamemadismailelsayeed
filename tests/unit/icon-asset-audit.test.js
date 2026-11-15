@@ -22,13 +22,15 @@ const registry = vm.runInNewContext(
   {}
 );
 
+/* V10 (2026-11-15): owner logo assets and app icons. The V9 intro mark/word, the illustrated slide SVGs and the old
+   favicon were retired from the UI (files kept on disk; no longer shipped or precached). */
 const assetFiles = [
-  'assets/icon.svg',
-  'assets/logo-mark.webp',
-  'assets/logo-word.webp',
-  'assets/slide-guide.svg',
-  'assets/slide-latest.svg',
-  'assets/slide-popular.svg',
+  'assets/app-icon-192.png',
+  'assets/app-icon-512.png',
+  'assets/brand/logo-v10-mark.webp',
+  'assets/brand/logo-v10-word.webp',
+  'assets/brand/logo-v10-lockup.webp',
+  'assets/brand/logo-v10-lockup-light.webp',
 ];
 
 test('all icon definitions render non-empty SVG and aliases resolve to real definitions', () => {

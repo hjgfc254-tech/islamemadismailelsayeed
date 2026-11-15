@@ -6,15 +6,11 @@
   "dir": "rtl",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#F5F7FD",
-  "theme_color": "#135049",
+  "background_color": "#F4EFE6",
+  "theme_color": "#1F1B17",
   "start_url": "apps/customer/index.html",
   "icons": [
-    {
-      "src": "assets/icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    }
+    { "src": "assets/app-icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "assets/app-icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
   ]
 }

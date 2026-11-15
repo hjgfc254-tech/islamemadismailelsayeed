@@ -44,3 +44,11 @@ database-debug.log
 ui-debug.log
 functions/.env*
 !functions/.env.example
+
+# Local AI tooling state and machine-specific config (absolute paths, caches, memories)
+.mcp.json
+.claude/settings.json
+.claude/settings.local.json
+.serena/
+graphify-out/
+repomix-output.*

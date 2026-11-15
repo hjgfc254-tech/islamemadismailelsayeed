@@ -18,6 +18,22 @@ Browser checks are manual and are not part of `npm test`. Evidence or "not run" 
   Gotchas: on PowerShell run Edge via the script (direct `& msedge --dump-dom` prints nothing); `Page.navigate` to a URL that
   differs only by `#fragment` does not reload — clear storage then `Page.reload`; always tear the browser down in `finally`.
 - A Playwright MCP server, if configured, can drive the browser interactively instead.
+- All CDP runners: `admin-app`, `customer-orders`, `guest`, `a11y`, `responsive-sweep`, `interaction`, `provider-standalone`
+  (each `node tests/e2e/<name>.cdp.js http://127.0.0.1:8099` with the static server running; they pin local mode and
+  block production hosts). Last green counts (2026-11-15):
+
+  | Runner | Passing checks |
+  |---|---|
+  | provider-standalone | 286 |
+  | responsive-sweep | 280 |
+  | customer-orders | 160 |
+  | admin-app | 124 |
+  | guest | 165 |
+  | a11y | 112 |
+
+  `firebase-emulator.cdp.js` runs via `npm run test:emulators:e2e` (needs `JAVA_HOME=%USERPROFILE%\.tools\jdk-21.0.13+9`); last green: 47.
+- Browser APIs inside a runner: override with `Object.defineProperty(navigator, 'geolocation', {configurable:true, value:{…}})`
+  in `evaluate`; never grant real permissions.
 - If no runner is available: stop, report "browser QA not run — <reason>", and ask before installing anything.
 
 ## 2. Serve the project (static, no build)

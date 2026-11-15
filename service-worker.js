@@ -18,7 +18,7 @@
    • CLEAR_CACHE  — مسح كل الكاش (لأدوات العرض التجريبي).
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'hansalhlak-v11-firebase-1';
+const CACHE = 'hansalhlak-v11-firebase-3';
 
 /* الملفات الأساسية — يجب أن تعمل offline بعد أول زيارة */
 const FILES = [
@@ -58,6 +58,7 @@ const FILES = [
   'apps/provider/styles/provider.css',
   'apps/provider/provider-request-domain.js',
   'apps/provider/provider-domain.js',
+  'apps/provider/provider-location.js',
   'apps/provider/provider-auth.js',
   'apps/provider/provider-session.js',
   'apps/provider/provider-router.js',
@@ -76,17 +77,12 @@ const FILES = [
   'apps/provider/pages/notifications.page.js',
   'apps/provider/pages/request-details.page.js',
   'services/local-attachments.js',
-  'apps/customer/intro-3d.js',
-  'assets/vendor/gsap.min.js',
   'apps/customer/pages/search.page.js',
   'apps/customer/pages/discover.page.js',
   'apps/customer/pages/addresses.page.js',
   'apps/customer/pages/account.page.js',
   'apps/customer/pages/support.page.js',
   'manifest.json',
-  'assets/icon.svg',
-  'assets/logo-mark.webp',
-  'assets/logo-word.webp',
   'services/firebase-config.js',
   'services/firebase-backend.js',
   'apps/admin/modules/admin-live.js',
@@ -95,13 +91,21 @@ const FILES = [
   'assets/vendor/firebase/13.1.0/firebase-auth.js',
   'assets/vendor/firebase/13.1.0/firebase-functions.js',
   'assets/vendor/firebase/13.1.0/firebase-database.js',
-  'assets/brand/logo-wordmark.png',
-  'assets/brand/logo-wordmark-light.png',
+  'assets/app-icon-192.png',
+  'assets/app-icon-512.png',
+  'assets/brand/logo-v10-mark.webp',
+  'assets/brand/logo-v10-word.webp',
+  'assets/brand/logo-v10-lockup.webp',
+  'assets/brand/logo-v10-lockup-light.webp',
+  'assets/icons/svc/home/electric.webp',
+  'assets/icons/svc/home/plumbing.webp',
+  'assets/icons/svc/home/carpentry.webp',
+  'assets/icons/svc/home/painting.webp',
+  'assets/icons/svc/home/cars.webp',
+  'assets/icons/svc/home/cleaning.webp',
+  'assets/icons/svc/home/appliances.webp',
   'assets/brand/hero-technician.jpg',
   'assets/brand/trust-handshake.jpg',
-  'assets/slide-guide.svg',
-  'assets/slide-popular.svg',
-  'assets/slide-latest.svg',
 ]
 
 /* ═════════ تثبيت: تخزين مسبق بمرونة ═════════

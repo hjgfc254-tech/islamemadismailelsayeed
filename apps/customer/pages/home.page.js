@@ -51,7 +51,7 @@
   </section>
   <div class="join glass neon">${ic('user')}<div><b>عايز تقدم خدماتك؟</b><small>انضم كمقدم خدمة — التسجيل يُراجَع من الإدارة قبل استقبال الطلبات</small></div><a class="tag" href="../provider/index.html#/join">انضم كمقدم خدمة</a></div>
   <footer class="site-foot">
-    <img class="wordmark" src="../../assets/brand/logo-wordmark.png" alt="هنصلحلك HANSALEHLAK" width="517" height="162" loading="lazy" decoding="async">
+    <img class="wordmark" src="../../assets/brand/logo-v10-lockup.webp" alt="هنصلحلك HANSALEHLAK" width="615" height="160" loading="lazy" decoding="async">
     <p>منصة واحدة، خدمات أسهل.</p>
     <nav aria-label="روابط سريعة"><button type="button" data-go="sections">الخدمات</button><button type="button" data-go="search">البحث</button><button type="button" data-go="orders">طلباتي</button><button type="button" data-go="account">حسابي</button><a href="../provider/index.html#/join">انضم كمقدم خدمة</a></nav>
     <small>نسخة عرض تجريبية — البيانات محلية على هذا الجهاز.</small>

@@ -66,6 +66,8 @@ const ALT_STATUS = [
 ];
 const STATUS_LABEL = Object.fromEntries(FLOW.concat(ALT_STATUS));
 const FINAL_STATUSES = new Set(['closed','cancelled','failed']);
+/* Request map pin: only {lat,lng} as rounded finite numbers in range (≈1 m precision); anything else → null. */
+const cleanGeo = g => { if(!g||typeof g!=='object') return null; const lat=Number(g.lat), lng=Number(g.lng); if(!Number.isFinite(lat)||!Number.isFinite(lng)||Math.abs(lat)>90||Math.abs(lng)>180) return null; return { lat:Math.round(lat*1e5)/1e5, lng:Math.round(lng*1e5)/1e5 }; };
 
 const MP = (() => {
   const KEY = 'hs_mp_db';
@@ -263,7 +265,7 @@ const MP = (() => {
         desc:d.desc, photos:Array.isArray(d.photos)?d.photos:[],
         attachments:Array.isArray(d.attachments)?d.attachments:[],
         video:d.video||'',
-        gov:d.gov, area:d.area, addr:d.addr, geo:d.geo||null,
+        gov:d.gov, area:d.area, addr:d.addr, geo:cleanGeo(d.geo),
         when:d.when||'', whenNote:d.whenNote||'',
         preferredSlot:d.preferredSlot||'',  preferredPeriod:d.preferredPeriod||'',
         flexible:!!d.flexible,

@@ -136,8 +136,8 @@ async function start() {
     return new Promise(resolve => {
       const d = document.createElement('dialog');
       d.setAttribute('dir', 'rtl');
-      d.style.cssText = 'border:0;border-radius:20px;padding:22px;max-width:min(92vw,380px);width:100%;font-family:var(--font-body,inherit);color:var(--text-primary,#1E2A29);box-shadow:0 22px 50px rgba(19,48,45,.18)';
-      d.innerHTML = `<form method="dialog" style="display:grid;gap:12px"><h2 style="margin:0;font-size:19px">${title}</h2>${fields.map(f => `<label style="display:grid;gap:6px;font-weight:600">${f.label}<input name="${f.name}" type="${f.type || 'text'}" ${f.attrs || ''} required style="min-height:46px;border:1.5px solid var(--border-default,#D2D8E3);border-radius:12px;padding:0 12px;font:inherit"></label>`).join('')}<p data-err role="alert" style="margin:0;color:var(--danger,#B4413C);min-height:1em"></p><div style="display:flex;gap:8px"><button value="ok" style="flex:1;min-height:46px;border:0;border-radius:12px;background:var(--brand-primary,#135049);color:#fff;font:inherit;font-weight:700">${submitLabel}</button><button value="cancel" formnovalidate style="min-height:46px;padding:0 16px;border:1.5px solid var(--border-default,#D2D8E3);border-radius:12px;background:#fff;font:inherit">إلغاء</button></div></form>`;
+      d.style.cssText = 'border:0;border-radius:20px;padding:22px;max-width:min(92vw,380px);width:100%;font-family:var(--font-body,inherit);color:var(--text-primary,#1F1B17);box-shadow:0 22px 50px rgba(31,27,23,.18)';
+      d.innerHTML = `<form method="dialog" style="display:grid;gap:12px"><h2 style="margin:0;font-size:19px">${title}</h2>${fields.map(f => `<label style="display:grid;gap:6px;font-weight:600">${f.label}<input name="${f.name}" type="${f.type || 'text'}" ${f.attrs || ''} required style="min-height:46px;border:1.5px solid var(--border-default,#D2D8E3);border-radius:12px;padding:0 12px;font:inherit"></label>`).join('')}<p data-err role="alert" style="margin:0;color:var(--danger,#B4413C);min-height:1em"></p><div style="display:flex;gap:8px"><button value="ok" style="flex:1;min-height:46px;border:0;border-radius:12px;background:var(--brand-primary,#1F1B17);color:#fff;font:inherit;font-weight:700">${submitLabel}</button><button value="cancel" formnovalidate style="min-height:46px;padding:0 16px;border:1.5px solid var(--border-default,#D2D8E3);border-radius:12px;background:#fff;font:inherit">إلغاء</button></div></form>`;
       document.body.appendChild(d);
       d.addEventListener('close', () => { const v = d.returnValue === 'ok' ? Object.fromEntries(new FormData(d.querySelector('form'))) : null; d.remove(); resolve(v); }, { once: true });
       d.showModal();
@@ -210,7 +210,7 @@ async function start() {
     const b = document.createElement('button');
     b.id = 'hs-backend-signin'; b.type = 'button';
     b.textContent = APP === 'admin' ? 'دخول الإدارة' : (e.detail && e.detail.provider && e.detail.provider.status === 'pending' ? 'تسجيلك قيد المراجعة' : 'دخول مقدم الخدمة');
-    b.style.cssText = 'position:fixed;inset-inline-start:16px;bottom:88px;z-index:200;min-height:46px;padding:0 18px;border:0;border-radius:14px;background:var(--brand-primary,#135049);color:#fff;font:inherit;font-weight:700;box-shadow:0 8px 22px rgba(19,48,45,.2)';
+    b.style.cssText = 'position:fixed;inset-inline-start:16px;bottom:88px;z-index:200;min-height:46px;padding:0 18px;border:0;border-radius:14px;background:var(--brand-primary,#1F1B17);color:#fff;font:inherit;font-weight:700;box-shadow:0 8px 22px rgba(31,27,23,.2)';
     b.addEventListener('click', () => (APP === 'admin' ? HSBackend.signInAdmin() : HSBackend.signInProvider()).catch(err => alert(err.message)));
     document.body.appendChild(b);
   });

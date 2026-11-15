@@ -42,9 +42,9 @@ test('no blocking native dialogs (confirm/prompt/alert) in any app runtime', () 
 
 test('contrast fixes: strong brand token for small white text; decorative avatar initials hidden and readable', () => {
   const ds = read('shared/design-system/design-system.css');
-  // Approved identity: deep primary green #0B3E38 carries small white text (11.6:1); primary green #135049 carries buttons (9.2:1)
-  assert.match(ds, /--brand-primary-strong:#0B3E38/);
-  assert.match(ds, /--brand-primary:#135049/);
+  // V10 "Workshop" identity: deep ink #14110E carries small white text (~18:1); warm ink #1F1B17 carries buttons (~16:1)
+  assert.match(ds, /--brand-primary-strong:#14110E/);
+  assert.match(ds, /--brand-primary:#1F1B17/);
   assert.match(ds, /\.qa \.n,\.tab-badge\{background:var\(--brand-primary-strong\)/);
   assert.match(read('apps/admin/styles/admin.css'), /\.adm-skip\{[^}]*background:var\(--brand-primary-strong\)/);
   for (const f of ['apps/customer/pages/account.page.js', 'apps/customer/pages/order-details.page.js']) assert.match(read(f), /class="prov-avatar" aria-hidden="true"/, f);

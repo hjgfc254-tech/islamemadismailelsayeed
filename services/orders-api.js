@@ -52,6 +52,10 @@
     const errors = {};
     for (const k of REQUIRED) if (!String(b[k] || '').trim()) errors[k] = 'مطلوب';
     if (String(b.desc || '').length > 2000) errors.desc = 'الوصف أطول من 2000 حرف';
+    if (b.geo != null) {   /* optional map pin: two finite numbers in range, nothing else is stored */
+      const g = b.geo, lat = g && Number(g.lat), lng = g && Number(g.lng);
+      if (typeof g !== 'object' || !Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) errors.geo = 'موقع غير صالح';
+    }
     return errors;
   }
 

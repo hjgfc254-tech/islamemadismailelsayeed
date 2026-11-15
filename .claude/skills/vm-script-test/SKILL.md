@@ -55,6 +55,13 @@ function sandbox(files, extra = {}) {
   stub the DOM so you can capture those listeners and dispatch a synthetic event whose
   `target.closest('[data-pv-action]')` returns an element with the right `dataset`. Assert the effect on `MP.db()`.
 - Add a script-order assertion against the real HTML when the test depends on order (pattern in `provider-pages.test.js`).
+- Prefer the ready Provider harness `tests/helpers/provider-app-harness.js` (`boot`, `offerRequest`, `click`, `has`, `go`).
+  Browser APIs are stubbed on `app.ctx`, e.g. `app.ctx.navigator.geolocation = { getCurrentPosition(ok, fail) {…} }`
+  (see `provider-customer-location.test.js`). `has()` / `click()` only match `<button|a|form>` tags.
+- Server (Functions) behaviour: extend `firebase-backend.test.js` (in-memory Firestore, `call(b, auth, app, method, path, body)`).
+  After editing `services/*` domain files, run `npm run functions:sync` before those tests.
+- Bumping `CACHE` in `service-worker.js` breaks the tests that pin the version string (static-audit, design-system,
+  provider-pages, accessible-tabs-contract). Update the expected string in all of them; this is not weakening a test.
 
 ## Run
 `node --test tests/unit/<file>.test.js`, then `npm test`. Finish with the `finish-gate` skill.

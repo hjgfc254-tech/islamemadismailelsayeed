@@ -1,12 +1,12 @@
 {
   "generatedBy": "scripts/sync-functions-domain.cjs",
   "files": {
-    "shared/config/legacy-data.js": "74e266afbc3500f0ccc9cadc740cdfec4e16964a5bace6a5fc602a47fba9c338",
+    "shared/config/legacy-data.js": "39f50b5456f3d685c3f1c06f477e7d90f835d58d850cfee151d1a9fa673dbfff",
     "services/local-catalog.js": "de3fcd80ef8de84667bada846d511897d05e285048cad59b10d9d6fdb69e8151",
-    "services/local-market-store.js": "ffddcfa29c197c249ecee4ea9374f8bda9203b745eb7090af5a0b38908d13109",
+    "services/local-market-store.js": "2bc1fb184565799a141d806d01ad19b26f90b189b5f65903f6634060b93fbe2a",
     "services/api-client.js": "ccfe35d113d01ea2561196c47ada1e10f3791bda09a5ce186d25146a8a12ac9a",
     "services/auth-api.js": "7221c02eb6559ce21c465fc5f1987ca47ce43ecefdf963fc901a8e2b3bfd587b",
-    "services/orders-api.js": "98082ef9e08bdb5e72f7d3025008725a3b0ee14db52a5faf3d1597ff9a78dcb0",
+    "services/orders-api.js": "7da020945926a8566f581e7254b0e4703a264cb6e303018aff04dc5a01325317",
     "services/quotes-api.js": "81629b0682010cfef34d798ce60bbbe60ff77f5ef8471ba4bf21e995b5f4000f",
     "services/catalog-api.js": "6abb139a23f9c5730fb1295f305359fe6647fbb49aa74669d1b73963374310b7",
     "services/provider-api.js": "d436f657c2923c92162069e02259afa88c4701a0b1eeadb38d27479422e09782",

@@ -205,7 +205,7 @@ const topbar = () => {
     <button class="ic-btn avatar" data-go="account" aria-label="حسابي">${ic('user')}</button>
     <button class="ic-btn ${hasNotes?'dot':''}" data-act="bell" aria-label="الإشعارات">${ic('bell')}</button>
   </div>
-  <div class="logo"><img class="wordmark" src="../../assets/brand/logo-wordmark.png" alt="هنصلحلك HANSALEHLAK" width="517" height="162" decoding="async" draggable="false"></div>
+  <div class="logo"><img class="wordmark" src="../../assets/brand/logo-v10-lockup.webp" alt="هنصلحلك HANSALEHLAK" width="615" height="160" decoding="async" draggable="false"></div>
   <div class="tb-actions"><button class="ic-btn" data-act="menu" aria-label="القائمة">${ic('menu')}</button></div>
 </header>`;
 };
@@ -214,7 +214,7 @@ const tile = (k, small) => {
   let viaCat = false;
   try { const c = CAT.category(k); viaCat = !!(c && c.active); } catch {}
   const target = viaCat ? `data-wz-hit="cat|${k}"` : `data-dev="${k}"`;
-  return `<button class="tile glass neon ${small?'small':''}" ${target} aria-label="${DEVICES[k].name}"><span class="tart" aria-hidden="true">${ic(icExists('c-'+k) ? 'c-'+k : (DEVICES[k].icon || 'p-service'))}</span><span class="tl">${DEVICES[k].cat}</span></button>`;
+  return `<button class="tile glass neon ${small?'small':''}" ${target} aria-label="${DEVICES[k].name}"><span class="tart ${typeof icImg==='function'&&icImg('c-'+k)?'ph':''}" aria-hidden="true">${(typeof icImg==='function'&&icImg('c-'+k)) || ic(icExists('c-'+k) ? 'c-'+k : (DEVICES[k].icon || 'p-service'))}</span><span class="tl">${DEVICES[k].cat}</span></button>`;
 };
 const tiles = (small) => `<div class="grid fit">${HOME_ORDER.map(k=>tile(k,small)).join('')}</div>`;
 const head = (title, back) => `<div class="dhead">${back?`<button class="back" data-back aria-label="رجوع">${ic('back')}</button>`:'<span></span>'}<h2 tabindex="-1">${title}</h2><span></span></div>`;
@@ -226,9 +226,9 @@ const discover = () => `
   <div class="car" id="car" tabindex="0" role="region" aria-roledescription="carousel" aria-label="اكتشف خدمات هنصلحلك">
     <div class="track" id="track">
       ${GUIDES.map((g,i)=>`
-      <article class="slide s-${g.id}" id="guide-slide-${g.id}" role="group" aria-roledescription="slide" aria-label="${i+1} من ${GUIDES.length}" aria-labelledby="guide-tab-${g.id}">
-        <img class="s-img" src="${g.img}" alt="" decoding="async" draggable="false" ${i?'loading="lazy"':''} onerror="this.remove()">
-        <div class="s-shade"></div>
+      <article class="slide s-${g.id} ${g.img?'has-img':'no-img'}" id="guide-slide-${g.id}" role="group" aria-roledescription="slide" aria-label="${i+1} من ${GUIDES.length}" aria-labelledby="guide-tab-${g.id}">
+        ${g.img ? `<img class="s-img" src="${g.img}" alt="" decoding="async" draggable="false" ${i?'loading="lazy"':''} onerror="this.remove()">
+        <div class="s-shade"></div>` : `<div class="s-art" aria-hidden="true"><span class="s-num">${String(i+1).padStart(2,'0')}</span><span class="s-ic">${ic(g.icon||'sparkle')}</span></div>`}
         <div class="s-body">
           <h3>${g.title}</h3>
           <p>${g.desc}</p>
@@ -1025,39 +1025,14 @@ const Intro = (() => {
   function onEnd(e){ if(e.target===node && /^(introOut|introSkip)$/.test(e.animationName)) finish(); }
   function skip(){ if(done||!node) return; root.classList.add('intro-skipped'); node.classList.add('skip'); clearTimeout(timer); timer = setTimeout(finish, 500); }
   function onKey(e){ if(e.key==='Escape'||e.key==='Enter'||e.key===' '){ if(document.activeElement && document.activeElement.id==='introSkip') return; skip(); } }
-  /* خطوط نيون وجسيمات: عناصر قليلة (≈26–54) وكلها transform/opacity. المواضع نسبةً لمركز الشعار (مرساة .in-fx). */
-  function build(){
-    if(reduced()) return;
-    const lines = node.querySelector('.in-lines'), dust = node.querySelector('.in-dust'), logo = node.querySelector('.in-logo');
-    if(!lines || !dust) return;
-    const vw = innerWidth, vh = innerHeight, vmin = Math.min(vw, vh), vmax = Math.max(vw, vh), small = vw < 600, r = Math.random;
-    const lw = (logo && logo.getBoundingClientRect().width) || vmin * .6;
-    const pick = () => { const q = r(); return q < .62 ? '#AAF4E6' : q < .84 ? '#D17D32' : '#F1EADD'; };   /* V9 palette: emerald · orange · champagne */
-    const px = n => n.toFixed(0) + 'px', sec = n => n.toFixed(2) + 's';
-    const nl = small ? 10 : 16, fl = document.createDocumentFragment();
-    for(let i=0;i<nl;i++){
-      const e = document.createElement('i'), q = r();
-      e.style.cssText = `--a:${(i/nl*360 + (r()*16-8)).toFixed(1)}deg;--L:${px(vmin*(.16+r()*.2))};--f:${px(vmax*(.55+r()*.15))};--n:${px(lw*(.62+r()*.14))};--z:${px(lw*.16)};--d:${sec(.78+r()*.39)};--l:${sec(.16+r()*.62)};--c:${q<.7?'rgba(120,200,185,.55)':q<.88?'rgba(209,125,50,.5)':'rgba(241,234,221,.45)'}`;
-      fl.appendChild(e);
-    }
-    lines.appendChild(fl);
-    const nd = small ? 22 : 38, fd = document.createDocumentFragment(), TAU = Math.PI*2;
-    for(let i=0;i<nd;i++){
-      const e = document.createElement('i'), big = i % 7 === 0, sz = big ? 5 + r()*3 : 1.2 + r()*2.2;
-      const a = r()*TAU, a2 = r()*TAU, rr = lw*(.5+r()*.25), br = vmax*(.4+r()*.5);
-      const sx = r()<.5?-1:1, sy = r()<.5?-1:1;
-      if(big) e.className = 'dof';
-      e.style.cssText = `--s:${sz.toFixed(1)}px;--o:${(.3+r()*.55).toFixed(2)};--c:${pick()};--d:2.8s;--l:${sec(.06+r()*.33)};--x0:${px(sx*vw*(.08+r()*.46))};--y0:${px(sy*vh*(.08+r()*.46))};--rx:${px(Math.cos(a)*rr)};--ry:${px(Math.sin(a)*rr)};--bx:${px(Math.cos(a2)*br)};--by:${px(Math.sin(a2)*br)}`;
-      fd.appendChild(e);
-    }
-    dust.appendChild(fd);
-  }
+  /* V10: the intro is pure CSS (logo reveal); nothing is generated at runtime. */
+  function build(){}
   function go(){
     if(done||!node) return;
     clearTimeout(timer);
     root.classList.add('intro-go');
     node.classList.add('go');
-    timer = setTimeout(finish, reduced() ? 2600 : 5000);   /* CSS hand-off ends ≈4.1s (introOut 3.51s + .55s); this is the safety removal */
+    timer = setTimeout(finish, reduced() ? 1600 : 3200);   /* CSS hand-off ends ≈2.5s (introOut 2.05s + .45s); this is the safety removal */
   }
   function init(){
     try{
@@ -1068,7 +1043,7 @@ const Intro = (() => {
       node.addEventListener('animationend', onEnd);
       const b = node.querySelector('#introSkip'); if(b) b.addEventListener('click', skip);
       document.addEventListener('keydown', onKey);
-      timer = setTimeout(finish, 8200);   /* شبكة أمان لو تأخر/تعطل تحميل الشعار */
+      timer = setTimeout(finish, 6000);   /* شبكة أمان لو تأخر/تعطل تحميل الشعار */
       /* لا نبدأ الحركة قبل جاهزية صورتي الشعار: يمنع ظهور شعار ناقص أو وميض. فشل التحميل/تأخره > 1.8ث ⇒ نتخطى الافتتاحية بهدوء. */
       const imgs = Array.from(node.querySelectorAll('img.main'));
       const ready = Promise.all(imgs.map(im => (im.decode ? im.decode() : Promise.resolve()).catch(() => null)))

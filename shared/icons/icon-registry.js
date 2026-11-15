@@ -826,10 +826,35 @@ const _build = n => {
 const _cache = {};
 const P = new Proxy({}, { get: (_, n) => { if (typeof n !== 'string') return ''; const c = _cache[n] || (_cache[n] = _build(n)); return c ? c.html : ''; }, has: (_, n) => !!(ICON_ALIAS[n] || ICON_DEFS[n]) });
 const ic = (n, cls = '') => { const c = _cache[n] || (_cache[n] = _build(n)); return `<svg class="i ${cls}" viewBox="0 0 24 24" data-m="${c ? c.mo : ''}" aria-hidden="true" focusable="false">${c ? c.html : ''}</svg>`; };
-const icp = (n, kind = 'dev', cls = '') => `<span class="ip ${kind} ${cls}">${ic(n)}</span>`;
+const icp = (n, kind = 'dev', cls = '') => { const ph = kind === 'dev' && typeof icImg === 'function' ? icImg(n) : ''; return ph ? `<span class="ip ${kind} ph ${cls}">${ph}</span>` : `<span class="ip ${kind} ${cls}">${ic(n)}</span>`; };
 const icExists = n => !!(ICON_ALIAS[n] || ICON_DEFS[n]);
 
 const icCat = id => icExists('c-' + id) ? 'c-' + id : 'p-service';
+
+/* V10 photo icons (owner artwork, 2026-11-15): category and item icons rendered as images from
+   assets/icons/svc/<group>/<name>.webp. Only category ('c-<cat>') and item ('d-<slug>') names have photos; every other
+   icon (UI, status, problems) stays a line SVG. Pages live at apps/<app>/index.html, hence the ../../ base. */
+const ICON_PHOTO_BASE = '../../assets/icons/svc/';
+const ICON_PHOTO_ITEMS = {
+  electric: ['wiring', 'dist-board', 'switches', 'lighting', 'fans', 'elec-heaters', 'electrical-devices', 'other-electric'],
+  plumbing: ['faucets', 'sinks', 'toilet', 'siphon', 'heaters-plumb', 'pipes', 'water-tanks', 'pumps', 'sewage', 'other-plumbing'],
+  carpentry: ['doors', 'windows', 'wardrobes', 'kitchens', 'chairs-tables', 'hinges-locks', 'assemble', 'other-carpentry'],
+  painting: ['room', 'full-apartment', 'facades', 'ceilings', 'damp', 'cracks', 'wallpaper', 'decor-paint', 'other-painting'],
+  cars: ['engine', 'brakes', 'battery', 'car-electric', 'car-ac', 'tires', 'gearbox', 'suspension', 'oil-change', 'towing', 'other-car'],
+  cleaning: ['post-finishing', 'apartments', 'offices', 'carpets', 'mattresses', 'kitchens-clean', 'bathrooms', 'tanks-clean', 'villas', 'other-cleaning'],
+  appliances: ['fridge', 'washer-auto', 'washer-semi', 'ac', 'heater-electric', 'heater-gas', 'dishwasher', 'deep-freezer', 'microwave', 'cooker', 'hood', 'other-appliance']
+};
+/* items without their own artwork reuse the closest one */
+const ICON_PHOTO_ALIAS = { cables: 'electric/wiring', furniture: 'carpentry/chairs-tables', sofas: 'cleaning/other-cleaning' };
+const ICON_PHOTOS = (() => {
+  const m = {};
+  for (const [g, list] of Object.entries(ICON_PHOTO_ITEMS)) { m['c-' + g] = 'home/' + g; for (const s of list) m['d-' + s] = g + '/' + s; }
+  for (const [s, p] of Object.entries(ICON_PHOTO_ALIAS)) m['d-' + s] = p;
+  return m;
+})();
+const icPhoto = n => (ICON_PHOTOS[n] ? ICON_PHOTO_BASE + ICON_PHOTOS[n] + '.webp' : '');
+/* <img> for a photo icon, or '' when the name has none (callers then fall back to the SVG icon). Decorative: alt="". */
+const icImg = (n, cls = '') => { const src = icPhoto(n); return src ? `<img class="iph ${cls}" src="${src}" alt="" aria-hidden="true" loading="lazy" decoding="async" draggable="false" width="112" height="112">` : ''; };
 const icItem = (item, catId) => { const s = item && (item.slug || String(item.id || '').split('/').pop()); return s && icExists('d-' + s) ? 'd-' + s : icCat(catId || (item && item.cat)); };
 const PROB_RULES = [
   [/^other$/, 'dots'],

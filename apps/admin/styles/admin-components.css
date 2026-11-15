@@ -277,11 +277,11 @@ th[aria-sort="ascending"] .hs-grid-sort,th[aria-sort="descending"] .hs-grid-sort
 
 /* ════════ Approved identity (Admin Dashboard board): deep primary-green sidebar, light work area,
    pastel panel tints (sand / sage / sky / lilac) on the KPI plates. ════════ */
-.adm-brand-t{display:inline-block;width:104px;height:32px;font-size:0;color:transparent;background:url(../../../assets/brand/logo-wordmark.png) no-repeat center/contain;vertical-align:middle}
+.adm-brand-t{display:inline-block;width:128px;height:34px;font-size:0;color:transparent;background:url(../../../assets/brand/logo-v10-lockup.webp) no-repeat center/contain;vertical-align:middle}
 .adm-side{background:var(--nav-dark-bg);border-inline-end:0;color:var(--on-brand)}
 .adm-side-top{border-bottom-color:var(--nav-dark-line)!important;color:var(--on-brand)}
 .adm-side-top .adm-brand,.adm-side-top .adm-brand small{color:var(--on-brand)}
-.adm-side-top .adm-brand-t{background-image:url(../../../assets/brand/logo-wordmark-light.png)}
+.adm-side-top .adm-brand-t{background-image:url(../../../assets/brand/logo-v10-lockup-light.webp)}
 .adm-group-t{color:var(--nav-dark-muted)}
 .adm-link{color:var(--nav-dark-text)}
 .adm-link svg.i,.adm-link .adm-ico{color:var(--nav-dark-text)}

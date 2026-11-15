@@ -1,0 +1,38 @@
+# Repomix exclusions (Repomix honours .gitignore but NOT .git/info/exclude, so owner-only paths are repeated here)
+# Secrets and credentials
+.env
+.env.*
+**/.env
+**/.env.*
+functions/.env*
+*.pem
+*.key
+*-adminsdk-*.json
+service-account*.json
+.firebaserc
+.firebase/
+
+# Backups and owner-only material
+firebase-*-backup-*/
+*.bak
+*.zip
+design-reference/
+ai-workforce/
+.github/
+docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md.bak
+
+# Generated output, vendored libraries and tool state
+node_modules/
+coverage/
+graphify-out/
+.serena/
+.claude/
+.mcp.json
+assets/vendor/
+**/package-lock.json
+docs/AI_PROJECT_MAP.json
+docs/AI_PROJECT_MAP.csv
+docs/AI_PROJECT_MAP.md
+docs/PROJECT_TREE.md
+docs/AI_CONTEXT/FILE_INDEX.json
+repomix-output.*

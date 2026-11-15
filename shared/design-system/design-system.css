@@ -1,69 +1,70 @@
-/* HANSALEHLAK — approved identity design system (2026-11-14)
-   Source of truth: design-reference/approved/*.png (11 boards). Colour values were sampled from the boards'
-   pixels (13×13 averages, see docs/DESIGN_SYSTEM_V9.md) — they are measured, not invented:
-     Primary green #135049 (backgrounds/brand) · Light beige #F1EADD (backgrounds) · Warm orange #D17D32 (interactive)
-     Secondary green #748F78 (supporting) · Dark gray #1E2A29 (text) · periwinkle→white canvas #8AADFF→#F3F6FF
-     Pastel panel tints (admin board): sand #EFE6D9 · sage #E6EAE6 · sky #E5ECF1 · lilac #E9E5EA
-     Selected row (request board) #D6FBF4 · step numerals #AAF4E6 · deep sidebar #0B3E38 · button #1E6C60
-   Every app stylesheet consumes these through tokens (legacy aliases --bg/--card/--pink… map onto them).
-   Contrast: all text pairs below meet WCAG AA (verified by tests/e2e/a11y.cdp.js). */
+/* HANSALEHLAK — design system V10 "ورشة / Workshop" (2026-11-15, owner-requested full UI refresh)
+   A crafted, human identity for a trades marketplace — deliberately NOT the generic blue/purple SaaS look:
+     Warm ink #1F1B17 (brand, primary buttons, dark navigation) — serious, dependable
+     Copper #B4511C (calls to action, highlights; white text, AA) — the trade's material: wiring, fittings, tools
+     Cream paper #F4EFE6 canvas · white-warm cards #FFFDF9 — warm and human, not clinical
+     Olive #4F6B2A (success, verified) · gold #D19A2E (ratings only) · brick #A8261B (danger)
+   Token NAMES are kept stable (legacy --emerald/--ivory/--mint/--orange… carry the V10 values) so every app
+   stylesheet picks the palette up without selector changes. Previous V9 values: git history (3e21b1a) and
+   docs/DESIGN_SYSTEM_V9.md. Contrast: all text pairs below meet WCAG AA (verified by tests/e2e/a11y.cdp.js). */
 :root{
   color-scheme:light;
-  /* approved palette */
-  --emerald:#135049;--emerald-deep:#0B3E38;--emerald-mid:#1E6C60;--ivory:#F1EADD;--mint:#E2F4EF;--mint-strong:#AAF4E6;--charcoal:#1E2A29;
-  --orange:#D17D32;--sage:#748F78;--sage-ink:#4A6450;--sage-soft:#E6EAE6;
-  --periwinkle:#8AADFF;--lavender:#E3EBFF;--lavender-soft:#F3F6FF;
-  --tint-sand:#EFE6D9;--tint-sage:#E6EAE6;--tint-sky:#E5ECF1;--tint-lilac:#E9E5EA;
-  /* dark navigation surfaces (Provider/Admin sidebars): active pill sampled from the account/provider boards */
-  --nav-dark-bg:var(--emerald-deep);--nav-dark-active:#2F6A61;--nav-dark-text:rgba(255,255,255,.88);--nav-dark-muted:rgba(255,255,255,.72);--nav-dark-hover:rgba(255,255,255,.08);--nav-dark-line:rgba(255,255,255,.14);--nav-dark-chip:rgba(255,255,255,.12);
-  --rose:#D17D32;--champagne:#D17D32;        /* retired V9 accents fold into the approved orange */
+  /* V10 palette (legacy names → new values) */
+  --emerald:#1F1B17;--emerald-deep:#14110E;--emerald-mid:#3A322B;--ivory:#F4EFE6;--mint:#F1E4D6;--mint-strong:#E5CDB4;--charcoal:#1F1B17;
+  --orange:#B4511C;--sage:#7D7266;--sage-ink:#574E45;--sage-soft:#EEE8DF;
+  --periwinkle:#D19A2E;--lavender:#F3EADF;--lavender-soft:#FAF6F0;
+  --tint-sand:#F3EADB;--tint-sage:#EBEDE3;--tint-sky:#E9ECEC;--tint-lilac:#F1E6E1;
+  /* dark navigation surfaces (Provider/Admin sidebars) */
+  --nav-dark-bg:#1F1B17;--nav-dark-active:#4A3B30;--nav-dark-text:rgba(255,250,242,.92);--nav-dark-muted:rgba(255,250,242,.74);--nav-dark-hover:rgba(255,250,242,.08);--nav-dark-line:rgba(255,250,242,.14);--nav-dark-chip:rgba(255,250,242,.12);
+  --rose:#D19A2E;--champagne:#D19A2E;        /* rating stars use gold */
   /* semantic */
-  --brand-primary:#135049;--brand-primary-strong:#0B3E38;--brand-primary-hover:#1E6C60;--brand-primary-soft:#E2F4EF;--on-brand:#FFFFFF;
-  --brand-ink:#0F4740;                       /* green text on mint/ivory */
-  --accent:#D17D32;--accent-soft:#F7E6D3;--on-accent:#1E2A29;--accent-ink:#8A4A14;
-  --bg-primary:#F5F7FD;--bg-secondary:#EDF1FB;--bg-tertiary:#E8ECF4;
-  --surface-primary:#FFFFFF;--surface-secondary:#FAFBFE;--surface-sunken:#F1F3F8;
-  --text-primary:#1E2A29;--text-secondary:#46524F;--text-muted:#5B6764;
-  --border-subtle:#E3E7EF;--border-default:#D2D8E3;--border-strong:#B3BCCB;
-  --success:#1A6B4A;--success-soft:#DDEFE6;--warning:#8A5A12;--warning-soft:#F7E6D3;--danger:#B4413C;--danger-soft:#F8E6E4;--info:#2B6A8E;--info-soft:#E1EDF5;
-  --rose-ink:#8A4A14;--champagne-ink:#8A4A14;
+  --brand-primary:#1F1B17;--brand-primary-strong:#14110E;--brand-primary-hover:#3A322B;--brand-primary-soft:#F1E4D6;--on-brand:#FFFDF9;
+  --brand-ink:#1F1B17;                       /* ink text on copper-cream tints */
+  --accent:#B4511C;--accent-hover:#9A4415;--accent-soft:#F6E3D5;--on-accent:#FFFFFF;--accent-ink:#9A4415;
+  --bg-primary:#F4EFE6;--bg-secondary:#ECE5D8;--bg-tertiary:#E3DACA;
+  --surface-primary:#FFFDF9;--surface-secondary:#FBF7F1;--surface-sunken:#F1EAE0;
+  --text-primary:#1F1B17;--text-secondary:#4A433C;--text-muted:#6B625A;
+  --border-subtle:#E6DDCF;--border-default:#D6CBB9;--border-strong:#B5A893;
+  --success:#4F6B2A;--success-soft:#E7EEDB;--warning:#8F5A00;--warning-soft:#F8EBD0;--danger:#A8261B;--danger-soft:#F8E2DE;--info:#2F5B73;--info-soft:#E2ECF1;
+  --rose-ink:#8F5A00;--champagne-ink:#8F5A00;
+  --focus-ring:0 0 0 3px rgba(180,81,28,.38);
   /* legacy aliases used by app stylesheets */
   --bg:var(--bg-primary);--bg2:var(--bg-secondary);--card:var(--surface-primary);--card2:var(--surface-sunken);
   --pink:var(--brand-primary);--pink2:var(--brand-primary);--pink-deep:var(--brand-primary-strong);
-  --glow:rgba(19,80,73,.14);--glow-soft:rgba(19,80,73,.07);
+  --glow:rgba(180,81,28,.14);--glow-soft:rgba(180,81,28,.07);
   --line:var(--border-default);--line-soft:var(--border-subtle);
   --text:var(--text-primary);--muted:var(--text-secondary);
-  --canvas:linear-gradient(180deg,var(--lavender) 0,var(--bg-primary) 520px) no-repeat,var(--bg-primary);
-  /* organic blob (the boards' signature shape) */
-  --blob:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 520' preserveAspectRatio='none'%3E%3Cpath fill='%23135049' d='M0 0h520c50 70 90 150 70 250-14 80-40 170 10 270H0z'/%3E%3C/svg%3E");
-  /* shape, space, type, depth, motion */
-  --r-sm:10px;--r-md:14px;--r-lg:20px;--r-xl:28px;
+  --canvas:linear-gradient(180deg,#F9F3EA 0,var(--bg-primary) 560px) no-repeat,var(--bg-primary);
+  /* organic blob (signature shape): ink for customer bands, copper for provider/admin accents */
+  --blob-accent:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 520' preserveAspectRatio='none'%3E%3Cpath fill='%23B4511C' d='M0 0h520c50 70 90 150 70 250-14 80-40 170 10 270H0z'/%3E%3C/svg%3E");
+  --blob:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 520' preserveAspectRatio='none'%3E%3Cpath fill='%231F1B17' d='M0 0h520c50 70 90 150 70 250-14 80-40 170 10 270H0z'/%3E%3C/svg%3E");
+  --r-sm:10px;--r-md:14px;--r-lg:20px;--r-xl:28px;--r-pill:999px;
   --gap:12px;--pad:20px;--tab-h:70px;
   --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:24px;--sp-6:32px;--sp-7:40px;--sp-8:48px;
   --fs-xs:12px;--fs-sm:13px;--fs-md:15px;--fs-lg:18px;--fs-xl:22px;--fs-2xl:28px;
-  /* Boards: heavy rounded Arabic display for brand headlines (visual estimate: Baloo Bhaijaan 2 — the boards'
-     typeface is not named; closest open font), clean humanist Arabic for UI (visual estimate: IBM Plex Sans Arabic). */
+  /* V10: IBM Plex Sans Arabic for headings (700) and body. --font-brand marks large marketing headlines. */
   --font-body:'IBM Plex Sans Arabic',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;
-  --font-display:'Baloo Bhaijaan 2','IBM Plex Sans Arabic',system-ui,sans-serif;
+  --font-display:'IBM Plex Sans Arabic',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;
+  --font-brand:'IBM Plex Sans Arabic',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;   /* owner: the Kufi display face read poorly; one clean family for all headlines */
   --font-ui-head:'IBM Plex Sans Arabic',system-ui,sans-serif;
-  --shadow-1:0 1px 2px rgba(19,48,45,.06),0 1px 1px rgba(19,48,45,.04);
-  --shadow-2:0 8px 22px rgba(19,48,45,.08),0 1px 3px rgba(19,48,45,.06);
-  --shadow-3:0 22px 50px rgba(19,48,45,.18),0 4px 10px rgba(19,48,45,.06);
+  --shadow-1:0 1px 2px rgba(31,27,23,.06),0 1px 1px rgba(31,27,23,.04);
+  --shadow-2:0 10px 24px rgba(31,27,23,.08),0 2px 4px rgba(31,27,23,.05);
+  --shadow-3:0 24px 56px rgba(31,27,23,.16),0 6px 12px rgba(31,27,23,.06);
   --glass-bg:var(--surface-primary);
   --glass-shadow:var(--shadow-1);
-  --grad-pink:var(--brand-primary);             /* no gradients on actions: solid emerald */
+  --grad-pink:var(--brand-primary);             /* no gradients on actions: solid ink */
   --ease-out:cubic-bezier(.2,.8,.2,1);
   --motion-fast:140ms;--motion-base:220ms;--motion-slow:320ms;
   --z-base:1;--z-sticky:10;--z-nav:30;--z-overlay:100;--z-modal:110;--z-toast:130;
   --content-width:1240px;
   /* Egyptian geometric motif (eight-point star lattice), used sparingly on bands */
-  --motif:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23176B50' stroke-width='1' opacity='.55'%3E%3Cpath d='M24 4l5.7 14.3L44 24l-14.3 5.7L24 44l-5.7-14.3L4 24l14.3-5.7z'/%3E%3Cpath d='M10 10h28v28H10z' transform='rotate(45 24 24)'/%3E%3C/g%3E%3C/svg%3E");
+  --motif:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='none' stroke='%23B4511C' stroke-width='1' opacity='.32'%3E%3Cpath d='M24 4l5.7 14.3L44 24l-14.3 5.7L24 44l-5.7-14.3L4 24l14.3-5.7z'/%3E%3Cpath d='M10 10h28v28H10z' transform='rotate(45 24 24)'/%3E%3C/g%3E%3C/svg%3E");
 }
 *{scrollbar-color:var(--border-strong) transparent}
 html,body{background:var(--bg-primary);color:var(--text-primary);font-family:var(--font-body);line-height:1.7;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 body{display:block;min-width:320px}
 h2,h3,h4{font-family:var(--font-ui-head)}
-h1,.sec-title,.dhead h2,.hero h1{font-family:var(--font-display)}
+h1,.sec-title,.dhead h2{font-family:var(--font-display)}.hero h1{font-family:var(--font-brand)}
 button,input,textarea,select{font-family:inherit}
 button:disabled,[aria-disabled="true"]{opacity:.5;cursor:not-allowed;pointer-events:none}
 ::selection{background:var(--mint);color:var(--brand-ink)}
@@ -83,7 +84,7 @@ svg.i.star{fill:var(--border-default);stroke:none}svg.i.star.on{fill:var(--champ
 /* ── App bar ───────────────────────────────────────────────────────────── */
 .topbar{position:sticky;top:0;z-index:var(--z-sticky);height:64px;max-width:var(--content-width);margin:0 auto 4px;padding-inline:clamp(16px,3vw,36px);background:color-mix(in srgb,var(--surface-primary) 88%,transparent);border-bottom:1px solid var(--border-subtle);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
 .logo{gap:10px}
-/* Approved bilingual wordmark (assets/brand/logo-wordmark.png, extracted from the logo board) */
+/* V10 logo lockup (assets/brand/logo-v10-lockup.webp: owner logo, mark + bilingual wordmark) */
 .logo .wordmark{display:block;height:38px;width:auto;max-width:none}
 .logo .mark{width:40px;height:40px;border-radius:12px;background:var(--brand-primary);border:0;box-shadow:inset 0 -3px 0 rgba(0,0,0,.14);color:var(--on-brand)}
 .logo .t b{font-family:var(--font-display);font-weight:800;color:var(--text-primary);text-shadow:none;letter-spacing:-.2px}.logo .t small{color:var(--text-muted)}
@@ -108,7 +109,7 @@ svg.i.star{fill:var(--border-default);stroke:none}svg.i.star.on{fill:var(--champ
 .hero-photo{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:30% 12%}
 .hero-cta{margin-top:16px;min-height:48px;padding:0 22px;border-radius:var(--r-md);background:var(--accent);color:var(--on-accent);font-size:15px;box-shadow:var(--shadow-1);transition:filter var(--motion-fast),transform var(--motion-fast)}
 .hero-cta:hover{filter:brightness(1.06)}.hero-cta:active{transform:translateY(1px)}
-.hero .field{border-color:transparent}.hero .field:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px rgba(209,125,50,.28)}
+.hero .field{border-color:transparent}.hero .field:focus-within{border-color:var(--accent);box-shadow:0 0 0 4px rgba(245,165,36,.28)}
 .hero .cam{background:var(--emerald-mid);box-shadow:none}.hero .cam:hover{background:var(--brand-primary-strong)}
 
 /* ── Search (Design System board: rounded white field; Homepage board: square primary-green action) ── */
@@ -371,7 +372,7 @@ img,svg,video,canvas{max-width:100%}
    underline on the active item, account actions at the end. The bottom bar stays the phone/tablet navigation. */
 @media(min-width:1024px){
   :root{--tab-h:68px}
-  #app:has(>#tabbar)::before{content:"";position:fixed;inset-inline:0;top:0;height:68px;z-index:9;background:var(--surface-primary) url(../../assets/brand/logo-wordmark.png) no-repeat;background-size:auto 36px;background-position:right max(36px,calc((100vw - var(--content-width))/2 + 36px)) center;border-bottom:1px solid var(--border-subtle);box-shadow:0 2px 14px rgba(19,48,45,.05);pointer-events:none}
+  #app:has(>#tabbar)::before{content:"";position:fixed;inset-inline:0;top:0;height:68px;z-index:9;background:var(--surface-primary) url(../../assets/brand/logo-v10-lockup.webp) no-repeat;background-size:auto 40px;background-position:right max(36px,calc((100vw - var(--content-width))/2 + 36px)) center;border-bottom:1px solid var(--border-subtle);box-shadow:0 2px 14px rgba(31,27,23,.05);pointer-events:none}
   [dir="ltr"] #app:has(>#tabbar)::before{background-position:left max(36px,calc((100vw - var(--content-width))/2 + 36px)) center}
   #view{padding-top:88px;padding-bottom:48px}
   .topbar{position:fixed;top:12px;left:max(36px,calc((100vw - var(--content-width))/2 + 36px));right:auto;width:auto;height:44px;margin:0;padding:0;display:flex;gap:8px;z-index:31;background:transparent;border:0;-webkit-backdrop-filter:none;backdrop-filter:none;grid-template-columns:1fr auto auto}
@@ -427,7 +428,7 @@ img,svg,video,canvas{max-width:100%}
 .trust-photo{position:relative;min-height:300px;background:linear-gradient(180deg,#8CAEFF,#C0D3FF 55%,#F1F5FF)}
 .trust-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
 .trust-body{padding:clamp(22px,3.5vw,44px)}
-.trust-body h2{margin:0 0 16px;font-family:var(--font-display);font-size:clamp(24px,2.6vw,34px);font-weight:800;line-height:1.25;color:var(--brand-primary)}
+.trust-body h2{margin:0 0 16px;font-family:var(--font-brand);font-size:clamp(24px,2.6vw,34px);font-weight:800;line-height:1.25;color:var(--brand-primary)}
 .trust-body ul{display:grid;gap:14px;margin:0 0 20px;padding:0;list-style:none}
 .trust-body li{display:flex;align-items:flex-start;gap:12px}
 .trust-body li>.i{flex:none;width:40px;height:40px;padding:10px;border-radius:12px;background:var(--surface-primary);color:var(--brand-primary)}

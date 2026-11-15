@@ -76,7 +76,7 @@
 /* ════════ Approved identity (Provider Space board): wordmark, deep primary-green sidebar with a lighter
    active pill, light work area; the welcome panel carries the organic green shape. ════════ */
 .pv-brand{font-size:0;color:transparent}
-.pv-brand::before{width:104px;height:34px;border-radius:0;background:url(../../../assets/brand/logo-wordmark.png) no-repeat center/contain;box-shadow:none}
+.pv-brand::before{width:136px;height:36px;border-radius:0;background:url(../../../assets/brand/logo-v10-lockup.webp) no-repeat center/contain;box-shadow:none}
 .pv-brand span{font-size:13px;color:var(--text-muted)}
 @media(min-width:1024px){
   .pv-nav{background:var(--nav-dark-bg);border-inline-end:0}
@@ -87,5 +87,12 @@
   .pv-nav button.is-active svg.i{color:var(--on-brand)}
 }
 .pv-hero{background:var(--ivory);border:0}
-.pv-hero::after{width:24%;border-radius:0;background:var(--blob) center/100% 100% no-repeat;opacity:1;-webkit-mask:none;mask:none;transform:scaleX(-1)}
+.pv-hero::after{width:20%;border-radius:0;background:var(--blob-accent) center/100% 100% no-repeat;opacity:1;-webkit-mask:none;mask:none;transform:scaleX(-1)}
 [dir="rtl"] .pv-hero::after{transform:none}
+/* Customer location panel (accepted jobs): address, contact links, map link, straight-line distance */
+.pv-location{margin-top:12px;padding:12px;border:1px solid var(--pv-line);border-radius:12px;background:var(--pv-panel-2)}
+.pv-location .pv-details{margin:0 0 8px}
+.pv-location-distance{margin:0 0 10px;color:var(--pv-text)}
+.pv-location .pv-actions a.pv-btn{text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.pv-location .pv-hint{margin:8px 0 0}
+@media (max-width:640px){.pv-hero::after{display:none}}

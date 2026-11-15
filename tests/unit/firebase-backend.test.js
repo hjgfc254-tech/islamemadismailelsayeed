@@ -252,6 +252,25 @@ test('a provider gets the customer contact details only after accepting', async 
   assert.equal(synced.db.serviceRequests[0].phone, '01011112222');
   assert.equal(synced.db.customers[0].phone, '01011112222');
 });
+test('customer map pin: validated server-side, stored clean, released to the provider only after acceptance', async () => {
+  const b = await setup();
+  await service.session(b, { auth: SARA, data: { op: 'registerCustomer', name: 'سارة' } });
+  for (const geo of [{ lat: 'x', lng: 31 }, { lat: 95, lng: 31 }, { lat: 30, lng: 190 }, '30,31']) {
+    const bad = await call(b, SARA, 'customer', 'POST', '/requests', { ...REQ, geo });
+    assert.equal(bad.status, 422, 'invalid pin refused: ' + JSON.stringify(geo));
+    assert.ok(bad.error.details && bad.error.details.geo);
+  }
+  assert.equal(b.col('requests').length, 0, 'nothing stored for an invalid pin');
+  const reg = await call(b, KARIM, 'provider', 'POST', '/providers/register', PROVIDER_FORM);
+  await call(b, OWNER, 'admin', 'POST', `/admin/providers/${reg.data.id}/status`, { status: 'approved' });
+  const id = (await call(b, SARA, 'customer', 'POST', '/requests', { ...REQ, geo: { lat: 30.04441234, lng: 31.23571234, note: '<x>' } })).data.id;
+  assert.equal(JSON.stringify(b.col('requests')[0].geo), '{"lat":30.04441,"lng":31.23571}', 'only rounded lat/lng persist');
+  const before = await service.session(b, { auth: KARIM, data: { op: 'sync', app: 'provider' } });
+  assert.equal(before.db.serviceRequests[0].geo, null, 'pin hidden while the job is only offered');
+  await call(b, KARIM, 'provider', 'POST', `/requests/${id}/respond`, { accept: true });
+  const after = await service.session(b, { auth: KARIM, data: { op: 'sync', app: 'provider' } });
+  assert.equal(after.db.serviceRequests[0].geo.lat, 30.04441, 'released to the assigned provider after acceptance');
+});
 test('a decline re-matches the request to the next candidate (candidate history loaded in the same transaction)', async () => {
   const b = await setup();
   await service.session(b, { auth: SARA, data: { op: 'registerCustomer', name: 'سارة' } });

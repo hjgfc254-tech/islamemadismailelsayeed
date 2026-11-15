@@ -115,6 +115,7 @@ hansalhlak/
 │       ├── login.html
 │       ├── provider-auth.js
 │       ├── provider-domain.js
+│       ├── provider-location.js
 │       ├── provider-request-domain.js
 │       ├── provider-router.js
 │       ├── provider-session.js
@@ -501,6 +502,7 @@ hansalhlak/
 │       ├── provider-app-actions.test.js
 │       ├── provider-app-register.test.js
 │       ├── provider-app-routing.test.js
+│       ├── provider-customer-location.test.js
 │       ├── provider-domain.test.js
 │       ├── provider-pages.test.js
 │       ├── provider-request-domain.test.js
@@ -534,6 +536,8 @@ hansalhlak/
 ├── .firebaserc
 ├── .gitattributes
 ├── .gitignore
+├── .graphifyignore
+├── .repomixignore
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── database.rules.json

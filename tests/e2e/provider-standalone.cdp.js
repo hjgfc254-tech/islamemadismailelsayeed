@@ -71,7 +71,7 @@ async function run({ exe, wsUrl }) {
 
     // Seed one request offered to the selected provider (local demo store only).
     const rid = await evaluate(`(()=>{const id=sessionStorage.getItem('hs_provider_demo_session');MP.db().settings.autoAssign=false;
-      const r=MP.createRequest({name:'عميل QA',phone:'01000000009',cat:'electric',serviceId:'s1',serviceName:'فحص لوحة كهرباء — اسم طويل لاختبار الالتفاف داخل البطاقة على الشاشات الصغيرة',desc:'وصف',gov:'القاهرة',area:'مدينة نصر',addr:'شارع 1'});
+      const r=MP.createRequest({name:'عميل QA',phone:'01000000009',cat:'electric',serviceId:'s1',serviceName:'فحص لوحة كهرباء — اسم طويل لاختبار الالتفاف داخل البطاقة على الشاشات الصغيرة',desc:'وصف',gov:'القاهرة',area:'مدينة نصر',addr:'شارع 1',geo:{lat:30.0444,lng:31.2357}});
       MP.assign(r.id,id);return r.id;})()`);
 
     for (const route of ROUTES) {
@@ -99,6 +99,18 @@ async function run({ exe, wsUrl }) {
     ok(await evaluate(`/تم قبول الطلب/.test(document.querySelector('#provider-toast').textContent)`), `${tag} success is announced in the live region`);
     ok(await evaluate(`(()=>{const t=document.querySelector('#provider-toast'),s=getComputedStyle(t),r=t.getBoundingClientRect();return s.position==='fixed'&&+s.opacity>0&&r.bottom<=innerHeight&&r.left>=0&&r.right<=innerWidth;})()`), `${tag} toast is visible, fixed and inside the viewport`);
     ok(await waitFor(`getComputedStyle(document.querySelector('#provider-toast')).opacity==='0'`, 4000), `${tag} toast hides again after its timeout`);
+    // Customer location (accepted job): keyboard press reads the position once (stubbed) and shows distance + contact links.
+    await evaluate(`Object.defineProperty(navigator,'geolocation',{configurable:true,value:{getCurrentPosition:(ok)=>setTimeout(()=>ok({coords:{latitude:29.9792,longitude:31.1342}}),20)}});true`);
+    if (await focusEl(`[data-pv-action="customer-location"][data-id="${rid}"]`, `${tag} customer location`)) {
+      await ENTER();
+      ok(await waitFor(`document.querySelector('[data-pv-distance="ok"]')?.offsetParent!==null && /كم/.test(document.querySelector('.pv-location-distance')?.textContent||'')`), `${tag} customer location: distance in km is shown`);
+      ok(await evaluate(`['call','whatsapp','map'].every(k=>{const a=document.querySelector('[data-pv-contact="'+k+'"]');return a&&a.textContent.trim().length>0&&a.getBoundingClientRect().width>0;})`), `${tag} customer location: call, WhatsApp and map links visible with names`);
+      ok(await evaluate(`document.activeElement?.matches('[data-pv-action="customer-location"][data-id="${rid}"]')`), `${tag} customer location: focus stays on the button`);
+      const clipLoc = await clipped();
+      ok(await noOverflow() && !clipLoc, `${tag} customer location panel: no overflow/clipping${clipLoc ? ' — ' + clipLoc : ''}`);
+      await evaluate(`document.querySelector('[data-pv-action="customer-location-close"]').click();true`); await sleep(60);
+      ok(await evaluate('!document.querySelector(".pv-location")'), `${tag} customer location: hide removes the panel`);
+    }
     await evaluate(`location.hash='#/home'`); await sleep(80);
     const avail = `document.querySelector('[data-pv-action="availability"]')`;
     const before = await evaluate(`[${avail}.getAttribute('aria-pressed'),getComputedStyle(${avail}).color]`);

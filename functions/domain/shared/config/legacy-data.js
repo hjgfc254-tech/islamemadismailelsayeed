@@ -237,7 +237,9 @@ const HOME_ORDER = ['electric','plumbing','carpentry','painting','cars','cleanin
 
 /* دليل الصيانة وشرائح العرض */
 const GUIDES = [
-  {id:'steps',      title:'خدمتك على بُعد خطوات',    desc:'اختر الخدمة وحدد موقعك وسنساعدك في الوصول لمقدم الخدمة المناسب.', cta:'ابدأ طلبك',      img:'../../assets/slide-guide.svg'},
-  {id:'specialists',title:'متخصصون في مختلف الخدمات', desc:'اكتشف خدمات الكهرباء والسباكة والنجارة والسيارات وغيرها.',       cta:'استعرض الخدمات', img:'../../assets/slide-popular.svg'},
-  {id:'track',      title:'تابع طلبك خطوة بخطوة',     desc:'من لحظة إرسال الطلب حتى اكتمال الخدمة.',                          cta:'تابع طلباتك',    img:'../../assets/slide-latest.svg'}
+  /* V10: the illustrated SVG slides were retired (owner, 2026-11-15). img:'' renders the typographic "Workshop" card;
+     set img to a photo path (e.g. '../../assets/brand/<file>.jpg') to show a photo with a dark legibility shade. */
+  {id:'steps',      title:'خدمتك على بُعد خطوات',    desc:'اختر الخدمة وحدد موقعك وسنساعدك في الوصول لمقدم الخدمة المناسب.', cta:'ابدأ طلبك',      img:'', icon:'wrench'},
+  {id:'specialists',title:'متخصصون في مختلف الخدمات', desc:'اكتشف خدمات الكهرباء والسباكة والنجارة والسيارات وغيرها.',       cta:'استعرض الخدمات', img:'', icon:'shield'},
+  {id:'track',      title:'تابع طلبك خطوة بخطوة',     desc:'من لحظة إرسال الطلب حتى اكتمال الخدمة.',                          cta:'تابع طلباتك',    img:'', icon:'st-working'}
 ];

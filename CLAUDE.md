@@ -30,3 +30,17 @@ Frontend Only. Use local fixtures/mock data. No production backend, database, AP
 
 ## Handoff
 At the end, report changed/created/deleted files, tests actually run, unresolved risks, and the exact next task. Keep `docs/AI_CONTEXT/START_HERE.md` concise and current.
+
+## graphify
+
+This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
+
+Rules:
+- When graphify-out/graph.json exists, run `graphify query "<question>"` before your first grep, search or source-file read for a codebase question, and put this rule in every subagent prompt that explores code. Read raw files only for lines the graph or an earlier read already located. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
+- If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
+- Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
+- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+- The graph is code-only: docs are not indexed. Exclusions live in `.graphifyignore`, which also honours `.gitignore`. Secrets, backups, vendored libraries and tool state are excluded.
+- **No LLM calls.** Rebuild only with `graphify extract . --code-only` or `graphify update .`. Run `graphify cluster-only . --no-label`, and never `graphify label`, unless the owner approves. An LLM API key in the environment is auto-detected and would send code to that provider.
+- The apps are classic scripts linked through `globalThis` globals, so `graphify path` often finds no edge between modules. Confirm cross-file usage with a pattern search.
+- `graphify-out/` is local generated output. It is git-ignored and never committed.

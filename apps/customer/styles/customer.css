@@ -324,192 +324,36 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke
 .done p{margin:4px 0;font-size:14px}
 @media(max-width:340px){.icard{min-height:84px;font-size:13px}}
 
-/* ═══════════════════════════════════════════════════════════════
-   الافتتاحية السينمائية V2 — هنصلحلك (≈5.2 ثانية)
-   المشاهد: ① استيقاظ (0–1.0) ② تشكّل الطاقة (0.6–2.2) ③ كشف الشعار (1.95–2.9، الذروة 2.72)
-            ④ الهوية (2.95–4.2) ⑤ الانتقال (4.5–5.2)
-   • كل الحركة transform/opacity (+ blur قصير على الشعار فقط). لا WebGL ولا مكتبات.
-   • كل الأنيميشن متوقف (paused) حتى يُضاف .go من app.js بعد فك ترميز صورتي الشعار → لا وميض ولا قفزة.
-   ═══════════════════════════════════════════════════════════════ */
-:root{--in-ease:cubic-bezier(.22,.8,.2,1)}
+/* ═══ V10 intro (2026-11-15): calm logo reveal, ≈2.5s ═══════════════════════════════════════════════════════
+   The house mark rises in with a soft gold halo, then the wordmark and tagline fade up; the layer fades out.
+   transform/opacity only, no libraries. Once per session (hs_intro_v1, checked early in index.html); Skip button,
+   Escape/Enter/Space skip; reduced motion shows the logo statically (app.js removes the layer). */
 html.no-intro #intro{display:none}
-#intro{
-  --h:1vh;
-  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);--sal:env(safe-area-inset-left,0px);--sar:env(safe-area-inset-right,0px);
-  --padx:max(16px,var(--sal),var(--sar));
-  --lh:min(calc(var(--h)*42),calc(76vw/1.0949),400px);      /* ارتفاع الشعار (النسبة الأصلية 1312×1199 = 1.0949) */
-  --lw:calc(var(--lh)*1.0949);
-  --tg:clamp(15px,min(4.4vw,calc(var(--h)*2.6)),25px);
-  --gapv:calc(var(--lh)*.075);
-  --tagh:calc(var(--tg)*1.5 + 20px);
-  --ring:min(104vw,calc(var(--h)*88),940px);
-  --cy:calc(50% - (var(--gapv) + var(--tagh))/2);            /* مركز الشعار الفعلي (الـ stage متمركز) */
-  position:fixed;inset:0;z-index:9999;width:100%;height:100vh;height:100dvh;overflow:hidden;display:grid;
-  grid-template:minmax(0,1fr)/minmax(0,1fr);place-items:center;color:#fff;
-  background:radial-gradient(90% 70% at 50% 46%,#135049 0%,#0B3E38 100%);
-  animation:introOut .55s cubic-bezier(.45,0,.25,1) 3.51s forwards,introFail .01s 6.24s forwards;
-  animation-play-state:paused,running;                       /* introFail يعمل دائمًا: شبكة أمان لو تعطل JS */
+#intro{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:var(--bg-primary);color:var(--text-primary);
+  animation:introOut .45s cubic-bezier(.45,0,.25,1) 2.05s forwards,introFail .01s 6s forwards;animation-play-state:paused,running;
   touch-action:none;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
 #intro.go{animation-play-state:running,running}
 #intro.skip{animation:introSkip .25s ease-out forwards}
-@supports (height:1dvh){#intro{--h:1dvh}}
-#intro *{box-sizing:border-box;animation-play-state:paused}
-#intro.go *{animation-play-state:running}
-#intro>*{grid-area:1/1}
-@keyframes introOut{to{opacity:0;visibility:hidden;transform:scale(1.015)}}
+@keyframes introOut{to{opacity:0;visibility:hidden}}
 @keyframes introSkip{to{opacity:0;visibility:hidden}}
 @keyframes introFail{to{opacity:0;visibility:hidden;pointer-events:none}}
-
-/* مرساة الطبقات: نقطة صفرية عند مركز الشعار */
-.in-fx{position:absolute;left:50%;top:var(--cy);width:0;height:0;pointer-events:none}
-.in-fx>*{position:absolute}
-
-/* ① إضاءة شعاعية عميقة */
-.in-radial{--sz:min(140vw,calc(var(--h)*112),1100px);width:var(--sz);height:var(--sz);margin:calc(var(--sz)/-2) 0 0 calc(var(--sz)/-2);border-radius:50%;
-  background:radial-gradient(closest-side,rgba(120,200,185,.30),rgba(11,62,56,.12) 45%,rgba(209,125,50,.05) 72%,transparent 100%);
-  animation:inRadial 1.01s .12s ease-out backwards,inRadialPulse .7s 2.07s ease-out}
-@keyframes inRadial{from{opacity:0;transform:scale(.45)}}
-@keyframes inRadialPulse{40%{transform:scale(1.14);opacity:1}}
-
-/* ① خطوط نيون رفيعة تتجمع (تُولَّد من JS) */
-.in-lines i{left:0;top:0;width:var(--L);height:1px;margin-top:-.5px;transform-origin:0 50%;opacity:0;
-  background:linear-gradient(to left,transparent,var(--c) 55%,#fff);
-  transform:rotate(var(--a)) translateX(var(--f));
-  animation:inLine var(--d) var(--l) cubic-bezier(.4,0,.3,1) forwards}
-@keyframes inLine{
-  0%{opacity:0;transform:rotate(var(--a)) translateX(var(--f))}
-  25%{opacity:.85}
-  72%{opacity:.7;transform:rotate(var(--a)) translateX(var(--n))}
-  100%{opacity:0;transform:rotate(var(--a)) translateX(var(--z))}}
-
-/* ①→③ جسيمات: وميض في العمق ← تجمّع ← تفرّق عند الذروة (تُولَّد من JS) */
-.in-dust i{left:0;top:0;width:var(--s);height:var(--s);margin:calc(var(--s)/-2) 0 0 calc(var(--s)/-2);border-radius:50%;background:var(--c);box-shadow:0 0 calc(var(--s)*3) var(--c);opacity:0;
-  animation:inDust var(--d) var(--l) linear forwards}
-.in-dust i.dof{filter:blur(1.6px)}
-@keyframes inDust{
-  0%{opacity:0;transform:translate(var(--x0),var(--y0)) scale(.6)}
-  5%{opacity:var(--o)}7%{opacity:.12}10%{opacity:var(--o)}13%{opacity:.2}16%{opacity:var(--o)}
-  55%{opacity:var(--o);transform:translate(calc(var(--x0)*.5),calc(var(--y0)*.5)) scale(1)}
-  68%{opacity:1;transform:translate(var(--rx),var(--ry)) scale(1.15)}
-  100%{opacity:0;transform:translate(var(--bx),var(--by)) scale(.3)}}
-
-/* ② حلقات الطاقة — منظور 3D خفيف */
-.in-world{left:0;top:0;width:0;height:0;perspective:1100px}
-.in-world .ring{--sz:var(--ring);position:absolute;width:var(--sz);height:var(--sz);left:calc(var(--sz)/-2);top:calc(var(--sz)/-2);opacity:0;will-change:transform,opacity;
-  transform:rotateX(var(--t)) rotateY(var(--ty,0deg)) scale(var(--sc));
-  animation:inRingIn .86s var(--dl) var(--in-ease) both,inRingBurst .7s 2.12s ease-out forwards}
-.ring.r1{--t:68deg;--sc:1;--dl:.43s}
-.ring.r2{--t:72deg;--ty:-16deg;--sc:.78;--dl:.59s}
-.ring.r3{--t:62deg;--ty:14deg;--sc:.56;--dl:.74s}
-@keyframes inRingIn{from{opacity:0;transform:rotateX(var(--t)) rotateY(var(--ty,0deg)) scale(calc(var(--sc)*1.9))}to{opacity:1;transform:rotateX(var(--t)) rotateY(var(--ty,0deg)) scale(var(--sc))}}
-@keyframes inRingBurst{from{opacity:1;transform:rotateX(var(--t)) rotateY(var(--ty,0deg)) scale(var(--sc))}to{opacity:0;transform:rotateX(var(--t)) rotateY(var(--ty,0deg)) scale(calc(var(--sc)*2.5))}}
-.ring svg{display:block;width:100%;height:100%;overflow:visible;fill:none;animation:inSpin 4.68s linear both}
-.ring.r2 svg{animation-duration:3.9s;animation-direction:reverse}
-.ring.r3 svg{animation-duration:3.12s}
-@keyframes inSpin{to{transform:rotate(360deg)}}
-.ring .halo{stroke:var(--brand-primary);stroke-width:7;stroke-opacity:.11}
-.ring .line{stroke:url(#inRg);stroke-width:1.3;stroke-opacity:.9}
-.ring .tail{stroke:#D17D32;stroke-width:2.2;stroke-opacity:.55;stroke-linecap:round;stroke-dasharray:24 76}
-.ring .comet{stroke:var(--border-default);stroke-width:3.4;stroke-linecap:round;stroke-dasharray:6 94;stroke-dashoffset:-18}
-.ring.r2 .tail{stroke:#F1EADD}
-
-/* ② نواة الطاقة */
-.in-core{--sz:calc(var(--lh)*.55);width:var(--sz);height:var(--sz);margin:calc(var(--sz)/-2) 0 0 calc(var(--sz)/-2);border-radius:50%;opacity:0;
-  background:radial-gradient(closest-side,#fff 0,#F1EADD 10%,rgba(120,200,185,.85) 36%,rgba(120,200,185,0) 72%);
-  animation:inCore .9s .78s var(--in-ease) both,inCoreOut .39s 1.68s ease-in forwards}
-@keyframes inCore{0%{opacity:0;transform:scale(.05)}60%{opacity:.95;transform:scale(.55)}100%{opacity:1;transform:scale(.72)}}
-@keyframes inCoreOut{to{opacity:0;transform:scale(1.5)}}
-
-/* ③ الشعار */
-.in-stage{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--gapv);padding:0 var(--padx);width:100%;max-width:100vw;min-height:0;text-align:center;animation:inStageOut .51s 3.51s ease-in forwards}
-@keyframes inStageOut{to{opacity:0;transform:scale(1.08)}}
-.in-logo{position:relative;flex:none;width:var(--lw);height:var(--lh);perspective:900px;animation:inDolly 2.03s 1.79s linear both}
-@keyframes inDolly{to{transform:scale(1.035)}}
-.in-aura{position:absolute;left:50%;top:50%;width:calc(var(--lw)*1.9);height:calc(var(--lw)*1.9);margin:calc(var(--lw)*-.95) 0 0 calc(var(--lw)*-.95);opacity:0;
-  background:radial-gradient(30% 27% at 36% 44%,rgba(209,125,50,.42),transparent 100%),radial-gradient(28% 25% at 66% 40%,rgba(241,234,221,.40),transparent 100%),radial-gradient(closest-side,rgba(120,200,185,.32),rgba(120,200,185,.10) 55%,transparent 100%);
-  animation:inAura .7s 1.6s ease-out forwards,inAuraBreath 1.72s 2.3s ease-in-out 2}
-@keyframes inAura{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:scale(1)}}
-@keyframes inAuraBreath{50%{transform:scale(1.07)}}
-.in-mark,.in-word{position:absolute;left:0;width:100%;opacity:0}
-.in-mark{top:0;height:67.89%;transform-origin:50% 55%;animation:inMark .74s 1.52s var(--in-ease) forwards}
-@keyframes inMark{
-  0%{opacity:0;transform:translateY(6%) rotateX(22deg) scale(.74);filter:blur(18px)}
-  55%{opacity:1;filter:blur(2px)}
-  100%{opacity:1;transform:none;filter:none}}
-.in-mark img,.in-word img{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none;-webkit-user-drag:none}
-/* إضاءة الحواف (Neon rim) — نسخة مطابقة بتوهج خارجي، تحت الشعار الأصلي */
-.in-mark .rim{filter:drop-shadow(0 0 2px rgba(170,244,230,.95)) drop-shadow(0 0 12px rgba(120,200,185,.8)) drop-shadow(0 0 28px rgba(120,200,185,.45));opacity:0;animation:inRim 2.03s 1.56s ease-out forwards}
-@keyframes inRim{0%{opacity:0}30%{opacity:1}42%{opacity:1}100%{opacity:.5}}
-/* انعكاس زجاجي + ضوء متحرك حول الشعار — مقصوصان بشفافية الشعار نفسه (لا يخرجان عن حدوده) */
-.sheen{position:absolute;inset:0;overflow:hidden;pointer-events:none;-webkit-mask-size:100% 100%;mask-size:100% 100%;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
-.in-mark .sheen{-webkit-mask-image:url(../../../assets/logo-mark.webp);mask-image:url(../../../assets/logo-mark.webp)}
-.in-word .sheen{-webkit-mask-image:url(../../../assets/logo-word.webp);mask-image:url(../../../assets/logo-word.webp)}
-.sheen i{position:absolute;opacity:0}
-.sheen .b{top:-20%;bottom:-20%;left:0;width:38%;background:linear-gradient(100deg,transparent,rgba(255,255,255,0.85) 20%,rgba(255,255,255,0.85) 50%,rgba(255,255,255,0.85) 80%,transparent);transform:translateX(-120%) skewX(-18deg);animation:inSheen .78s 2.03s ease-in-out forwards}
-.in-word .sheen .b{animation-delay:2.65s}
-@keyframes inSheen{0%{opacity:0;transform:translateX(-120%) skewX(-18deg)}15%{opacity:1}85%{opacity:1}100%{opacity:0;transform:translateX(330%) skewX(-18deg)}}
-.sheen .o{left:50%;top:50%;width:calc(var(--lw)*1.7);height:calc(var(--lw)*1.7);margin:calc(var(--lw)*-.85) 0 0 calc(var(--lw)*-.85);
-  background:conic-gradient(from 0deg,transparent 0 72%,rgba(138,173,255,.0) 72%,rgba(192,211,255,.5) 90%,rgba(255,255,255,0.85) 99%,transparent 100%);
-  animation:inOrbit .98s 1.64s cubic-bezier(.4,0,.3,1) forwards}
-@keyframes inOrbit{0%{opacity:0;transform:rotate(-140deg)}20%{opacity:1}80%{opacity:1}100%{opacity:0;transform:rotate(250deg)}}
-.in-floor{position:absolute;left:6%;width:88%;bottom:-3%;height:5%;border-radius:50%;background:radial-gradient(closest-side,rgba(120,200,185,.55),transparent);filter:blur(5px);opacity:.6;animation:inFloor .7s 2.18s ease-out backwards}
-@keyframes inFloor{from{opacity:0;transform:scaleX(.2)}}
-
-/* ذروة الكشف: موجة صدمة + وميض عدسة محكوم + إزهار ضوئي */
-.in-shock{--sz:calc(var(--lw)*1.1);width:var(--sz);height:var(--sz);margin:calc(var(--sz)/-2) 0 0 calc(var(--sz)/-2);border-radius:50%;border:2px solid rgba(243,231,204,.9);box-shadow:0 0 22px rgba(120,200,185,.75),inset 0 0 22px rgba(120,200,185,.45);opacity:0;will-change:transform,opacity;animation:inShock .7s 2.12s cubic-bezier(.2,.7,.2,1) forwards}
-@keyframes inShock{0%{opacity:.95;transform:scale(.25)}100%{opacity:0;transform:scale(3.4)}}
-.in-flare{--fw:min(110vw,900px);width:var(--fw);height:3px;margin:-1.5px 0 0 calc(var(--fw)/-2);border-radius:3px;opacity:0;
-  background:linear-gradient(90deg,transparent,rgba(170,244,230,.5) 30%,#fff 50%,rgba(170,244,230,.5) 70%,transparent);box-shadow:0 0 14px rgba(120,200,185,.38);animation:inFlare .7s 2.11s ease-out forwards}
-@keyframes inFlare{0%{opacity:0;transform:scaleX(.05)}25%{opacity:1;transform:scaleX(.7)}100%{opacity:0;transform:scaleX(1.15)}}
-.in-bloom{--sz:min(72vmin,520px);width:var(--sz);height:var(--sz);margin:calc(var(--sz)/-2) 0 0 calc(var(--sz)/-2);border-radius:50%;opacity:0;
-  background:radial-gradient(closest-side,rgba(255,255,255,.6),rgba(120,200,185,.45) 38%,transparent 72%);will-change:transform,opacity;
-  animation:inBloom .62s 2.12s cubic-bezier(.4,0,.2,1) forwards,inBloomOut .55s 3.51s cubic-bezier(.4,0,.2,1) forwards}
-@keyframes inBloom{0%{opacity:0;transform:scale(.3)}30%{opacity:.6}100%{opacity:0;transform:scale(3.4)}}
-@keyframes inBloomOut{0%{opacity:0;transform:scale(.6)}35%{opacity:.5}100%{opacity:0;transform:scale(6)}}
-
-/* ④ الهوية: كلمة الشعار تُكشف من اليمين لليسار + الشعار اللفظي */
-.in-word{bottom:0;height:32.11%;animation:inWord .62s 2.3s var(--in-ease) forwards}
-@keyframes inWord{0%{opacity:0;clip-path:inset(0 0 0 100%);transform:translateY(10%);filter:blur(8px)}100%{opacity:1;clip-path:inset(0 0 0 0);transform:none;filter:none}}
-.in-tag{position:relative;margin:0;padding:8px 22px 10px;border-radius:999px;white-space:nowrap;font:700 var(--tg)/1.5 'Cairo',system-ui,sans-serif;color:rgba(255,255,255,.97);text-shadow:0 1px 12px rgba(120,200,185,.32);
-  background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid rgba(170,244,230,.28);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);box-shadow:0 8px 28px rgba(6,30,27,.35),0 0 22px rgba(120,200,185,.14),inset 0 1px 0 rgba(255,255,255,.16);
-  opacity:0;animation:inPill .47s 2.61s var(--in-ease) forwards}
-@keyframes inPill{from{opacity:0;transform:translateY(10px) scale(.96)}to{opacity:1;transform:none}}
-.in-tag span{display:inline-block;opacity:0;animation:inWordIn .47s var(--wd,2.73s) var(--in-ease) forwards}
-.in-tag span:nth-child(1){--wd:2.73s}.in-tag span:nth-child(2){--wd:2.84s}.in-tag span:nth-child(3){--wd:2.95s}.in-tag span:nth-child(4){--wd:3.06s}
-@keyframes inWordIn{from{opacity:0;transform:translateY(.55em) scale(.92);filter:blur(7px)}to{opacity:1;transform:none;filter:none}}
-.in-sweep{position:absolute;inset-inline:14%;bottom:-1px;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#AAF4E6,#fff,#AAF4E6,transparent);box-shadow:0 0 12px rgba(120,200,185,.9);transform-origin:right center;animation:inSweep .59s 3.12s cubic-bezier(.5,0,.2,1) backwards}
-@keyframes inSweep{from{opacity:0;transform:scaleX(0)}}
-
-.in-skip{position:absolute;top:calc(var(--sat) + 14px);inset-inline-end:var(--padx);min-width:64px;min-height:44px;padding:0 20px;border-radius:22px;border:1px solid rgba(170,244,230,.45);background:rgba(255,255,255,.07);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#F1EADD;font:700 14px/1 'Cairo',system-ui,sans-serif;cursor:pointer;animation:inSkip .39s .39s ease-out backwards;z-index:3;-webkit-tap-highlight-color:transparent}
-.in-skip:hover{background:rgba(120,200,185,.2)}.in-skip:active{transform:scale(.96)}.in-skip:focus-visible{outline:2px solid #AAF4E6;outline-offset:3px}
-@keyframes inSkip{from{opacity:0}}
-#intro:not(.go)>*{visibility:hidden}
-
-/* ⑤ الانتقال: التطبيق يدخل من نفس العالم الضوئي (يبدأ مع .go حتى لا يتقدم على الافتتاحية) */
-html.intro-go:not(.intro-skipped) #app{animation:appIn .78s 3.51s var(--in-ease) backwards}
-@keyframes appIn{from{opacity:0;transform:translateY(8px) scale(.99)}}
-
-@media (orientation:portrait) and (max-height:700px){
-  #intro{--lh:min(calc(var(--h)*40),calc(76vw/1.0949),340px)}
-}
-@media (orientation:landscape) and (max-height:500px){
-  #intro{--lh:min(calc(var(--h)*52),300px);--tg:clamp(13px,calc(var(--h)*4.2),18px);--gapv:calc(var(--lh)*.05);--ring:min(100vw,calc(var(--h)*150),700px)}
-}
-@media (min-width:900px) and (min-height:501px){
-  #intro{--lh:min(calc(var(--h)*44),440px);--tg:clamp(18px,calc(var(--h)*2.8),28px);--ring:min(calc(var(--h)*100),1000px)}
-}
-/* تقليل الحركة: ظهور هادئ للشعار والعبارة ثم خروج سريع */
-@media (prefers-reduced-motion:reduce){
-  #intro{animation-name:introOut,introFail;animation-duration:.01s,.01s;animation-delay:1.33s,6.24s}
-  #intro.skip{animation:introSkip .01s forwards}
-  .in-fx,.in-aura,.in-floor,.sheen,.in-mark .rim,.in-sweep{display:none}
-  /* القاعدة العامة أعلاه (*{animation:none!important}) تعطّل الأنيميشن كله، فنُظهر الشعار والعبارة مباشرة؛ الإزالة تتم بمؤقت JS (≈2.6ث) */
-  .in-mark,.in-word,.in-tag{opacity:1;clip-path:none;filter:none;animation:none;-webkit-backdrop-filter:none;backdrop-filter:none}
-  .in-tag span{animation:none;opacity:1}
-  .in-logo{animation:none}.in-stage{animation:none}
-  html.intro-go #app{animation:none!important}
-}
+.in-stage{display:grid;justify-items:center;gap:14px;padding:24px;text-align:center}
+.in-markwrap{position:relative;display:grid;place-items:center}
+.in-halo{position:absolute;inset:-34%;border-radius:50%;background:radial-gradient(closest-side,rgba(209,154,46,.30),rgba(209,154,46,0));opacity:0;transform:scale(.6);pointer-events:none}
+.in-mark{position:relative;width:min(38vw,170px);height:auto;opacity:0;transform:scale(.86)}
+.in-word{width:min(66vw,300px);height:auto;opacity:0;transform:translateY(10px)}
+.in-tag{margin:0;font-size:clamp(14px,3.8vw,17px);font-weight:500;color:var(--text-secondary);opacity:0;transform:translateY(8px)}
+#intro.go .in-halo{animation:inHalo 1.2s var(--ease-out) .05s forwards}
+#intro.go .in-mark{animation:inRise .7s var(--ease-out) .05s forwards}
+#intro.go .in-word{animation:inUp .6s var(--ease-out) .45s forwards}
+#intro.go .in-tag{animation:inUp .6s var(--ease-out) .75s forwards}
+@keyframes inHalo{60%{opacity:1}to{opacity:.75;transform:scale(1.12)}}
+@keyframes inRise{to{opacity:1;transform:none}}
+@keyframes inUp{to{opacity:1;transform:none}}
 @keyframes inFade{from{opacity:0}to{opacity:1}}
+.in-skip{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);inset-inline-end:16px;min-width:64px;min-height:44px;padding:0 18px;border-radius:22px;border:1px solid var(--border-default);background:var(--surface-primary);color:var(--text-primary);font:600 14px/1 var(--font-body);cursor:pointer}
+.in-skip:hover{background:var(--surface-sunken)}.in-skip:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.in-halo{display:none}.in-mark,.in-word,.in-tag{opacity:1;transform:none}}
 
 /* ═══════════════════════════════════════════════════════════════
    V6 — نظام الأيقونات: الطبقات والألوان واللوحات والحركة
@@ -1008,14 +852,35 @@ button.crumb:active{border-color:var(--pink)}
 .wz-validation-error{margin:12px 0;padding:10px 12px;border:1px solid var(--brand-primary);border-radius:12px;background:rgba(23,107,80,.12);color:var(--text-primary);font-weight:700}
 .wz-validation-error[hidden]{display:none}
 
-/* V9: Three.js layer (apps/customer/intro-3d.js) sits behind the logo in the intro grid */
-#intro .in-3d{grid-area:1/1;display:block;width:100%;height:100%;pointer-events:none;z-index:0}
-#intro>*:not(.in-3d){z-index:1}   /* grid items stack without changing their own positioning */
-#intro:has(.in-3d) .in-world{opacity:.45}
+/* ── V10 "Workshop" discover cards (illustrated SVG slides retired 2026-11-15) ─────────────────────────
+   Typographic cards in the brand palette; a slide with an img (photo) keeps the dark legibility shade. */
+.slide{border:1px solid var(--border-subtle);box-shadow:var(--shadow-2);background:var(--surface-primary)}
+.slide::after{box-shadow:none}
+.slide.no-img{background-color:var(--brand-primary);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cpath d='M24 4l5.7 14.3L44 24l-14.3 5.7L24 44l-5.7-14.3L4 24l14.3-5.7z' fill='none' stroke='%23FFFDF9' stroke-width='1' opacity='.07'/%3E%3C/svg%3E");background-size:64px 64px;color:var(--on-brand)}
+.slide.no-img.s-specialists{background-color:var(--accent);color:var(--on-accent)}
+.slide.no-img.s-track{background-color:var(--ivory);color:var(--text-primary);border-color:var(--border-default)}
+.s-art{position:absolute;inset:0 0 auto 0;height:58%;display:flex;align-items:flex-start;justify-content:space-between;padding:22px 22px 0;pointer-events:none}
+.s-num{font-family:var(--font-brand);font-size:clamp(64px,18vw,104px);line-height:.9;font-weight:700;opacity:.22;letter-spacing:-2px}
+.s-ic{display:grid;place-items:center;width:clamp(72px,20vw,96px);aspect-ratio:1;border-radius:24px;background:rgba(255,253,249,.12);border:1px solid rgba(255,253,249,.22);font-size:clamp(34px,9vw,44px)}
+.slide.no-img.s-track .s-ic{background:var(--surface-primary);border-color:var(--border-default);color:var(--accent-ink)}
+.slide.no-img .s-body h3{color:inherit;font-family:var(--font-display);font-weight:800}
+.slide.no-img .s-body p{color:inherit;opacity:.86}
+.slide.no-img .s-cta{background:var(--surface-primary);color:var(--text-primary)}
+.slide.no-img.s-specialists .s-cta{background:var(--brand-primary);color:var(--on-brand)}
+.slide.no-img.s-track .s-cta{background:var(--brand-primary);color:var(--on-brand)}
+.slide.has-img .s-body h3{color:#FFFDF9}.slide.has-img .s-body p{color:rgba(255,253,249,.86)}
+.s-shade{background:linear-gradient(0deg,rgba(20,17,14,.94) 0%,rgba(20,17,14,.82) 30%,rgba(20,17,14,.3) 54%,transparent 70%)}.slide.no-img.s-specialists .s-body p{opacity:1}
+@media (min-width:768px){.track{padding-inline:var(--pad)}.slide{flex:0 0 calc((100% - 11px)/2);aspect-ratio:1/1}}
+@media (min-width:1024px){.slide{flex:0 0 calc((100% - 22px)/3);aspect-ratio:4/4.6}.s-num{font-size:88px}.s-ic{width:84px;font-size:38px}}
 
-/* Approved identity intro: the bilingual wordmark is the whole logo (no separate symbol) */
-#intro .in-mark{display:none}
-#intro .in-logo{width:min(calc(var(--lw)*1.9),86vw)}
-#intro .in-word{top:0;bottom:0;height:100%}
-#intro .in-word img{object-fit:contain}
-#intro .in-word .sheen{-webkit-mask:url(../../../assets/brand/logo-wordmark-light.png) center/contain no-repeat;mask:url(../../../assets/brand/logo-wordmark-light.png) center/contain no-repeat}
+/* ── V10 photo icons (owner artwork): categories on Home and the wizard, items after choosing a category ──
+   Images are full-bleed squares; the frame (radius + thin gold ring) is drawn here so every icon matches. */
+.tile .tart.ph{height:auto;display:grid;place-items:center;margin-bottom:6px}
+.iph{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit;-webkit-user-drag:none;user-select:none}
+.tile .tart.ph .iph{width:84px;height:84px;border-radius:22px;box-shadow:0 0 0 2px var(--champagne),var(--shadow-2)}
+.tile.small .tart.ph .iph{width:64px;height:64px;border-radius:18px}
+.ip.ph{padding:0;overflow:hidden;background:#0E1A2C;width:56px;height:56px;border-radius:16px;box-shadow:0 0 0 1.5px var(--champagne),var(--shadow-1)}
+.icard .ip.ph{width:80px;height:80px;border-radius:20px}
+.prow .ip.ph{width:52px;height:52px;border-radius:14px}
+.icard.sel .ip.ph,.prow.sel .ip.ph{box-shadow:0 0 0 3px var(--accent),var(--shadow-1)}
+@media (max-width:420px){.tile .tart.ph .iph{width:72px;height:72px;border-radius:19px}.icard .ip.ph{width:68px;height:68px}}
