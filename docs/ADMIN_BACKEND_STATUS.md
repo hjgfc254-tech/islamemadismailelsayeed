@@ -2,11 +2,10 @@
 
 **Live pages read the server read model** (`session.sync` admin window, written into MP by `services/firebase-backend.js`)
 and act only through deployed API routes, via `apps/admin/modules/admin-live.js`. Actions without a server route are
-refused with an explicit message (HTTP-like 501), never simulated. Pages that are not yet integrated are **gated**: they
-show "not connected to the server yet" instead of fixtures. In local mode (development and tests) every page keeps
+refused with an explicit message (HTTP-like 501), never simulated. The 9 pages listed under Live panels mount server panels instead (see below). In local mode (development and tests) every page keeps
 its fixtures.
 
-## Live (15 of 24 pages)
+## Mapped pages (15 of 24)
 
 | Page | Data (collections) | Real actions (routes) | Refused (no server route) |
 |---|---|---|---|
@@ -24,18 +23,20 @@ its fixtures.
 | workforce, employee details, roles, permissions | employees, admins, system/rbac | Invite, edit, status, re-invite; roles; overrides | — |
 
 
-## Gated (9 pages): what each needs
-| Page | Missing backend piece or business rule |
-|---|---|
-| super-dashboard | Owner-level targets and trend definitions are not specified |
-| commissions, reports | Settlement entity and payout workflow are not defined in the business rules. Collection and commission routes exist and are used by the marketplace page. Mapping the fixture KPIs needs an agreed formula set (see `docs/API_CONTRACTS.md` business rules). |
-| notifications | Broadcast campaigns and delivery logs have no backend (no SMS, email or push provider) |
-| services | The page's fixed category list does not match the real 7 categories; it needs the real catalogue as its category source and a server catalogue for editing |
-| departments | Departments are a fixed list in the workforce module; no department entity exists |
-| security | Session and device management needs Auth admin APIs; no rule set has been defined |
-| system-settings | Only commission settings have routes; other settings have no schema |
-| audit-log | Needs a read endpoint for the `audit` collection (owner/admin only). This is a new Functions route and requires a deployment. |
+## Live panels (9 pages, `apps/admin/modules/admin-live-panels.js`)
+These pages were built on fixture-only entities. In Firebase mode the shell mounts a compact server panel that shows real data and real actions only. No Admin page is gated any more.
 
+| Page | Data (route) | Real actions |
+|---|---|---|
+| audit-log | `GET /admin/audit` | — |
+| system-settings | `GET /admin/settings` | Auto-assign and customer fee (`POST /admin/settings`); platform markup (`POST /admin/pricing`) |
+| departments | `GET /admin/departments` | Add; activate or deactivate (`POST` / `PATCH /admin/departments`) |
+| security | `GET /admin/security/admins` (last sign-in from Auth) | Revoke sessions (`POST /admin/security/revoke/:uid`; owner only, never self) |
+| notifications | `GET /admin/notifications/broadcasts` | In-app broadcast to active customers or approved providers (`POST /admin/notifications/broadcast`, max 500 recipients). There is no SMS, email or push provider. |
+| commissions | `GET /admin/commission`, `GET /admin/pricing` | Default rate (`POST /admin/commission`) |
+| reports | Requests by status and completed transactions over 7/30/90 days (sync window) | — |
+| super-dashboard | `GET /admin/summary` plus the uncollected platform share | — |
+| services | Catalogue items with the provider amount and the customer price | Prices are edited on the categories page |
 ## Known behaviour
 - **One Firebase Auth session per origin.** The three apps share a host, so signing in as a provider signs the owner
   out of the Admin app, and the reverse. Use separate browser profiles or hosts for parallel roles.

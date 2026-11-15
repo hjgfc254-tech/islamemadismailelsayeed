@@ -1308,8 +1308,8 @@
       "path": "docs/ADMIN_BACKEND_STATUS.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 4944,
-      "sha256": "f388ba7e1e3d2c10c68873aae66ebdf410bcaf3197c596998b66fa3a30c33854"
+      "bytes": 5123,
+      "sha256": "082d325567e06ad0b0bf7723aff6384f9898caec74025d45616ea98c55c223c9"
     },
     {
       "path": "docs/ADMIN_MODULES.md",
@@ -1399,8 +1399,8 @@
       "path": "docs/AI_CONTEXT/START_HERE.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 5410,
-      "sha256": "fb5a616609e1c4d73b0497d5fea8b0ddd14f8e92c0909401ed84a56301b0e042"
+      "bytes": 5420,
+      "sha256": "01efdcd88480951a47212b286e549254af10f3d8250c467b5e006258bb3a6c24"
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
