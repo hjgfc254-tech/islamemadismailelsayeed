@@ -65,6 +65,9 @@ a stale copy.
   3. After verification, `claimOwner` (verified, allow-listed, and only while no active owner exists) creates the owner
      employee and `admins/{uid}` in one transaction. It is idempotent.
 
+## Admin server routes (functions/src/admin-extra.js, deployed 2026-11-15)
+`GET /admin/audit` (owner/admin), `GET|POST /admin/settings` (autoAssign, customerFee; owner/admin), `GET|POST /admin/departments`, `PATCH /admin/departments/:id` (RBAC departments), `GET /admin/security/admins` (owner/admin, Auth last sign-in), `POST /admin/security/revoke/:uid` (owner, never self), `GET /admin/notifications/broadcasts`, `POST /admin/notifications/broadcast` (RBAC notifications; in-app only, max 500 recipients). Upfront pricing routes: `GET /pricing`, `GET|POST /admin/pricing` (see API_CONTRACTS).
+
 ## Read/write cost per operation
 | Operation | Reads | Writes | Transaction |
 |---|---|---|---|

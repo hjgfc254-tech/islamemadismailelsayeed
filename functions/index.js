@@ -33,6 +33,13 @@ const backend = {
     const at = Date.now();
     await admin.database().ref('signals').update(Object.fromEntries(uids.map(u => [u, { at }])));
   },
+  async authUsers(uids) {
+    const out = {}; if (!uids.length) return out;
+    const res = await admin.auth().getUsers(uids.slice(0, 100).map(uid => ({ uid })));
+    for (const u of res.users) out[u.uid] = { lastSignIn: u.metadata.lastSignInTime || null, created: u.metadata.creationTime || null };
+    return out;
+  },
+  async revokeSessions(uid) { await admin.auth().revokeRefreshTokens(uid); },
   env: { bootstrapEmails: String(process.env.ADMIN_BOOTSTRAP_EMAILS || '').split(',').map(s => s.trim()).filter(Boolean) }
 };
 

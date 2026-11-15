@@ -382,3 +382,40 @@ test('upfront pricing through the backend: the customer sees only their price; p
   assert.ok(!JSON.stringify(synced.db.serviceRequests).includes('providerAmount'), 'nor in the customer read model');
   assert.equal((await call(b, SARA, 'customer', 'POST', '/admin/pricing', { key: 'x', base: 1 })).status, 403, 'pricing administration is admin-only');
 });
+test('admin extras on the server: audit read, operational settings, departments, security, in-app broadcast', async () => {
+  const b = await setup();
+  const revoked = [];
+  b.authUsers = async uids => Object.fromEntries(uids.map(u => [u, { lastSignIn: '2026-11-15T10:00:00Z', created: '2026-11-15T09:00:00Z' }]));
+  b.revokeSessions = async uid => { revoked.push(uid); };
+  await service.session(b, { auth: SARA, data: { op: 'registerCustomer', name: 'سارة' } });
+
+  const audit = await call(b, OWNER, 'admin', 'GET', '/admin/audit');
+  assert.equal(audit.ok, true); assert.ok(audit.data.items.some(x => x.action === 'claimOwner'), 'the audit log is readable by the owner');
+  assert.equal((await call(b, SARA, 'admin', 'GET', '/admin/audit')).status, 401, 'not for non-admins');
+
+  const set = await call(b, OWNER, 'admin', 'POST', '/admin/settings', { autoAssign: false, customerFee: true });
+  assert.equal(set.ok, true); assert.equal(set.data.autoAssign, false); assert.equal(b.docs.get('system/settings').customerFee, true);
+  assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/settings', { autoAssign: 'yes' })).status, 422);
+
+  const d1 = await call(b, OWNER, 'admin', 'POST', '/admin/departments', { name: 'العمليات' });
+  assert.equal(d1.status, 201);
+  const d2 = await call(b, OWNER, 'admin', 'POST', '/admin/departments', { name: 'الميدان', parentId: d1.data.id });
+  assert.equal(d2.status, 201);
+  assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/departments', { name: 'العمليات' })).status, 422, 'duplicate name at the same level');
+  assert.equal((await call(b, OWNER, 'admin', 'PATCH', `/admin/departments/${d1.data.id}`, { parentId: d2.data.id })).status, 422, 'no cycles');
+  const emp = b.col('employees')[0].id;
+  assert.equal((await call(b, OWNER, 'admin', 'PATCH', `/admin/departments/${d1.data.id}`, { headId: emp, status: 'inactive' })).data.headId, emp);
+  assert.equal((await call(b, OWNER, 'admin', 'GET', '/admin/departments')).data.items.length, 2);
+
+  const sec = await call(b, OWNER, 'admin', 'GET', '/admin/security/admins');
+  assert.equal(sec.data.items[0].lastSignIn, '2026-11-15T10:00:00Z');
+  assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/security/revoke/u_owner')).status, 409, 'nobody revokes their own sessions here');
+  assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/security/revoke/u_other')).ok, true); assert.deepEqual(revoked, ['u_other']);
+
+  const bc = await call(b, OWNER, 'admin', 'POST', '/admin/notifications/broadcast', { audience: 'customers', text: 'عرض خاص هذا الأسبوع' });
+  assert.equal(bc.status, 201); assert.equal(bc.data.recipients, 1);
+  assert.ok(b.col('notifications').some(n => n.to.startsWith('customer:') && n.broadcast === bc.data.id), 'the customer inbox receives the broadcast');
+  assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/notifications/broadcast', { audience: 'all', text: 'x' })).status, 422);
+  assert.equal((await call(b, OWNER, 'admin', 'GET', '/admin/notifications/broadcasts')).data.items.length, 1);
+  assert.ok(b.col('audit').some(a => a.path === '/admin/notifications/broadcast'), 'admin mutations are audited');
+});

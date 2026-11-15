@@ -18,6 +18,7 @@ const { plan, syncPlan } = require('./plan');
 const { normalizePhone, APPS } = require('./identity');
 const { scopeFor, customerRequestView, customerQuote } = require('./scope');
 const workforce = require('./workforce');
+const adminExtra = require('./admin-extra');
 
 const METHODS = ['GET', 'POST', 'PATCH', 'DELETE'];
 const WRITE_LIMIT_PER_MIN = 60;
@@ -160,6 +161,12 @@ async function api(backend, { auth, data }) {
     }
     const ld = new PartialDb(backend.adapter, tx);
     const actor = await loadActor(ld, token, req.app, admin);
+    if (adminExtra.PATH_RE.test(req.path)) {
+      if (!actor || actor.role !== 'admin') return { envelope: { ok: false, status: actor ? 403 : 401, error: { code: actor ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } }, changes: {}, actor };
+      const envelope = await adminExtra.handle({ backend, tx, method: req.method, path: req.path, query: req.query, body: req.body, admin, token });
+      if (idemPath && !isRead) backend.adapter.set(tx, idemPath, { envelope, atMs: Date.now(), path: req.path, expiresAt: new Date(Date.now() + IDEMPOTENCY_TTL_MS) });
+      return { envelope, changes: envelope.ok && !isRead ? { admin: { set: [req.path], del: [] } } : {}, actor, db: {}, workforce: true };
+    }
     if (/^\/admin\/(employees|rbac)(\/|$)/.test(req.path)) {
       if (!actor || actor.role !== 'admin') return { envelope: { ok: false, status: actor ? 403 : 401, error: { code: actor ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } }, changes: {}, actor };
       const envelope = await workforce.handle({ adapter: backend.adapter, tx, method: req.method, path: req.path, body: req.body, admin });
