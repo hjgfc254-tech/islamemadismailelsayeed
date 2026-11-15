@@ -203,12 +203,35 @@ const Account = (() => {
   };
 
   /* ═════════ حالة: مستخدم غير مسجل ═════════ */
-  const loginPrompt = () => `<div class="empty">${safeIc('user')}<p>سجّل بياناتك لعرض حسابك<br><small>رقم هاتفك + اسمك فقط</small></p></div>
-    <form class="form" id="loginFormAcc">
+  /* Sign-in choices are visible up front (owner, 2026-11-15): quick (name + number, no code), email + password, or
+     SMS code — plus browsing as a guest. Name + number are always asked (the provider needs a contact). */
+  const loginPrompt = () => `<section class="auth-card" aria-labelledby="auth-title">
+    <img class="auth-mark" src="../../assets/brand/logo-v10-mark.webp" alt="" width="56" height="58" decoding="async">
+    <h2 id="auth-title" class="auth-title">سجّل دخولك أو أنشئ حسابًا</h2>
+    <p class="auth-sub">خطوة واحدة وتقدر تطلب خدمتك وتتابعها.</p>
+    <form class="form auth-form" id="loginFormAcc" data-method="quick">
+      <div class="seg" role="radiogroup" aria-label="طريقة الدخول">
+        <label class="seg-opt"><input type="radio" name="method" value="quick" checked><span>سريع</span></label>
+        <label class="seg-opt"><input type="radio" name="method" value="email"><span>البريد</span></label>
+        <label class="seg-opt"><input type="radio" name="method" value="phone"><span>كود SMS</span></label>
+      </div>
+      <p class="seg-hint" data-hint aria-live="polite">بالاسم ورقم الموبايل فقط — بدون كود أو كلمة مرور.</p>
       <div><label for="account-login-name">الاسم</label><input id="account-login-name" name="name" required placeholder="اسمك" autocomplete="name"></div>
-      <div><label for="account-login-phone">رقم الموبايل</label><input id="account-login-phone" name="phone" required type="tel" inputmode="tel" placeholder="01xxxxxxxxx" pattern="[0-9+ ]{8,15}" autocomplete="tel"></div>
-      <button class="cta" type="submit">${safeIc('check')} تسجيل</button>
-    </form>`;
+      <div><label for="account-login-phone">رقم الموبايل</label><input id="account-login-phone" name="phone" required type="tel" inputmode="tel" dir="ltr" placeholder="01xxxxxxxxx" pattern="[0-9+ ]{8,15}" autocomplete="tel"></div>
+      <div class="login-email" hidden>
+        <div class="seg seg-sm" role="radiogroup" aria-label="نوع الدخول بالبريد">
+          <label class="seg-opt"><input type="radio" name="mode" value="signup" checked disabled><span>حساب جديد</span></label>
+          <label class="seg-opt"><input type="radio" name="mode" value="login" disabled><span>عندي حساب</span></label>
+        </div>
+        <div><label for="account-login-email">البريد الإلكتروني</label><input id="account-login-email" name="email" type="email" dir="ltr" autocomplete="email" placeholder="name@example.com" disabled required></div>
+        <div><label for="account-login-password">كلمة المرور</label><input id="account-login-password" name="password" type="password" minlength="6" autocomplete="current-password" placeholder="6 أحرف على الأقل" disabled required></div>
+      </div>
+      <button class="cta auth-submit" type="submit" data-submit>متابعة</button>
+      <div class="auth-or" aria-hidden="true"><span>أو</span></div>
+      <button class="auth-guest" type="button" data-go="home">تصفح كزائر بدون تسجيل</button>
+      <p class="auth-trust">${safeIc('shield')} بياناتك محمية، ولا يرى مقدم الخدمة رقمك إلا بعد قبول طلبك.</p>
+    </form>
+  </section>`;
 
   /* ═════════ الرسم الرئيسي ═════════ */
   const render = () => {
@@ -278,6 +301,22 @@ const Account = (() => {
 
   document.addEventListener('change', (e) => {
     const t = e.target;
+    if (t.name === 'method' && t.form && t.form.id === 'loginFormAcc') {
+      /* show the email fields only for the email method; hidden fields are disabled so they are not required */
+      const f = t.form, email = t.value === 'email', box = f.querySelector('.login-email');
+      f.dataset.method = t.value;
+      if (box) { box.hidden = !email; box.querySelectorAll('input').forEach(i => { i.disabled = !email; }); }
+      const HINT = { quick: 'بالاسم ورقم الموبايل فقط — بدون كود أو كلمة مرور.', email: 'ادخل من أي جهاز ببريدك وكلمة المرور.', phone: 'نرسل كود تأكيد برسالة SMS إلى رقمك.' };
+      const hint = f.querySelector('[data-hint]'); if (hint) hint.textContent = HINT[t.value] || '';
+      const mode = (f.querySelector('input[name=mode]:checked') || {}).value;
+      const btn = f.querySelector('[data-submit]'); if (btn) btn.textContent = t.value === 'phone' ? 'إرسال الكود' : t.value === 'email' ? (mode === 'login' ? 'دخول' : 'إنشاء حساب') : 'متابعة';
+      return;
+    }
+    if (t.name === 'mode' && t.form && t.form.id === 'loginFormAcc') {
+      const btn = t.form.querySelector('[data-submit]'); if (btn) btn.textContent = t.value === 'login' ? 'دخول' : 'إنشاء حساب';
+      const pw = t.form.querySelector('#account-login-password'); if (pw) pw.autocomplete = t.value === 'login' ? 'current-password' : 'new-password';
+      return;
+    }
     if (t.dataset.accountPref !== undefined) {
       const u = meUser(); if (!u) return;
       HSCustomerApi.updateMe({ prefs: { [t.dataset.accountPref]: t.checked } })
@@ -295,7 +334,9 @@ const Account = (() => {
     if (f.id === 'loginFormAcc') {
       e.preventDefault();
       const d = new FormData(f);
-      const res = HSCustomerSession.signIn(d.get('name'), d.get('phone'));
+      const method = d.get('method') || 'quick';
+      const opts = { method, email: d.get('email') || '', password: d.get('password') || '', mode: d.get('mode') || 'signup' };
+      const res = HSCustomerSession.signIn(d.get('name'), d.get('phone'), opts);
       if (!res.ok) return toast(res.error);
       toast('تم التسجيل');
       /* إن جاء المستخدم من رابط يتطلب تسجيل الدخول (#/orders، #/track/…) نعيده إليه */

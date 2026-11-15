@@ -29,23 +29,33 @@
     return '';
   }
 
-  /** Stores the demo identity and ensures a local customer record exists (MP.customerFor). */
-  function signIn(name, phone) {
+  /** Stores the demo identity and ensures a local customer record exists (MP.customerFor).
+      opts (optional): {method:'quick'|'email'|'phone', email, password, mode:'signup'|'login'} chosen in the form;
+      without a method the Firebase bridge asks for one. */
+  function signIn(name, phone, opts) {
     const error = validate(name, phone);
     if (error) return { ok: false, error };
+    const o = opts && typeof opts === 'object' ? opts : {};
+    if (o.method === 'email') {
+      if (!/^\S+@\S+\.\S+$/.test(String(o.email || '').trim())) return { ok: false, error: 'اكتب بريدًا إلكترونيًا صحيحًا' };
+      if (String(o.password || '').length < 6) return { ok: false, error: 'كلمة المرور 6 أحرف على الأقل' };
+    }
     const user = { name: String(name).trim(), phone: String(phone).trim() };
-    /* Firebase backend: the customer signs in (quick device account, email or SMS — their choice) and is registered
-       server-side first; the sign-in dialog opens from here. */
+    /* Firebase backend: the customer signs in with the chosen method (quick device account, email or SMS) and is
+       registered server-side; on success the app continues by itself. */
     const cfg = root.HSFirebaseConfig;
     if (cfg && cfg.mode === 'firebase') {
       const B = root.HSBackend;
       if (!B) return { ok: false, error: 'جارٍ الاتصال بالخادم — حاول بعد لحظة' };
       if (!B.verifiedCustomer(user.phone)) {
         const say = m => { try { if (typeof root.toast === 'function') root.toast(m); } catch {} };
-        B.verifyCustomer(user.name, user.phone)
-          .then(() => { write(user); say('تم تسجيل الدخول — اضغط مرة أخرى للمتابعة'); })
+        B.verifyCustomer(user.name, user.phone, o.method ? o : undefined)
+          .then(() => {
+            write(user); say('تم تسجيل الدخول');
+            try { if (!(typeof root.afterSignIn === 'function' && root.afterSignIn()) && typeof root.show === 'function') root.show('account'); } catch {}
+          })
           .catch(e => say(e && e.message === 'cancelled' ? 'تم إلغاء تسجيل الدخول' : ('تعذّر تسجيل الدخول' + (e && e.message && /[؀-ۿ]/.test(e.message) ? ' — ' + e.message : ''))));
-        return { ok: false, pending: true, error: 'اختر طريقة الدخول في النافذة المفتوحة ثم أعد المحاولة' };
+        return { ok: false, pending: true, error: 'جارٍ تسجيل الدخول…' };
       }
       write(user);
       return { ok: true, user };

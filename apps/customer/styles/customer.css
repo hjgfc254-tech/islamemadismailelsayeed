@@ -874,12 +874,12 @@ button.crumb:active{border-color:var(--pink)}
 @media (min-width:1024px){.slide{flex:0 0 calc((100% - 22px)/3);aspect-ratio:4/4.6}.s-num{font-size:88px}.s-ic{width:84px;font-size:38px}}
 
 /* ── V10 photo icons (owner artwork): categories on Home and the wizard, items after choosing a category ──
-   Images are full-bleed squares; the frame (radius + thin gold ring) is drawn here so every icon matches. */
+   Images are full-bleed squares; the frame (radius + hairline + soft shadow) is drawn here so every icon matches. */
 .tile .tart.ph{height:auto;display:grid;place-items:center;margin-bottom:6px}
 .iph{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit;-webkit-user-drag:none;user-select:none}
-.tile .tart.ph .iph{width:84px;height:84px;border-radius:22px;box-shadow:0 0 0 2px var(--champagne),var(--shadow-2)}
+.tile .tart.ph .iph{width:84px;height:84px;border-radius:22px;box-shadow:0 0 0 1px rgba(31,27,23,.10),var(--shadow-2)}
 .tile.small .tart.ph .iph{width:64px;height:64px;border-radius:18px}
-.ip.ph{padding:0;overflow:hidden;background:#0E1A2C;width:56px;height:56px;border-radius:16px;box-shadow:0 0 0 1.5px var(--champagne),var(--shadow-1)}
+.ip.ph{padding:0;overflow:hidden;background:#0E1A2C;width:56px;height:56px;border-radius:16px;box-shadow:0 0 0 1px rgba(31,27,23,.10),var(--shadow-1)}
 .icard .ip.ph{width:80px;height:80px;border-radius:20px}
 .prow .ip.ph{width:52px;height:52px;border-radius:14px}
 .icard.sel .ip.ph,.prow.sel .ip.ph{box-shadow:0 0 0 3px var(--accent),var(--shadow-1)}
@@ -889,3 +889,29 @@ button.crumb:active{border-color:var(--pink)}
 /* mobile list tiles: keep the photo icon inside the card */
 @media (max-width:767px){.tile .tart.ph{margin:0}.tile .tart.ph .iph{width:64px;height:64px;border-radius:17px}}
 @media (max-width:360px){.tile .tart.ph .iph{width:56px;height:56px;border-radius:15px}}
+
+/* ── Sign-in (account page): professional auth card ─────────────────────────────────────────────
+   Logo, clear title, a segmented control for the method (quick / email / SMS), only the needed fields,
+   one primary action, an "or" divider, guest browsing as a secondary action and a short privacy line. */
+.auth-card{max-width:440px;margin:8px auto 24px;padding:28px 22px 22px;border:1px solid var(--border-subtle);border-radius:24px;background:var(--surface-primary);box-shadow:var(--shadow-2);text-align:center}
+.auth-mark{display:block;width:56px;height:auto;margin:0 auto 12px}
+.auth-title{margin:0 0 6px;font-size:21px;font-weight:700;line-height:1.35;color:var(--text-primary)}
+.auth-sub{margin:0 0 20px;font-size:14px;color:var(--text-secondary)}
+.auth-form{display:grid;gap:14px;text-align:start}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;padding:4px;border-radius:14px;background:var(--surface-sunken);border:1px solid var(--border-subtle)}
+.seg-opt{position:relative;display:block;margin:0;cursor:pointer}
+.seg-opt input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.seg-opt span{display:flex;align-items:center;justify-content:center;min-height:40px;padding:0 8px;border-radius:10px;font-size:14px;font-weight:600;color:var(--text-secondary);transition:background var(--motion-fast),color var(--motion-fast),box-shadow var(--motion-fast)}
+.seg-opt input:checked+span{background:var(--surface-primary);color:var(--text-primary);box-shadow:0 1px 2px rgba(31,27,23,.10),0 1px 1px rgba(31,27,23,.06)}
+.seg-opt input:focus-visible+span{box-shadow:var(--focus-ring)}
+.seg-sm .seg-opt span{min-height:34px;font-size:13px}
+.seg-hint{margin:-4px 2px 0;font-size:13px;color:var(--text-muted)}
+.login-email{display:grid;gap:14px}.login-email[hidden]{display:none}
+.auth-submit{width:100%;min-height:50px;justify-content:center;font-size:16px}
+.auth-or{display:flex;align-items:center;gap:12px;color:var(--text-muted);font-size:13px}
+.auth-or::before,.auth-or::after{content:"";flex:1;height:1px;background:var(--border-subtle)}
+.auth-guest{width:100%;min-height:48px;border:1.5px solid var(--border-default);border-radius:14px;background:var(--surface-primary);color:var(--text-primary);font:inherit;font-weight:600;cursor:pointer}
+.auth-guest:hover{background:var(--surface-sunken)}.auth-guest:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+.auth-trust{display:flex;align-items:center;justify-content:center;gap:6px;margin:2px 0 0;font-size:12.5px;color:var(--text-muted);text-align:center}
+.auth-trust .i{flex:none;color:var(--success)}
+@media (max-width:380px){.auth-card{padding:22px 16px 18px;border-radius:20px}.auth-title{font-size:19px}}.auth-guest{display:flex;align-items:center;justify-content:center;text-align:center}

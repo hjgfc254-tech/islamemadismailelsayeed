@@ -2674,7 +2674,7 @@
       "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after implementation (Customer routing/session batch).",
-      "sha256": "502f08623d6b032b69057c1cef6e7855e65a96df921e7495ccfe567e66ba5196",
+      "sha256": "628501356699f3b63a46e035868a125370ef8dd2c706d5bff0d0fbe822fbef3b",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2711,7 +2711,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 3989
+      "bytes": 4646
     },
     {
       "path": "apps/customer/index.html",
@@ -2814,7 +2814,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "a6177dbf3645951302f228b6ab045032ebb0b01aae5ad644221d73e1c98836d1",
+      "sha256": "6bcbfa264c24a56b2829ebc837ad9646c8f00b2712469bcc59adec12ad541ae6",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2853,7 +2853,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 22168
+      "bytes": 26197
     },
     {
       "path": "apps/customer/pages/addresses.page.js",
@@ -3465,7 +3465,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "55278220be362031f2653afc46110a705384bf9191fba8f694b143b9edd2f9e4",
+      "sha256": "27a19647ceb78225c58539d716ab9b95e3c739985ab6bf271eef3ad8ad294b40",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3504,7 +3504,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 82300
+      "bytes": 84330
     },
     {
       "path": "apps/guest/guest-entry.js",
@@ -3712,7 +3712,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "ead93396af9d97a0ca1fa9484445f18eb608f04cbc05878096aa9ad589d5850c",
+      "sha256": "765bc8d09d78cd8ef63fcf24eab875db69af8afe3d496eda57442da9e6c45de8",
       "resolved_dependencies": [
         "apps/provider/styles/provider.css",
         "apps/customer/index.html"
@@ -3752,7 +3752,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 2965
+      "bytes": 2941
     },
     {
       "path": "apps/provider/login.html",
@@ -4915,8 +4915,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "32b531edd90b9d0a35e3fea6d31d54fde1af80fc38e08837d991778dbff82445",
-      "bytes": 6212
+      "sha256": "2020411f264971fe2a435c2dd565db53cc2bca987236446d64dc3f2315700a3e",
+      "bytes": 5920
     },
     {
       "path": "assets/icons/svc/appliances/cooker.webp",
@@ -4927,8 +4927,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "5e63262c6e5e434f4b0c838cfd17ac28ea2375e55476815c731f6e69b1bf2f13",
-      "bytes": 10156
+      "sha256": "090eebf213fc1e4312de691283b322d6b5852f5ef949ac31aa1ba4f309b67201",
+      "bytes": 9872
     },
     {
       "path": "assets/icons/svc/appliances/deep-freezer.webp",
@@ -4939,8 +4939,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "0b2dcdc7456520a114ef97ebf0d9612fd5833d1fc490b01970ac432626eba9fd",
-      "bytes": 7712
+      "sha256": "c85c14d060729463001d8dd9894b7560fc3b3bc3f0eeca2a72fb9424d5d9c9eb",
+      "bytes": 7384
     },
     {
       "path": "assets/icons/svc/appliances/dishwasher.webp",
@@ -4951,8 +4951,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "be646c23f8c5901e0cbeee12b856c047889f79a5ddfced294323276f7fea7e67",
-      "bytes": 11904
+      "sha256": "8b40538da33261be5124cd8ef3c1f99b02b36e07d5d754ff9a914ca4f91c338d",
+      "bytes": 11546
     },
     {
       "path": "assets/icons/svc/appliances/fridge.webp",
@@ -4963,8 +4963,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "1a0e640400db82c7021c00293c232ad7d6a9479b5382b1bd612fde3d33176875",
-      "bytes": 4348
+      "sha256": "f5f6954ce70eaa1753917f11e4ab10036a74e4033e9c72ed9fa58f4f596ec9be",
+      "bytes": 3976
     },
     {
       "path": "assets/icons/svc/appliances/heater-electric.webp",
@@ -4975,8 +4975,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "8c9b05d60973090ce914409c7be540acb347a223613064f4594144a2143631d0",
-      "bytes": 4298
+      "sha256": "ce3762e755039987dee735e4927ff72c51cb5fd3b69ce85c035082099e9ab2ad",
+      "bytes": 3996
     },
     {
       "path": "assets/icons/svc/appliances/heater-gas.webp",
@@ -4987,8 +4987,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "d0692f5300751464664bcffcd11f12e082b5b3dda94ee1a58c7d1f985483fc3a",
-      "bytes": 4454
+      "sha256": "3c944ac4d744c91e1947c30bda66440975cbe0eed82a0fbd36085173bc3540fd",
+      "bytes": 4146
     },
     {
       "path": "assets/icons/svc/appliances/hood.webp",
@@ -4999,8 +4999,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "6662a648960dd7e660b6f6b8472921ebbf25e0357f3b9f950f29a8823f3aa659",
-      "bytes": 5872
+      "sha256": "a9f648c7c7c1b17fb74512845337716a6d3cca187954cda06485fdf6bcb3dc64",
+      "bytes": 5568
     },
     {
       "path": "assets/icons/svc/appliances/microwave.webp",
@@ -5011,8 +5011,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "d5f22eda0b232a0f55c387e2ea017c60715efcd5c405a528835f748fbf0f516c",
-      "bytes": 8244
+      "sha256": "0a8d1485874775cce286b4da8d84ff30458a3b18dc41f4807a9e88367f15da5f",
+      "bytes": 7936
     },
     {
       "path": "assets/icons/svc/appliances/other-appliance.webp",
@@ -5023,8 +5023,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "6de6cbec07350e4855afccf34b204c597b5a7d52cd32063bb5dc89ab8da21e5b",
-      "bytes": 12192
+      "sha256": "cd5552432d163db3df8af1b7b620556c1b68296d28f6f6d6e3c344ec1670f7a9",
+      "bytes": 11796
     },
     {
       "path": "assets/icons/svc/appliances/washer-auto.webp",
@@ -5035,8 +5035,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "5213e08db104b2900c2534da60a3be4b17d421d40ce406ac3223c518ba0834a1",
-      "bytes": 9876
+      "sha256": "d17a28e234f2bee80a22d2a51f94a14ff82895e9fb9dd8a0e055a510ba52a03d",
+      "bytes": 9468
     },
     {
       "path": "assets/icons/svc/appliances/washer-semi.webp",
@@ -5047,8 +5047,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "acefdeff49a9507f59b50ca6d4cc49234d56b828dff0534c8feb5671f962ecd0",
-      "bytes": 8378
+      "sha256": "ca9601c8ad4a802a6cac9efc9917bcb36e484cadca8c8aca43abad3806e7e17f",
+      "bytes": 7920
     },
     {
       "path": "assets/icons/svc/carpentry/assemble.webp",
@@ -5059,8 +5059,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "a3bf9e31bdbda9c213b5e2812bd95fe02e5d70afbc9239700473582ab1a09ab3",
-      "bytes": 8192
+      "sha256": "d06e4645c9488f7f317a04896bb820cd568de591ef3aea4b8da1e1c68cfafea2",
+      "bytes": 7970
     },
     {
       "path": "assets/icons/svc/carpentry/chairs-tables.webp",
@@ -5071,8 +5071,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "041b5df1ba8ba381de9e04588b6bd99ce06f3710655790a13600d85a41e227e8",
-      "bytes": 8452
+      "sha256": "eb29cb7e99b16949ac1c245cd4dd75b840b90c37e1cf8290f0a2c9e164741e57",
+      "bytes": 8148
     },
     {
       "path": "assets/icons/svc/carpentry/doors.webp",
@@ -5083,8 +5083,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "8be51fe549505dbf863070cf2decb3d97149f1b89ba485a3a99e2bf0769893a2",
-      "bytes": 5238
+      "sha256": "64280f011260c653aa377df95283737e433da982914012850a0cb732e6e915e8",
+      "bytes": 5186
     },
     {
       "path": "assets/icons/svc/carpentry/hinges-locks.webp",
@@ -5095,8 +5095,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "80c3d3df4ff12ace3d3d017a37988d9da871c41d0d572776996050b2473def2a",
-      "bytes": 6602
+      "sha256": "8461e093e356f4b087b5658e005560db4a6650f25c6caa8251ab5c454c9f3627",
+      "bytes": 6436
     },
     {
       "path": "assets/icons/svc/carpentry/kitchens.webp",
@@ -5107,8 +5107,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "810a51aba0fee48dffe6da5550b60904aa0a67138a560f6d4371fcdda3c6d44e",
-      "bytes": 7382
+      "sha256": "67aad2ffb64a795f15e671527e6eaf655128e5ea880e7680b9509f155f71c394",
+      "bytes": 7162
     },
     {
       "path": "assets/icons/svc/carpentry/other-carpentry.webp",
@@ -5119,8 +5119,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "cc8bdc4bb9326f3195ea4e937fed74e8ed9b8107388e61497ab90b678feec3ce",
-      "bytes": 9550
+      "sha256": "fd83d7da0d33c2f36a9af2396dee70136c1bd42b72bbaed26d4783a1cd0e0061",
+      "bytes": 8636
     },
     {
       "path": "assets/icons/svc/carpentry/wardrobes.webp",
@@ -5131,8 +5131,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "231e3eef307c8158587b8bd0cbf12a37e2a4097385f26fe55c26800c36b7c337",
-      "bytes": 6512
+      "sha256": "50e298d933a2b12be3cea6b6d8ad1670a902a80e8a090fc8ced6500a1de424ea",
+      "bytes": 6564
     },
     {
       "path": "assets/icons/svc/carpentry/windows.webp",
@@ -5143,8 +5143,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "7dbefeb5660021377da70666a1cad57cf8708fb62d56b36263c54d690c1686ff",
-      "bytes": 6472
+      "sha256": "47f74b298c2646d7c4e47a33c50a1d76b10b17d0d1ce0e9edcb6f76d7e80c011",
+      "bytes": 6224
     },
     {
       "path": "assets/icons/svc/cars/battery.webp",
@@ -5155,8 +5155,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "7eca95d08e91e2ed9a1cb51651cf0eb354579e2f04194d845b932b9908b4d99b",
-      "bytes": 6590
+      "sha256": "6e9b75cf3e9b0544ab625a8fa9d38a02c6fd7e6b6e9af3bfb030a1fd82f4efea",
+      "bytes": 6170
     },
     {
       "path": "assets/icons/svc/cars/brakes.webp",
@@ -5167,8 +5167,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "3eaf54a8034b0555fcdcab84feb6baf852c68a52fb012187903e4d1007f8baa1",
-      "bytes": 10680
+      "sha256": "ad02ea204d0430cdccf4795cf18b464a8d25bf1937c235497f6ac7a6f00e886c",
+      "bytes": 10386
     },
     {
       "path": "assets/icons/svc/cars/car-ac.webp",
@@ -5179,8 +5179,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "47c5dd1341e8bc9f0ea5cc34054274265bd10e02cf64618761115657b60f8df6",
-      "bytes": 7254
+      "sha256": "675dbd8d7a725575a972ab1f78a8f72ce215043bde74dd57ffe6584bdb0db42b",
+      "bytes": 7048
     },
     {
       "path": "assets/icons/svc/cars/car-electric.webp",
@@ -5191,8 +5191,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "23169affea050f3fed2afc19ea95666a3150012d40bcacd669406b59b3b5c6f8",
-      "bytes": 12866
+      "sha256": "5cf3dc0406b63fd874c2dc3bec806a83f75b99335da14a80be65ac6ec09fe2b4",
+      "bytes": 12384
     },
     {
       "path": "assets/icons/svc/cars/engine.webp",
@@ -5203,8 +5203,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "dfb1166368a908b7574f70e26a99ae920b4b5017e1c1666c60aef58ba17f822c",
-      "bytes": 13588
+      "sha256": "517bfb74660655a4d666b476a282e63a3c3ae6c740b9b5c8a24a365b19549e82",
+      "bytes": 13320
     },
     {
       "path": "assets/icons/svc/cars/gearbox.webp",
@@ -5215,8 +5215,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "6c7b5897612e08191cf547ba8d50dfaa894471bcb385aa92720758d0538580d4",
-      "bytes": 11806
+      "sha256": "0dc3bc97bed4da374b286c7213110471e0098f6e77caea41aec1f152181c8213",
+      "bytes": 11652
     },
     {
       "path": "assets/icons/svc/cars/oil-change.webp",
@@ -5227,8 +5227,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "6319b10c8f6a330910b1f178a23b9de4ef5305d93363a371788c138a7cc8e7ce",
-      "bytes": 7310
+      "sha256": "192c8b89895d537600492f9b36d720872f1253c56f1ff492618ccc2142825c80",
+      "bytes": 6890
     },
     {
       "path": "assets/icons/svc/cars/other-car.webp",
@@ -5239,8 +5239,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "a8992105ba1e53ed864bddad4dd3e09cf6f9f44137221cb8a82da17a7405db60",
-      "bytes": 9004
+      "sha256": "020d2675c368a90071be3ac5fc974893efbbff1a8aaf88a5e4cd68f3c3beb047",
+      "bytes": 8472
     },
     {
       "path": "assets/icons/svc/cars/suspension.webp",
@@ -5251,8 +5251,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "6bbe8a892363c07c5d4be1ae126557311753b85e8a89e0198f60dc6e1ffe0934",
-      "bytes": 9806
+      "sha256": "f0a5727f5b0c4b47816ab5dc3289f6fe8228c5f701716dad616a71ebfc4b9766",
+      "bytes": 9326
     },
     {
       "path": "assets/icons/svc/cars/tires.webp",
@@ -5263,8 +5263,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "969721e1237dcd2793518f9b3d6f40ebcd47b98dfcc1b22ad9dfae732c29fa6a",
-      "bytes": 12524
+      "sha256": "4356a17857a4ec385b78a3ed7c6a4fd8ae74a043effb260144106a8b88099c43",
+      "bytes": 12270
     },
     {
       "path": "assets/icons/svc/cars/towing.webp",
@@ -5275,8 +5275,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "b82c68ed08d8db0211ae325ac4cb2a2a9f390d0365a144ec25e15225bec55444",
-      "bytes": 10036
+      "sha256": "fd7e2cfc37521c1f676549be9a9f2175e2e103313648b10eb696170b4015c1c7",
+      "bytes": 9270
     },
     {
       "path": "assets/icons/svc/cleaning/apartments.webp",
@@ -5287,8 +5287,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "7fdd2bc8b627f25c9b067bda37118107b69250110236ddfc9aa2c5e7466f6269",
-      "bytes": 10888
+      "sha256": "f56fedd3b03e9dd6e9c58d25f8f3c49aac7c0d5a062c613a4ee02b4a7b530485",
+      "bytes": 10518
     },
     {
       "path": "assets/icons/svc/cleaning/bathrooms.webp",
@@ -5299,8 +5299,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "9be0feaf41581de64be8a7db244b50b871c3a6ca4b4ff54494385974d3eeffb0",
-      "bytes": 7974
+      "sha256": "73c79cfcfec8118f1260921be9c3f7b2f4587c80ae5c75ab6d430e1b17e88d78",
+      "bytes": 7776
     },
     {
       "path": "assets/icons/svc/cleaning/carpets.webp",
@@ -5311,8 +5311,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "bfe7fcb27169c9374b5f5389edb457c5ad608d3971531e340e042aabe3f54d58",
-      "bytes": 21536
+      "sha256": "9a948271d992f104312413eee70a019e6befee998848f449f864861a10d612c3",
+      "bytes": 21134
     },
     {
       "path": "assets/icons/svc/cleaning/kitchens-clean.webp",
@@ -5323,8 +5323,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "db5341ca3a2461b8958d8f976ed734ee343f9e13c9ab43f08f624d7f1a1063a9",
-      "bytes": 7380
+      "sha256": "864785a357d879faeeaa04366987e7d97612654b945df8fd49251b0e7edcbbd1",
+      "bytes": 7040
     },
     {
       "path": "assets/icons/svc/cleaning/mattresses.webp",
@@ -5335,8 +5335,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "952f1772adab9c2cd216e62a464d73afc8bce0e465b326e91d8acfe442fe815c",
-      "bytes": 9656
+      "sha256": "57ecad9bf48d9e1e0f99347eea29726f4db2e0598ba53ca89c3c00f6782034ca",
+      "bytes": 9264
     },
     {
       "path": "assets/icons/svc/cleaning/offices.webp",
@@ -5347,8 +5347,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "52995378a84e4e01bd5d5fa658695d43bd6bb9dd016707370cf41ac4b53b9ee1",
-      "bytes": 10912
+      "sha256": "c55f22d1219153547dfd6d2cfabb8fe36499fee7f1804d31ddda4cf24799f402",
+      "bytes": 10650
     },
     {
       "path": "assets/icons/svc/cleaning/other-cleaning.webp",
@@ -5359,8 +5359,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "ce7677d640687d968fbc1d45f3009b0b8efd7497ec4b6d5298d5b9519dd9c84a",
-      "bytes": 9328
+      "sha256": "d4331d7988c85baca916f5066651336446452f05a1978719330c4a476f410a0f",
+      "bytes": 8600
     },
     {
       "path": "assets/icons/svc/cleaning/post-finishing.webp",
@@ -5371,8 +5371,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "8cbe43b93eb6e40522ecb14a16dd2c258e15a10516de1a9ea36aa42d7dedeb57",
-      "bytes": 8406
+      "sha256": "e53427966166ffdb754e8b2f3e8d6e194d5eb51b951c60e0e0337d0a40500fbf",
+      "bytes": 7910
     },
     {
       "path": "assets/icons/svc/cleaning/tanks-clean.webp",
@@ -5383,8 +5383,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "14693f29a50d13b41731dd18c6845227b04d881491c9ba6ef5202f05fec43b25",
-      "bytes": 6236
+      "sha256": "0bbe9cf9e2fe665c8af5f444d5ae90a90dcd3854a7ef70a9c2489b6094efb83f",
+      "bytes": 6014
     },
     {
       "path": "assets/icons/svc/cleaning/villas.webp",
@@ -5395,8 +5395,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "2710744d16c8a2e5767832d0ec48fd37343359e6c6764669cd650254af8e0787",
-      "bytes": 10862
+      "sha256": "4e87e0b05f198f7419c05f07bba27464759596fd9b83d24aa2f2d5ce5f3ccbba",
+      "bytes": 10422
     },
     {
       "path": "assets/icons/svc/electric/dist-board.webp",
@@ -5407,8 +5407,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "1b1109b61ac1cb790acf9764687b2edeb4023027d178f486e325c99674862b6a",
-      "bytes": 8738
+      "sha256": "082549da056cd031bb5141ceff3b23bd717723059d90c8340612e91eead40a45",
+      "bytes": 8362
     },
     {
       "path": "assets/icons/svc/electric/elec-heaters.webp",
@@ -5419,8 +5419,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "691d368f4a526f72f176b6a57b0413e2d9cd211f9dc0fce847619dd4cde352da",
-      "bytes": 2630
+      "sha256": "baba5b8a1562c6a4e09c70fbf3f6fb844e75141a8f548202e237fc180e6322a5",
+      "bytes": 2578
     },
     {
       "path": "assets/icons/svc/electric/electrical-devices.webp",
@@ -5431,8 +5431,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "04be5a42f9c036b56dd670adeb1aa481ae533f5a0eb08a04f0ece7aa8bf567ac",
-      "bytes": 5504
+      "sha256": "d726a3fdbda91f5f84a2ddeb09da82d3995e7f2ac3b7b660aa325a91afc3d652",
+      "bytes": 5400
     },
     {
       "path": "assets/icons/svc/electric/fans.webp",
@@ -5443,8 +5443,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "b5f0ed47681ae5e842cfc55c4bc03be053c168abd1cea52e4ea3947a7a2e22fe",
-      "bytes": 4548
+      "sha256": "db50e7b2ee96d8e7fa6200cd350669b9541d37898a62e879b3a07fd60d8074b2",
+      "bytes": 4280
     },
     {
       "path": "assets/icons/svc/electric/lighting.webp",
@@ -5455,8 +5455,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "bdfb4db5f4d391a06c0614ec59e311e8eac2fbca2f41b175e8e2f03bc1643437",
-      "bytes": 9934
+      "sha256": "5e03130910ce659ad1fdddfd816237590f195b0343c04e0c935362642bcdaacc",
+      "bytes": 9316
     },
     {
       "path": "assets/icons/svc/electric/other-electric.webp",
@@ -5467,8 +5467,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "674c28893670ca91829f8b041899bc9f7214eea1d2d6734bded1b2b3149d8687",
-      "bytes": 7930
+      "sha256": "aa84b9da8c58594ac337f0ea43407ea2341095e8b9b1f28142102acb5830e930",
+      "bytes": 7242
     },
     {
       "path": "assets/icons/svc/electric/switches.webp",
@@ -5479,8 +5479,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "04b69334e7e2b941a4b4e585220102325326b88ec4f714d756de7941db204632",
-      "bytes": 3214
+      "sha256": "f689edbb802f99f31051f27ed6dcb34d1c85f4a15d185e928c43c45d7ae91cfe",
+      "bytes": 3056
     },
     {
       "path": "assets/icons/svc/electric/wiring.webp",
@@ -5491,8 +5491,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "0f5b88664c97da9d5c2ea3f3c75fd2c2c0361ec933b0e26a457057d2897cb23c",
-      "bytes": 6628
+      "sha256": "861349bfa1a5176f615a1fae99ae7b9cdbc9d00a650e51044f32685545690c4f",
+      "bytes": 6322
     },
     {
       "path": "assets/icons/svc/home/appliances.webp",
@@ -5503,8 +5503,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "c240dedc7ba9b766f21f3061ed472ab4fb0de4a223963950a9618ccc1d7a126d",
-      "bytes": 6560
+      "sha256": "2931e2d5fbf8b09a3e9cca419c4a8dbe1198887cab25c684d050a28d6d81b0d7",
+      "bytes": 6252
     },
     {
       "path": "assets/icons/svc/home/carpentry.webp",
@@ -5515,8 +5515,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "ec2a3385593596dd48a2086f2fed4702124f7f17a8f6531caea0ce3c75d0040a",
-      "bytes": 7786
+      "sha256": "7ddd1227081e1690871d2f8ca5084d04078dc2bc5219092d32c7df9585386969",
+      "bytes": 7064
     },
     {
       "path": "assets/icons/svc/home/cars.webp",
@@ -5527,8 +5527,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "1caa3f78a40a7350e3cf82a33435c58410cf3d753406b5143729d6ff7127288e",
-      "bytes": 6090
+      "sha256": "61e2f2f8f215b8d86735dc319615ab0ca1da10a9f848cf3bc84ade17db79c970",
+      "bytes": 5470
     },
     {
       "path": "assets/icons/svc/home/cleaning.webp",
@@ -5539,8 +5539,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "625699f73be43186de0430bf3727531de28748af93c3637f0c772190edadecb2",
-      "bytes": 6720
+      "sha256": "a93f14f951e23af3b22eea604daa37251ca0efeb01a0fccde37b3eecb9148518",
+      "bytes": 6192
     },
     {
       "path": "assets/icons/svc/home/electric.webp",
@@ -5551,8 +5551,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "081e78ee7a069022bb3c27de3ef6a93d65dee668c6608646512b8e4b962573f5",
-      "bytes": 6434
+      "sha256": "905ec4d8eb83c1972b618e7f5087b8e9cca7bc627dca627bead76c649ff09e9d",
+      "bytes": 5514
     },
     {
       "path": "assets/icons/svc/home/painting.webp",
@@ -5563,8 +5563,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "4de165cfb096ee4ded3c3b3f6daca7bb5f0f3053e053cdd8a5fa4cfa9bf5326a",
-      "bytes": 4184
+      "sha256": "0a20cbae9b1fccb9aefe62fa8f9ac8e86df3263c9031a86998d0d49cfd11b240",
+      "bytes": 3698
     },
     {
       "path": "assets/icons/svc/home/plumbing.webp",
@@ -5575,8 +5575,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "a5905d1fa9e9e2a8baf2d08587773baef002137346e10f79d787de014613df74",
-      "bytes": 4248
+      "sha256": "4175f31bd810459add9a0f3f0c79294d33c36e7062f2c7a131ef3faee9ba5b7f",
+      "bytes": 4078
     },
     {
       "path": "assets/icons/svc/painting/ceilings.webp",
@@ -5587,8 +5587,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "0a63527a4242857d0629a9b59a8469a1bb7809e8cc1df5369569234466c4a6a4",
-      "bytes": 4786
+      "sha256": "f1df47a8f510ff3ccebfb386911629ea47a911526d800ead9cde6206c9fa8e1d",
+      "bytes": 4712
     },
     {
       "path": "assets/icons/svc/painting/cracks.webp",
@@ -5599,8 +5599,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "e808dfd2aa2622d50566e5c84fdd6639d39cd530ab127eed51530fe611b0294e",
-      "bytes": 11248
+      "sha256": "07e3b4cfac95b8f86e044ed02df1a73ac5bed151521cb351e5da9ad89b85cc5f",
+      "bytes": 11074
     },
     {
       "path": "assets/icons/svc/painting/damp.webp",
@@ -5611,8 +5611,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "73e35ea12878c20c0b3768f44b24e03eba50a77a60e9b9fee65761366c5c9b18",
-      "bytes": 12266
+      "sha256": "46462107c43f1da5eb6bae6ba991ec4e17e807c2cf136c19b6d6fdca2aea9ba6",
+      "bytes": 11802
     },
     {
       "path": "assets/icons/svc/painting/decor-paint.webp",
@@ -5623,8 +5623,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "f8dd014a2a2cfdef918e015b420b8a13c658b656e0d2b919d8740d0e691703e4",
-      "bytes": 10248
+      "sha256": "93a943b39f97522563e3867fb818f523cfe1fc6873ad4dc7b281ac53f8ccb60d",
+      "bytes": 9862
     },
     {
       "path": "assets/icons/svc/painting/facades.webp",
@@ -5635,8 +5635,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "f8769ac3f7495c3ad29ad43fbd10928cf02429f953568d24fa6b46d3c8c097ce",
-      "bytes": 10278
+      "sha256": "f928dd8b01b79f5d208fddf0beff58299be20646bb3b0df7e8fbf1a98d832e0a",
+      "bytes": 9966
     },
     {
       "path": "assets/icons/svc/painting/full-apartment.webp",
@@ -5647,8 +5647,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "3b07af4e99b92c9b3fc5cc95f0e26b621eec00da8b07770043d0504b27935795",
-      "bytes": 6190
+      "sha256": "e7f1af31c0d3aed8fa6145a1ade8bb68201182f312e9c01751342ccb25fb4dc2",
+      "bytes": 6164
     },
     {
       "path": "assets/icons/svc/painting/other-painting.webp",
@@ -5659,8 +5659,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "47521308e0389df36515b9831671a1e99ec4dbc496830e5629105ef30f041e89",
-      "bytes": 10262
+      "sha256": "e2a30964cc0762b8c0ff72bf1012fc8d662d0426cfc156b42c2dfae84c3cc4fa",
+      "bytes": 9700
     },
     {
       "path": "assets/icons/svc/painting/room.webp",
@@ -5671,8 +5671,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "b3e9b5bcd35fd92c999a45e0fb089b92988d7c61ec0ead3beab0a74097918f41",
-      "bytes": 6124
+      "sha256": "6b0799d6ce36ad04ab6caec89aaa7e3fd278c9d76e954b343fc5169191be257b",
+      "bytes": 5926
     },
     {
       "path": "assets/icons/svc/painting/wallpaper.webp",
@@ -5683,8 +5683,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "1340ebf6f3a7aa1417256ef4a8c117c74298190a4df949e81f1ef99a9d65a94e",
-      "bytes": 16076
+      "sha256": "eea5bcc09bcd65df2dfe6fd1350c234e6a648e8189d16dec81019cef95e2ba24",
+      "bytes": 15086
     },
     {
       "path": "assets/icons/svc/plumbing/faucets.webp",
@@ -5695,8 +5695,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "e42dbf3983b260a4776d5442450a4e963e99f3f5e53c6a766a7c6e9e2f46b961",
-      "bytes": 7288
+      "sha256": "d68ab35a4ff67b0ab80070738194beff4eb68dd774844578741867dcb134a6c8",
+      "bytes": 7168
     },
     {
       "path": "assets/icons/svc/plumbing/heaters-plumb.webp",
@@ -5707,8 +5707,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "6cc4c3e3f8bf887e950cd281b43875946454ccb0e3c7a168b5d43098833d1b06",
-      "bytes": 3912
+      "sha256": "9172920aad3a18850d3b0c814f0830377926411b2d087eee73cb2e923360c633",
+      "bytes": 3830
     },
     {
       "path": "assets/icons/svc/plumbing/other-plumbing.webp",
@@ -5719,8 +5719,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "635d5394c136a89f3b47e7cd005c7b29a7dbf1f0bf8d80def15496a1544f8525",
-      "bytes": 8632
+      "sha256": "1d9f2c2f7d89b3fc44448e1696b9a278e3752489a60de80fb598f4502bde3683",
+      "bytes": 7812
     },
     {
       "path": "assets/icons/svc/plumbing/pipes.webp",
@@ -5731,8 +5731,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "d448a334450554c25dbd4bcb84d1cdb345ce288abf31b9843ac0953756995d47",
-      "bytes": 6900
+      "sha256": "6ada913631ef8be5e716bf2986ce54d027e2baf89a9f22f64d025ef4a81d899f",
+      "bytes": 6604
     },
     {
       "path": "assets/icons/svc/plumbing/pumps.webp",
@@ -5743,8 +5743,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "b97dc21e8c08b1101ed11fd2fdfce0503b60cfc22892436e433305dd629a86e8",
-      "bytes": 10102
+      "sha256": "7674bd4db6b9117d32ab420ac90ae036f6bd28f23b6c07b05af0c36595c71a0d",
+      "bytes": 9554
     },
     {
       "path": "assets/icons/svc/plumbing/sewage.webp",
@@ -5755,8 +5755,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "f4abadaa03c2b6811013d871b02975157c6bdbd900a8dd6e402586b7553cfbc7",
-      "bytes": 12466
+      "sha256": "5ab2efaa0d947250ced15b5e1adeb78bac2269b0822cf143815d3d4856ea100c",
+      "bytes": 12142
     },
     {
       "path": "assets/icons/svc/plumbing/sinks.webp",
@@ -5767,8 +5767,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "a6ff7096a11edc710b5b498fae6b4b97e923e72eae98b89f167283c9dccbaba6",
-      "bytes": 2932
+      "sha256": "dfb2116e96bc138829d9a0cce595e16285a197256ec46a92e8c242e4dacc81be",
+      "bytes": 2874
     },
     {
       "path": "assets/icons/svc/plumbing/siphon.webp",
@@ -5779,8 +5779,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "cdc7b38246e4512e0d7513d4852df7b2310844afc16d206d9aea8c2b9f82b9c2",
-      "bytes": 3502
+      "sha256": "ec07dd9355ad429136e73654eee49ab20a2959080d7cea0407fc977598d23927",
+      "bytes": 3436
     },
     {
       "path": "assets/icons/svc/plumbing/toilet.webp",
@@ -5791,8 +5791,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "a254eca472efec95db402b60defa1f4bbb61d2befb5f033021d145d1883f478f",
-      "bytes": 3808
+      "sha256": "4dc8450a0e937085d8c6414bb2baba927e29525a68feb22e9a630ddb84c28d5f",
+      "bytes": 3706
     },
     {
       "path": "assets/icons/svc/plumbing/water-tanks.webp",
@@ -5803,8 +5803,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "91a017a5de7fd64e565fa12f715bb81d58544d91fe3d1b7bb1a8d80c0ce77d10",
-      "bytes": 6838
+      "sha256": "43404aa0d71bfc241e304d05f79913aee8dcf299fd9977fc97209d72b690100f",
+      "bytes": 6508
     },
     {
       "path": "assets/logo-mark.webp",
@@ -12325,7 +12325,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "2113c0792c16de46c38c7dc448da708cc645b06245fa6c5af228194369af9fb9",
+      "sha256": "d2a73ea8fb0cb161c6df3d38f48ae46797cb649cf30a932894f745e4a02c8dd2",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12362,7 +12362,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 8731
+      "bytes": 8744
     },
     {
       "path": "services/admin-api.js",
@@ -12667,8 +12667,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "dfce7a2be7a02eb03fa573b8fcc7cbbdffb848d572d77c6c852eb0beb60531cb",
-      "bytes": 22748
+      "sha256": "26f8dc7dae2fd549169d802e382c00c2766f27da0f42a402122f16e4c6e5902e",
+      "bytes": 23694
     },
     {
       "path": "services/firebase-config.js",
@@ -13897,7 +13897,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "b4c2fb1848f2a842133a5303d80c4637b95c025a79cdbb55db6276849d30e979",
+      "sha256": "8d0e6d0c743ade76a3d46f4ff1d2002379d60d682a9b361a48141e490d62ec6f",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -13936,7 +13936,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 45442
+      "bytes": 44967
     },
     {
       "path": "shared/design-system/layout.css",
@@ -14823,8 +14823,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "d2137d629105d81b8e529f4d5941b220eaa32a475a92511c5698df288abd0529",
-      "bytes": 19000
+      "sha256": "a52fc2a320e4d5e5da1dc522d94eac89d031e507606551bb7f21b54948bfb82c",
+      "bytes": 20233
     },
     {
       "path": "tests/e2e/guest.cdp.js",
@@ -15292,7 +15292,7 @@
       "functional_title": "Accessible tabs integration contracts",
       "current_responsibility": "Verifies Customer/Admin loading order, Service Worker precache, and feature wiring.",
       "next_action": "Run with npm test.",
-      "sha256": "0c185da87db0b46937de6ebb6c0c3480bf3b84974a16cfd5e8d3d3bdcda08afc",
+      "sha256": "dd79e3f5ee8e30852a4171f73b08ed546e38e57e75dc9c1142e42a4036e87bc6",
       "bytes": 1367
     },
     {
@@ -15563,8 +15563,8 @@
       "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after implementation (Customer routing/session batch).",
-      "sha256": "ac4995c1ef6df38add4334435e23fbd2dbbd4992fae8af7a70b89fa2dffdf174",
-      "bytes": 13262
+      "sha256": "b13ee4fd76a131c33914cb033473a109414baf157c0ebe51837f3e46c680e374",
+      "bytes": 14621
     },
     {
       "path": "tests/unit/customer-screen-focus.test.js",
@@ -15700,7 +15700,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "d1b39340bf421ba1dfe7ebc26b47e906a876030d2063582d919df4a038ad679e",
+      "sha256": "2b06e0099f9a0f951492d0fd4a46c053cb45170aa5bb2aa6822e1a2aac2f3d2e",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -16167,7 +16167,7 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "9adb3d112dfff5f76838ccf938db9fd1afb8786a1885349fee7e68eb7690f541",
+      "sha256": "eb365413b0cae8b19e4b70b276e024669370d57f16f9e9b6d057bd5877cb324e",
       "bytes": 6951
     },
     {
@@ -16551,7 +16551,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "0c763c0f9b1a3da5d64f52d6ba8ce3451e7e63c3b2c81954e1b853696bb9cd4e",
+      "sha256": "cdeef8e7f136568c7fdcf6bfc5dffc1b0bea65e7e08545f83fd4fc1667fd2b0f",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",

@@ -91,6 +91,15 @@ withBrowser(async ({ wsUrl }) => {
   ok(await d.waitFor('!!window.__actor || !!window.__err', 15000) && await d.evaluate('window.__actor && window.__actor.role === "customer" && window.__actor.name === "منى"'), 'quick account registered as a customer without SMS: ' + await d.evaluate('JSON.stringify(window.__actor || window.__err)'));
   const quickReq = await d.evaluate(`HSOrdersApi.create({ cat:'plumbing', serviceName:'تسريب', desc:'تسريب حوض', gov:'القاهرة', area:'المعادي', addr:'شارع 9' }).then(r => r.status)`);
   ok(quickReq === 201, 'a quick-account customer can place a request: ' + quickReq);
+  /* the account form itself: choose «email», create an account — no second dialog, no SMS */
+  await d.evaluate(`HSBackend.signOut().then(() => { HSCustomerSession.signOut(); location.hash = '#/account'; }); true`);
+  ok(await d.waitFor('!!document.querySelector("#loginFormAcc input[name=method][value=email]")', 15000), 'account page shows the sign-in methods');
+  await d.evaluate(`(() => { const f = document.querySelector('#loginFormAcc'); const r = f.querySelector('input[name=method][value=email]'); r.checked = true; r.dispatchEvent(new Event('change', { bubbles: true }));
+    f.querySelector('#account-login-name').value = 'هالة'; f.querySelector('#account-login-phone').value = '01044445555';
+    f.querySelector('#account-login-email').value = 'hala@example.com'; f.querySelector('#account-login-password').value = 'pass-123456';
+    f.requestSubmit(); return true; })()`);
+  ok(await d.waitFor('HSBackend.actor && HSBackend.actor.role === "customer" && HSBackend.actor.name === "هالة"', 15000), 'email sign-up from the form registers the customer: ' + await d.evaluate('JSON.stringify(HSBackend.actor)'));
+  ok(!(await d.evaluate('!!document.querySelector("dialog[open]")')), 'no extra dialog was needed');
   /* ── Admin app (browser): email sign-in in the app dialog → first owner → workforce through the real page ── */
   await emailAccount(OWNER_EMAIL, 'emulator-only-1', true);                     // owner verified their email (emulator)
   const ADMIN = BASE + '/apps/admin/index.html?backend=firebase&emulators=1';

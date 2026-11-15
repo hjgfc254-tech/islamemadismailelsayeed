@@ -183,6 +183,22 @@ test('app: editing the address bar (hashchange) navigates; sign-in validation us
   assert.equal(guest.local._map.get('hs_user') ?? null, null);
 });
 
+test('app: the sign-in form offers quick, email and SMS methods plus guest browsing; email needs a valid address and password', async () => {
+  const guest = boot({ hash: '#/account' });
+  const html = guest.html();
+  for (const m of ['quick', 'email', 'phone']) assert.match(html, new RegExp(`name="method" value="${m}"`), m);
+  assert.match(html, /name="method" value="quick" checked/, 'quick continue is the default');
+  assert.match(html, /data-go="home">تصفح كزائر/, 'guests can keep browsing without signing in');
+  assert.match(html, /class="login-email" hidden/, 'email fields stay hidden until chosen');
+  await guest.submitDoc('loginFormAcc', { method: 'email', name: 'سارة', phone: '01011112222', email: 'not-an-email', password: '123456' });
+  assert.match(guest.toast(), /بريدًا إلكترونيًا صحيحًا/);
+  await guest.submitDoc('loginFormAcc', { method: 'email', name: 'سارة', phone: '01011112222', email: 'sara@example.com', password: '123' });
+  assert.match(guest.toast(), /6 أحرف/);
+  assert.equal(guest.local._map.get('hs_user') ?? null, null, 'nothing stored on invalid input');
+  await guest.submitDoc('loginFormAcc', { method: 'quick', name: 'سارة', phone: '01011112222' });
+  assert.match(guest.local._map.get('hs_user') || '', /01011112222/, 'quick continue signs in (local demo mode)');
+});
+
 test('app: editing the address bar while a stacked screen is open still opens the typed link (popstate fires first)', async () => {
   const app = boot();
   app.run("startRequest()");                       // wizard open → state.stack = ['wizard']

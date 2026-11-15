@@ -239,10 +239,22 @@ async function start() {
     /** Customer: signed in (any method) and registered server-side. */
     verifiedCustomer() { return !!(auth.currentUser && actor && actor.role === 'customer'); },
     /** Customer sign-in + registration: quick account, email or SMS (the user chooses); name + contact phone. */
-    async verifyCustomer(name, phone) {
+    async verifyCustomer(name, phone, opts) {
       const u = auth.currentUser;
       const usable = u && (!u.phoneNumber || normalized(u) === String(phone).trim());
-      if (!usable && !(await customerSignIn(phone))) throw new Error('cancelled');
+      if (opts && opts.method) {
+        /* the method was chosen in the form: run it directly (no second dialog) */
+        try {
+          if (opts.method === 'email') {
+            const email = String(opts.email || '').trim();
+            if (!(u && u.email && u.email.toLowerCase() === email.toLowerCase())) {
+              if (opts.mode === 'login') await A.signInWithEmailAndPassword(auth, email, opts.password);
+              else { const cred = await A.createUserWithEmailAndPassword(auth, email, opts.password); A.sendEmailVerification(cred.user).catch(() => {}); }
+            }
+          } else if (opts.method === 'phone') { if (!(u && normalized(u) === String(phone).trim())) await phoneSignIn(phone); }
+          else if (!usable) await A.signInAnonymously(auth);     // quick: reuse any existing session on this device
+        } catch (e) { if (e && e.message === 'cancelled') throw e; throw new Error(authMsg(e)); }
+      } else if (!usable && !(await customerSignIn(phone))) throw new Error('cancelled');
       const body = auth.currentUser.phoneNumber ? { name } : { name, phone: String(phone).trim() };
       const r = (await callSession({ op: 'registerCustomer', ...body })).data;
       actor = r.actor; applySnapshot(r.db); reflectSession(actor, r.db);
