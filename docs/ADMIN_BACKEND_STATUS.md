@@ -6,7 +6,7 @@ refused with an explicit message (HTTP-like 501), never simulated. Pages that ar
 show "not connected to the server yet" instead of fixtures. In local mode (development and tests) every page keeps
 its fixtures.
 
-## Live (11 of 24 pages)
+## Live (12 of 24 pages)
 
 | Page | Data (collections) | Real actions (routes) | Refused (no server route) |
 |---|---|---|---|
@@ -16,17 +16,17 @@ its fixtures.
 | providers | providers (+ reviews for rating) | Approve, reject or suspend (`POST /admin/providers/:id/status`; rejection only for pending, enforced server-side) | Notes; per-document review (the backend stores one documents field) |
 | complaints | complaints (+ requests, customers, providers) | Resolve (`POST /complaints/:id/resolve`) | Dismiss, classify, assign, notes |
 | reviews | reviews (+ requests, customers, providers) | — (read-only) | Hide/publish moderation: no route exists |
+| quotes | quotes (+ requests, customers, providers) | — (read-only) | Approve/reject/return: on the server the decision belongs to the customer (`/quote/approve`, `/quote/reject`); the backend has no quote expiry, so none is shown |
 | categories | The real service catalogue (`CAT`: categories → devices/work types, problem counts) | — (read-only) | Create, edit, move, activate: the catalogue is code; editing needs a server catalogue |
 | workforce, employee details, roles, permissions | employees, admins, system/rbac | Invite, edit, status, re-invite; roles; overrides | — |
 
 The dashboard route shows live counts (`GET /admin/summary`, aggregation queries) inside its gate.
 
-## Gated (13 pages): what each needs
+## Gated (12 pages): what each needs
 | Page | Missing backend piece or business rule |
 |---|---|
 | dashboard (full page), super-dashboard | KPI definitions beyond the 6 live counts (trend periods, targets) are not specified; the live counts are shown |
 | finance-dashboard, commissions, settlements, reports | Settlement entity and payout workflow are not defined in the business rules. Collection and commission routes exist and are used by the marketplace page. Mapping the fixture KPIs needs an agreed formula set (see `docs/API_CONTRACTS.md` business rules). |
-| quotes | Admin quote decisions (return, expire) have no business rule. A read-only mapping is possible once the page's FLOW is reconciled with server quote states (pending, approved, rejected, superseded). |
 | notifications | Broadcast campaigns and delivery logs have no backend (no SMS, email or push provider) |
 | services | The page's fixed category list does not match the real 7 categories; it needs the real catalogue as its category source and a server catalogue for editing |
 | departments | Departments are a fixed list in the workforce module; no department entity exists |

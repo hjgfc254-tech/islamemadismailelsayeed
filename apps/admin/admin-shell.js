@@ -145,7 +145,7 @@
   const firebaseMode = () => !!(root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase');
   /* marketplace = providers/requests/assignment/finance/complaints on the API; workforce/roles/permissions = server RBAC */
   const LIVE_PAGES = new Set(['marketplace', 'workforce', 'employee-details', 'roles', 'permissions',
-    'orders', 'customers', 'providers', 'complaints', 'reviews', 'categories']);   /* these read real data via HSAdminLive (modules/admin-live.js); categories = the real catalogue, read-only */
+    'orders', 'customers', 'providers', 'complaints', 'reviews', 'categories', 'quotes']);   /* these read real data via HSAdminLive (modules/admin-live.js); categories = the real catalogue, read-only */
   const notConnectedView = (id, title) => `<div class="adm-state is-soon" data-adm-not-connected="${esc(id)}">${icon('info')}<h2>${esc(title)} — غير مرتبطة بالخادم بعد</h2><p>هذه الصفحة ما زالت مبنية على بيانات تجريبية محلية، لذلك لا تُعرض في بيئة الإنتاج. العمليات الحية متاحة في «تشغيل السوق» و«فريق العمل».</p>${id === DEFAULT_ROUTE ? '<div data-adm-live-summary role="status" aria-live="polite"><p>جارٍ تحميل الأرقام الحية من الخادم…</p></div>' : ''}<a class="adm-btn adm-btn-p" href="#/marketplace">فتح تشغيل السوق</a></div>`;
   const SUMMARY_LABELS = { requests: 'كل الطلبات', unassigned: 'طلبات بلا مقدم خدمة', providers: 'مقدمو الخدمة', pending: 'تسجيلات بانتظار المراجعة', openComplaints: 'شكاوى مفتوحة', uncollected: 'عمولات غير محصّلة' };
   const fillLiveSummary = (token) => {

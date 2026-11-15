@@ -135,6 +135,8 @@
   };
 
   const render = () => {
+    const L = root.HSAdminLive && root.HSAdminLive.enabled() ? root.HSAdminLive : null;   /* Firebase mode: real quotes, read-only */
+    if (L) quotes = L.rows('quotes');
     const wrap = root.document.createElement('div'); wrap.className = 'ord qt';
     wrap.innerHTML = `<div class="fin-banner" role="note">${icon('info')}<span>بيانات تجريبية محلية — عروض الأسعار مشتقة من الطلبات التجريبية، والقرارات هنا محاكاة: لا تتغير حالة أي طلب، ولا يُرسل شيء للعميل أو المزود، ولا يتحرك أي مال. تُفقد القرارات عند إعادة التحميل. تاريخ العرض الثابت: ${esc(dt(DEMO_NOW))}.</span></div>
       <div id="qt-sum"></div><div id="qt-grid"></div><dialog class="ord-dlg" id="qt-dlg" aria-labelledby="ord-dlg-t"></dialog>`;
@@ -155,6 +157,7 @@
     const showErr = (m) => { const e = dlgEl.querySelector('#ord-err'); if (e) { e.textContent = m; e.hidden = !m; } };
     d.onClick((b) => {
       if (!st) return;
+      if (L && (b.hasAttribute('data-qt-act') || b.hasAttribute('data-qt-confirm'))) { showErr('القرار في عروض الأسعار للعميل وحده على الخادم — لم يُنفَّذ أي تغيير.'); return; }
       if (b.hasAttribute('data-qt-act')) { st.action = b.getAttribute('data-qt-act'); st.stage = 'confirm'; st.note = ''; st.msg = ''; paintDlg('#qt-note'); }
       else if (b.hasAttribute('data-qt-back')) { st.stage = 'view'; st.action = null; paintDlg('[data-qt-act]'); }
       else if (b.hasAttribute('data-qt-confirm')) {

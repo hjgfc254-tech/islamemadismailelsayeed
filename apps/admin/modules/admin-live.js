@@ -70,6 +70,17 @@
         log: [{ kind: 'open', text: 'شكوى مسجلة على الخادم', at: k.at }].concat(k.status === 'resolved' ? [{ kind: 'status', text: 'تم الحل: ' + (k.resolution || ''), at: k.at }] : [])
       };
     }),
+    /* real quotes; decisions belong to the customer (quote/approve|reject) — the Admin page is read-only here.
+       The backend has no expiry concept, so validUntil stays empty (never shown as expired). */
+    quotes: () => {
+      const MAPQ = { pending: 'submitted', approved: 'approved', rejected: 'rejected', superseded: 'returned' };
+      return (db().quotes || []).map((q) => {
+        const r = (db().serviceRequests || []).find((x) => x.id === q.reqId) || {};
+        return { id: q.id, ref: r.no ? r.no + ' / ' + String(q.id).slice(-4) : q.id, orderNo: r.no || '', customer: nameOf('customers', r.customerId) || '—',
+          provider: nameOf('providers', q.providerId) || '—', service: r.serviceName || '', category: r.catName || catName(r.cat), amount: +q.total || 0,
+          submittedOn: String(q.at || '').slice(0, 10), validUntil: null, status: MAPQ[q.status] || 'submitted' };
+      });
+    },
     /* the real service catalogue (services/local-catalog.js, CAT): categories as roots, their devices/work types as children */
     categories: () => {
       if (typeof CAT === 'undefined' || !CAT.db) return [];
