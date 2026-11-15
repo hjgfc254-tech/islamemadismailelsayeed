@@ -365,7 +365,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md).",
-      "sha256": "2f5d9a29e35d5458af446e8b422a8daa7cae45bbb5f325e811060f8f6e10ec66",
+      "sha256": "848fa29dcc82830dd6ecfaf72660e9e9d1626939185bfa65cff503e9c397f688",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -402,7 +402,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 24648
+      "bytes": 24696
     },
     {
       "path": "apps/admin/app.js",
@@ -711,8 +711,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "4003418f0290b1a5d6b1d75d1b517630806c2253a81f5c11c0da893b3079f5a3",
-      "bytes": 7201
+      "sha256": "eaa48a8777a92c4c1c3eb6fb0278722d91900f2c6e56e773ff19ff04b7f1ad69",
+      "bytes": 8019
     },
     {
       "path": "apps/admin/modules/audit/audit-details.js",
@@ -1120,7 +1120,7 @@
       "next_action": "Done. Next: apps/admin/pages/complaints-management.page.js.",
       "explicit_references": [],
       "notes": "Pure logic unit-tested in tests/unit/categories-management.test.js (cycle prevention, depth limit, re-parenting, sibling order); browser-checked (Playwright, ad hoc) at 1280/768/390px. Not linked to the services page category list (still a fixed local list there). No permission enforcement, no persistence.",
-      "sha256": "ca7e5853908ee1a847d7b66b9d1f6a4c14a7b67f8ad5fb0d9ab402f337ebd68e",
+      "sha256": "0e0e0d40d4f3ce2d5c9810366547925bcbae3cd602da4089ec05a1de3ad908e0",
       "resolved_dependencies": [
         "apps/admin/admin-shell.js",
         "shared/components/status-badge.js",
@@ -1161,7 +1161,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 18198
+      "bytes": 18635
     },
     {
       "path": "apps/admin/pages/commissions.page.js",
@@ -8186,8 +8186,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "6c718ad6470ba398dab404a7280b169ae453a71636c19e2f40ad9122c08e8cbc",
-      "bytes": 3875
+      "sha256": "0c1afbf137ee9eab89d15a9428c7b9d7a845027ef1280daebbd5bddcf7a0146c",
+      "bytes": 4102
     },
     {
       "path": "docs/ADMIN_MODULES.md",
@@ -8462,7 +8462,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "b54e0bcb07883ae9a782b041627275343a23541eda6642882a7446d73bf7bc0c",
+      "sha256": "b30700f83eff2fc393c7b02a7fdb52629e7a96546f2f98b4ee6f0500860baeea",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "START_HERE.md",
@@ -8471,7 +8471,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 5361
+      "bytes": 5371
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -14857,8 +14857,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "1b23a0f6a63fb2d482d6ffa95ce733ed38c17d5d8d811a4f7d2fb1f336d405b9",
-      "bytes": 9574
+      "sha256": "5801cc46c60b0273c7083965c337ddcc5341d2b8c9d70cf8d88e64927605b846",
+      "bytes": 10095
     },
     {
       "path": "tests/unit/frontend-contracts.test.js",

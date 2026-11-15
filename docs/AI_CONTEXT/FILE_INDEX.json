@@ -90,8 +90,8 @@
       "path": "apps/admin/admin-shell.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL, DEMO)",
-      "bytes": 24648,
-      "sha256": "2f5d9a29e35d5458af446e8b422a8daa7cae45bbb5f325e811060f8f6e10ec66"
+      "bytes": 24696,
+      "sha256": "848fa29dcc82830dd6ecfaf72660e9e9d1626939185bfa65cff503e9c397f688"
     },
     {
       "path": "apps/admin/app.js",
@@ -139,8 +139,8 @@
       "path": "apps/admin/modules/admin-live.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 7201,
-      "sha256": "4003418f0290b1a5d6b1d75d1b517630806c2253a81f5c11c0da893b3079f5a3"
+      "bytes": 8019,
+      "sha256": "eaa48a8777a92c4c1c3eb6fb0278722d91900f2c6e56e773ff19ff04b7f1ad69"
     },
     {
       "path": "apps/admin/modules/audit/audit-details.js",
@@ -202,8 +202,8 @@
       "path": "apps/admin/pages/categories-management.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 18198,
-      "sha256": "ca7e5853908ee1a847d7b66b9d1f6a4c14a7b67f8ad5fb0d9ab402f337ebd68e"
+      "bytes": 18635,
+      "sha256": "0e0e0d40d4f3ce2d5c9810366547925bcbae3cd602da4089ec05a1de3ad908e0"
     },
     {
       "path": "apps/admin/pages/commissions.page.js",
@@ -1301,8 +1301,8 @@
       "path": "docs/ADMIN_BACKEND_STATUS.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 3875,
-      "sha256": "6c718ad6470ba398dab404a7280b169ae453a71636c19e2f40ad9122c08e8cbc"
+      "bytes": 4102,
+      "sha256": "0c1afbf137ee9eab89d15a9428c7b9d7a845027ef1280daebbd5bddcf7a0146c"
     },
     {
       "path": "docs/ADMIN_MODULES.md",
@@ -1392,8 +1392,8 @@
       "path": "docs/AI_CONTEXT/START_HERE.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 5361,
-      "sha256": "b54e0bcb07883ae9a782b041627275343a23541eda6642882a7446d73bf7bc0c"
+      "bytes": 5371,
+      "sha256": "b30700f83eff2fc393c7b02a7fdb52629e7a96546f2f98b4ee6f0500860baeea"
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -2911,8 +2911,8 @@
       "path": "tests/unit/firebase-mode-data.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 9574,
-      "sha256": "1b23a0f6a63fb2d482d6ffa95ce733ed38c17d5d8d811a4f7d2fb1f336d405b9"
+      "bytes": 10095,
+      "sha256": "5801cc46c60b0273c7083965c337ddcc5341d2b8c9d70cf8d88e64927605b846"
     },
     {
       "path": "tests/unit/frontend-contracts.test.js",

@@ -70,6 +70,18 @@
         log: [{ kind: 'open', text: 'شكوى مسجلة على الخادم', at: k.at }].concat(k.status === 'resolved' ? [{ kind: 'status', text: 'تم الحل: ' + (k.resolution || ''), at: k.at }] : [])
       };
     }),
+    /* the real service catalogue (services/local-catalog.js, CAT): categories as roots, their devices/work types as children */
+    categories: () => {
+      if (typeof CAT === 'undefined' || !CAT.db) return [];
+      const c = CAT.db(), out = [];
+      (c.categories || []).forEach((k, i) => {
+        const items = (c.items || []).filter((it) => it.cat === k.id);
+        out.push({ id: 'cat:' + k.id, parentId: null, name: k.name, status: k.active === false ? 'inactive' : 'active', services: items.length, order: i + 1 });
+        items.forEach((it, j) => out.push({ id: 'item:' + it.id, parentId: 'cat:' + k.id, name: it.name, status: it.active === false ? 'inactive' : 'active',
+          services: (c.problems || []).filter((p) => p.item === it.id).length, order: j + 1 }));
+      });
+      return out;
+    },
     reviews: () => (db().reviews || []).map((v) => {
       const req = (db().serviceRequests || []).find((r) => r.id === v.reqId);
       return { id: v.id, customer: nameOf('customers', v.customerId) || '—', provider: nameOf('providers', v.providerId) || '—', orderNo: req ? req.no : '', rating: +v.stars || 0, text: v.comment || '', created: v.at, status: 'published', report: null, log: [] };

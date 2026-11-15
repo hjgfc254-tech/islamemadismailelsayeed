@@ -127,6 +127,8 @@
   };
 
   const render = () => {
+    const L = root.HSAdminLive && root.HSAdminLive.enabled() ? root.HSAdminLive : null;   /* Firebase mode: the real catalogue, read-only */
+    if (L) cats = L.rows('categories');
     const wrap = root.document.createElement('div'); wrap.className = 'ord';
     wrap.innerHTML = `<p class="dash-note">بيانات تجريبية محلية — ليست شجرة التصنيفات الفعلية، وأي تغيير يُفقد عند إعادة التحميل.</p>
       <div id="ord-sum"></div><div class="cat-tools"><button type="button" class="adm-btn" data-cat-all="expand">توسيع الكل</button><button type="button" class="adm-btn" data-cat-all="collapse">طي الكل</button></div>
@@ -156,6 +158,7 @@
     });
     const save = () => {
       const values = { name: dlgEl.querySelector('#cat-name').value, parentId: dlgEl.querySelector('#cat-parent').value || null };
+      if (L) { st = { values, errors: {}, message: L.UNSUPPORTED }; paintDlg(); return; }   /* catalogue editing has no server route yet */
       try {
         if (openId) { cats = updateCategory(cats, openId, values); st = { message: 'تم حفظ التعديلات محليًا.' }; sync(); paintDlg('#cat-name'); }
         else { cats = createCategory(cats, values); openId = cats[cats.length - 1].id; st = { message: 'أُضيف التصنيف محليًا.' }; sync(); paintDlg('[data-ord-close]'); }
@@ -166,6 +169,7 @@
     };
     dlgEl.addEventListener('submit', (e) => { e.preventDefault(); save(); });
     d.onClick((b) => {
+      if (L && (b.dataset.ordStatus || b.dataset.catMove)) { st = { message: L.UNSUPPORTED }; paintDlg(); return; }
       try {
         if (b.hasAttribute('data-cat-save')) save();
         else if (b.dataset.ordStatus) { cats = setStatus(cats, openId, b.dataset.ordStatus); st = {}; sync(); paintDlg('[data-ord-close]'); }
