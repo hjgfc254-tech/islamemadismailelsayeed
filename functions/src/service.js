@@ -13,6 +13,7 @@
 'use strict';
 const runtime = require('./runtime');
 const { keyOf, colName, KNOWN_ARRAYS } = require('./store');
+const crypto = require('crypto');
 const { PartialDb } = require('./partial');
 const { plan, syncPlan } = require('./plan');
 const { normalizePhone, APPS } = require('./identity');
@@ -106,11 +107,48 @@ async function notifyChanges(backend, changes, db, actorUid) {
   if (!Object.keys(changes).length) return;
   const tags = affectedTags(changes, db);
   const uids = new Set(actorUid ? [actorUid] : []);
+  const uidsByTag = new Map();
   for (let i = 0; i < tags.length; i += 30) {
-    for (const d of await backend.queryDocs('users', 'tag', 'in', tags.slice(i, i + 30))) uids.add(d.id);
+    for (const d of await backend.queryDocs('users', 'tag', 'in', tags.slice(i, i + 30))) {
+      uids.add(d.id);
+      const t = d.data && d.data.tag; if (t) uidsByTag.set(t, (uidsByTag.get(t) || []).concat(d.id));
+    }
   }
   for (const d of await backend.queryDocs('admins', 'status', '==', 'active')) uids.add(d.id);
   if (uids.size) await backend.signal([...uids]);
+  try { await pushFresh(backend, changes, db, uidsByTag); }
+  catch (e) { if (backend.log) backend.log('push failed', e && e.message); }   // a push failure never fails the request
+}
+
+/* ── Web push (FCM): every NEW in-app notification for a customer/provider also goes to that user's registered
+   devices. Data-only messages; the service worker renders them (title, body, deep link). ── */
+const PUSH_FRESH_MS = 2 * 60 * 1000;
+const pushLink = n => {
+  const [role] = String(n.to).split(':');
+  if (role === 'provider') return 'apps/provider/index.html#/' + (n.reqId ? 'request/' + encodeURIComponent(n.reqId) : 'notifications');
+  return 'apps/customer/index.html#/' + (n.reqId ? 'track/' + encodeURIComponent(n.reqId) : 'home');
+};
+async function pushFresh(backend, changes, db, uidsByTag) {
+  if (!backend.sendPush || !changes.notifications) return;
+  const now = Date.now();
+  const fresh = (changes.notifications.set || [])
+    .map(id => (db.notifications || []).find(n => keyOf('notifications', n) === id))
+    .filter(n => n && !n.read && typeof n.to === 'string' && /^(customer|provider):/.test(n.to) && now - Date.parse(n.at) < PUSH_FRESH_MS);
+  if (!fresh.length) return;
+  const uids = [...new Set(fresh.flatMap(n => uidsByTag.get(n.to) || []))];
+  if (!uids.length) return;
+  const tokensByUid = new Map();
+  for (let i = 0; i < uids.length; i += 30) {
+    for (const d of await backend.queryDocs('pushTokens', 'uid', 'in', uids.slice(i, i + 30))) {
+      tokensByUid.set(d.data.uid, (tokensByUid.get(d.data.uid) || []).concat({ id: d.id, token: d.data.token }));
+    }
+  }
+  for (const n of fresh) {
+    const devices = (uidsByTag.get(n.to) || []).flatMap(u => tokensByUid.get(u) || []);
+    if (!devices.length) continue;
+    const dead = await backend.sendPush(devices.map(x => x.token), { title: 'هنصلحلك', body: String(n.text || '').slice(0, 180), link: pushLink(n), tag: n.reqId ? 'req-' + n.reqId : 'hs' });
+    for (const token of dead || []) { const dv = devices.find(x => x.token === token); if (dv) await backend.deleteDoc(`pushTokens/${dv.id}`); }
+  }
 }
 
 async function linkUser(backend, uid, actor, app) {
@@ -287,6 +325,25 @@ async function session(backend, { auth, data }) {
       const actor = { role: 'customer', id: out.result.id, name: out.result.name };
       await linkUser(backend, token.uid, actor, 'customer');
       return { actor, db: scopeFor(out.db, actor) };
+    }
+    case 'registerPush': {
+      /* a device's FCM token, bound to the signed-in uid (server-side only: clients cannot read or write pushTokens) */
+      if (!token) fail('unauthenticated', 'سجّل الدخول أولًا');
+      const t = typeof d.token === 'string' ? d.token.trim() : '';
+      if (!/^[\w:-]{100,4096}$/.test(t)) fail('invalid-argument', 'رمز الجهاز غير صالح');
+      await rateLimit(backend, token.uid);
+      const id = crypto.createHash('sha256').update(t).digest('hex');
+      await backend.setDoc(`pushTokens/${id}`, { token: t, uid: token.uid, app, updatedAt: new Date().toISOString() });
+      return { ok: true };
+    }
+    case 'unregisterPush': {
+      if (!token) return { ok: true };
+      const t = typeof d.token === 'string' ? d.token.trim() : '';
+      if (!t) return { ok: true };
+      const id = crypto.createHash('sha256').update(t).digest('hex');
+      const cur = await backend.getDoc(`pushTokens/${id}`);
+      if (cur && cur.uid === token.uid) await backend.deleteDoc(`pushTokens/${id}`);
+      return { ok: true };
     }
     case 'claimOwner': {
       if (!token || !token.email || !token.email_verified) fail('unauthenticated', 'verified email sign-in required');

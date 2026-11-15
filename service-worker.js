@@ -18,7 +18,7 @@
    • CLEAR_CACHE  — مسح كل الكاش (لأدوات العرض التجريبي).
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'hansalhlak-v11-firebase-4';
+const CACHE = 'hansalhlak-v11-firebase-5';
 
 /* الملفات الأساسية — يجب أن تعمل offline بعد أول زيارة */
 const FILES = [
@@ -91,6 +91,7 @@ const FILES = [
   'assets/vendor/firebase/13.1.0/firebase-auth.js',
   'assets/vendor/firebase/13.1.0/firebase-functions.js',
   'assets/vendor/firebase/13.1.0/firebase-database.js',
+  'assets/vendor/firebase/13.1.0/firebase-messaging.js',
   'assets/app-icon-192.png',
   'assets/app-icon-512.png',
   'assets/brand/logo-v10-mark.webp',
@@ -199,4 +200,29 @@ self.addEventListener('message', event => {
   if (data.type === 'CLEAR_CACHE') {
     event.waitUntil(caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k)))));
   }
+});
+/* ═════════ Web push (FCM, data-only) ═════════
+   The server sends {title, body, link, tag}. Shown as a system notification unless the app is open and focused (the
+   in-app notifications already update live). Tapping opens/focuses the app at the deep link (relative to this scope). */
+self.addEventListener('push', event => {
+  let d = {};
+  try { const p = event.data ? event.data.json() : {}; d = p.data || p; } catch (e) { d = {}; }
+  event.waitUntil((async () => {
+    const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    if (wins.some(w => w.focused && w.visibilityState === 'visible')) return;
+    await self.registration.showNotification(d.title || 'هنصلحلك', {
+      body: d.body || '', icon: 'assets/app-icon-192.png', badge: 'assets/app-icon-192.png',
+      dir: 'rtl', lang: 'ar', tag: d.tag || 'hs', renotify: true, data: { link: d.link || 'apps/customer/index.html' }
+    });
+  })());
+});
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const url = new URL((event.notification.data && event.notification.data.link) || 'apps/customer/index.html', self.registration.scope).href;
+  event.waitUntil((async () => {
+    const wins = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    const same = wins.find(w => w.url.split('#')[0] === url.split('#')[0]);
+    if (same) { try { await same.navigate(url); } catch (e) {} return same.focus(); }
+    return self.clients.openWindow(url);
+  })());
 });

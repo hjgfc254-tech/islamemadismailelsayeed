@@ -288,6 +288,46 @@ test('customer sign-up without SMS: email or quick (anonymous) account bound by 
   const viaOtp = await reg(SARA, { name: 'سارة' });
   assert.equal(b.col('customers').find(c => c.id === viaOtp.actor.id).phoneVerified, true, 'phone OTP sign-up is unchanged and marked verified');
 });
+test('web push: devices register per uid; a new notification is pushed only to its owner; dead tokens are cleaned', async () => {
+  const b = await setup();
+  const sent = [];
+  b.deleteDoc = async p => { b.docs.delete(p); };
+  b.sendPush = async (tokens, msg) => { sent.push({ tokens, msg }); return tokens.filter(t => t.startsWith('dead')); };
+  const T = c => c.repeat(120);
+  const reg = (auth, app, token) => service.session(b, { auth, data: { op: 'registerPush', app, token } });
+
+  await assert.rejects(reg(null, 'customer', T('a')), /سجّل الدخول/, 'anonymous callers cannot register devices');
+  await assert.rejects(reg(SARA, 'customer', 'short'), /غير صالح/);
+  await service.session(b, { auth: SARA, data: { op: 'registerCustomer', name: 'سارة' } });
+  await reg(SARA, 'customer', T('a'));
+  await reg(SARA, 'customer', 'dead' + T('b'));
+  assert.equal(b.col('pushTokens').length, 2);
+  assert.ok(b.col('pushTokens').every(x => x.uid === 'u_sara'), 'tokens are bound to the caller uid');
+
+  const regP = await call(b, KARIM, 'provider', 'POST', '/providers/register', PROVIDER_FORM);
+  await call(b, OWNER, 'admin', 'POST', `/admin/providers/${regP.data.id}/status`, { status: 'approved' });
+  await reg(KARIM, 'provider', T('k'));
+  await service.session(b, { auth: KARIM, data: { op: 'sync', app: 'provider' } });   // links users/u_karim → provider tag
+
+  sent.length = 0;
+  const id = (await call(b, SARA, 'customer', 'POST', '/requests', REQ)).data.id;
+  const toProvider = sent.find(s => s.tokens.includes(T('k')));
+  assert.ok(toProvider, 'the matched provider is pushed about the new request');
+  assert.match(toProvider.msg.link, /^apps\/provider\/index\.html#\/request\//);
+  assert.ok(!sent.some(s => s.tokens.includes(T('a'))) || sent.find(s => s.tokens.includes(T('a'))).msg.link.startsWith('apps/customer/'), 'customer pushes deep-link to the customer app');
+
+  sent.length = 0;
+  await call(b, KARIM, 'provider', 'POST', `/requests/${id}/respond`, { accept: true });
+  const toSara = sent.find(s => s.tokens.includes(T('a')));
+  assert.ok(toSara && /^apps\/customer\/index\.html#\/track\//.test(toSara.msg.link), 'the customer is pushed when the provider accepts');
+  assert.ok(!sent.some(s => s.tokens.includes(T('k')) && s === toSara), 'no cross-user delivery');
+  assert.equal(b.col('pushTokens').some(x => x.token.startsWith('dead')), false, 'tokens FCM reports as dead are removed');
+
+  await service.session(b, { auth: KARIM, data: { op: 'unregisterPush', token: T('a') } });
+  assert.ok(b.col('pushTokens').some(x => x.token === T('a')), 'another user cannot unregister my device');
+  await service.session(b, { auth: SARA, data: { op: 'unregisterPush', token: T('a') } });
+  assert.equal(b.col('pushTokens').some(x => x.token === T('a')), false, 'the owner can unregister on sign-out');
+});
 test('customer map pin: validated server-side, stored clean, released to the provider only after acceptance', async () => {
   const b = await setup();
   await service.session(b, { auth: SARA, data: { op: 'registerCustomer', name: 'سارة' } });

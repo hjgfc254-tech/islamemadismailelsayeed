@@ -88,7 +88,6 @@ hansalhlak/
 │   │   ├── customer-router.js
 │   │   ├── customer-session.js
 │   │   ├── index.html
-│   │   ├── intro-3d.js
 │   │   └── README.md
 │   ├── guest/
 │   │   ├── guest-entry.js
@@ -128,8 +127,6 @@ hansalhlak/
 │   │   ├── logo-v10-lockup.webp
 │   │   ├── logo-v10-mark.webp
 │   │   ├── logo-v10-word.webp
-│   │   ├── logo-wordmark-light.png
-│   │   ├── logo-wordmark.png
 │   │   ├── README.md
 │   │   └── trust-handshake.jpg
 │   ├── icons/
@@ -224,20 +221,12 @@ hansalhlak/
 │   │   │       ├── firebase-app.js
 │   │   │       ├── firebase-auth.js
 │   │   │       ├── firebase-database.js
-│   │   │       └── firebase-functions.js
-│   │   ├── gsap.min.js
+│   │   │       ├── firebase-functions.js
+│   │   │       └── firebase-messaging.js
 │   │   ├── lucide.LICENSE.txt
-│   │   ├── README.md
-│   │   ├── three.LICENSE.txt
-│   │   └── three.module.min.js
+│   │   └── README.md
 │   ├── app-icon-192.png
-│   ├── app-icon-512.png
-│   ├── icon.svg
-│   ├── logo-mark.webp
-│   ├── logo-word.webp
-│   ├── slide-guide.svg
-│   ├── slide-latest.svg
-│   └── slide-popular.svg
+│   └── app-icon-512.png
 ├── backend/
 │   ├── src/
 │   │   ├── config/

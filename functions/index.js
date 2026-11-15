@@ -40,6 +40,23 @@ const backend = {
     return out;
   },
   async revokeSessions(uid) { await admin.auth().revokeRefreshTokens(uid); },
+  async deleteDoc(p) { await fs.doc(p).delete(); },
+  log: (msg, detail) => logger.warn(msg, { detail }),
+  /** FCM web push, data-only (the service worker renders it). Returns tokens FCM reports as dead, for cleanup. */
+  async sendPush(tokens, msg) {
+    if (!tokens.length) return [];
+    const res = await admin.messaging().sendEachForMulticast({
+      tokens: tokens.slice(0, 500),
+      data: { title: msg.title, body: msg.body, link: msg.link, tag: msg.tag || 'hs' },
+      webpush: { headers: { Urgency: 'high', TTL: '86400' } }
+    });
+    const dead = [];
+    res.responses.forEach((r, i) => {
+      const code = r.error && r.error.code;
+      if (code === 'messaging/registration-token-not-registered' || code === 'messaging/invalid-registration-token' || code === 'messaging/invalid-argument') dead.push(tokens[i]);
+    });
+    return dead;
+  },
   env: { bootstrapEmails: String(process.env.ADMIN_BOOTSTRAP_EMAILS || '').split(',').map(s => s.trim()).filter(Boolean) }
 };
 

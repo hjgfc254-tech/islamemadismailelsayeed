@@ -277,7 +277,24 @@ async function start() {
       if (!r.actor) { alert('هذا الحساب ليس له صلاحية إدارة.'); return null; }
       location.reload(); return actor;
     },
-    async signOut() { await A.signOut(auth); actor = null; try { localStorage.removeItem('hs_user'); sessionStorage.removeItem('hs_provider_demo_session'); sessionStorage.removeItem('hs_admin_demo_session'); } catch {} await sync(); },
+    /** Web push: ask permission (only from a user gesture), get this device's FCM token, register it server-side. */
+    async enablePush() {
+      if (!('Notification' in globalThis) || !('serviceWorker' in navigator)) throw new Error('المتصفح لا يدعم الإشعارات');
+      const perm = await Notification.requestPermission();
+      if (perm !== 'granted') return false;
+      const M = await import(SDK + 'firebase-messaging.js');
+      if (!(await M.isSupported())) throw new Error('المتصفح لا يدعم الإشعارات');
+      const reg = await navigator.serviceWorker.ready;
+      const token = await M.getToken(M.getMessaging(app), { vapidKey: CFG.vapidKey, serviceWorkerRegistration: reg });
+      if (!token) return false;
+      await callSession({ op: 'registerPush', app: APP, token });
+      try { localStorage.setItem('hs_push_token', token); } catch {}
+      return true;
+    },
+    pushState() { return !('Notification' in globalThis) ? 'unsupported' : Notification.permission; },
+    async signOut() {
+      try { const t = localStorage.getItem('hs_push_token'); if (t) { await callSession({ op: 'unregisterPush', token: t }); localStorage.removeItem('hs_push_token'); } } catch {}
+      await A.signOut(auth); actor = null; try { localStorage.removeItem('hs_user'); sessionStorage.removeItem('hs_provider_demo_session'); sessionStorage.removeItem('hs_admin_demo_session'); } catch {} await sync(); },
     claimOwner: name => callSession({ op: 'claimOwner', name }).then(r => r.data),
     /** Owner-only, additive, idempotent import of this browser's local database; dryRun first. Local data is kept. */
     importLocal(dryRun = true, includeDemo = false) {
@@ -288,6 +305,28 @@ async function start() {
   globalThis.HSBackend = HSBackend;
 
   /* Provider/Admin: offer sign-in when the app has no backend identity. */
+  /* Customer/Provider: once signed in, offer device notifications politely (never an automatic permission prompt).
+     The browser prompt only opens when the user taps «تفعيل». «لاحقًا» hides the offer for 7 days. */
+  document.addEventListener('hs:backend-sync', e => {
+    try {
+      if (APP === 'admin' || !(e.detail && e.detail.actor)) return;
+      if (HSBackend.pushState() !== 'default' || document.getElementById('hs-push-offer')) return;
+      const until = Number(localStorage.getItem('hs_push_later') || 0); if (until > Date.now()) return;
+      const box = document.createElement('div');
+      box.id = 'hs-push-offer'; box.setAttribute('role', 'region'); box.setAttribute('aria-label', 'تفعيل الإشعارات'); box.dir = 'rtl';
+      box.style.cssText = 'position:fixed;inset-inline:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:220;max-width:440px;margin-inline:auto;display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border-subtle,#E6DDCF);border-radius:16px;background:var(--surface-primary,#fff);box-shadow:0 12px 30px rgba(31,27,23,.16);font-family:var(--font-body,inherit);color:var(--text-primary,#1F1B17)';
+      const msg = APP === 'provider' ? 'فعّل الإشعارات عشان توصلك الطلبات الجديدة فورًا.' : 'فعّل الإشعارات عشان نبلغك بحالة طلبك أول بأول.';
+      box.innerHTML = `<span style="flex:1;font-size:14px;line-height:1.5">${msg}</span><button type="button" data-push-yes style="min-height:40px;padding:0 14px;border:0;border-radius:12px;background:var(--brand-primary,#1F1B17);color:#fff;font:inherit;font-weight:700;cursor:pointer">تفعيل</button><button type="button" data-push-later style="min-height:40px;padding:0 10px;border:0;background:none;color:var(--text-secondary,#4A433C);font:inherit;cursor:pointer">لاحقًا</button>`;
+      box.querySelector('[data-push-yes]').addEventListener('click', () => {
+        box.remove();
+        HSBackend.enablePush().then(ok => { try { if (globalThis.toast) globalThis.toast(ok ? 'تم تفعيل الإشعارات على هذا الجهاز' : 'لم يتم تفعيل الإشعارات'); } catch {} })
+          .catch(err => { try { if (globalThis.toast) globalThis.toast(err && /[؀-ۿ]/.test(err.message) ? err.message : 'تعذّر تفعيل الإشعارات'); } catch {} });
+      });
+      box.querySelector('[data-push-later]').addEventListener('click', () => { box.remove(); try { localStorage.setItem('hs_push_later', String(Date.now() + 7 * 864e5)); } catch {} });
+      document.body.appendChild(box);
+    } catch {}
+  });
+
   document.addEventListener('hs:backend-sync', e => {
     if (APP === 'customer' || (e.detail && e.detail.actor)) return;
     if (document.getElementById('hs-backend-signin')) return;

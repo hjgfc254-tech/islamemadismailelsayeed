@@ -179,3 +179,9 @@ Customers choose how to sign in. SMS is no longer mandatory.
 **Production prerequisites:** enable the **Anonymous** and **Email/Password** providers in the Firebase Console (Authentication → Sign-in method), then redeploy Functions.
 
 **Phone OTP needs an authorized http(s) domain.** It does not work from `file://`, which is why the OTP fails when the app is opened by double-click.
+## Web push (FCM), added 2026-11-15
+- **Client:** after sign-in, the Customer and Provider apps show a small offer to turn on notifications. The browser permission prompt opens only when the user taps «تفعيل»; «لاحقًا» hides the offer for 7 days. `HSBackend.enablePush()` gets the FCM token, using the public VAPID key in `firebase-config.js` and the root service worker, then calls `session.registerPush`. Signing out calls `session.unregisterPush`.
+- **Server:** tokens are stored at `pushTokens/{sha256(token)}` as `{token, uid, app}`. Only the server can read or write them.
+- **Delivery:** each new in-app notification addressed to a customer or provider (unread, under 2 minutes old) is sent to that user's devices as a data-only FCM message `{title, body, link, tag}`. The send happens after the request commits, and a failed push never fails the request. Tokens that FCM reports as dead are deleted.
+- **Display:** `service-worker.js` shows the notification, in RTL with the app icon, unless the app is already open and focused. Tapping it opens the deep link: `#/track/<id>` for customers, `#/request/<id>` for providers.
+- **Prerequisite:** push works only on an https origin, so the frontend must be hosted.

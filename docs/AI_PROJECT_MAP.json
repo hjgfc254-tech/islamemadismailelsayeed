@@ -2,14 +2,14 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 544,
-    "total_files": 544,
+    "file_count": 533,
+    "total_files": 533,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 50,
       "DECISION": 7,
       "DOCUMENTATION": 38,
-      "IMPLEMENTED": 53,
+      "IMPLEMENTED": 47,
       "IMPLEMENTED (DEMO PRESENTATION)": 12,
       "IMPLEMENTED (DEMO)": 29,
       "IMPLEMENTED (DEMO) — PARTIAL (templates + read-only delivery log)": 1,
@@ -23,7 +23,7 @@
       "IMPLEMENTED (SHELL, DEMO)": 1,
       "IMPLEMENTED (SHELL)": 2,
       "LEGACY": 1,
-      "NEEDS_REVIEW": 162,
+      "NEEDS_REVIEW": 157,
       "PARTIALLY IMPLEMENTED": 1,
       "PLACEHOLDER": 64,
       "TEST": 78
@@ -2574,7 +2574,7 @@
         "tests/e2e/customer-sheet-focus.browser.py"
       ],
       "notes": "2026-11-13 TASK 04: Bottom Sheet initial focus, Tab/Shift+Tab containment, Escape, focus restoration/fallback, and background inert/aria-hidden isolation implemented and browser-tested. origin remains the legacy problem-list return context; route-style close focuses the destination #view.",
-      "sha256": "26bfe5df24f2cdf6e99db5a0a3d9118e34e0a029073a8cb892987c7dc43e8382",
+      "sha256": "8f3dc216975b836dc5d2e88c7b50593b7bb06997491ac6fe9d343edfd8211f0e",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2613,7 +2613,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 72835
+      "bytes": 72705
     },
     {
       "path": "apps/customer/customer-router.js",
@@ -2727,7 +2727,7 @@
         "https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
       ],
       "notes": "TASK 04: #sheet retains role=dialog and aria-modal=true and adds tabindex=-1 as a safe focus fallback when content has no interactive control.",
-      "sha256": "79b7de96cfd4ffca511813eb12107a7e06c036e31e5e2567139fdab6e820f4bb",
+      "sha256": "adb4734fb4c1afb577b94f2fcb31632368079f3f5d8dd1fcae5db1589830e279",
       "resolved_dependencies": [
         "manifest.json",
         "assets/icon.svg",
@@ -2790,19 +2790,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 7034
-    },
-    {
-      "path": "apps/customer/intro-3d.js",
-      "area": "apps/customer",
-      "status": "NEEDS_REVIEW",
-      "functional_title": "intro-3d.js",
-      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
-      "next_action": "Inspect, classify and document before implementation or deletion.",
-      "explicit_references": [],
-      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "592eaf9ff8b885c6327ab26e71313101efc48c9390f930034377d3a8c775ac68",
-      "bytes": 7279
+      "bytes": 6820
     },
     {
       "path": "apps/customer/pages/account.page.js",
@@ -4808,30 +4796,6 @@
       "bytes": 29510
     },
     {
-      "path": "assets/brand/logo-wordmark-light.png",
-      "area": "assets",
-      "status": "NEEDS_REVIEW",
-      "functional_title": "logo-wordmark-light.png",
-      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
-      "next_action": "Inspect, classify and document before implementation or deletion.",
-      "explicit_references": [],
-      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "5afe1a7d3793aa82aabf8eb064f812fcd4e28f6721439e74f30f2dd1a01ce71e",
-      "bytes": 11899
-    },
-    {
-      "path": "assets/brand/logo-wordmark.png",
-      "area": "assets",
-      "status": "NEEDS_REVIEW",
-      "functional_title": "logo-wordmark.png",
-      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
-      "next_action": "Inspect, classify and document before implementation or deletion.",
-      "explicit_references": [],
-      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "900a08bc0c210a8c2ceab1cc798415fa4f2e0d0cc5cfb2464e386b59662f0210",
-      "bytes": 12833
-    },
-    {
       "path": "assets/brand/README.md",
       "area": "assets",
       "status": "NEEDS_REVIEW",
@@ -4840,8 +4804,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "ba757208aa507a386d1b26ec114cad35d4ee02cf5fa4fddbe6ce4cf8ce66df41",
-      "bytes": 907
+      "sha256": "7a7cea988f85a2a40cbea22818e04f51096927e7ada9ac7c943ef2df7e9d28f4",
+      "bytes": 1252
     },
     {
       "path": "assets/brand/trust-handshake.jpg",
@@ -4854,57 +4818,6 @@
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "186d1860246fd807aed04f6a97fb0c60db8a431302c4c0875aa994f7c9e15d48",
       "bytes": 61382
-    },
-    {
-      "path": "assets/icon.svg",
-      "area": "assets",
-      "status": "IMPLEMENTED",
-      "has_real_logic": false,
-      "current_responsibility": "Project asset or configuration file.",
-      "planned_responsibility": "Maintain current behavior and improve only where dependencies require it.",
-      "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
-      "explicit_references": [],
-      "notes": "",
-      "sha256": "b1eac306973eb16ddbb16f1223303f1bfabaf290f582d0b7eea0af8bb8bad954",
-      "resolved_dependencies": [],
-      "acceptance_criteria": [
-        "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
-        "تم التأكد من اعتمادياته وعدم تكرار وظيفة موجودة في ملف آخر.",
-        "تم تشغيل الاختبار المناسب أو توثيق سبب عدم توفر اختبار آلي.",
-        "تم تحديث خريطة الملفات وسجل التغييرات بعد أي تعديل."
-      ],
-      "work_instruction": "راجع التنفيذ الفعلي، وثبّت الاختبارات، ولا تعِد كتابة الوظيفة من الصفر لمجرد إعادة التنظيم.",
-      "dependents": [
-        "apps/customer/index.html"
-      ],
-      "functional_title": "أصل بصري: icon.svg",
-      "user_role": "واجهة المستخدم: أصل بصري",
-      "user_visible_behavior": "يظهر للمستخدم كشعار أو أيقونة أو رسم أو عنصر بصري حسب موضع استدعائه.",
-      "file_behavior": "Project asset or configuration file.",
-      "completion_definition": "ملف صالح، أبعاد/صيغة مناسبة، نص بديل عند الحاجة، وعدم وجود مرجع مكسور.",
-      "actual_status_ar": "منفذ في الحزمة الحالية (يحتاج اختبارًا مستمرًا)",
-      "detailed_contract": {
-        "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `assets` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
-        "current_observed_responsibility": "Project asset or configuration file.",
-        "target_responsibility": "Maintain current behavior and improve only where dependencies require it.",
-        "primary_actor": "واجهة المستخدم: أصل بصري",
-        "what_user_sees": "يظهر للمستخدم كشعار أو أيقونة أو رسم أو عنصر بصري حسب موضع استدعائه.",
-        "inputs": "استدعاء من HTML/CSS أو سجل الأصول.",
-        "outputs": "أيقونة أو شعار أو رسم مرئي للمستخدم.",
-        "error_and_edge_cases": "مسار غير صحيح، أبعاد غير مناسبة، صورة غير محمّلة، نص بديل مفقود عند الحاجة.",
-        "security_and_data_rules": "لا تثق في بيانات الواجهة. تحقق من المدخلات على حدود النظام. أي عملية حساسة أو قراءة بيانات خاصة يجب أن تتحقق من الهوية والصلاحية والنطاق في Backend، لا بإخفاء عناصر الواجهة.",
-        "acceptance_checks": [
-          "المسؤولية مطابقة للمسار ولا تتكرر مع وحدة أخرى.",
-          "المدخلات والمخرجات موثقة بعقد واضح وثابت.",
-          "الحالات الطبيعية والفارغة والتحميل والخطأ وعدم الصلاحية مغطاة حيث تنطبق.",
-          "الاعتماديات المباشرة موثقة ولا توجد دورة اعتماد غير مبررة.",
-          "الاختبار المناسب يثبت السلوك، أو يوثق سبب تعذر الاختبار.",
-          "التوثيق وحالة التنفيذ محدثان بعد التغيير."
-        ],
-        "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
-        "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
-      },
-      "bytes": 553
     },
     {
       "path": "assets/icons/svc/appliances/ac.webp",
@@ -5807,255 +5720,6 @@
       "bytes": 6508
     },
     {
-      "path": "assets/logo-mark.webp",
-      "area": "assets",
-      "status": "IMPLEMENTED",
-      "has_real_logic": false,
-      "current_responsibility": "Project asset or configuration file.",
-      "planned_responsibility": "Maintain current behavior and improve only where dependencies require it.",
-      "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
-      "explicit_references": [],
-      "notes": "",
-      "sha256": "e2a107bbc6d0e4b0427582adfb2a9348c6e95c576a6fc04d03021e0437155ce4",
-      "resolved_dependencies": [],
-      "acceptance_criteria": [
-        "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
-        "تم التأكد من اعتمادياته وعدم تكرار وظيفة موجودة في ملف آخر.",
-        "تم تشغيل الاختبار المناسب أو توثيق سبب عدم توفر اختبار آلي.",
-        "تم تحديث خريطة الملفات وسجل التغييرات بعد أي تعديل."
-      ],
-      "work_instruction": "راجع التنفيذ الفعلي، وثبّت الاختبارات، ولا تعِد كتابة الوظيفة من الصفر لمجرد إعادة التنظيم.",
-      "dependents": [
-        "apps/customer/index.html"
-      ],
-      "functional_title": "أصل بصري: logo-mark.webp",
-      "user_role": "واجهة المستخدم: أصل بصري",
-      "user_visible_behavior": "يظهر للمستخدم كشعار أو أيقونة أو رسم أو عنصر بصري حسب موضع استدعائه.",
-      "file_behavior": "Project asset or configuration file.",
-      "completion_definition": "ملف صالح، أبعاد/صيغة مناسبة، نص بديل عند الحاجة، وعدم وجود مرجع مكسور.",
-      "actual_status_ar": "منفذ في الحزمة الحالية (يحتاج اختبارًا مستمرًا)",
-      "detailed_contract": {
-        "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `assets` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
-        "current_observed_responsibility": "Project asset or configuration file.",
-        "target_responsibility": "Maintain current behavior and improve only where dependencies require it.",
-        "primary_actor": "واجهة المستخدم: أصل بصري",
-        "what_user_sees": "يظهر للمستخدم كشعار أو أيقونة أو رسم أو عنصر بصري حسب موضع استدعائه.",
-        "inputs": "استدعاء من HTML/CSS أو سجل الأصول.",
-        "outputs": "أيقونة أو شعار أو رسم مرئي للمستخدم.",
-        "error_and_edge_cases": "مسار غير صحيح، أبعاد غير مناسبة، صورة غير محمّلة، نص بديل مفقود عند الحاجة.",
-        "security_and_data_rules": "لا تثق في بيانات الواجهة. تحقق من المدخلات على حدود النظام. أي عملية حساسة أو قراءة بيانات خاصة يجب أن تتحقق من الهوية والصلاحية والنطاق في Backend، لا بإخفاء عناصر الواجهة.",
-        "acceptance_checks": [
-          "المسؤولية مطابقة للمسار ولا تتكرر مع وحدة أخرى.",
-          "المدخلات والمخرجات موثقة بعقد واضح وثابت.",
-          "الحالات الطبيعية والفارغة والتحميل والخطأ وعدم الصلاحية مغطاة حيث تنطبق.",
-          "الاعتماديات المباشرة موثقة ولا توجد دورة اعتماد غير مبررة.",
-          "الاختبار المناسب يثبت السلوك، أو يوثق سبب تعذر الاختبار.",
-          "التوثيق وحالة التنفيذ محدثان بعد التغيير."
-        ],
-        "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
-        "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
-      },
-      "bytes": 88562
-    },
-    {
-      "path": "assets/logo-word.webp",
-      "area": "assets",
-      "status": "IMPLEMENTED",
-      "has_real_logic": false,
-      "current_responsibility": "Project asset or configuration file.",
-      "planned_responsibility": "Maintain current behavior and improve only where dependencies require it.",
-      "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
-      "explicit_references": [],
-      "notes": "",
-      "sha256": "3cd92fae64dcfebbd8507a96ddb92b4ca85aae000eaa43bef2036a943c3c5aee",
-      "resolved_dependencies": [],
-      "acceptance_criteria": [
-        "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
-        "تم التأكد من اعتمادياته وعدم تكرار وظيفة موجودة في ملف آخر.",
-        "تم تشغيل الاختبار المناسب أو توثيق سبب عدم توفر اختبار آلي.",
-        "تم تحديث خريطة الملفات وسجل التغييرات بعد أي تعديل."
-      ],
-      "work_instruction": "راجع التنفيذ الفعلي، وثبّت الاختبارات، ولا تعِد كتابة الوظيفة من الصفر لمجرد إعادة التنظيم.",
-      "dependents": [
-        "apps/customer/index.html"
-      ],
-      "functional_title": "أصل بصري: logo-word.webp",
-      "user_role": "واجهة المستخدم: أصل بصري",
-      "user_visible_behavior": "يظهر للمستخدم كشعار أو أيقونة أو رسم أو عنصر بصري حسب موضع استدعائه.",
-      "file_behavior": "Project asset or configuration file.",
-      "completion_definition": "ملف صالح، أبعاد/صيغة مناسبة، نص بديل عند الحاجة، وعدم وجود مرجع مكسور.",
-      "actual_status_ar": "منفذ في الحزمة الحالية (يحتاج اختبارًا مستمرًا)",
-      "detailed_contract": {
-        "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `assets` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
-        "current_observed_responsibility": "Project asset or configuration file.",
-        "target_responsibility": "Maintain current behavior and improve only where dependencies require it.",
-        "primary_actor": "واجهة المستخدم: أصل بصري",
-        "what_user_sees": "يظهر للمستخدم كشعار أو أيقونة أو رسم أو عنصر بصري حسب موضع استدعائه.",
-        "inputs": "استدعاء من HTML/CSS أو سجل الأصول.",
-        "outputs": "أيقونة أو شعار أو رسم مرئي للمستخدم.",
-        "error_and_edge_cases": "مسار غير صحيح، أبعاد غير مناسبة، صورة غير محمّلة، نص بديل مفقود عند الحاجة.",
-        "security_and_data_rules": "لا تثق في بيانات الواجهة. تحقق من المدخلات على حدود النظام. أي عملية حساسة أو قراءة بيانات خاصة يجب أن تتحقق من الهوية والصلاحية والنطاق في Backend، لا بإخفاء عناصر الواجهة.",
-        "acceptance_checks": [
-          "المسؤولية مطابقة للمسار ولا تتكرر مع وحدة أخرى.",
-          "المدخلات والمخرجات موثقة بعقد واضح وثابت.",
-          "الحالات الطبيعية والفارغة والتحميل والخطأ وعدم الصلاحية مغطاة حيث تنطبق.",
-          "الاعتماديات المباشرة موثقة ولا توجد دورة اعتماد غير مبررة.",
-          "الاختبار المناسب يثبت السلوك، أو يوثق سبب تعذر الاختبار.",
-          "التوثيق وحالة التنفيذ محدثان بعد التغيير."
-        ],
-        "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
-        "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
-      },
-      "bytes": 83636
-    },
-    {
-      "path": "assets/slide-guide.svg",
-      "area": "assets",
-      "status": "IMPLEMENTED",
-      "has_real_logic": false,
-      "current_responsibility": "Project asset or configuration file.",
-      "planned_responsibility": "Maintain current behavior and improve only where dependencies require it.",
-      "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
-      "explicit_references": [],
-      "notes": "",
-      "sha256": "ed2130c3941c6fd89b2b0d190331e54fad7fed5b56286e4cbcc28672db3e5a2d",
-      "resolved_dependencies": [],
-      "acceptance_criteria": [
-        "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
-        "تم التأكد من اعتمادياته وعدم تكرار وظيفة موجودة في ملف آخر.",
-        "تم تشغيل الاختبار المناسب أو توثيق سبب عدم توفر اختبار آلي.",
-        "تم تحديث خريطة الملفات وسجل التغييرات بعد أي تعديل."
-      ],
-      "work_instruction": "راجع التنفيذ الفعلي، وثبّت الاختبارات، ولا تعِد كتابة الوظيفة من الصفر لمجرد إعادة التنظيم.",
-      "dependents": [],
-      "functional_title": "أصل بصري: slide-guide.svg",
-      "user_role": "واجهة المستخدم: أصل بصري",
-      "user_visible_behavior": "يظهر للمستخدم كشعار أو أيقونة أو رسم أو عنصر بصري حسب موضع استدعائه.",
-      "file_behavior": "Project asset or configuration file.",
-      "completion_definition": "ملف صالح، أبعاد/صيغة مناسبة، نص بديل عند الحاجة، وعدم وجود مرجع مكسور.",
-      "actual_status_ar": "منفذ في الحزمة الحالية (يحتاج اختبارًا مستمرًا)",
-      "detailed_contract": {
-        "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `assets` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
-        "current_observed_responsibility": "Project asset or configuration file.",
-        "target_responsibility": "Maintain current behavior and improve only where dependencies require it.",
-        "primary_actor": "واجهة المستخدم: أصل بصري",
-        "what_user_sees": "يظهر للمستخدم كشعار أو أيقونة أو رسم أو عنصر بصري حسب موضع استدعائه.",
-        "inputs": "استدعاء من HTML/CSS أو سجل الأصول.",
-        "outputs": "أيقونة أو شعار أو رسم مرئي للمستخدم.",
-        "error_and_edge_cases": "مسار غير صحيح، أبعاد غير مناسبة، صورة غير محمّلة، نص بديل مفقود عند الحاجة.",
-        "security_and_data_rules": "لا تثق في بيانات الواجهة. تحقق من المدخلات على حدود النظام. أي عملية حساسة أو قراءة بيانات خاصة يجب أن تتحقق من الهوية والصلاحية والنطاق في Backend، لا بإخفاء عناصر الواجهة.",
-        "acceptance_checks": [
-          "المسؤولية مطابقة للمسار ولا تتكرر مع وحدة أخرى.",
-          "المدخلات والمخرجات موثقة بعقد واضح وثابت.",
-          "الحالات الطبيعية والفارغة والتحميل والخطأ وعدم الصلاحية مغطاة حيث تنطبق.",
-          "الاعتماديات المباشرة موثقة ولا توجد دورة اعتماد غير مبررة.",
-          "الاختبار المناسب يثبت السلوك، أو يوثق سبب تعذر الاختبار.",
-          "التوثيق وحالة التنفيذ محدثان بعد التغيير."
-        ],
-        "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
-        "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
-      },
-      "bytes": 6527
-    },
-    {
-      "path": "assets/slide-latest.svg",
-      "area": "assets",
-      "status": "IMPLEMENTED",
-      "has_real_logic": false,
-      "current_responsibility": "Project asset or configuration file.",
-      "planned_responsibility": "Maintain current behavior and improve only where dependencies require it.",
-      "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
-      "explicit_references": [],
-      "notes": "",
-      "sha256": "8e581e09918c65378a9380e17fdded0275eaf1438be2f7c5a98e6003f81171c6",
-      "resolved_dependencies": [],
-      "acceptance_criteria": [
-        "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
-        "تم التأكد من اعتمادياته وعدم تكرار وظيفة موجودة في ملف آخر.",
-        "تم تشغيل الاختبار المناسب أو توثيق سبب عدم توفر اختبار آلي.",
-        "تم تحديث خريطة الملفات وسجل التغييرات بعد أي تعديل."
-      ],
-      "work_instruction": "راجع التنفيذ الفعلي، وثبّت الاختبارات، ولا تعِد كتابة الوظيفة من الصفر لمجرد إعادة التنظيم.",
-      "dependents": [],
-      "functional_title": "أصل بصري: slide-latest.svg",
-      "user_role": "واجهة المستخدم: أصل بصري",
-      "user_visible_behavior": "يظهر للمستخدم كشعار أو أيقونة أو رسم أو عنصر بصري حسب موضع استدعائه.",
-      "file_behavior": "Project asset or configuration file.",
-      "completion_definition": "ملف صالح، أبعاد/صيغة مناسبة، نص بديل عند الحاجة، وعدم وجود مرجع مكسور.",
-      "actual_status_ar": "منفذ في الحزمة الحالية (يحتاج اختبارًا مستمرًا)",
-      "detailed_contract": {
-        "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `assets` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
-        "current_observed_responsibility": "Project asset or configuration file.",
-        "target_responsibility": "Maintain current behavior and improve only where dependencies require it.",
-        "primary_actor": "واجهة المستخدم: أصل بصري",
-        "what_user_sees": "يظهر للمستخدم كشعار أو أيقونة أو رسم أو عنصر بصري حسب موضع استدعائه.",
-        "inputs": "استدعاء من HTML/CSS أو سجل الأصول.",
-        "outputs": "أيقونة أو شعار أو رسم مرئي للمستخدم.",
-        "error_and_edge_cases": "مسار غير صحيح، أبعاد غير مناسبة، صورة غير محمّلة، نص بديل مفقود عند الحاجة.",
-        "security_and_data_rules": "لا تثق في بيانات الواجهة. تحقق من المدخلات على حدود النظام. أي عملية حساسة أو قراءة بيانات خاصة يجب أن تتحقق من الهوية والصلاحية والنطاق في Backend، لا بإخفاء عناصر الواجهة.",
-        "acceptance_checks": [
-          "المسؤولية مطابقة للمسار ولا تتكرر مع وحدة أخرى.",
-          "المدخلات والمخرجات موثقة بعقد واضح وثابت.",
-          "الحالات الطبيعية والفارغة والتحميل والخطأ وعدم الصلاحية مغطاة حيث تنطبق.",
-          "الاعتماديات المباشرة موثقة ولا توجد دورة اعتماد غير مبررة.",
-          "الاختبار المناسب يثبت السلوك، أو يوثق سبب تعذر الاختبار.",
-          "التوثيق وحالة التنفيذ محدثان بعد التغيير."
-        ],
-        "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
-        "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
-      },
-      "bytes": 6968
-    },
-    {
-      "path": "assets/slide-popular.svg",
-      "area": "assets",
-      "status": "IMPLEMENTED",
-      "has_real_logic": false,
-      "current_responsibility": "Project asset or configuration file.",
-      "planned_responsibility": "Maintain current behavior and improve only where dependencies require it.",
-      "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
-      "explicit_references": [],
-      "notes": "",
-      "sha256": "9be953308743fd5c87b0cbedc0196b49588cd995f01d0c4e4847b5732eaf6267",
-      "resolved_dependencies": [],
-      "acceptance_criteria": [
-        "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
-        "تم التأكد من اعتمادياته وعدم تكرار وظيفة موجودة في ملف آخر.",
-        "تم تشغيل الاختبار المناسب أو توثيق سبب عدم توفر اختبار آلي.",
-        "تم تحديث خريطة الملفات وسجل التغييرات بعد أي تعديل."
-      ],
-      "work_instruction": "راجع التنفيذ الفعلي، وثبّت الاختبارات، ولا تعِد كتابة الوظيفة من الصفر لمجرد إعادة التنظيم.",
-      "dependents": [],
-      "functional_title": "أصل بصري: slide-popular.svg",
-      "user_role": "واجهة المستخدم: أصل بصري",
-      "user_visible_behavior": "يظهر للمستخدم كشعار أو أيقونة أو رسم أو عنصر بصري حسب موضع استدعائه.",
-      "file_behavior": "Project asset or configuration file.",
-      "completion_definition": "ملف صالح، أبعاد/صيغة مناسبة، نص بديل عند الحاجة، وعدم وجود مرجع مكسور.",
-      "actual_status_ar": "منفذ في الحزمة الحالية (يحتاج اختبارًا مستمرًا)",
-      "detailed_contract": {
-        "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `assets` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
-        "current_observed_responsibility": "Project asset or configuration file.",
-        "target_responsibility": "Maintain current behavior and improve only where dependencies require it.",
-        "primary_actor": "واجهة المستخدم: أصل بصري",
-        "what_user_sees": "يظهر للمستخدم كشعار أو أيقونة أو رسم أو عنصر بصري حسب موضع استدعائه.",
-        "inputs": "استدعاء من HTML/CSS أو سجل الأصول.",
-        "outputs": "أيقونة أو شعار أو رسم مرئي للمستخدم.",
-        "error_and_edge_cases": "مسار غير صحيح، أبعاد غير مناسبة، صورة غير محمّلة، نص بديل مفقود عند الحاجة.",
-        "security_and_data_rules": "لا تثق في بيانات الواجهة. تحقق من المدخلات على حدود النظام. أي عملية حساسة أو قراءة بيانات خاصة يجب أن تتحقق من الهوية والصلاحية والنطاق في Backend، لا بإخفاء عناصر الواجهة.",
-        "acceptance_checks": [
-          "المسؤولية مطابقة للمسار ولا تتكرر مع وحدة أخرى.",
-          "المدخلات والمخرجات موثقة بعقد واضح وثابت.",
-          "الحالات الطبيعية والفارغة والتحميل والخطأ وعدم الصلاحية مغطاة حيث تنطبق.",
-          "الاعتماديات المباشرة موثقة ولا توجد دورة اعتماد غير مبررة.",
-          "الاختبار المناسب يثبت السلوك، أو يوثق سبب تعذر الاختبار.",
-          "التوثيق وحالة التنفيذ محدثان بعد التغيير."
-        ],
-        "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
-        "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
-      },
-      "bytes": 5228
-    },
-    {
       "path": "assets/vendor/firebase/13.1.0/firebase-app-check.js",
       "area": "assets",
       "status": "NEEDS_REVIEW",
@@ -6116,16 +5780,16 @@
       "bytes": 15520
     },
     {
-      "path": "assets/vendor/gsap.min.js",
+      "path": "assets/vendor/firebase/13.1.0/firebase-messaging.js",
       "area": "assets",
       "status": "NEEDS_REVIEW",
-      "functional_title": "gsap.min.js",
+      "functional_title": "firebase-messaging.js",
       "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "28033e449a31ebcc396e5be8b13b63152bf03094288fb5867034321927bce087",
-      "bytes": 72214
+      "sha256": "61812e6268be19a6b26ff8322202d058f94b1083af6e46cc1e42d58c98bdf683",
+      "bytes": 37589
     },
     {
       "path": "assets/vendor/lucide.LICENSE.txt",
@@ -6148,32 +5812,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "6bc8856125b2620ce68277df2e221272989afc1e848dd2e2073a5151fc673a9b",
-      "bytes": 1095
-    },
-    {
-      "path": "assets/vendor/three.LICENSE.txt",
-      "area": "assets",
-      "status": "NEEDS_REVIEW",
-      "functional_title": "three.LICENSE.txt",
-      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
-      "next_action": "Inspect, classify and document before implementation or deletion.",
-      "explicit_references": [],
-      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "852e0e8699169bf9f6fdc6bda3e682d078dcbc738b5d33e74df594721bff271d",
-      "bytes": 1081
-    },
-    {
-      "path": "assets/vendor/three.module.min.js",
-      "area": "assets",
-      "status": "NEEDS_REVIEW",
-      "functional_title": "three.module.min.js",
-      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
-      "next_action": "Inspect, classify and document before implementation or deletion.",
-      "explicit_references": [],
-      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "3e690ac7d180b0aadf0891bea39eec643e29e2d3e75c99b18689518665f69ba6",
-      "bytes": 670681
+      "sha256": "d1945a217dc1e0f643184e79d4e243c381d48d62c5729d42ac31a70b0649f95c",
+      "bytes": 873
     },
     {
       "path": "backend/README.md",
@@ -9572,7 +9212,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "52afe75c888417f23078e14a6a5c4b2b77e325d1a38a9a123edcbb44b154acbc",
+      "sha256": "46f938ffb755697610567ded27108c81e341e002da4ad81903e1535a13523663",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -9608,7 +9248,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 277777
+      "bytes": 273371
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -9668,7 +9308,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "541cc1cbd856ee1e72ee47a7c5aad2a11e6600b112f25fa19543e6eeb73d6163",
+      "sha256": "3f86467a196aa608e970df70a7f2f74a201717d86bc6aaa1ecaec91bdc476ebd",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -9704,7 +9344,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 139545
+      "bytes": 137654
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -10441,8 +10081,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "91f2194bc0597ef0b87a2b09326670356aeebe808b779a0d19f1c9e313fc1e78",
-      "bytes": 14575
+      "sha256": "80b2cc42414c08e8ae96bf336988029f3a042759e5df2479ece2374fccedec4b",
+      "bytes": 15809
     },
     {
       "path": "docs/FIREBASE_DATA_INVENTORY.md",
@@ -11228,7 +10868,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "8490bc3d45d34cbd1e48cb2d424a3d5e1f53297b0cbdbff7334cebd5a51954d8",
+      "sha256": "a407b0e04ac6fedab6e6df0653434f5133efce485771a02bcdbf3dcc520b97f8",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11265,7 +10905,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 25916
+      "bytes": 25548
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -11835,8 +11475,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "1fb61c81e8b2295d9f74c0c5e086ed99e0bd68dc4960e46150211d416df55ac6",
-      "bytes": 3268
+      "sha256": "7231a810b14fb60399877d66ca0f6655a4f75438f44bb68f4572dda64c5f4c1c",
+      "bytes": 4126
     },
     {
       "path": "functions/package-lock.json",
@@ -11955,8 +11595,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "ba199f9ff393846da721822fcb352b0487eedac36d22dfd8a8abfc28533b314f",
-      "bytes": 23830
+      "sha256": "6adee7224328bcd3f4b3f8aeecd5e0e37fac00854b40084736922d7e7241894b",
+      "bytes": 27246
     },
     {
       "path": "functions/src/store.js",
@@ -12325,7 +11965,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "d2a73ea8fb0cb161c6df3d38f48ae46797cb649cf30a932894f745e4a02c8dd2",
+      "sha256": "5420edfd919d09e43b542aa9bcf346e8ad7c6fd899f6b6ed852a2c24646ebf43",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12362,7 +12002,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 8744
+      "bytes": 10383
     },
     {
       "path": "services/admin-api.js",
@@ -12667,8 +12307,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "26f8dc7dae2fd549169d802e382c00c2766f27da0f42a402122f16e4c6e5902e",
-      "bytes": 23694
+      "sha256": "e74b40961c026dd275d2f7bcf942447e8c795736abce9e1d55707d6a11e2f9b6",
+      "bytes": 27584
     },
     {
       "path": "services/firebase-config.js",
@@ -12679,8 +12319,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "be4b9730dd62fc393e7e4f3806028bf6f49ee036e2f81b0f686453cb0884c6de",
-      "bytes": 2290
+      "sha256": "46a44e66f1309f9aeb1501bc02039f8a4d6503f352c30913588776386de87a30",
+      "bytes": 2507
     },
     {
       "path": "services/local-attachments.js",
@@ -15292,7 +14932,7 @@
       "functional_title": "Accessible tabs integration contracts",
       "current_responsibility": "Verifies Customer/Admin loading order, Service Worker precache, and feature wiring.",
       "next_action": "Run with npm test.",
-      "sha256": "dd79e3f5ee8e30852a4171f73b08ed546e38e57e75dc9c1142e42a4036e87bc6",
+      "sha256": "19a61058be85e051eb77cd7a41cfa06bd9a048ce073c8cc15287889ea44446e4",
       "bytes": 1367
     },
     {
@@ -15700,7 +15340,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "2b06e0099f9a0f951492d0fd4a46c053cb45170aa5bb2aa6822e1a2aac2f3d2e",
+      "sha256": "da0d0fedac74dca8772c6ae037af57e2dced6ee8487b68fefb4fa5aef04b7cb4",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -15865,8 +15505,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "544daa8e4859dc09956c4c4aea030334cd7eb6650ce27702688215641cba47a7",
-      "bytes": 38334
+      "sha256": "3ba2a57bbaddb3ba3aeee1bc4c12143b2d501583b0cecc86302426e2e60dc72a",
+      "bytes": 41182
     },
     {
       "path": "tests/unit/firebase-integration-contract.test.js",
@@ -16167,7 +15807,7 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "eb365413b0cae8b19e4b70b276e024669370d57f16f9e9b6d057bd5877cb324e",
+      "sha256": "38cd67ba59ef11ff8d8aff30fa70d56947b398b94ffa33ba910d995dbe4b1bfc",
       "bytes": 6951
     },
     {
@@ -16551,7 +16191,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "cdeef8e7f136568c7fdcf6bfc5dffc1b0bea65e7e08545f83fd4fc1667fd2b0f",
+      "sha256": "5ce549b7bef69a64624ef248d22fe1899d9348a9df776a1db4155d38850e793c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",

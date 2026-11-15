@@ -1008,7 +1008,7 @@ document.addEventListener('click', e => {
 const camEl = document.getElementById('cam');
 if (camEl) camEl.addEventListener('change', e => { const f = e.target.files[0]; if (f) openCam(f); e.target.value = ''; });
 
-/* ───────── الافتتاحية السينمائية V2 (تحكم + توليد الطبقات الديناميكية) ─────────
+/* ───────── الافتتاحية V10 (كشف الشعار — CSS فقط؛ هنا التحكم والتخطي) ─────────
    سياسة الظهور كما كانت: مرة لكل جلسة (sessionStorage 'hs_intro_v1' يُفحص مبكرًا في index.html).
    التسلسل: فك ترميز صورتي الشعار ← إضافة .go (يبدأ كل الأنيميشن) ← انتهاء introOut أو تخطي ← إزالة العقدة وفتح #app. */
 const Intro = (() => {
@@ -1025,8 +1025,6 @@ const Intro = (() => {
   function onEnd(e){ if(e.target===node && /^(introOut|introSkip)$/.test(e.animationName)) finish(); }
   function skip(){ if(done||!node) return; root.classList.add('intro-skipped'); node.classList.add('skip'); clearTimeout(timer); timer = setTimeout(finish, 500); }
   function onKey(e){ if(e.key==='Escape'||e.key==='Enter'||e.key===' '){ if(document.activeElement && document.activeElement.id==='introSkip') return; skip(); } }
-  /* V10: the intro is pure CSS (logo reveal); nothing is generated at runtime. */
-  function build(){}
   function go(){
     if(done||!node) return;
     clearTimeout(timer);
@@ -1039,7 +1037,6 @@ const Intro = (() => {
       node = document.getElementById('intro'); if(!node) return;
       if(root.classList.contains('no-intro')){ node.remove(); node = null; return; }
       const ap = document.getElementById('app'); if(ap) ap.inert = true;
-      build();
       node.addEventListener('animationend', onEnd);
       const b = node.querySelector('#introSkip'); if(b) b.addEventListener('click', skip);
       document.addEventListener('keydown', onKey);

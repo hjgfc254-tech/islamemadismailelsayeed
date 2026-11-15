@@ -1,14 +1,18 @@
-# Brand assets (from the approved design boards)
+# Brand assets
 
-Extracted from `design-reference/approved/*.png`. The original boards are unchanged.
-
-| File | Board | How |
+| File | Source | Used by |
 |---|---|---|
-| `logo-wordmark.png` | الشعار ونظام الهوية (laptop screen) | Crop 530×195 at (1195,540), luminance-keyed alpha, recoloured `#135049`, trimmed to 517×162 |
-| `logo-wordmark-light.png` | Same | Same alpha, white |
-| `hero-technician.jpg` | هوية هنسهّلك | Crop (1128,40) 1032×1175, resized to 820 px wide, JPEG q82 |
-| `trust-handshake.jpg` | تجربة واحدة متكاملة | Crop (1218,80) 942×1135, resized to 720 px wide, JPEG q80 |
+| `logo-v10-lockup.webp` | Owner logo (2026-11-15): white background removed; house mark beside the bilingual wordmark | Customer header (`app.js`, `home.page.js`), desktop bar (`design-system.css`), Provider and Admin brand |
+| `logo-v10-lockup-light.webp` | Same lockup; wordmark recoloured light for dark sidebars | Admin sidebar (`admin-components.css`) |
+| `logo-v10-mark.webp` | House mark only | Intro, favicon, account sign-in card |
+| `logo-v10-word.webp` | Arabic and Latin wordmark lines | Intro |
+| `hero-technician.jpg` | Approved board photography | Home hero |
+| `trust-handshake.jpg` | Approved board photography | Home trust band |
 
-The service worker precaches all four files. If the client supplies master files (a vector logo or full-resolution
-photography), replace these files in place; the file names are referenced by CSS, `app.js`, `home.page.js`,
-`index.html` and `service-worker.js`.
+App icons: `assets/app-icon-192.png` and `assets/app-icon-512.png`. They are the mark on white and are referenced by `manifest.json`.
+
+Service icons: `assets/icons/svc/<group>/<name>.webp`. They are cut from the owner's icon sheets, with the gold recoloured to silver, and are mapped in `shared/icons/icon-registry.js` (`ICON_PHOTO_ITEMS`).
+
+The service worker precaches the logos, the app icons and the home category icons. Item icons load lazily.
+
+Replace a file in place to update it. The file names are referenced by the files listed above.
