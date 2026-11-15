@@ -525,9 +525,18 @@ Object.assign(screens, {
         ${sec('الموعد', 7, `<b>${_esc(schedText)}</b>${w.schedule.whenNote ? `<div class="kv">${_esc(w.schedule.whenNote)}</div>` : ''}`)}
         ${sec('التواصل', 8, `<b>${_esc(w.contact.name)} • ${_esc(w.contact.phone)}</b><div class="kv">${({call:'مكالمة',whatsapp:'واتساب',sms:'رسالة'})[w.contact.method] || w.contact.method}</div>`)}
       </div>
+      <div class="need" id="wz-price" data-wz-price-key="${_esc(w.item || '')}" aria-live="polite">${safeIc('wallet')}<span>جارٍ حساب السعر…</span></div>
       ${CAT.needsVisit(w.item, w.unknown ? '' : w.problem) ? `<div class="need">${safeIc('info')}<span>الفني سيعاين المشكلة أولًا ثم يحدد التكلفة النهائية.</span></div>` : ''}
-      <div class="demo-banner">${safeIc('info')}<span>وضع العرض التجريبي — الطلب يُحفظ محليًا ولا يُرسل لفنيين حقيقيين.</span></div>`;
+      ${(typeof HSFirebaseConfig !== 'undefined' && HSFirebaseConfig.mode === 'firebase') ? '' : `<div class="demo-banner">${safeIc('info')}<span>وضع العرض التجريبي — الطلب يُحفظ محليًا ولا يُرسل لفنيين حقيقيين.</span></div>`}`;
     }
+
+    if (w.step === 9 && typeof HSApiClient !== 'undefined' && typeof setTimeout === 'function') setTimeout(() => {
+      HSApiClient.request('GET', '/pricing').then((res) => {
+        const el = typeof document !== 'undefined' && document.getElementById && document.getElementById('wz-price'); if (!el) return;
+        const key = el.getAttribute('data-wz-price-key'), price = res.ok && res.data && res.data.prices ? res.data.prices[key] : null;
+        el.querySelector('span').textContent = price ? ('السعر: ' + price + ' ج.م — شامل رسوم المنصة، ويُثبَّت عند إرسال الطلب.') : 'السعر يُحدَّد بعد معاينة الفني.';
+      });
+    }, 0);
 
     /* 10 — التأكيد */
     if (w.step === 10 && w.done) {

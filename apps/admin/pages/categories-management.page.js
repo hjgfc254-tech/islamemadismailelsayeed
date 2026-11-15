@@ -107,6 +107,16 @@
     return cats.length ? walk(null, 1) : '<p class="ord-muted">لا توجد تصنيفات في البيانات التجريبية.</p>';
   };
   const fErr = (e, k) => (e && e[k] ? `<small class="ord-err" id="cat-e-${k}" role="alert">${esc(e[k])}</small>` : '');
+  let livePricing = null;   /* {markupRate, prices{itemId: base}} from GET /admin/pricing (server backend mode) */
+  const priceSection = (c) => {
+    if (!c || !livePricing || String(c.id).indexOf('item:') !== 0) return '';
+    const key = String(c.id).slice(5), base = livePricing.prices[key], m = +livePricing.markupRate || 0;
+    const cust = base ? Math.round(base * (1 + m / 100)) : null;
+    return `<section aria-labelledby="cat-h-price"><h3 id="cat-h-price">السعر (يُثبَّت للعميل عند الطلب)</h3>` +
+      `<p class="ord-muted">${base ? 'مبلغ مقدم الخدمة: ' + esc(String(base)) + ' ج.م — يدفع العميل ' + esc(String(cust)) + ' ج.م (رسوم المنصة ' + esc(String(m)) + '%)' : 'لا يوجد سعر بعد — يُحدَّد السعر بعد المعاينة.'}</p>` +
+      `<div class="hs-grid-field"><label for="cat-price">مبلغ مقدم الخدمة (ج.م)</label><input id="cat-price" type="number" min="1" step="1" inputmode="numeric" value="${base ? esc(String(base)) : ''}"></div>` +
+      `<p><button type="button" class="adm-btn adm-btn-p" data-cat-price>حفظ السعر</button>${base ? ' <button type="button" class="adm-btn" data-cat-price-clear>إزالة السعر</button>' : ''}</p></section>`;
+  };
   const dialogHtml = (c, st) => {
     const creating = !c, v = st.values || (c ? { name: c.name, parentId: c.parentId } : { name: '', parentId: null }), e = st.errors || {};
     const opts = validParents(cats, c ? c.id : null), inv = (k) => (e[k] ? ` aria-invalid="true" aria-describedby="cat-e-${k}"` : '');
@@ -122,6 +132,7 @@
         <p class="ord-muted">أقصى عمق للشجرة ${nf(MAX_DEPTH)} مستويات؛ لا تظهر هنا التصنيفات التي ستنتج دورة أو تتجاوز العمق.</p>
         <p><button type="button" class="adm-btn adm-btn-p" data-cat-save>${creating ? 'إضافة محليًا' : 'حفظ التعديلات محليًا'}</button></p></section>
       ${creating ? '' : `<section aria-labelledby="ord-h-act"><h3 id="ord-h-act">الحالة (محاكاة)</h3><div class="ord-act">${allowedNext(c.status).map((n) => `<button type="button" class="adm-btn ${n === 'inactive' ? 'adm-btn-d' : 'adm-btn-p'}" data-ord-status="${n}">${n === 'inactive' ? 'إيقاف التصنيف محليًا' : 'تفعيل التصنيف محليًا'}</button>`).join('')}</div></section>
+      ${priceSection(c)}
       <section aria-labelledby="ord-h-ord"><h3 id="ord-h-ord">الترتيب بين الأشقاء</h3><p class="ord-muted">الموضع ${nf(idx + 1)} من ${nf(sib.length)}.</p>
         <div class="ord-act">${idx > 0 ? '<button type="button" class="adm-btn" data-cat-move="-1">تقديم</button>' : ''}${idx < sib.length - 1 ? '<button type="button" class="adm-btn" data-cat-move="1">تأخير</button>' : ''}</div></section>`}</form>`;
   };
@@ -129,6 +140,7 @@
   const render = () => {
     const L = root.HSAdminLive && root.HSAdminLive.enabled() ? root.HSAdminLive : null;   /* Firebase mode: the real catalogue, read-only */
     if (L) cats = L.rows('categories');
+    if (L) root.HSApiClient.request('GET', '/admin/pricing').then((res) => { livePricing = res.ok ? res.data : null; });
     const wrap = root.document.createElement('div'); wrap.className = 'ord';
     wrap.innerHTML = `<p class="dash-note">بيانات تجريبية محلية — ليست شجرة التصنيفات الفعلية، وأي تغيير يُفقد عند إعادة التحميل.</p>
       <div id="ord-sum"></div><div class="cat-tools"><button type="button" class="adm-btn" data-cat-all="expand">توسيع الكل</button><button type="button" class="adm-btn" data-cat-all="collapse">طي الكل</button></div>
@@ -170,6 +182,13 @@
     dlgEl.addEventListener('submit', (e) => { e.preventDefault(); save(); });
     d.onClick((b) => {
       if (L && (b.dataset.ordStatus || b.dataset.catMove)) { st = { message: L.UNSUPPORTED }; paintDlg(); return; }
+      if (L && (b.hasAttribute('data-cat-price') || b.hasAttribute('data-cat-price-clear'))) {
+        const key = String(openId).slice(5), clear = b.hasAttribute('data-cat-price-clear'), v = clear ? null : Number(dlgEl.querySelector('#cat-price').value);
+        if (!clear && !(v > 0)) { st = { message: 'اكتب مبلغًا أكبر من صفر.' }; paintDlg('#cat-price'); return; }
+        const send = root.HSBackend && root.HSBackend.admin ? root.HSBackend.admin('POST', '/admin/pricing', { key, base: v }) : root.HSApiClient.request('POST', '/admin/pricing', { body: { key, base: v } });
+        send.then((res) => { if (res.ok) { livePricing = res.data; st = { message: clear ? 'أُزيل السعر — يُحدَّد بعد المعاينة.' : 'تم حفظ السعر على الخادم.' }; } else st = { message: L.errorText(res) }; paintDlg('#cat-price'); });
+        return;
+      }
       try {
         if (b.hasAttribute('data-cat-save')) save();
         else if (b.dataset.ordStatus) { cats = setStatus(cats, openId, b.dataset.ordStatus); st = {}; sync(); paintDlg('[data-ord-close]'); }

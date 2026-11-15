@@ -202,8 +202,8 @@
       "path": "apps/admin/pages/categories-management.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 18635,
-      "sha256": "0e0e0d40d4f3ce2d5c9810366547925bcbae3cd602da4089ec05a1de3ad908e0"
+      "bytes": 20977,
+      "sha256": "e47f53794866812354d61b5d26e2fb69f7244b32e6088726194d2445f0d5afbc"
     },
     {
       "path": "apps/admin/pages/commissions.page.js",
@@ -496,8 +496,8 @@
       "path": "apps/customer/pages/request-wizard.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 52408,
-      "sha256": "accebb5e7f1749085a5ef99864030dd48dd6c857e4c2ae406c4827f84824aeb6"
+      "bytes": 53377,
+      "sha256": "2156ecd764c7e03daf389e2fbb04c283ad0066bcf334eff30616025c5569d2b0"
     },
     {
       "path": "apps/customer/pages/search.page.js",
@@ -552,8 +552,8 @@
       "path": "apps/provider/app.js",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 36736,
-      "sha256": "b7fcac3b81919c47bc0f0e7ae6ee3836dd4e904dbb72fce274a2c826b2d27444"
+      "bytes": 36988,
+      "sha256": "ad343df05ccb1a8c69af19cfce3cd2e77950664b197576ad4f86ce38754a5300"
     },
     {
       "path": "apps/provider/index.html",
@@ -2568,8 +2568,8 @@
       "path": "tests/e2e/firebase-emulator.cdp.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 16036,
-      "sha256": "7bfc3a8ae4daa8c725a4827434f5c2b0419dafe2c743fb285e5f4bff42f43401"
+      "bytes": 16648,
+      "sha256": "ff4953481172cb6cb2efc03e3b763fbfa5a87e515282faeea69fb6b51d12ac3d"
     },
     {
       "path": "tests/e2e/guest.cdp.js",

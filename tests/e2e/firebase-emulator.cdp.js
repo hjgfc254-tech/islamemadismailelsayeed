@@ -140,6 +140,11 @@ withBrowser(async ({ wsUrl }) => {
   ok(await d.waitFor(`document.body.textContent.includes(${JSON.stringify(await d.evaluate(`(MP.db().serviceRequests.find(r => r.id === ${JSON.stringify(created.id)}) || {}).no`))})`, 12000), 'orders page lists the real request number');
   const cancelLive = await d.evaluate(`HSAdminLive.status('orders', ${JSON.stringify(created.id)}, 'enroute').then(r => r.status)`);
   ok(cancelLive === 501, 'a transition without a server route is refused, not simulated');
+  /* Uber-style pricing through the deployed-shape backend: admin base price → public customer price (default markup 15%) */
+  const priced = await d.evaluate(`HSBackend.admin('POST', '/admin/pricing', { key: 'electric/dist-board', base: 200 }).then(r => r.ok && r.data.prices['electric/dist-board'])`);
+  ok(priced === 200, 'admin sets a base price on the server');
+  const pub = await d.evaluate(`HSApiClient.request('GET', '/pricing').then(r => r.ok && r.data.prices['electric/dist-board'])`);
+  ok(pub === 230, 'the public price list shows the customer price (base + default 15% platform share): ' + pub);
   await d.evaluate(`location.hash = '#/customers'; true`);
   ok(await d.waitFor('document.body.textContent.includes("سارة")', 12000), 'customers page lists the real customer');
   await d.evaluate(`location.hash = '#/finance'; true`);
