@@ -81,6 +81,24 @@
           submittedOn: String(q.at || '').slice(0, 10), validUntil: null, status: MAPQ[q.status] || 'submitted' };
       });
     },
+    /* Uber cash model: the customer pays the provider; the provider owes the platform share (transaction commission).
+       One "approved" row per provider = uncollected platform share (ready to collect); one "completed" row = collected. */
+    settlements: (opts) => {
+      const cats = (opts && opts.CATS) || [], known = cats.map((c) => c.id).filter((id) => id !== 'other');
+      const bucket = (p) => { const c = p && (p.cats || [])[0]; return known.includes(c) ? c : 'other'; };
+      const label = (id) => { const c = cats.find((x) => x.id === id); return c ? c.label : id; };
+      const out = [];
+      (db().providers || []).forEach((p) => {
+        const txs = (db().transactions || []).filter((t) => t.providerId === p.id && !t.free);
+        const pend = txs.filter((t) => t.collection === 'pending'), done = txs.filter((t) => t.collection === 'collected');
+        const sum = (l) => Math.round(l.reduce((a, t) => a + (+t.commission || 0), 0) * 100) / 100;
+        const span = (l) => { const ds = l.map((t) => String(t.at || '').slice(0, 10)).filter(Boolean).sort(); return { from: ds[0] || null, to: ds[ds.length - 1] || null }; };
+        const base = { providerId: p.id, provider: p.name, category: bucket(p), categoryLabel: label(bucket(p)), discrepancy: null, hold: null, dueOn: null };
+        if (pend.length) { const s = span(pend); out.push(Object.assign({ id: 'stl:pending:' + p.id, ref: 'BAL-' + String(p.id).slice(-6), amount: sum(pend), status: 'approved', periodFrom: s.from, periodTo: s.to, settledOn: null }, base)); }
+        if (done.length) { const s = span(done); out.push(Object.assign({ id: 'stl:done:' + p.id, ref: 'COL-' + String(p.id).slice(-6), amount: sum(done), status: 'completed', periodFrom: s.from, periodTo: s.to, settledOn: s.to }, base)); }
+      });
+      return out;
+    },
     /* the real service catalogue (services/local-catalog.js, CAT): categories as roots, their devices/work types as children */
     categories: () => {
       if (typeof CAT === 'undefined' || !CAT.db) return [];
@@ -156,6 +174,13 @@
     if (entity === 'orders' && next === 'cancelled') return call('POST', '/requests/' + enc + '/cancel', { reason: (extra && extra.reason) || 'إلغاء من الإدارة' });
     if (entity === 'customers' && (next === 'active' || next === 'suspended')) return call('POST', '/admin/customers/' + enc + '/status', { status: next });
     if (entity === 'providers' && ['approved', 'rejected', 'suspended'].includes(next)) return call('POST', '/admin/providers/' + enc + '/status', { status: next });
+    if (entity === 'settlements' && next === 'completed' && /^stl:pending:/.test(id)) {
+      /* collect the provider's whole uncollected platform share: mark each pending transaction collected (existing route) */
+      const pid = id.slice('stl:pending:'.length);
+      const pend = (db().transactions || []).filter((t) => t.providerId === pid && !t.free && t.collection === 'pending');
+      return pend.reduce((p, t) => p.then((prev) => (prev && !prev.ok ? prev : call('POST', '/admin/transactions/' + encodeURIComponent(t.id) + '/collection', { status: 'collected' }))), Promise.resolve(null))
+        .then((res) => res || { ok: false, status: 409, error: { code: 'CONFLICT', message: 'لا يوجد رصيد غير محصّل لهذا المقدم.' } });
+    }
     if (entity === 'complaints' && next === 'resolved') return call('POST', '/complaints/' + enc + '/resolve', { resolution: (extra && extra.resolution) || 'تم الحل من الإدارة' });
     return Promise.resolve({ ok: false, status: 501, error: { code: 'UNSUPPORTED', message: UNSUPPORTED } });
   }

@@ -239,6 +239,8 @@
   };
 
   const render = () => {
+    const L = root.HSAdminLive && root.HSAdminLive.enabled() ? root.HSAdminLive : null;   /* server backend mode: provider balances from real transactions */
+    if (L) settlements = L.rows('settlements', { CATS: FIN ? FIN.CATEGORIES : [] });
     const wrap = root.document.createElement('div'); wrap.className = 'ord stl';
     wrap.innerHTML = `<div class="fin-banner" role="note">${icon('info')}<span>بيانات تجريبية محلية — ليست مستحقات حقيقية. لا يتم تحويل أي مبلغ لأي مقدم خدمة، ولا توجد بوابة دفع. الأرقام الأولية مشتقة من لوحة الماليات (٣٠ يومًا) وتعديلاتك المحلية هنا لا تنعكس عليها. تاريخ العرض الثابت: ${esc(dt(DEMO_TODAY))}.</span></div>
       <div id="stl-sum"></div><div id="stl-prov"></div><div id="stl-grid"></div><div id="stl-log"></div><dialog class="ord-dlg" id="stl-dlg" aria-labelledby="ord-dlg-t"></dialog>`;
@@ -275,6 +277,16 @@
       else if (b.hasAttribute('data-stl-back')) { st.stage = 'view'; st.action = null; paintDlg('[data-stl-act]'); }
       else if (b.hasAttribute('data-stl-confirm')) {
         st.note = dlgEl.querySelector('#stl-note').value;
+        if (L) {
+          if (st.action !== 'completed') { showErr(L.UNSUPPORTED); return; }
+          L.status('settlements', st.id, 'completed').then((res) => {
+            if (!res.ok) { showErr(L.errorText(res)); return; }
+            settlements = L.rows('settlements', { CATS: FIN ? FIN.CATEGORIES : [] });
+            st.msg = 'تم تسجيل تحصيل حصة المنصة على الخادم.'; st.stage = 'view'; st.action = null; st.id = 'stl:done:' + String(st.id).slice('stl:pending:'.length);
+            grid.setRows(rowsView()); paintSide(); paintDlg('#stl-result');
+          });
+          return;
+        }
         try {
           const r = st.action === 'review' ? reviewDiscrepancy(settlements, log, st.id, { note: st.note }) : transition(settlements, log, st.id, st.action, { note: st.note });
           settlements = r.settlements; log = r.log;

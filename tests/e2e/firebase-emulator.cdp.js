@@ -150,7 +150,9 @@ withBrowser(async ({ wsUrl }) => {
   await d.evaluate(`location.hash = '#/finance'; true`);
   ok(await d.waitFor('!document.querySelector("[data-adm-not-connected]") && document.body.textContent.length > 200', 8000), 'finance dashboard renders from real transactions (not gated)');
   await d.evaluate(`location.hash = '#/settlements'; true`);
-  ok(await d.waitFor('!!document.querySelector("[data-adm-not-connected]")', 8000), 'a page without server data (settlements: payout process undecided) stays explicitly gated');
+  ok(await d.waitFor('!document.querySelector("[data-adm-not-connected]")', 8000), 'settlements show real provider balances (not gated)');
+  await d.evaluate(`location.hash = '#/notifications'; true`);
+  ok(await d.waitFor('!!document.querySelector("[data-adm-not-connected]")', 8000), 'a page without server data (notifications) stays explicitly gated');
 
   const errs = d.errors.filter(e => !/favicon|ERR_FAILED/.test(e));
   ok(errs.length === 0, 'no console errors: ' + (errs.slice(0, 3).join(' | ') || 'none'));

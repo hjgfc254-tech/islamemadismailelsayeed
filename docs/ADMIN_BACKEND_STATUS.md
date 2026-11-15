@@ -6,7 +6,7 @@ refused with an explicit message (HTTP-like 501), never simulated. Pages that ar
 show "not connected to the server yet" instead of fixtures. In local mode (development and tests) every page keeps
 its fixtures.
 
-## Live (14 of 24 pages)
+## Live (15 of 24 pages)
 
 | Page | Data (collections) | Real actions (routes) | Refused (no server route) |
 |---|---|---|---|
@@ -19,15 +19,16 @@ its fixtures.
 | quotes | quotes (+ requests, customers, providers) | — (read-only) | Approve/reject/return: on the server the decision belongs to the customer (`/quote/approve`, `/quote/reject`); the backend has no quote expiry, so none is shown |
 | dashboard | KPIs from real records: requests, new customers, approved providers, commission of paid transactions, average review stars, open complaints; delta vs the preceding period of equal length | — | Fixture tasks/alerts and split details are not shown |
 | finance (dashboard) | transactions (value, commission, net, collection; free services excluded), bucketed into the page categories | — (read-only) | Discrepancy review (no discrepancy records exist). Settled/pending dues are 0: in the current collection model the platform makes no payouts (see the payout decision) |
-| categories | The real service catalogue (`CAT`: categories → devices/work types, problem counts) | — (read-only) | Create, edit, move, activate: the catalogue is code; editing needs a server catalogue |
+| settlements | transactions per provider (Uber cash model: the customer pays the provider; the provider owes the platform share = commission) | Collect a provider's uncollected platform share (each pending transaction → `POST /admin/transactions/:id/collection {collected}`) | Review / approve / hold steps (no rule on the server) |
+| categories | The real service catalogue (`CAT`: categories → devices/work types, problem counts) + base prices | Set or clear the base price of a device/work type (`POST /admin/pricing`, Uber-style upfront pricing) | Create, edit, move, activate: the catalogue is code; editing needs a server catalogue |
 | workforce, employee details, roles, permissions | employees, admins, system/rbac | Invite, edit, status, re-invite; roles; overrides | — |
 
 
-## Gated (10 pages): what each needs
+## Gated (9 pages): what each needs
 | Page | Missing backend piece or business rule |
 |---|---|
 | super-dashboard | Owner-level targets and trend definitions are not specified |
-| commissions, settlements, reports | Settlement entity and payout workflow are not defined in the business rules. Collection and commission routes exist and are used by the marketplace page. Mapping the fixture KPIs needs an agreed formula set (see `docs/API_CONTRACTS.md` business rules). |
+| commissions, reports | Settlement entity and payout workflow are not defined in the business rules. Collection and commission routes exist and are used by the marketplace page. Mapping the fixture KPIs needs an agreed formula set (see `docs/API_CONTRACTS.md` business rules). |
 | notifications | Broadcast campaigns and delivery logs have no backend (no SMS, email or push provider) |
 | services | The page's fixed category list does not match the real 7 categories; it needs the real catalogue as its category source and a server catalogue for editing |
 | departments | Departments are a fixed list in the workforce module; no department entity exists |
