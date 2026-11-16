@@ -278,10 +278,10 @@
   /* Live commission/net preview while completing a job (parity with legacy #finPrev; local demo figures only). */
   function completionPreview(rate,value,deductions) {
     const v=Number(value), d=Number(deductions||0);
-    if(!(v>0)) return `أدخل القيمة لمعاينة عمولة المنصة (${rate}%) وصافي مستحقك التجريبي.`;
+    if(!(v>0)) return `أدخل القيمة لمعاينة عمولة المنصة (${rate}%) وصافي مستحقك.`;
     if(!Number.isFinite(d)||d<0||d>v) return 'الخصم يجب أن يكون بين صفر وقيمة الخدمة.';
     const x=MP.calc(v,rate,d);
-    return `عمولة المنصة (${rate}%): ${money(x.commission)} • الخصومات: ${money(x.deductions)} • صافي مستحقك التجريبي: ${money(x.net)}`;
+    return `عمولة المنصة (${rate}%): ${money(x.commission)} • الخصومات: ${money(x.deductions)} • صافي مستحقك: ${money(x.net)}`;
   }
 
   function onInput(event) {
@@ -348,7 +348,7 @@
       const result=registrationFrom(data); if(result.error) return invalid(form,result.error,result.field);
       return perform('register',submitter,()=>api.provider.register(result.value),res=>{
         session.select(res.data.id); formTrigger=null; router.navigate('home'); render();
-        toast('تم إرسال طلب التسجيل (تجريبي) — بانتظار اعتماد الإدارة');
+        toast('تم إرسال طلب التسجيل — بانتظار اعتماد الإدارة');
       },res=>invalid(form,errorText(res)));
     }
     if(form.id==='pv-ratec-form'){const stars=+data.get('stars');if(!(stars>=1&&stars<=5))return invalid(form,'اختر التقييم');return perform('ratec:'+id,submitter,()=>api.orders.rateCustomer(id,stars,String(data.get('comment')||'')),()=>{toast('تم حفظ تقييمك للعميل');done([detailsSel(id)]);},stale);}

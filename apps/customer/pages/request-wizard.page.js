@@ -408,7 +408,7 @@ async function renderAttachmentsBlock(w){
       ` : ''}
     </div>
     <small class="hint">الحد الأقصى ${limits.maxFiles} مرفقات • صورة ≤ ${limits.maxImageMB}MB • فيديو ≤ ${limits.maxVideoMB}MB</small>
-    <div class="need">${safeIc('info')}<span>المرفقات تُخزَّن على جهازك فقط في الوضع التجريبي، ويمكن حذفها قبل إرسال الطلب.</span></div>
+    <div class="need">${safeIc('info')}<span>${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'الصور بتتحفظ على جهازك، وتقدر تفرّجها للفني وقت الزيارة. تقدر تحذفها قبل إرسال الطلب.':'المرفقات تُخزَّن على جهازك فقط في الوضع التجريبي، ويمكن حذفها قبل إرسال الطلب.'}</span></div>
   </div>`;
 }
 

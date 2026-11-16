@@ -387,7 +387,7 @@ function renderServiceAreas(){
   if (!govs.length) govs = ['القاهرة','الجيزة','الإسكندرية'];
   const chips = govs.map(g => `<span class="chip">${ic('pin')} ${esc(g)}</span>`).join('');
   return `<h2 class="sec-title">${ic('pin')}مناطق الخدمة</h2>
-    <div class="demo-banner">${ic('info')}<span>بيانات تجريبية — المناطق الفعلية تُحدَّد عند تشغيل المنصة.</span></div>
+    ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'':`<div class="demo-banner">${ic('info')}<span>بيانات تجريبية — المناطق الفعلية تُحدَّد عند تشغيل المنصة.</span></div>`}
     <div class="chips" style="flex-wrap:wrap">${chips}</div>`;
 }
 

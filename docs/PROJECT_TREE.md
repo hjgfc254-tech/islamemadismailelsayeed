@@ -364,6 +364,7 @@ hansalhlak/
 │   ├── AUTHENTICATION.md
 │   ├── DATA_MODEL.md
 │   ├── DEPENDENCY_GRAPH.md
+│   ├── DESIGN_MAP.md
 │   ├── DESIGN_SYSTEM_AUDIT.md
 │   ├── DESIGN_SYSTEM_V9.md
 │   ├── DEVELOPMENT_PROGRESS.md
@@ -399,6 +400,7 @@ hansalhlak/
 │   ├── P1_PROVIDER_AUDIT.md
 │   ├── PERMISSIONS.md
 │   ├── PROJECT_CONTROL_CENTER_GUIDE.md
+│   ├── PROJECT_REFERENCE.md
 │   ├── PROJECT_TREE.md
 │   ├── PROMPT_LOG_V8.md
 │   ├── PROVIDER_LEGACY_PARITY_AUDIT.md
@@ -455,6 +457,7 @@ hansalhlak/
 │   └── package.json
 ├── scripts/
 │   ├── build-lucide-icons.cjs
+│   ├── build-project-reference.cjs
 │   ├── inventory-files.mjs
 │   ├── refresh-project-inventory.mjs
 │   ├── sync-functions-domain.cjs

@@ -59,7 +59,7 @@ const Addresses = (() => {
     }
     const list = MP.addressesFor(u.id);
     return `<div class="screen">${typeof head === 'function' ? head('عناويني', true) : ''}
-      <div class="demo-banner">${safeIc('info')}<span>عناوينك محفوظة على جهازك فقط في الوضع التجريبي.</span></div>
+      ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'':`<div class="demo-banner">${safeIc('info')}<span>عناوينك محفوظة على جهازك فقط في الوضع التجريبي.</span></div>`}
       <button class="cta" data-addr-new>${safeIc('plus')} إضافة عنوان جديد</button>
       ${list.length
         ? `<h2 class="sec-title">${safeIc('pin')}عناوينك (${list.length})</h2><div class="plist">${list.map(addressCard).join('')}</div>`

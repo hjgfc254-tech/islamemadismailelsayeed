@@ -202,7 +202,7 @@ const Account = (() => {
         <button class="menu-item" data-account-logout>${safeIc('logout')} تسجيل الخروج</button>
         <button class="menu-item is-danger" data-account-delete>${safeIc('trash')} حذف الحساب</button>
       </div>
-      <small class="hint" style="padding:10px 4px;display:block">جميع البيانات محفوظة محليًا على جهازك في الوضع التجريبي.</small>
+      <small class="hint" style="padding:10px 4px;display:block">${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'بياناتك محفوظة بأمان على خوادم هنصلحلك.':'جميع البيانات محفوظة محليًا على جهازك في الوضع التجريبي.'}</small>
     `;
   };
 

@@ -327,7 +327,7 @@ test('completion form previews platform commission and net live, using the provi
   app.input('pv-complete-form', { value: '500', deductions: '20' });
   const x = app.MP.calc(500, 12, 20);
   assert.equal(x.commission, 60); assert.equal(x.net, 420);
-  assert.equal(app.el('pv-complete-preview').textContent, `عمولة المنصة (12%): ${money(60)} • الخصومات: ${money(20)} • صافي مستحقك التجريبي: ${money(420)}`);
+  assert.equal(app.el('pv-complete-preview').textContent, `عمولة المنصة (12%): ${money(60)} • الخصومات: ${money(20)} • صافي مستحقك: ${money(420)}`);
   app.input('pv-complete-form', { value: '100', deductions: '150' });
   assert.equal(app.el('pv-complete-preview').textContent, 'الخصم يجب أن يكون بين صفر وقيمة الخدمة.');
   app.input('pv-complete-form', { value: '', deductions: '0' });

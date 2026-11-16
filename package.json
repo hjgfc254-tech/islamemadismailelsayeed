@@ -4,6 +4,7 @@
     "private":  true,
     "description":  "Reorganized frontend demo for HANSALEHLAK",
     "scripts":  {
+    "docs:reference": "node scripts/build-project-reference.cjs",
                     "test":  "node --test tests/unit/*.test.js",
                     "test:unit":  "node --test tests/unit/*.test.js",
                     "test:coverage":  "node --experimental-test-coverage --test tests/unit/*.test.js",

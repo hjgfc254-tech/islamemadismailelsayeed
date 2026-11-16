@@ -38,7 +38,7 @@ const Support = (() => {
     {q:'كيف أقيّم الفني؟', a:'بعد إغلاق الطلب، يظهر زر "قيّم مقدم الخدمة" في صفحة المتابعة. اختر النجوم وأضف تعليقًا إن أردت.'},
     {q:'ماذا أفعل لو تأخر الفني؟', a:'استخدم زر "تقديم شكوى" من صفحة الطلب. فريق الدعم سيتواصل معك.'},
     {q:'كيف أضيف عنوانًا محفوظًا؟', a:'من "حسابي" ← "إدارة العناوين" ← "إضافة عنوان جديد". سيظهر في خطوة الموقع أثناء الطلب.'},
-    {q:'هل بياناتي آمنة؟', a:'في الوضع التجريبي تُحفظ بياناتك على جهازك فقط. عند التكامل مع Backend ستُحدَّث السياسة.'}
+    {q:'هل بياناتي آمنة؟', a:(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'أيوه. بياناتك محفوظة على خوادم مؤمَّنة، والفني ما بيشوفش عنوانك ورقمك غير بعد ما يقبل طلبك.':'في الوضع التجريبي تُحفظ بياناتك على جهازك فقط. عند التكامل مع Backend ستُحدَّث السياسة.'}
   ];
 
   /* ═════════ الشاشة الرئيسية ═════════ */
@@ -47,7 +47,7 @@ const Support = (() => {
     const complaints = u ? MP.db().complaints.filter(k => isMine(k, u)) : [];
     const openTickets = complaints.filter(k => k.status === 'open').length;
     return `<div class="screen">${typeof head === 'function' ? head('مركز الدعم', true) : ''}
-      <div class="demo-banner">${safeIc('info')}<span>وضع العرض التجريبي — الشكاوى تُحفظ محليًا ولا تُرسل لفريق دعم حقيقي.</span></div>
+      ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'':`<div class="demo-banner">${safeIc('info')}<span>وضع العرض التجريبي — الشكاوى تُحفظ محليًا ولا تُرسل لفريق دعم حقيقي.</span></div>`}
       ${openTickets ? `<div class="need">${safeIc('info')}<span>لديك ${openTickets} شكوى/شكاوى مفتوحة — يمكنك متابعتها من "سجل الشكاوى".</span></div>` : ''}
       <div class="plist" style="gap:8px;margin-top:14px">
         <button class="prow glass neon" data-support="faq">
@@ -110,7 +110,7 @@ const Support = (() => {
     const myReqs = u ? MP.reqs().filter(r => r.customerId === u.id) : [];
     if (typeof sheet !== 'function') return;
     sheet(`<h4>${safeIc('warn')} تقديم شكوى</h4>
-      <div class="sub">سيتم حفظها محليًا في الوضع التجريبي</div>
+      <div class="sub">${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'فريق الدعم هيراجعها ويرد عليك في الإشعارات':'سيتم حفظها محليًا في الوضع التجريبي'}</div>
       <form class="form" id="supComplaintForm">
         <div><label for="sup-kind">نوع الشكوى *</label>
           <select id="sup-kind" name="kind" required>
@@ -197,18 +197,18 @@ const Support = (() => {
   const openContact = () => {
     if (typeof sheet !== 'function') return;
     sheet(`<h4>${safeIc('chat')} التواصل مع الدعم</h4>
-      <div class="sub">في الوضع التجريبي، هذه قنوات محاكاة فقط</div>
-      <div class="card2 glass neon">
+      ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?`<div class="sub">ابعتلنا استفسارك أو شكوتك من هنا، وفريق الدعم بيرد عليك في الإشعارات.</div><button type="button" class="cta" data-support="complaint">${safeIc('send')} ابعت للدعم</button>`:`<div class="sub">في الوضع التجريبي، هذه قنوات محاكاة فقط</div>`}
+      <div class="card2 glass neon" ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'hidden':''}>
         <div class="top"><b>${safeIc('call')} هاتف</b></div>
         <small>متاح تجريبيًا: 9 صباحًا - 9 مساءً</small>
         <div class="kv">01234567890</div>
       </div>
-      <div class="card2 glass neon">
+      <div class="card2 glass neon" ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'hidden':''}>
         <div class="top"><b>${safeIc('chat')} واتساب</b></div>
         <small>تواصل سريع عبر واتساب</small>
         <div class="kv">01234567890</div>
       </div>
-      <div class="card2 glass neon">
+      <div class="card2 glass neon" ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'hidden':''}>
         <div class="top"><b>${safeIc('send')} بريد إلكتروني</b></div>
         <small>support@hansalhak.demo</small>
       </div>
@@ -218,7 +218,7 @@ const Support = (() => {
   /* ═════════ السياسات ═════════ */
   const POLICIES = {
     cancel: {title:'سياسة الإلغاء', body: `يمكنك إلغاء الطلب مجانًا قبل بدء تنفيذ الخدمة. بعد بدء التنفيذ، يتم التعامل مع طلب الإلغاء بالتنسيق مع مقدم الخدمة وفريق الدعم. قد تُطبق رسوم معاينة إن تمت الزيارة. في حال عدم الاتفاق على السعر بعد المعاينة، يمكنك رفض العرض دون أي التزام.`},
-    privacy: {title:'سياسة الخصوصية', body: `في الوضع التجريبي، تُحفظ جميع بياناتك (الاسم، الهاتف، العنوان، الطلبات) على جهازك فقط باستخدام LocalStorage وIndexedDB. لا تُرسل البيانات إلى أي خادم خارجي. عند إتمام التكامل مع Backend، سيتم تحديث هذه السياسة لتوضح كيفية حماية البيانات وتشفيرها.`},
+    privacy: {title:'سياسة الخصوصية', body: (globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase') ? `بياناتك (الاسم، رقم التليفون، العناوين، الطلبات) محفوظة على خوادم Google Firebase المؤمَّنة. الفني اللي بيقبل طلبك بس هو اللي بيشوف عنوانك ورقمك، وده بعد القبول. فريق إدارة هنصلحلك بيشوف البيانات اللازمة لتشغيل الخدمة وحل الشكاوى. الصور اللي بترفقها بتفضل على جهازك. تقدر تحذف حسابك في أي وقت من صفحة «حسابي».` : `في الوضع التجريبي، تُحفظ جميع بياناتك (الاسم، الهاتف، العنوان، الطلبات) على جهازك فقط باستخدام LocalStorage وIndexedDB. لا تُرسل البيانات إلى أي خادم خارجي. عند إتمام التكامل مع Backend، سيتم تحديث هذه السياسة لتوضح كيفية حماية البيانات وتشفيرها.`},
     terms: {title:'شروط الاستخدام', body: `هنصلحلك منصة وسيطة تربط العملاء بمقدمي الخدمات. المنصة لا تقدم الخدمات مباشرة، ولا تتحمل مسؤولية جودة التنفيذ. يتم التحقق من مقدمي الخدمة قدر الإمكان، لكن التعاقد النهائي للخدمة بينك وبين مقدم الخدمة. أي نزاع يُرفع للدعم لتسهيل الحل. الأسعار المعروضة تقديرية، والسعر النهائي يُحدَّد بعد المعاينة.`}
   };
 
@@ -230,7 +230,7 @@ const Support = (() => {
       <div class="card2 glass neon" style="padding:14px">
         <div style="font-size:13.5px;line-height:1.7;color:#eadfe7">${_esc(p.body)}</div>
       </div>
-      <div class="demo-banner">${safeIc('info')}<span>نص تجريبي — عند التشغيل الفعلي، ستحتاج لصياغة قانونية.</span></div>`);
+      ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'':`<div class="demo-banner">${safeIc('info')}<span>نص تجريبي — عند التشغيل الفعلي، ستحتاج لصياغة قانونية.</span></div>`}`);
   };
 
   /* ═════════ الأحداث ═════════ */

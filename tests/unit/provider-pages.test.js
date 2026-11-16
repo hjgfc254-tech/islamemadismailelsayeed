@@ -81,7 +81,7 @@ test('provider login route hands off to the standalone demo picker and collects 
   assert.match(html,/http-equiv="refresh" content="0;url=index\.html"/);
   assert.match(html,/location\.replace\('index\.html'\+location\.hash\)/);
   assert.match(html,/<a href="index\.html">/,'no-JS fallback link');
-  assert.match(html,/لا توجد مصادقة فعلية/,'demo notice');
+  assert.match(html,/جارٍ تحويلك لصفحة الدخول/,'redirect notice');
   assert.doesNotMatch(html,/<input|<form|password/i,'must not imitate a real login');
   assert.match(fs.readFileSync(path.join(ROOT,'_redirects'),'utf8'),/^\/provider\/login \/apps\/provider\/login\.html 200$/m);
 });
