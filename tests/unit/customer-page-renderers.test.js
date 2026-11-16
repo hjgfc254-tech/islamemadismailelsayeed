@@ -64,7 +64,7 @@ const orderContext=(overrides={})=>({
 test('home renderer composes all home sections in stable order',()=>{
  const {ctx,calls}=homeContext(); const html=Home.render(ctx);
  for(const marker of ['data-part="topbar"','data-part="greeting"','data-part="draft"','data-hero="art"','id="q"','id="home-sg"','data-part="quick"','data-part="active"','data-part="tiles"','data-part="problems"','data-part="recent"','data-part="addresses"','data-part="favorites"','data-part="discover"','data-part="areas"','href="../provider/index.html#/join"']) assert.ok(html.includes(marker),marker);
- assert.deepEqual(calls.map(x=>x[0]),['topbar','greeting','draft','quick','active','tiles','problems','recent','addresses','favorites','discover','areas']);
+ assert.deepEqual(calls.map(x=>x[0]),['topbar','greeting','draft','active','quick','tiles','problems','recent','addresses','favorites','discover','areas']);
 });
 test('home renderer rejects incomplete dependency contracts',()=>assert.throws(()=>Home.render({topbar(){}}),/missing dependencies/));
 test('orders page renders demo empty state and call to action for signed-out customers',()=>{

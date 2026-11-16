@@ -52,6 +52,7 @@ for(const [c,i,p] of journeys){
   setq(c==='cars'?{make:'تويوتا كورولا 2018'}:{}); click({act:'wzNext'}); ok(wz().step===4,'to description '+c);
   setf({'wz-desc':'وصف المشكلة بالتفصيل','wz-note':''}); click({act:'wzNext'}); ok(wz().step===5,'to attachments '+c);
   click({act:'wzNext'}); ok(wz().step===6,'to location '+c);
+  run("WZ.address=Object.assign({},WZ.address,{id:'',gov:'',area:'',addr:''})");   /* the default saved address is pre-filled; clear it to exercise validation */
   click({act:'wzNext'}); ok(wz().step===6&&toasts.pop()==='اختر المحافظة','gov required');
   setf({'wz-gov':'القاهرة','wz-area':'مدينة نصر','wz-addr':'شارع عباس العقاد 12'}); click({act:'wzNext'}); ok(wz().step===7,'to schedule');
   run("WZ.schedule.flexible=true"); click({act:'wzNext'}); ok(wz().step===8,'to contact');
@@ -87,6 +88,11 @@ ok(run("CAT.items('appliances',true).some(i=>i.id==='appliances/fridge')"),'admi
 run("CAT.setActive('item','appliances/fridge',true)");
 run("CAT.upsert('item',{id:'appliances/tv',cat:'appliances',name:'تلفزيون',specialty:'appliances.tv',kind:'fault'})"); run("CAT.upsert('problem',{id:'appliances/tv/no-picture',item:'appliances/tv',cat:'appliances',name:'لا توجد صورة'})");
 ok(run("CAT.problems('appliances/tv').length")===1,'admin add item/problem reflected');
+/* 6b) shorter flow: steps with nothing to ask are skipped; the default saved address is pre-filled */
+run("WZ=wzNew('appliances','appliances/ac'); WZ.problem='appliances/ac/no-cooling'; WZ.contact.name='عميل'; WZ.contact.phone='01012345678'");
+ok(run('wzSkip(8)')===9, 'valid contact details skip the contact step');
+run("WZ.contact.phone=''"); ok(run('wzSkip(8)')===8, 'missing contact details keep the contact step');
+ok(run('wzSkip(4)')===4, 'non-skippable steps are kept');
 /* 7) C5 — التحقق الصحيح واستعادة المسودة */
 run("WZ=wzNew('appliances','appliances/ac')");
 run("WZ.step=8; WZ.contact.name='عميل'; WZ.contact.phone='01012345678'; WZ.contact.method='call'");

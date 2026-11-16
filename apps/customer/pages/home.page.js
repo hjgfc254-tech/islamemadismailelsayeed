@@ -14,10 +14,21 @@
     const h=ctx.siteHero, e=ctx.esc||(s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])));
     const eyebrow=h?e(h.eyebrow):'منصة واحدة، خدمات أسهل', title=h?e(h.title):'كل ما تحتاجه من خدمات،', accent=h?e(h.accent):'في مكان واحد';
     const sub=h?e(h.sub):'اكتشف الخدمة المناسبة بسهولة، وهنوصلك بمقدم الخدمة المناسب لطلبك.', cta=h?e(h.cta):'ابدأ الطلب';
+    /* «how it works» for first-time visitors (hidden once the customer has requests) */
+    const howItWorks=ctx.firstVisit===false?'':`<section class="how" aria-labelledby="howT"><h2 class="sec-title" id="howT">${ic('info')}إزاي هنصلحلك بتشتغل؟</h2>
+      <ol class="how-steps"><li><i>1</i><b>اطلب الخدمة</b><small>اختار القسم ووصف المشكلة في دقيقة</small></li><li><i>2</i><b>فني موثّق يقبل طلبك</b><small>وتعرف السعر قبل ما توافق</small></li><li><i>3</i><b>تابع وادفع بعد الخدمة</b><small>كاش للفني بعد ما الشغل يخلص</small></li></ol></section>`;
+    /* latest REAL reviews (only when there are some; no customer names — privacy) */
+    const rv=Array.isArray(ctx.latestReviews)?ctx.latestReviews.filter(r=>r&&r.stars>=4&&String(r.comment||'').trim()).slice(0,6):[];
+    const reviewsBlock=rv.length?`<section class="reviews-strip" aria-labelledby="rvT"><h2 class="sec-title" id="rvT">${ic('star')}آراء عملائنا</h2>
+      <div class="rv-row">${rv.map(r=>`<figure class="rv-card glass neon"><div class="rv-stars" aria-label="${r.stars} من 5">${'★'.repeat(Math.round(r.stars))}</div><blockquote>${e(String(r.comment).slice(0,140))}</blockquote><figcaption>${e(r.service||'عميل هنصلحلك')}</figcaption></figure>`).join('')}</div></section>`:'';
     const art=h&&h.img?`<img class="hero-photo" src="${e(h.img)}" alt="" decoding="async" fetchpriority="high" draggable="false">`:ART.hero;
-    return `<div class="screen">${topbar()}
+    const sb=ctx.siteBanner, sbe=ctx.esc||(s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])));
+    const bannerHtml=sb&&sb.text?`<div class="site-banner" role="note" data-part="banner">${ic('info')}<span>${sbe(sb.text)}</span>${sb.action&&sb.action!=='none'?`<button type="button" class="sb-go" data-act="slideGo" data-to="${sbe(sb.action)}">اعرف أكتر</button>`:''}</div>`:'';
+    return `<div class="screen">${topbar()}${bannerHtml}
   ${renderGreeting()}
+  ${ctx.addressBar||''}
   ${renderDraftResume()}
+  ${renderActiveRequests()}
   <section class="hero" aria-labelledby="heroT">
     <div class="txt">
       ${eyebrow?`<p class="hero-eyebrow">${eyebrow}</p>`:''}
@@ -38,7 +49,8 @@
     <li>${ic('clock')}<span><b>تابع طلبك خطوة بخطوة</b><small>وتوصلك إشعارات بكل تحديث</small></span></li>
   </ul>
   ${renderQuickActions()}
-  ${renderActiveRequests()}
+  ${howItWorks}
+  ${ctx.trending||''}
   <h2 class="sec-title" id="tilesT">${ic('grid')}تصفّح الفئات</h2>
   ${tiles()}
   ${renderCommonProblems()}
@@ -46,6 +58,9 @@
   ${renderSavedAddresses()}
   ${renderFavorites()}
   ${discover()}
+  ${ctx.packages||''}
+  ${ctx.invite||''}
+  ${reviewsBlock}
   ${renderServiceAreas()}
   <section class="trust" aria-labelledby="trustT">
     <div class="trust-photo"><img src="../../assets/brand/trust-handshake.jpg" alt="مقدم خدمة من هنصلحلك يصافح عميلًا" width="720" height="868" loading="lazy" decoding="async"></div>
@@ -64,7 +79,7 @@
     <img class="wordmark" src="../../assets/brand/logo-v10-lockup.webp" alt="هنصلحلك HANSALEHLAK" width="615" height="160" loading="lazy" decoding="async">
     <p>منصة واحدة، خدمات أسهل.</p>
     <nav aria-label="روابط سريعة"><button type="button" data-go="sections">الخدمات</button><button type="button" data-go="search">البحث</button><button type="button" data-go="orders">طلباتي</button><button type="button" data-go="account">حسابي</button><a href="../provider/index.html#/join">انضم كمقدم خدمة</a></nav>
-    <small>نسخة عرض تجريبية — البيانات محلية على هذا الجهاز.</small>
+    ${ctx.demo === false ? '' : '<small>نسخة عرض تجريبية — البيانات محلية على هذا الجهاز.</small>'}
   </footer>
   </div>`;
   };

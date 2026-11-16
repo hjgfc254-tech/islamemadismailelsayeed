@@ -12,7 +12,7 @@
  *
  * Admin routes (owner | admin role):
  *   GET    /admin/content            content + media metadata (no image bytes)
- *   PATCH  /admin/content            {hero?, slides?, icons?}  → new version
+ *   PATCH  /admin/content            {hero?, slides?, icons?, banner?}  → new version
  *   POST   /admin/media              {kind: hero|slide|icon, data: data:image/(webp|jpeg|png);base64,…, w, h}
  *   DELETE /admin/media/:id          refused (409) while the content references it
  * Public: session op `content` {have: [mediaId…]} → {v, hero, slides, icons, media{id: dataUrl} for missing ids}
@@ -38,8 +38,16 @@ function invalidate(adapter) { instance.delete(adapter); }
 
 function cleanContent(cur, body, mediaIds) {
   const errors = {};
-  const out = { hero: cur.hero || null, slides: Array.isArray(cur.slides) ? cur.slides : null, icons: cur.icons || {} };
+  const out = { hero: cur.hero || null, slides: Array.isArray(cur.slides) ? cur.slides : null, icons: cur.icons || {}, banner: cur.banner || null };
   const media = id => (id == null || id === '' ? null : (MEDIA_ID.test(String(id)) && mediaIds.has(String(id)) ? String(id) : (errors.media = 'صورة غير موجودة', null)));
+  if (body.banner !== undefined) {                 // announcement bar on top of the Home page (offers, seasons)
+    if (body.banner === null) out.banner = null;
+    else {
+      const b = body.banner || {};
+      out.banner = { on: b.on === true, text: str(b.text, 120), action: ACTIONS.includes(b.action) ? b.action : 'none' };
+      if (out.banner.on && !out.banner.text) errors.banner = 'اكتب نص الإعلان أو أوقفه';
+    }
+  }
   if (body.hero !== undefined) {
     if (body.hero === null) out.hero = null;
     else {
@@ -145,8 +153,8 @@ async function publicContent(backend, have) {
     if (!c.media.has(id)) { const d = await a.get(null, `media/${id}`); if (d) c.media.set(id, d.data); }
     if (c.media.has(id)) media[id] = c.media.get(id);
   }
-  const { hero = null, slides = null, icons = {} } = c.content;
-  return { v, hero, slides, icons, media };
+  const { hero = null, slides = null, icons = {}, banner = null } = c.content;
+  return { v, hero, slides, icons, banner: banner && banner.on && banner.text ? banner : null, media };
 }
 
 const PATH_RE = /^\/admin\/(content|media)(\/|$)/;

@@ -194,6 +194,10 @@ const Account = (() => {
         </select>
       </div>
       <div class="card2 glass neon">
+        <b>${safeIc('search')} حجم الخط</b>
+        <div class="seg seg-sm fs-seg" role="radiogroup" aria-label="حجم الخط">${[['', 'عادي'], ['lg', 'كبير'], ['xl', 'أكبر']].map(([v, l]) => `<label class="seg-opt"><input type="radio" name="fontSize" value="${v}" data-font-size ${(document.documentElement.getAttribute('data-fs') || '') === v ? 'checked' : ''}><span>${l}</span></label>`).join('')}</div>
+      </div>
+      <div class="card2 glass neon">
         <b>${safeIc('shield')} الخصوصية والحساب</b>
         <button class="menu-item" data-account-logout>${safeIc('logout')} تسجيل الخروج</button>
         <button class="menu-item is-danger" data-account-delete>${safeIc('trash')} حذف الحساب</button>
@@ -321,6 +325,12 @@ const Account = (() => {
       const u = meUser(); if (!u) return;
       HSCustomerApi.updateMe({ prefs: { [t.dataset.accountPref]: t.checked } })
         .then(res => toast(res.ok ? 'تم حفظ التفضيلات' : 'تعذّر حفظ التفضيلات'));
+    }
+    if (t.dataset.fontSize !== undefined) {
+      /* larger text for older eyes: scales the whole app (stored on this device only) */
+      try { if (t.value) localStorage.setItem('hs_font', t.value); else localStorage.removeItem('hs_font'); } catch {}
+      if (t.value) document.documentElement.setAttribute('data-fs', t.value); else document.documentElement.removeAttribute('data-fs');
+      toast(t.value ? 'تم تكبير الخط' : 'رجع الخط للحجم العادي');
     }
     if (t.dataset.accountContact !== undefined) {
       const u = meUser(); if (!u) return;

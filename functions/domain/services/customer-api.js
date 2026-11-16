@@ -94,6 +94,12 @@
     store.toggleFavorite(actor.id, body.kind, String(body.refId));
     return { kind: body.kind, refId: String(body.refId), favorite: !!store.isFavorite(actor.id, body.kind, String(body.refId)) };
   });
+  client.define('POST', '/customers/me/ref-code', { roles: C, summary: 'Own invite code (created on first use) + current credit and the invite reward.' }, ({ actor, store }) => {
+    const c = store.get('customers', actor.id); if (!c) return fail('UNAUTHENTICATED');
+    const ref = (store.db().settings || {}).referral || {};
+    if (!ref.on) return fail('CONFLICT', 'برنامج الدعوة مش متاح دلوقتي');
+    return { code: store.refCodeFor(c.id), reward: +ref.reward || 0, credit: +c.credit || 0 };
+  });
 
   const id = v => encodeURIComponent(v);
   return {
@@ -106,6 +112,7 @@
     updateAddress: (aid, patch) => client.patch('/customers/me/addresses/' + id(aid), patch),
     removeAddress: aid => client.del('/customers/me/addresses/' + id(aid)),
     favorites: () => client.get('/customers/me/favorites'),
-    toggleFavorite: (kind, refId) => client.post('/customers/me/favorites/toggle', { kind, refId })
+    toggleFavorite: (kind, refId) => client.post('/customers/me/favorites/toggle', { kind, refId }),
+    refCode: () => client.post('/customers/me/ref-code', {})
   };
 });

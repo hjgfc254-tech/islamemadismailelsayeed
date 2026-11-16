@@ -93,15 +93,75 @@
     return { id: c.id, status: c.status };
   });
 
+  /* ── Marketing: promo codes, invite-a-friend reward and maintenance packages (stored in settings). Discounts are paid
+     from the platform fee and never exceed it (see the store), so provider earnings are unaffected. ── */
+  const DAY_RE = /^\d{4}-\d{2}-\d{2}$/;
+  const num = (v, lo, hi) => { const n = +v; return Number.isFinite(n) && n >= lo && n <= hi ? n : null; };
+  function cleanMarketing(body, cur) {
+    const errors = {}, out = {};
+    if (body.promos !== undefined) {
+      if (!Array.isArray(body.promos) || body.promos.length > 50) errors.promos = 'حتى 50 كود';
+      else {
+        const seen = new Set(), prev = new Map((Array.isArray(cur.promos) ? cur.promos : []).map(p => [p.code, p]));
+        out.promos = body.promos.map(p => {
+          const code = String((p && p.code) || '').trim().toUpperCase();
+          if (!/^[A-Z0-9]{3,16}$/.test(code) || code.startsWith('HS')) errors.promos = 'الكود من 3 لـ 16 حرف/رقم إنجليزي ولا يبدأ بـ HS';
+          if (seen.has(code)) errors.promos = 'كود مكرر: ' + code; seen.add(code);
+          const kind = p && p.kind === 'percent' ? 'percent' : 'amount';
+          const value = num(p && p.value, 1, kind === 'percent' ? 100 : 10000);
+          if (value == null) errors.promos = kind === 'percent' ? 'النسبة من 1 لـ 100' : 'المبلغ من 1 لـ 10000';
+          const until = String((p && p.until) || '');
+          if (until && !DAY_RE.test(until)) errors.promos = 'تاريخ الانتهاء غير صالح';
+          return { code, kind, value: value || 0, maxOff: num(p && p.maxOff, 0, 10000) || 0, uses: Math.floor(num(p && p.uses, 0, 100000) || 0),
+            used: (prev.get(code) && +prev.get(code).used) || 0, firstOnly: !!(p && p.firstOnly), until, active: !(p && p.active === false) };
+        });
+      }
+    }
+    if (body.referral !== undefined) {
+      const b = body.referral || {}, reward = num(b.reward, 0, 1000);
+      if (reward == null) errors.referral = 'المكافأة من 0 لـ 1000';
+      out.referral = { on: b.on === true, reward: reward || 0 };
+    }
+    if (body.packages !== undefined) {
+      if (!Array.isArray(body.packages) || body.packages.length > 12) errors.packages = 'حتى 12 باقة';
+      else {
+        const seen = new Set();
+        out.packages = body.packages.map((p, i) => {
+          const id = /^[a-z0-9-]{2,24}$/.test(String(p && p.id)) ? String(p.id) : 'pk' + (i + 1);
+          if (seen.has(id)) errors.packages = 'معرّف باقة مكرر'; seen.add(id);
+          const name = String((p && p.name) || '').trim().slice(0, 60);
+          if (!name) errors.packages = 'كل باقة محتاجة اسم';
+          const price = num(p && p.price, 0, 100000), visits = num(p && p.visits, 1, 24);
+          if (price == null || visits == null) errors.packages = 'السعر وعدد الزيارات أرقام صحيحة';
+          return { id, name, cat: String((p && p.cat) || '').slice(0, 40), visits: Math.floor(visits || 1), price: price || 0, desc: String((p && p.desc) || '').trim().slice(0, 200), active: !(p && p.active === false) };
+        });
+      }
+    }
+    return { out, errors };
+  }
+  const marketingView = s => ({ promos: Array.isArray(s.promos) ? s.promos : [], referral: s.referral || { on: false, reward: 0 }, packages: Array.isArray(s.packages) ? s.packages : [] });
+  client.define('GET', '/admin/marketing', { roles: A, summary: 'Promo codes, invite reward and packages.' }, ({ actor, store }) =>
+    guard(actor, 'services', 'view') || marketingView(store.db().settings || {}));
+  client.define('PATCH', '/admin/marketing', { roles: A, summary: 'Replace promo codes / invite reward / packages {promos?, referral?, packages?}.' }, ({ body, actor, store }) => {
+    const denied = guard(actor, 'services', 'edit'); if (denied) return denied;
+    const st = store.db().settings || {};
+    const { out, errors } = cleanMarketing(body || {}, st);
+    if (Object.keys(errors).length) return fail('VALIDATION', 'راجع البيانات', errors);
+    for (const [k, v] of Object.entries(out)) store.setSetting(k, v);
+    return marketingView(store.db().settings);
+  });
+
   const id = v => encodeURIComponent(v);
   return {
     summary: () => client.get('/admin/summary'),
+    marketing: () => client.get('/admin/marketing'),
+    saveMarketing: patch => client.patch('/admin/marketing', patch),
     providers: status => client.get('/admin/providers' + (status ? '?status=' + id(status) : '')),
     setProviderStatus: (pid, status) => client.post('/admin/providers/' + id(pid) + '/status', { status }),
     setSpecialRate: (pid, specialRate) => client.post('/admin/providers/' + id(pid) + '/rate', { specialRate }),
     candidates: reqId => client.get('/admin/requests/' + id(reqId) + '/candidates'),
     assign: (reqId, providerId) => client.post('/admin/requests/' + id(reqId) + '/assign', providerId ? { providerId } : {}),
     setCustomerStatus: (cid, status) => client.post('/admin/customers/' + id(cid) + '/status', { status }),
-    _summary: summary, _permitted: permitted
+    _summary: summary, _permitted: permitted, _cleanMarketing: cleanMarketing
   };
 });

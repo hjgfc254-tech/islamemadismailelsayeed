@@ -37,7 +37,9 @@
         <label class="hs-grid-field"><span>تطبيق رسوم على العميل</span><input type="checkbox" name="customerFee" ${s.customerFee ? 'checked' : ''}></label>
         <label class="hs-grid-field"><span>نسبة المنصة على السعر (٪)</span><input type="number" name="markupRate" min="0" max="100" step="0.5" value="${esc(s.markupRate)}"></label>
         <p class="ord-muted">نموذج التحصيل: العميل يدفع لمقدم الخدمة، وحصة المنصة تُحصَّل من مقدم الخدمة.</p>
-        <p><button type="submit" class="adm-btn adm-btn-p">حفظ الإعدادات</button></p></form><div data-site-content></div>`);
+        <p><button type="submit" class="adm-btn adm-btn-p">حفظ الإعدادات</button></p></form><div data-marketing></div><div data-site-content></div>`);
+      const mk = host.querySelector('[data-marketing]');
+      if (mk && root.HSMarketingEditor) root.HSMarketingEditor.mount(mk).catch(() => { mk.innerHTML = '<p>تعذّر تحميل العروض والخصومات.</p>'; });
       const sc = host.querySelector('[data-site-content]');
       if (sc && root.HSSiteContentEditor) root.HSSiteContentEditor.mount(sc).catch(() => { sc.innerHTML = '<p>تعذّر تحميل محتوى الواجهة.</p>'; });
       host.querySelector('[data-live-settings]').addEventListener('submit', async (e) => {

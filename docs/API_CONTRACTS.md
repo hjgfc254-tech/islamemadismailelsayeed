@@ -117,6 +117,8 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /requests/:id/attachments` | customer | orders-api.js | Link uploaded attachment ids to an own open request {ids[]}. |
 | `POST /requests/:id/repeat` | customer | orders-api.js | Create a new request from an own previous one. |
 | `POST /requests/:id/review` | customer | orders-api.js | Rate the provider once {stars 1–5, comment}. |
+| `POST /requests/:id/messages` | customer, provider | orders-api.js | Message the other side of an accepted job {text ≤ 500}. |
+| `POST /requests/:id/rate-customer` | provider | orders-api.js | Provider rates the customer once after the job {stars 1–5, comment}. |
 | `POST /requests/:id/quotes` | provider | quotes-api.js | Submit a quote (total > 0). |
 | `POST /requests/:id/quote/approve` | customer | quotes-api.js | Approve the current quote (refused when total is 0). |
 | `POST /requests/:id/quote/reject` | customer | quotes-api.js | Reject the current quote {reason}. |
@@ -141,6 +143,7 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `DELETE /customers/me/addresses/:id` | customer | customer-api.js | Remove an own address. |
 | `GET /customers/me/favorites` | customer | customer-api.js | Favorites. |
 | `POST /customers/me/favorites/toggle` | customer | customer-api.js | Toggle a favorite {kind, refId}. |
+| `POST /customers/me/ref-code` | customer | customer-api.js | Own invite code (created on first use) + current credit and the invite reward. |
 | `GET /notifications` | customer, provider, admin | notifications-api.js | Own inbox and unread count. |
 | `POST /notifications/read` | customer, provider, admin | notifications-api.js | Mark own inbox as read. |
 | `POST /complaints` | customer, provider | support-api.js | File a complaint {reqId?, text, kind?}. |
@@ -161,6 +164,8 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `GET /admin/requests/:id/candidates` | admin | admin-api.js | Providers matching a request. |
 | `POST /admin/requests/:id/assign` | admin | admin-api.js | Assign manually {providerId} or auto-match. |
 | `POST /admin/customers/:id/status` | admin | admin-api.js | Suspend / reactivate a customer. |
+| `GET /admin/marketing` | admin | admin-api.js | Promo codes, invite reward and packages. |
+| `PATCH /admin/marketing` | admin | admin-api.js | Replace promo codes / invite reward / packages {promos?, referral?, packages?}. |
 
 Route matching prefers the most specific pattern, so `GET /providers/me` wins over `GET /providers/:id`.
 

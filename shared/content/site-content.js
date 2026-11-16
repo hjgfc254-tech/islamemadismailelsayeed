@@ -16,7 +16,7 @@
   const DEFAULTS = Object.freeze({
     hero: Object.freeze({ eyebrow: 'منصة واحدة، خدمات أسهل', title: 'كل ما تحتاجه من خدمات،', accent: 'في مكان واحد', sub: 'اكتشف الخدمة المناسبة بسهولة، وهنوصلك بمقدم الخدمة المناسب لطلبك.', cta: 'ابدأ الطلب' })
   });
-  let state = { v: 0, hero: null, slides: null, icons: {} };
+  let state = { v: 0, hero: null, slides: null, icons: {}, banner: null };
   const urls = {};                                  // mediaId → object/data URL usable in <img src>
 
   const read = () => { try { const s = JSON.parse(root.localStorage.getItem(KEY)); return s && typeof s === 'object' ? s : null; } catch (e) { return null; } };
@@ -71,13 +71,15 @@
       if (!Array.isArray(state.slides)) return null;
       return state.slides.filter(s => s.active !== false).map(s => ({ id: s.id, title: s.title, desc: s.desc || '', cta: s.cta || '', action: s.action || 'none', img: (s.media && urls[s.media]) || '' }));
     },
+    /** announcement bar {text, action} when the admin switched it on, else null */
+    banner() { const b = state.banner; return b && b.on !== false && b.text ? { text: String(b.text), action: b.action || 'none' } : null; },
     /** custom image for a category ('c-…') or item ('d-…') icon, or '' */
     iconUrl: name => { const id = state.icons && state.icons[name]; return (id && urls[id]) || ''; },
     /** payload from session.content: {v, hero, slides, icons, media{id: dataUrl}} */
     async apply(p) {
       if (!p || !(Number(p.v) > 0)) return false;
       for (const [id, data] of Object.entries(p.media || {})) if (typeof data === 'string' && /^data:image\//.test(data)) await storeMedia(id, data);
-      state = { v: Number(p.v), hero: p.hero || null, slides: Array.isArray(p.slides) ? p.slides : null, icons: p.icons || {} };
+      state = { v: Number(p.v), hero: p.hero || null, slides: Array.isArray(p.slides) ? p.slides : null, icons: p.icons || {}, banner: p.banner || null };
       write(state);
       const keep = referenced(state);
       await resolveCached(keep);
@@ -88,7 +90,7 @@
     async init() {
       const s = read();
       if (!s || !(s.v > 0)) return;
-      state = { v: s.v, hero: s.hero || null, slides: Array.isArray(s.slides) ? s.slides : null, icons: s.icons || {} };
+      state = { v: s.v, hero: s.hero || null, slides: Array.isArray(s.slides) ? s.slides : null, icons: s.icons || {}, banner: s.banner || null };
       await resolveCached(referenced(state));
       emit();
     }

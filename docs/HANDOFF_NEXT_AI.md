@@ -69,6 +69,12 @@
 - **التالي:** استكمال فحص Customer (addresses/orders/tracking/support/details)، ثم Provider عبر legacy bridge، ثم Admin page/dialog keyboard traversal. قارئات الشاشة وFirefox/WebKit/Safari والأجهزة الفعلية لم تُختبر. Phase 5 item 4 ما زال جزئيًا؛ لا يوجد ادعاء WCAG.
 
 
+## Round 5 (2026-11-16) — marketplace features (Uber/DiDi/Talabat-style)
+- Domain (shared, runs locally and on Functions): `MP.message/chatFor/rateCustomer/setEta/refCodeFor/cairoDay`, `applyDiscount` (promo/invite/credit, paid from the platform fee, capped at it — provider net unchanged), `bumpTrend` (per-day category/area counts in `settings.trend`), `createRequest` keeps `promo`, `packageId/packageName`, `preferProvider`.
+- Routes: `POST /requests/:id/messages`, `POST /requests/:id/rate-customer`, `POST /customers/me/ref-code`, `GET|PATCH /admin/marketing`; `/requests` accepts `promo`, `packageId`; `/advance` accepts `eta`; `/repeat` accepts the previous `providerId`.
+- Server: `plan.js` loads the customer's first request + invite-code owner for promo checks, and the inviter on completion; `scope.js` keeps promo codes admin-only, filters chat per provider, hides `customerReview` from customers.
+- UI: customer chat/ETA/receipt/share/reorder/same provider/cancel reasons/quick times/promo field/address switcher/trending/packages/invite/services filters; provider ETA chips, chat, rate customer, level, 7-day summary, demand by area, swipe; admin `modules/marketing-editor.js` (in live settings).
+- Tests: `tests/unit/round5-features.test.js`, server path in `firebase-backend.test.js`. NOT deployed (Functions + Hosting need owner approval).
 ## تقرير تسليم PHASE 5 / TASK 04 — البنود العشرة
 1. **الهدف والسلوك:** إدارة تركيز Customer Bottom Sheet عند الفتح والإغلاق والانتقال بين محتوياته، مع عزل الخلفية عن لوحة المفاتيح وقارئ الشاشة.
 2. **الحالة السابقة التي تم التحقق منها:** `sheet()` لم تحفظ عنصر الفتح ولم تنقل التركيز، و`closeSheet()` لم تستعده. `origin` كان سياق الرجوع من تفاصيل المشكلة إلى popular/latest، لذلك لم يُعد استخدامه لتخزين opener. تمت مراجعة جميع مستهلكي الدالتين في ملفات Customer.

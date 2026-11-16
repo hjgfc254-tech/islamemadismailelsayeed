@@ -57,7 +57,8 @@
     const work = {
       hero: { ...D.hero, media: null, ...(cur.hero || {}) },
       slides: (cur.slides || guides.map(g => ({ id: g.id, title: g.title, desc: g.desc, cta: g.cta, action: DEFAULT_ACTION[g.id] || 'none', media: null, active: true }))).map(s => ({ ...s })),
-      icons: { ...(cur.icons || {}) }
+      icons: { ...(cur.icons || {}) },
+      banner: { on: false, text: '', action: 'none', ...(cur.banner || {}) }
     };
     const previews = {};                                             // mediaId → data URL uploaded in this session
     const bundled = name => (typeof ICON_PHOTOS !== 'undefined' && ICON_PHOTOS[name] ? ICON_PHOTO_BASE + ICON_PHOTOS[name] + '.webp' : '');
@@ -94,6 +95,11 @@
         <h3>واجهة الموقع (الصفحة الرئيسية)</h3>
         <p class="ord-muted">التغييرات تظهر للعملاء فورًا بعد الحفظ. الصور تُصغَّر وتُضغط تلقائيًا قبل الرفع.</p>
         <p data-sc-status role="status" aria-live="polite" class="ord-muted"></p>
+        <fieldset class="ord-dlg-in"><legend>شريط الإعلانات (فوق الرئيسية)</legend>
+          <label class="hs-grid-field"><span>تشغيل الشريط</span><input type="checkbox" data-sc-banner="on" ${work.banner.on ? 'checked' : ''}></label>
+          <label class="hs-grid-field"><span>نص الإعلان (عروض، رمضان، العيد…)</span><input data-sc-banner="text" maxlength="120" value="${esc(work.banner.text)}"></label>
+          <label class="hs-grid-field"><span>الزر يفتح</span><select data-sc-banner="action">${ACTIONS.map(([v, l]) => `<option value="${v}" ${work.banner.action === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+        </fieldset>
         <fieldset class="ord-dlg-in"><legend>الهيرو</legend>
           <label class="hs-grid-field"><span>سطر صغير فوق العنوان</span><input data-sc-hero="eyebrow" maxlength="60" value="${esc(h.eyebrow)}"></label>
           <label class="hs-grid-field"><span>العنوان</span><input data-sc-hero="title" maxlength="80" required value="${esc(h.title)}"></label>
@@ -123,11 +129,14 @@
     host.addEventListener('input', e => {
       const t = e.target;
       if (t.dataset.scHero) work.hero[t.dataset.scHero] = t.value;
+      if (t.dataset.scBanner === 'text') work.banner.text = t.value;
       if (t.dataset.scSlide !== undefined && t.dataset.f !== 'active' && t.dataset.f !== 'action') work.slides[+t.dataset.scSlide][t.dataset.f] = t.value;
     });
     host.addEventListener('change', async e => {
       const t = e.target;
       if (t.dataset.scGroup !== undefined) { group = t.value; render(); return; }
+      if (t.dataset.scBanner === 'on') work.banner.on = t.checked;
+      if (t.dataset.scBanner === 'action') work.banner.action = t.value;
       if (t.dataset.scSlide !== undefined && t.dataset.f === 'active') work.slides[+t.dataset.scSlide].active = t.checked;
       if (t.dataset.scSlide !== undefined && t.dataset.f === 'action') work.slides[+t.dataset.scSlide].action = t.value;
       if (t.dataset.scFile && t.files && t.files[0]) {
@@ -158,8 +167,9 @@
       else if (d.scSave !== undefined) {
         if (!String(work.hero.title || '').trim()) { status('عنوان الهيرو مطلوب'); return; }
         if (work.slides.some(s => !String(s.title || '').trim())) { status('كل شريحة تحتاج عنوانًا'); return; }
+        if (work.banner.on && !String(work.banner.text || '').trim()) { status('اكتب نص الإعلان أو أوقف الشريط'); return; }
         b.disabled = true; status('جارٍ الحفظ والنشر…');
-        const r = await req('PATCH', '/admin/content', { hero: work.hero, slides: work.slides, icons: work.icons });
+        const r = await req('PATCH', '/admin/content', { hero: work.hero, slides: work.slides, icons: work.icons, banner: work.banner });
         b.disabled = false;
         status(r.ok ? `تم النشر (الإصدار ${r.data.v}) — تظهر التغييرات للعملاء الآن.` : errText(r));
       }

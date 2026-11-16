@@ -26,7 +26,7 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
    Keyed per adapter so separate backends (tests, emulator) never share entries. Cuts guest/customer sync reads from
    ~200 per call to ~0 while warm. */
 const SHARED_TTL_MS = 30000;
-const SHARED_KEYS = new Set(['providers', 'serviceAreas', 'meta', 'settings']);
+const SHARED_KEYS = new Set(['providers', 'serviceAreas', 'meta', 'settings', 'reviews']);
 const shared = new WeakMap();
 const sharedFor = adapter => { let m = shared.get(adapter); if (!m) { m = new Map(); shared.set(adapter, m); } return m; };
 function invalidateShared(adapter) { shared.delete(adapter); }

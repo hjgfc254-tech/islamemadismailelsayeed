@@ -338,6 +338,14 @@ test('site content from the Admin Center: images in Firestore, versioned content
   assert.equal((await call(b, OWNER, 'admin', 'DELETE', `/admin/media/${mid}`)).status, 200, 'unused images can be deleted');
   assert.equal(b.col('media').length, 1);
   assert.equal((await service.session(b, { auth: null, data: { op: 'sync', app: 'customer' } })).db.settings.contentV, 2, 'the new version is visible immediately after a change (cache invalidated; the refused update did not count)');
+
+  /* announcement bar: validated, neutralised actions, published only while switched on */
+  assert.equal((await call(b, OWNER, 'admin', 'PATCH', '/admin/content', { banner: { on: true, text: '  ' } })).status, 422, 'an active banner needs text');
+  const bn = await call(b, OWNER, 'admin', 'PATCH', '/admin/content', { banner: { on: true, text: 'خصم رمضان على التكييف', action: 'evil' } });
+  assert.equal(bn.status, 200); assert.equal(bn.data.banner.action, 'none');
+  assert.equal((await service.session(b, { auth: null, data: { op: 'content', have: [] } })).banner.text, 'خصم رمضان على التكييف');
+  await call(b, OWNER, 'admin', 'PATCH', '/admin/content', { banner: { on: false, text: 'خصم رمضان على التكييف', action: 'wizard' } });
+  assert.equal((await service.session(b, { auth: null, data: { op: 'content', have: [] } })).banner, null, 'a switched-off banner is not sent to customers');
 });
 test('Firestore cost: repeated syncs reuse the instance cache for public data; a provider change invalidates it', async () => {
   const b = await setup();
@@ -580,4 +588,44 @@ test('admin extras on the server: audit read, operational settings, departments,
   assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/notifications/broadcast', { audience: 'all', text: 'x' })).status, 422);
   assert.equal((await call(b, OWNER, 'admin', 'GET', '/admin/notifications/broadcasts')).data.items.length, 1);
   assert.ok(b.col('audit').some(a => a.path === '/admin/notifications/broadcast'), 'admin mutations are audited');
+});
+test('round 5 on the server: promo codes stay private, invite-code lookup, chat, arrival estimate, discount + credit at completion, rating the customer', async () => {
+  const b = await setup();
+  const OMAR = phoneUser('u_omar', '+201033334444');
+  await service.session(b, { auth: SARA, data: { op: 'registerCustomer', name: 'سارة' } });
+  await service.session(b, { auth: OMAR, data: { op: 'registerCustomer', name: 'عمر' } });
+  assert.equal((await call(b, OWNER, 'admin', 'PATCH', '/admin/marketing', { referral: { on: true, reward: 25 }, promos: [{ code: 'WELCOME', kind: 'amount', value: 40 }] })).ok, true);
+  assert.equal(b.docs.get('system/settings').promos[0].code, 'WELCOME');
+  const guest = await service.session(b, { auth: null, data: { op: 'sync', app: 'customer' } });
+  assert.equal(guest.db.settings.promos, undefined, 'promo codes are never public');
+  assert.equal(guest.db.settings.referral.reward, 25);
+  const code = (await call(b, SARA, 'customer', 'POST', '/customers/me/ref-code', {})).data.code;
+  assert.equal(b.col('customers').find(c => c.refCode === code).name, 'سارة', 'invite code persisted on the customer');
+  const created = await call(b, OMAR, 'customer', 'POST', '/requests', { ...REQ, promo: code });
+  assert.equal(created.status, 201, JSON.stringify(created.error));
+  const id = created.data.id;
+  assert.equal((await call(b, OMAR, 'customer', 'POST', '/requests', { ...REQ, promo: code })).status, 422, 'the invite code is for the first request only');
+
+  const reg = await call(b, KARIM, 'provider', 'POST', '/providers/register', PROVIDER_FORM);
+  await call(b, OWNER, 'admin', 'POST', `/admin/providers/${reg.data.id}/status`, { status: 'approved' });
+  await call(b, OWNER, 'admin', 'POST', `/admin/requests/${id}/assign`, { providerId: reg.data.id });
+  assert.equal((await call(b, OMAR, 'customer', 'POST', `/requests/${id}/messages`, { text: 'مرحبا' })).status, 409, 'chat opens after acceptance');
+  await call(b, KARIM, 'provider', 'POST', `/requests/${id}/respond`, { accept: true });
+  assert.equal((await call(b, OMAR, 'customer', 'POST', `/requests/${id}/messages`, { text: 'الدور التالت يمين' })).status, 201);
+  assert.equal((await call(b, KARIM, 'provider', 'POST', `/requests/${id}/messages`, { text: 'تمام' })).status, 201);
+  assert.equal(b.col('requests').find(r => r.id === id).chat.length, 2);
+  await call(b, KARIM, 'provider', 'POST', `/requests/${id}/schedule`, { at: '2026-11-20T10:00' });
+  await call(b, OMAR, 'customer', 'POST', `/requests/${id}/schedule`, {});
+  assert.equal((await call(b, KARIM, 'provider', 'POST', `/requests/${id}/advance`, { to: 'enroute', eta: 25 })).ok, true);
+  assert.equal(b.col('requests').find(r => r.id === id).etaMin, 25);
+  for (const to of ['arrived', 'started']) assert.equal((await call(b, KARIM, 'provider', 'POST', `/requests/${id}/advance`, { to })).ok, true, to);
+  const done = await call(b, KARIM, 'provider', 'POST', `/requests/${id}/complete`, { value: 500 });
+  assert.equal(done.ok, true, JSON.stringify(done.error));
+  const t = b.col('transactions').find(x => x.reqId === id);
+  assert.equal(t.discount, 25); assert.ok(t.commission >= 0);
+  assert.equal(b.col('customers').find(c => c.refCode === code).credit, 25, 'the inviter (loaded only for this completion) is credited and persisted');
+  assert.equal((await call(b, KARIM, 'provider', 'POST', `/requests/${id}/rate-customer`, { stars: 5 })).status, 201);
+  assert.equal(b.col('customers').find(c => c.name === 'عمر').rating, 5);
+  const omarView = await call(b, OMAR, 'customer', 'GET', `/requests/${id}`);
+  assert.equal(omarView.data.customerReview, undefined, 'the customer does not see how the provider rated them');
 });

@@ -127,6 +127,24 @@
       ${r.photos && r.photos.some(src=>typeof src==='string' && /^data:image\/(?:png|jpeg|webp|gif);base64,/.test(src)) ? `<div><small>صور مرفقة</small><div class="thumbs">${r.photos.filter(src=>typeof src==='string' && /^data:image\/(?:png|jpeg|webp|gif);base64,/.test(src)).slice(0,4).map(src=>`<span class="th"><img src="${src}" alt="صورة مرفقة بالطلب" loading="lazy"></span>`).join('')}</div></div>` : ''}
     </div>`;
 
+    /* ── round 5: arrival estimate, chat, discount / package notes ── */
+    const etaBlock = r.status === 'enroute' && r.etaAt ? (() => {
+      const at = new Date(r.etaAt); if (Number.isNaN(at.getTime())) return '';
+      const mins = Math.round((at.getTime() - Date.now()) / 60000);
+      const t = at.toLocaleTimeString('ar-EG', { hour: 'numeric', minute: '2-digit' });
+      return `<div class="eta-card" role="status">${ic('clock')}<span><b>${mins > 1 ? `هيوصل خلال حوالي ${mins} دقيقة` : 'المفروض يوصل دلوقتي'}</b><small>حوالي الساعة ${esc(t)} — تقدير الفني وقت ما اتحرك</small></span></div>`;
+    })() : '';
+    const chat = Array.isArray(r.chat) ? r.chat : [];
+    const chatOpen = !!p && !['cancelled', 'failed', 'closed'].includes(r.status);
+    const chatBlock = p && (chatOpen || chat.length) ? `<section class="chat-box glass neon" aria-labelledby="chat-h">
+      <h2 class="sec-title" id="chat-h">${ic('chat')}رسائل مع ${esc(String(p.name || '').split(' ')[0])}</h2>
+      <ol class="chat-list">${chat.length ? chat.slice(-60).map(m => `<li class="cm ${m.by === 'customer' ? 'me' : 'them'}"><p>${esc(m.text)}</p><time>${fmtDT(m.at)}</time></li>`).join('') : '<li class="cm-empty">ابعت للفني أي تفاصيل، أو اسأله عن حاجة قبل الزيارة.</li>'}</ol>
+      ${chatOpen ? `<form class="chat-form" id="chatForm" data-id="${esc(id)}"><label class="sr-only" for="chat-text">اكتب رسالة للفني</label><input id="chat-text" name="text" maxlength="500" autocomplete="off" placeholder="اكتب رسالتك…" required><button class="cta" type="submit" aria-label="إرسال">${ic('send')}</button></form>` : ''}
+    </section>` : '';
+    const promoBlock = r.promo ? `<div class="need promo-note">${ic('wallet')}<span>${r.discount ? `اتخصم <b>${money(r.discount)}</b> ${r.promo.kind === 'credit' ? 'من رصيدك' : `(${esc(r.promo.code)})`}` : `عندك خصم ${r.promo.kind === 'credit' ? 'من رصيدك' : `بكود <b>${esc(r.promo.code)}</b>`} — بيتحسب على المبلغ لما الخدمة تخلص`}</span></div>` : '';
+    const pkgBlock = r.packageName ? `<div class="need">${ic('calendar')}<span>الطلب ده ضمن باقة <b>${esc(r.packageName)}</b> — الفني بيتفق معاك على مواعيد الزيارات.</span></div>` : '';
+    const tx = (MP.db().transactions || []).find(t => t.reqId === id);
+
     /* أزرار الإجراء */
     const actions = [];
     if (r.status === 'completed' && !closed) {
@@ -144,6 +162,18 @@
     if (canCancel) {
       actions.push(`<button class="cta ghost" data-act="cancelReq" data-id="${id}">${ic('cancel')} إلغاء الطلب</button>`);
     }
+    if (p && inProgress) {
+      actions.push(`<button class="cta ghost" data-act="shareReq" data-id="${id}">${ic('share')} شارك تفاصيل الطلب مع حد من أهلك</button>`);
+    }
+    if (tx && ['completed', 'closed'].includes(r.status)) {
+      actions.push(`<button class="cta ghost" data-act="receipt" data-id="${id}">${ic('book')} الفاتورة</button>`);
+    }
+    if (closed && p && p.status === 'approved') {
+      actions.push(`<button class="cta ghost" data-act="sameProvider" data-id="${id}" data-pid="${esc(p.id)}">${ic('user')} اطلب ${esc(String(p.name || '').split(' ')[0])} تاني</button>`);
+    }
+    if (closed || cancelled || failed) {
+      actions.push(`<button class="cta ghost" data-repeat="${id}">${ic('send')} اطلبها تاني</button>`);
+    }
     if (canComplain) {
       actions.push(`<button class="cta ghost" data-act="complain" data-id="${id}">${ic('warn')} تقديم شكوى</button>`);
     }
@@ -155,13 +185,16 @@
       ${uiOfflineIfNeeded()}
       ${journey}
       ${statusBar}
+      ${etaBlock}
       <div class="need tracking-next">${ic('info')}<span><b>الخطوة التالية</b><br>${esc(nextStepCopy)}</span></div>
       ${providerBlock}
+      ${chatBlock}
       <h2 class="sec-title">${ic('clock')}مسار الطلب</h2>
       ${statusTimeline(r)}
       ${proposalBlock}
       ${freeBlock}
       ${priceBlock}${quoteBlock}
+      ${promoBlock}${pkgBlock}
       <h2 class="sec-title">${ic('info')}التفاصيل</h2>
       ${sum}
       <div class="plist" style="margin-top:12px;gap:8px">${actions.join('')}</div>

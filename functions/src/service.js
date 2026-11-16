@@ -165,7 +165,7 @@ async function linkUser(backend, uid, actor, app) {
 function redactForProvider(data, actor, db) {
   if (!actor || actor.role !== 'provider' || data == null) return data;
   const accepted = new Set((db.assignments || []).filter(a => a.providerId === actor.id && a.status === 'accepted').map(a => a.reqId));
-  const fix = r => (r && typeof r === 'object' && r.no && r.customerId && !accepted.has(r.id) ? { ...r, phone: '', addr: '', geo: null } : r);
+  const fix = r => (r && typeof r === 'object' && r.no && r.customerId && !accepted.has(r.id) ? { ...r, phone: '', addr: '', geo: null, chat: [] } : r);
   if (Array.isArray(data)) return data.map(fix);
   if (data && Array.isArray(data.items)) return { ...data, items: data.items.map(fix) };
   return fix(data);

@@ -54,7 +54,13 @@ async function plan(ld, { method, path, query, body, actor }) {
 
   /* ── requests ── */
   if (seg[0] === 'requests') {
-    if (seg.length === 1 && method === 'POST') { if (autoAssign) await candidates(ld, body.cat); return; }
+    if (seg.length === 1 && method === 'POST') {
+      if (autoAssign) await candidates(ld, body.cat);
+      if (body.promo && actor && actor.role === 'customer') {     // promo rules read: first request? whose invite code?
+        await Promise.all([ld.where('serviceRequests', [['customerId', '==', actor.id]], { limit: 1 }), ld.where('customers', [['refCode', '==', String(body.promo).trim().toUpperCase()]], { limit: 1 })]);
+      }
+      return;
+    }
     if (seg.length === 1 && method === 'GET') {
       if (!actor) return;
       let reqs;
@@ -69,8 +75,9 @@ async function plan(ld, { method, path, query, body, actor }) {
     const r = await requestBundle(ld, seg[1]);
     if (!r) return;
     const act = seg[2];
-    if (act === 'provider' && body.providerId) await ld.doc('providers', body.providerId);
+    if ((act === 'provider' || act === 'repeat') && body.providerId) await ld.doc('providers', body.providerId);
     if ((act === 'respond' && !body.accept && autoAssign) || act === 'cancel' || (act === 'repeat' && autoAssign)) await candidates(ld, r.cat);
+    if (act === 'complete' && r.promo && r.promo.ref) await ld.doc('customers', r.promo.ref);   // invite reward goes to the friend
     if (act === 'review' || act === 'close' || act === 'complete') {
       const accepted = [...ld.maps.assignments.values()].find(a => a.reqId === r.id && a.status === 'accepted');
       if (accepted) await ld.where('reviews', [['providerId', '==', accepted.providerId]]);
@@ -137,6 +144,7 @@ async function syncPlan(ld, actor) {
   await ld.loadSystem();
   await ld.whereShared('serviceAreas', []);                                                   // public: instance-cached
   const approved = await ld.whereShared('providers', [['status', '==', 'approved']], { limit: 200 });
+  await ld.whereShared('reviews', [], { orderBy: ['at', 'desc'], limit: 12 });                  // «آراء عملائنا» on Home (public, cached)
   if (!actor) return;
   const tag = actor.role + ':' + actor.id;
   const inbox = ld.where('notifications', [['to', '==', tag]], { orderBy: ['at', 'desc'], limit: 50 });

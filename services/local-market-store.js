@@ -211,6 +211,45 @@ const MP = (() => {
     return { value:v, rate, commission:c, deductions:d, net: Math.round((v-c-d)*100)/100 };
   };
 
+  /* ═════════ round 5: today's demand (public counts) and discounts ═════════ */
+  const cairoDay = () => { try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo' }).format(new Date()); } catch { return now().slice(0, 10); } };
+  /* Per-day request counts by category and by area (no people, no request ids) — feeds «الأكثر طلبًا النهارده» for
+     customers and «فين الطلب عالي النهارده» for providers. Kept small: at most 40 areas. */
+  const bumpTrend = r => {
+    const day = cairoDay(), cur = db.settings.trend;
+    const tr = cur && cur.day === day ? cur : { day, cats: {}, areas: {} };
+    if (r.cat) tr.cats[r.cat] = (tr.cats[r.cat] || 0) + 1;
+    if (r.area) {
+      const k = String(r.gov || '') + '|' + String(r.area).slice(0, 40);
+      tr.areas[k] = (tr.areas[k] || 0) + 1;
+      const keys = Object.keys(tr.areas);
+      if (keys.length > 40) keys.sort((a, b) => tr.areas[a] - tr.areas[b]).slice(0, keys.length - 40).forEach(x => delete tr.areas[x]);
+    }
+    db.settings.trend = tr;
+  };
+  /* Promo code / referral / credit discount, applied once when the job is completed. The platform pays it out of its
+     own fee: the discount never exceeds the platform commission, so the provider's net amount never changes. */
+  const applyDiscount = (r, x) => {
+    const pm = r.promo; if (!pm || !(x.value > 0)) return;
+    const cust = get('customers', r.customerId);
+    let off = pm.kind === 'percent' ? x.value * (+pm.value || 0) / 100 : (+pm.value || 0);
+    if (pm.kind === 'credit') off = Math.min(off, +(cust && cust.credit) || 0);
+    if (+pm.maxOff > 0) off = Math.min(off, +pm.maxOff);
+    off = Math.round(Math.max(0, Math.min(off, x.commission, x.value)) * 100) / 100;
+    if (pm.ref) {
+      const f = get('customers', pm.ref);
+      if (f && +pm.refReward > 0) { f.credit = Math.round(((+f.credit || 0) + (+pm.refReward)) * 100) / 100; notify('customer:' + f.id, 'صاحبك خلّص أول طلب بكود دعوتك — اتضافلك رصيد ' + (+pm.refReward) + ' ج.م على طلبك الجاي', null); }
+    }
+    if (!off) return;
+    if (pm.kind === 'credit' && cust) cust.credit = Math.round(Math.max(0, (+cust.credit || 0) - off) * 100) / 100;
+    x.value = Math.round((x.value - off) * 100) / 100;
+    x.commission = Math.round((x.commission - off) * 100) / 100;
+    x.discount = off; x.promo = pm.code;
+    r.discount = off;
+  };
+  const CHAT_MAX = 150;
+  const REF_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+
   /* ═════════ الإسناد ═════════ */
   const candidates = r => {
     /* التوافق: 1) التخصص (cats)  2) تخصص الجهاز إن أمكن (subs)  3) المحافظة  4) التوفر */
@@ -272,6 +311,7 @@ const MP = (() => {
         phone:d.phone, contactMethod:d.contactMethod||'call',
         note:d.note||'', notes:d.notes||'',
         addressId:d.addressId||'',
+        promo:d.promo||null, packageId:d.packageId||'', packageName:d.packageName||'',
         status:'received', history:[], proposal:null, finalValue:null,
         quoteId:'', demo:true, createdAt:now()
       };
@@ -279,8 +319,11 @@ const MP = (() => {
       if (pr) { r.pricing = pr; r.agreedValue = pr.customerPrice; }   /* upfront price shown to the customer and fixed on the request */
       log(r,'received'); log(r,'searching');
       db.serviceRequests.unshift(r);
+      bumpTrend(r);
       notify('admin','طلب جديد '+r.no+' — '+r.serviceName, r.id);
-      if (db.settings.autoAssign) api.assign(r.id);
+      const pref = d.preferProvider && get('providers', d.preferProvider);   /* «اطلب نفس الفني تاني» */
+      if (pref && pref.status === 'approved' && pref.available !== false && (pref.cats || []).includes(r.cat)) api.assign(r.id, pref.id);
+      else if (db.settings.autoAssign) api.assign(r.id);
       save(); return r;
     },
 
@@ -463,6 +506,7 @@ const MP = (() => {
         if (value !== undefined && value !== null && value !== '' && v !== +r.pricing.customerPrice) return false;   /* the booked price is final */
         const d = Math.max(0, +deductions||0), pr = r.pricing;
         const x = { value:pr.customerPrice, rate:pr.rate, commission:pr.platformFee, deductions:d, net:Math.round((pr.providerAmount-d)*100)/100, pricing:'upfront' };
+        if (!db.transactions.some(t => t.reqId===reqId)) applyDiscount(r, x);
         r.finalValue = x.value;
         log(r,'completed','السعر المحدد مسبقًا '+x.value);
         if (!db.transactions.some(t => t.reqId===reqId)) db.transactions.push({id:uid('t'),reqId,providerId:p.id,customerId:r.customerId,cat:r.cat,...x,model:db.settings.collectionModel,collection:'pending',demo:true,at:now()});
@@ -475,6 +519,7 @@ const MP = (() => {
         v = +q.total;
       } else if (!Number.isFinite(v) || v <= 0) return false;
       const rate = rateFor(r.cat, p.id), x = calc(v, rate, deductions);
+      if (!db.transactions.some(t => t.reqId===reqId)) applyDiscount(r, x);
       r.finalValue = x.value;
       log(r,'completed','القيمة النهائية '+x.value);
       if (!db.transactions.some(t => t.reqId===reqId)) {
@@ -509,6 +554,47 @@ const MP = (() => {
       save(); return true;
     },
 
+    /* ═════════ round 5: in-request chat, provider rates the customer, arrival estimate, referral code ═════════ */
+    /** Message between the customer and the provider who accepted the job (open until the request is closed). */
+    message(reqId, by, text){
+      const r = get('serviceRequests', reqId), p = api.providerOf(reqId);
+      const t = String(text || '').replace(/\s+/g, ' ').trim().slice(0, 500);
+      if (!r || !p || !t || !['customer', 'provider'].includes(by) || ['cancelled', 'failed', 'closed'].includes(r.status)) return false;
+      r.chat = Array.isArray(r.chat) ? r.chat : [];
+      if (r.chat.length >= CHAT_MAX) return false;
+      r.chat.push({ id: uid('m'), by, pid: p.id, text: t, at: now() });
+      notify(by === 'customer' ? 'provider:' + p.id : 'customer:' + r.customerId, (by === 'customer' ? 'رسالة من العميل' : 'رسالة من ' + p.name) + ' — الطلب ' + r.no + ': ' + t.slice(0, 60), r.id);
+      save(); return true;
+    },
+    /** messages visible to one side: the customer sees the whole thread, a provider only their own conversation */
+    chatFor(reqId, providerId){
+      const r = get('serviceRequests', reqId); const all = (r && Array.isArray(r.chat)) ? r.chat : [];
+      return providerId ? all.filter(m => m.pid === providerId) : all;
+    },
+    /** The provider rates the customer once after the job (stars kept on the customer as an average). */
+    rateCustomer(reqId, d){
+      const r = get('serviceRequests', reqId), p = api.providerOf(reqId);
+      if (!r || !p || r.customerReview || !['completed', 'closed'].includes(r.status)) return false;
+      const stars = +d.stars; if (!Number.isInteger(stars) || stars < 1 || stars > 5) return false;
+      r.customerReview = { stars, comment: String(d.comment || '').slice(0, 300), by: p.id, at: now() };
+      const c = get('customers', r.customerId);
+      if (c) { c.ratingSum = (+c.ratingSum || 0) + stars; c.ratingCount = (+c.ratingCount || 0) + 1; c.rating = Math.round(c.ratingSum / c.ratingCount * 10) / 10; }
+      save(); return true;
+    },
+    /** Provider's own arrival estimate when leaving ("في الطريق"), in minutes. */
+    setEta(reqId, minutes){
+      const r = get('serviceRequests', reqId), m = Math.round(+minutes);
+      if (!r || r.status !== 'enroute' || !(m >= 5 && m <= 180)) return false;
+      r.etaMin = m; r.etaAt = new Date(Date.now() + m * 60000).toISOString();
+      save(); return true;
+    },
+    /** The customer's personal invite code (created on first use). */
+    refCodeFor(customerId){
+      const c = get('customers', customerId); if (!c) return '';
+      if (!c.refCode) { let s = 'HS'; for (let i = 0; i < 6; i++) s += REF_ALPHABET[Math.floor(Math.random() * REF_ALPHABET.length)]; c.refCode = s; save(); }
+      return c.refCode;
+    },
+    cairoDay,
     review(reqId, d){
       const r = get('serviceRequests',reqId), p = api.providerOf(reqId);
       if(!r||!p||db.reviews.some(x=>x.reqId===reqId)) return false;
@@ -603,7 +689,7 @@ const MP = (() => {
 
     /* ═════════ إعادة طلب خدمة سابقة (V7) ═════════
        تُنشئ طلباً جديداً من نسخة معتمدة على طلب سابق، مع تحديث الموعد والتاريخ. */
-    repeatRequest(oldId){
+    repeatRequest(oldId, preferProvider){
       const r = get('serviceRequests',oldId); if(!r) return null;
       const d = {
         cat:r.cat, serviceId:r.serviceId, serviceName:r.serviceName,
@@ -613,7 +699,8 @@ const MP = (() => {
         photos:[], attachments:[], video:'',
         gov:r.gov, area:r.area, addr:r.addr, geo:r.geo,
         when:'', whenNote:'', phone:r.phone, name:(get('customers',r.customerId)||{}).name||'',
-        contactMethod:r.contactMethod, note:r.note, addressId:r.addressId
+        contactMethod:r.contactMethod, note:r.note, addressId:r.addressId,
+        preferProvider: preferProvider || ''
       };
       return api.createRequest(d);
     },

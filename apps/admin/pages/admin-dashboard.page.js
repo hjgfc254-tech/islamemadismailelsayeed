@@ -100,6 +100,16 @@
     <span class="dash-alert-t">${esc(a.text)} ${link(a.module, 'عرض', 'dash-link')}</span>
     <button type="button" class="adm-btn dash-x" data-dismiss="${esc(a.id)}" aria-label="تجاهل التنبيه: ${esc(a.text)}">${icon('close')}</button></li>`;
 
+  /* last 14 days from the loaded read model: new requests per day and completed-service value per day */
+  const chartsHtml = () => {
+    const C = root.HSMiniCharts; if (!C || typeof MP === 'undefined') return '';
+    const d = MP.db();
+    const reqs = C.daily(d.serviceRequests || [], 14, r => r.createdAt);
+    const value = C.daily((d.transactions || []).filter(t => !t.free), 14, t => t.at, t => t.value);
+    return `<section class="dash-card dash-charts" aria-label="الاتجاهات خلال آخر 14 يوم">
+      ${C.bars({ id: 'ch-req', title: 'الطلبات الجديدة يوميًا', points: reqs })}
+      ${C.bars({ id: 'ch-val', title: 'قيمة الخدمات المكتملة يوميًا', unit: 'ج.م', points: value })}</section>`;
+  };
   const viewHtml = () => {
     const m = buildModel(state.period);
     const pend = m.tasks.filter((t) => !t.done).length;
@@ -108,9 +118,10 @@
       <div role="radiogroup" class="dash-seg" aria-label="الفترة الزمنية">
         ${PERIODS.map((p) => `<button type="button" role="radio" aria-checked="${p.id === m.period}" data-period="${p.id}">${p.label}</button>`).join('')}
       </div>
-      <p class="dash-note">بيانات تجريبية محلية — ليست أرقامًا حقيقية.</p>
+      ${root.HSAdminLive && root.HSAdminLive.enabled() ? '' : '<p class="dash-note">بيانات تجريبية محلية — ليست أرقامًا حقيقية.</p>'}
     </div>
     <section aria-label="المؤشرات التشغيلية" class="dash-kpis">${m.kpis.map(kpiHtml).join('')}</section>
+    ${chartsHtml()}
     <div class="dash-cols">
       <section class="dash-card" aria-labelledby="dash-h-tasks"><h2 id="dash-h-tasks">المهام <span class="dash-count">${nf(pend)} متبقية</span></h2>
         ${pend === 0 && m.tasks.length ? `<p class="dash-ok">${icon('check')}<span>أنجزت كل المهام.</span></p>` : ''}

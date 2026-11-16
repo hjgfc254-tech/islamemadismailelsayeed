@@ -219,7 +219,7 @@ const tile = (k, small) => {
   let viaCat = false;
   try { const c = CAT.category(k); viaCat = !!(c && c.active); } catch {}
   const target = viaCat ? `data-wz-hit="cat|${k}"` : `data-dev="${k}"`;
-  return `<button class="tile glass neon ${small?'small':''}" ${target} aria-label="${DEVICES[k].name}"><span class="tart ${typeof icImg==='function'&&icImg('c-'+k)?'ph':''}" aria-hidden="true">${(typeof icImg==='function'&&icImg('c-'+k)) || ic(icExists('c-'+k) ? 'c-'+k : (DEVICES[k].icon || 'p-service'))}</span><span class="tl">${DEVICES[k].cat}</span></button>`;
+  return `<button class="tile glass neon ${small?'small':''}" ${target} aria-label="${DEVICES[k].name}"><span class="tart ${typeof icImg==='function'&&icImg('c-'+k)?'ph':''}" aria-hidden="true">${(typeof icImg==='function'&&icImg('c-'+k)) || ic(icExists('c-'+k) ? 'c-'+k : (DEVICES[k].icon || 'p-service'))}</span><span class="tl">${DEVICES[k].cat}</span><span class="tfrom" data-from-cat="${k}" hidden></span></button>`;
 };
 const tiles = (small) => `<div class="grid fit">${HOME_ORDER.map(k=>tile(k,small)).join('')}</div>`;
 const head = (title, back) => `<div class="dhead">${back?`<button class="back" data-back aria-label="رجوع">${ic('back')}</button>`:'<span></span>'}<h2 tabindex="-1">${title}</h2><span></span></div>`;
@@ -402,6 +402,102 @@ function SEC_ICON_FOR(cat) {
 const homeMe = () => { try { return me(); } catch { return null; } };
 
 /* طلبات العميل النشطة (غير النهائية)، الأحدث أولًا */
+/* newest real reviews with their service name (no customer identity) */
+function homeLatestReviews(){
+  try {
+    const reqs = MP.reqs();
+    return (MP.db().reviews || []).slice().sort((a, b) => String(b.at || '') < String(a.at || '') ? -1 : 1).slice(0, 12)
+      .map(v => { const r = reqs.find(x => x.id === v.reqId); return { stars: +v.stars || 0, comment: v.comment || '', service: r ? r.serviceName : '' }; });
+  } catch { return []; }
+}
+/* category tiles: «يبدأ من» from the public price list (customer prices), fetched once and cached for 5 minutes */
+let _priceFrom = null, _priceAt = 0;
+function fillTilePrices(){
+  const paint = map => document.querySelectorAll('[data-from-cat]').forEach(el => { const v = map[el.dataset.fromCat]; if (v) { el.textContent = 'يبدأ من ' + Number(v).toLocaleString('ar-EG') + ' ج.م'; el.hidden = false; } });
+  if (_priceFrom && Date.now() - _priceAt < 300000) return paint(_priceFrom);
+  if (typeof HSApiClient === 'undefined') return;
+  HSApiClient.request('GET', '/pricing').then(res => {
+    if (!res || !res.ok || !res.data || !res.data.prices) return;
+    const min = {};
+    for (const [key, price] of Object.entries(res.data.prices)) { const cat = String(key).split('/')[0]; if (price > 0 && (!min[cat] || price < min[cat])) min[cat] = price; }
+    _priceFrom = min; _priceAt = Date.now(); paint(min);
+  }).catch(() => {});
+}
+/* ═════════ round 5: Home extras — address switcher, today's demand, packages, invite a friend; services filters ═════════ */
+const addrName = a => a ? (a.label || a.name || ({ home: 'البيت', work: 'الشغل' })[a.type] || a.area || 'عنواني') : '';
+function homeAddressBar(){
+  const c = homeMe(); if (!c) return '';
+  const list = MP.addressesFor(c.id); if (!list.length) return '';
+  const def = MP.defaultAddress(c.id) || list[0];
+  return `<button type="button" class="addr-bar" data-act="addrSwitch" aria-haspopup="dialog">${ic('pin')}<span><small>الخدمة لـ</small><b>${esc(addrName(def))}</b><em>${esc([def.area, def.gov].filter(Boolean).join('، '))}</em></span>${ic('chev')}</button>`;
+}
+function openAddressSwitch(){
+  const c = homeMe(); if (!c) return;
+  const list = MP.addressesFor(c.id), def = MP.defaultAddress(c.id) || list[0];
+  sheet(`<h4>${ic('pin')} الخدمة لأنهي عنوان؟</h4><div class="plist addr-pick" role="list">${list.map(a => `<button type="button" class="prow glass neon ${def && a.id === def.id ? 'sel' : ''}" data-addr-def="${esc(a.id)}" aria-pressed="${!!(def && a.id === def.id)}">${ic('pin')}<span class="tx">${esc(addrName(a))}<small>${esc([a.area, a.gov].filter(Boolean).join('، '))}</small></span>${def && a.id === def.id ? ic('check') : ''}</button>`).join('')}</div>
+    <button type="button" class="cta ghost" data-go="addresses">${ic('plus')} إضافة أو تعديل العناوين</button>`);
+}
+function homeTrending(){
+  const tr = (MP.db().settings || {}).trend; if (!tr || !tr.cats || typeof MP.cairoDay !== 'function' || tr.day !== MP.cairoDay()) return '';
+  const top = Object.entries(tr.cats).filter(([k, n]) => n > 0 && CAT.category(k) && CAT.category(k).active !== false).sort((a, b) => b[1] - a[1]).slice(0, 4);
+  if (top.reduce((s, [, n]) => s + n, 0) < 3) return '';                      // too few to say anything (and nothing identifiable)
+  return `<section class="trend" aria-labelledby="trendT"><h2 class="sec-title" id="trendT">${ic('bolt')}الأكثر طلبًا النهارده</h2>
+    <div class="chips trend-row">${top.map(([k, n]) => `<button type="button" class="chip" data-wz-hit="cat|${esc(k)}">${esc(CAT.category(k).name)}<small>${n.toLocaleString('ar-EG')} طلب</small></button>`).join('')}</div></section>`;
+}
+function homePackages(){
+  const pk = ((MP.db().settings || {}).packages || []).filter(p => p && p.active !== false);
+  if (!pk.length) return '';
+  return `<section class="pkgs" aria-labelledby="pkgT"><h2 class="sec-title" id="pkgT">${ic('calendar')}باقات الصيانة الدورية</h2>
+    <div class="pkg-row">${pk.map(p => `<article class="pkg-card glass neon"><b>${esc(p.name)}</b>${p.desc ? `<p>${esc(p.desc)}</p>` : ''}
+      <ul><li>${ic('calendar')} ${Number(p.visits) || 1} ${Number(p.visits) > 2 && Number(p.visits) < 11 ? 'زيارات' : 'زيارة'}</li>${p.cat && CAT.category(p.cat) ? `<li>${ic('wrench')} ${esc(CAT.category(p.cat).name)}</li>` : ''}</ul>
+      <div class="pkg-foot"><span class="pkg-price">${Number(p.price) ? Number(p.price).toLocaleString('ar-EG') + ' ج.م' : 'السعر مع الفني'}</span><button type="button" class="cta" data-act="pkgStart" data-id="${esc(p.id)}">اطلب الباقة</button></div></article>`).join('')}</div>
+    <p class="pkg-note">بتطلب الباقة زي أي طلب، والفني بيتفق معاك على مواعيد الزيارات. الدفع كاش للفني.</p></section>`;
+}
+function homeInvite(){
+  const ref = (MP.db().settings || {}).referral; if (!ref || !ref.on || !(+ref.reward > 0) || !homeMe()) return '';
+  return `<button type="button" class="invite-card" data-act="invite">${ic('share')}<span><b>ادعُ صاحبك وخد ${(+ref.reward).toLocaleString('ar-EG')} ج.م</b><small>صاحبك بياخد خصم على أول طلب، وانت بيتضافلك رصيد لما يخلّص</small></span>${ic('chev')}</button>`;
+}
+function openInvite(btn){
+  apiCall('invite', btn, () => HSCustomerApi.refCode(), res => {
+    const d = res.data, msg = `جرّب هنصلحلك لأي صيانة في البيت — استخدم كود الدعوة ${d.code} وخد خصم ${d.reward} ج.م على أول طلب.`;
+    sheet(`<h4>${ic('share')} ادعُ صاحبك</h4><div class="invite-code" dir="ltr">${esc(d.code)}</div>
+      <p class="sub">صاحبك يكتب الكود في آخر خطوة من طلبه الأول وياخد خصم ${esc(d.reward)} ج.م. ولما الخدمة تخلص بيتضافلك ${esc(d.reward)} ج.م رصيد بيتخصم تلقائيًا من طلبك الجاي.</p>
+      ${+d.credit > 0 ? `<div class="need">${ic('wallet')}<span>رصيدك الحالي: <b>${money(d.credit)}</b></span></div>` : ''}
+      <button type="button" class="cta" data-act="inviteShare" data-msg="${esc(msg)}">${ic('share')} ابعت الكود</button>`);
+  });
+}
+/* «الخدمات»: quick filters */
+let secFilter = 'all';
+function sectionsTiles(){
+  let keys = HOME_ORDER.slice();
+  if (secFilter === 'now') keys = keys.filter(k => (MP.db().providers || []).some(p => p.status === 'approved' && p.available !== false && (p.cats || []).includes(k)));
+  if (secFilter === 'price') keys.sort((a, b) => ((_priceFrom && _priceFrom[a]) || Infinity) - ((_priceFrom && _priceFrom[b]) || Infinity));
+  const chips = [['all', 'الكل'], ['now', 'متاح دلوقتي'], ['price', 'الأقل سعرًا']].map(([v, l]) => `<button type="button" class="chip ${secFilter === v ? 'on' : ''}" data-sec-filter="${v}" aria-pressed="${secFilter === v}">${l}</button>`).join('');
+  return `<div class="chips sec-filters" role="group" aria-label="تصفية الأقسام">${chips}</div>${keys.length ? `<div class="grid fit">${keys.map(k => tile(k)).join('')}</div>` : uiEmpty('clock', 'مفيش فنيين متاحين دلوقتي', 'جرّب «الكل» واطلب، وهنلاقيلك فني في أقرب وقت')}`;
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act="addrSwitch"],[data-addr-def],[data-act="pkgStart"],[data-act="invite"],[data-act="inviteShare"],[data-sec-filter]');
+  if (!t) return;
+  const d = t.dataset;
+  if (d.secFilter === undefined && d.addrDef === undefined && !['addrSwitch', 'pkgStart', 'invite', 'inviteShare'].includes(d.act)) return;
+  e.preventDefault(); e.stopPropagation();
+  if (d.secFilter !== undefined) {
+    secFilter = d.secFilter;
+    if (secFilter === 'price' && !_priceFrom) { fillTilePrices(); setTimeout(() => show('sections'), 700); }
+    show('sections'); return;
+  }
+  if (d.act === 'addrSwitch') return openAddressSwitch();
+  if (d.addrDef !== undefined) return apiCall('addr-def:' + d.addrDef, t, () => HSCustomerApi.updateAddress(d.addrDef, { default: true }), () => { closeSheet(true); show('home'); toast('اتغيّر عنوان الخدمة'); });
+  if (d.act === 'pkgStart') {
+    const p = ((MP.db().settings || {}).packages || []).find(x => x.id === d.id); if (!p) return;
+    startRequest(p.cat && CAT.category(p.cat) ? p.cat : undefined);
+    if (typeof WZ !== 'undefined' && WZ) { WZ.packageId = p.id; show('wizard'); }
+    toast(`بتطلب باقة «${p.name}» — كمّل تفاصيل الطلب`);
+    return;
+  }
+  if (d.act === 'invite') return openInvite(t);
+  if (d.act === 'inviteShare') return typeof shareText === 'function' ? shareText('كود دعوة هنصلحلك', d.msg) : null;
+}, true);
 function homeActiveRequests(){
   try {
     const c = homeMe(); if (!c) return [];
@@ -428,10 +524,13 @@ function renderActiveRequests(){
   if (!list.length) return '';
   const card = (r) => {
     const n = nextStepOf(r);
+    const stg = ({ received:0, searching:0, sent:0, accepted:1, scheduled:1, enroute:2, arrived:3, started:3, quote:3, completed:4 })[r.status];
+    const mini = stg === undefined ? '' : `<span class="mj" aria-hidden="true">${[0,1,2,3,4].map(i => `<i class="${i < stg ? 'd' : i === stg ? 'n' : ''}"></i>`).join('')}</span>`;
     return `<button class="act-card glass neon ${n.need?'need':''}" data-track="${esc(r.id)}">
       <span class="ac-top">${icp(icStatus(r.status),'st')}
         <span class="tx">${esc(r.serviceName)}<small>#${esc(r.no)} • ${esc(STATUS_LABEL[r.status]||'')}</small></span>
         ${ic('chev','chev')}</span>
+      ${mini}
       ${n.text?`<span class="ac-next">${ic(n.need?'warn':'info')}<span>${esc(n.text)}</span></span>`:''}
     </button>`;
   };
@@ -583,12 +682,17 @@ const screens = {
       renderQuickActions, renderActiveRequests, tiles,
       renderCommonProblems, renderRecentUsed, renderSavedAddresses,
       renderFavorites, discover, renderServiceAreas,
-      siteHero: (globalThis.HSSiteContent && HSSiteContent.hero()) || null, esc
+      siteHero: (globalThis.HSSiteContent && HSSiteContent.hero()) || null, esc,
+  siteBanner: (globalThis.HSSiteContent && typeof HSSiteContent.banner === 'function' && HSSiteContent.banner()) || null,
+      demo: !(globalThis.HSFirebaseConfig && HSFirebaseConfig.mode === 'firebase'),
+      firstVisit: !(homeMe() && MP.reqs().some(r => r.customerId === homeMe().id)),
+      latestReviews: homeLatestReviews(),
+      addressBar: homeAddressBar(), trending: homeTrending(), packages: homePackages(), invite: homeInvite()
     });
   },
 
   sections(){ return `<div class="screen">${head('الخدمات')}
-    <div style="margin-top:14px">${tiles()}</div>
+    <div style="margin-top:14px">${sectionsTiles()}</div>
     ${renderServiceAreas()}
     </div>`; },
 
@@ -637,6 +741,7 @@ const renderTabs = () => {
     const lbl = (id==='orders' && nAct) ? `${l} — ${nAct} نشطة` : l;
     return `<button class="tab ${state.tab===id?'on':''}" data-go="${id}" aria-label="${lbl}"${state.tab===id?' aria-current="page"':''}>${ic(i)}<span>${l}</span>${b}</button>`;
   }).join('');
+  placeTabInk();
   if (keepTab) {
     const t = document.querySelector(`#tabbar [data-go="${keepTab}"]`);
     if (t) { try { t.focus({preventScroll:true}); } catch { try { t.focus(); } catch {} } }
@@ -665,12 +770,34 @@ function restoreScreenFocus(name){
   try { target.focus({preventScroll:true}); } catch { try { target.focus(); } catch {} }
 }
 
+/* Moving tab indicator (phones): the pill glides from the previous tab to the new one instead of jumping. Only when
+   the active tab actually draws its pill (the desktop top-nav uses an underline instead). */
+let _inkX = null;
+function placeTabInk(){
+  try {
+    const bar = $('#tabbar'), on = bar && bar.querySelector('.tab.on'); if (!on) return;
+    if (getComputedStyle(on, '::before').display === 'none') { bar.classList.remove('has-ink'); return; }
+    const x = on.offsetLeft + on.offsetWidth / 2 - 26;
+    const ink = document.createElement('i'); ink.className = 'tab-ink'; ink.setAttribute('aria-hidden', 'true');
+    ink.style.transform = `translateX(${_inkX == null ? x : _inkX}px)`;
+    bar.prepend(ink); bar.classList.add('has-ink');
+    if (_inkX !== x) requestAnimationFrame(() => { ink.style.transform = `translateX(${x}px)`; });
+    _inkX = x;
+  } catch {}
+}
+/* Images fade in once loaded instead of popping in. */
+function fadeImages(scope){
+  try { scope.querySelectorAll('img').forEach(img => { if (img.complete) return; img.classList.add('img-fade'); const done = () => img.classList.add('is-in'); img.addEventListener('load', done, { once: true }); img.addEventListener('error', done, { once: true }); }); } catch {}
+}
 function show(name, arg){
   clearInterval(carTimer);
   state.lastShown = { name, arg };
   renderTabs();   /* V8-C3: يحدّث شارة الطلبات النشطة عند كل عرض */
   view.innerHTML = screens[name](arg);
   view.scrollTop = 0;
+  try { const sc = view.firstElementChild; if (sc) { sc.classList.add('screen-in'); sc.addEventListener('animationend', () => sc.classList.remove('screen-in'), { once: true }); } } catch {}
+  fadeImages(view);
+  if (name === 'wizard' || name === 'sections') fillTilePrices();
   restoreScreenFocus(name);
   if (typeof HSCustomerRouter !== 'undefined') HSCustomerRouter.sync(name, arg);   /* الرابط يعكس الشاشة الحالية (#/orders، #/track/<id>…) */
   if (name === 'wizard') {
@@ -682,6 +809,7 @@ function show(name, arg){
   if (name==='home'){
     initCarousel();
     bindHomeSearch();
+    fillTilePrices();
   }
   if (name==='search'){
     const input = document.getElementById('hs-q');
@@ -829,6 +957,14 @@ function sheet(html){
   setTimeout(() => { if (state.sheet && revision === sheetFocusRevision) focusSheetContent(); }, 0);
 }
 function focusCustomerView(){ view.setAttribute('tabindex','-1'); view.focus({preventScroll:true}); }
+/* Bottom sheets close with a downward swipe from the top area (like native apps); the grab handle shows it. */
+function mountSheetSwipe(){
+  const el = document.getElementById('sheet'); if (!el || el.dataset.swipe) return; el.dataset.swipe = '1';
+  let y0 = null, dy = 0;
+  el.addEventListener('touchstart', e => { if (!state.sheet || el.scrollTop > 0 || e.touches.length !== 1) { y0 = null; return; } y0 = e.touches[0].clientY; dy = 0; }, { passive: true });
+  el.addEventListener('touchmove', e => { if (y0 == null) return; dy = Math.max(0, e.touches[0].clientY - y0); if (dy > 4) { el.style.transition = 'none'; el.style.transform = `translateY(${dy}px)`; } }, { passive: true });
+  el.addEventListener('touchend', () => { if (y0 == null) return; el.style.transition = ''; el.style.transform = ''; if (dy > 90) closeSheet(); y0 = null; dy = 0; });
+}
 function closeSheet(suppressRestoreFocus=false){
   if (!state.sheet) return;
   app.classList.remove('open'); state.sheet=false; origin=null;
@@ -1091,8 +1227,36 @@ function liveRefresh(announce){
   if (hadFocus) { const h = view.querySelector('.dhead h2'); if (h) { try { h.focus({preventScroll:true}); } catch { h.focus(); } } }
   if (announce && !wasLoading) toast('تم تحديث بيانات الطلب');   /* server syncs refresh silently; placeholders are replaced silently */
 }
+/* help button (support centre: FAQ, contact, complaints) + connection banner */
+function mountHelpAndNet(){
+  if (typeof document === 'undefined' || !document.body || !document.createElement) return;
+  try {
+    const fs = localStorage.getItem('hs_font'); if (fs === 'lg' || fs === 'xl') document.documentElement.setAttribute('data-fs', fs);
+  } catch {}
+  if (!document.getElementById('help-fab')) {
+    const b = document.createElement('button');
+    b.id = 'help-fab'; b.type = 'button'; b.className = 'help-fab'; b.setAttribute('aria-label', 'المساعدة والأسئلة الشائعة');
+    b.innerHTML = ic('info') + '<span>مساعدة</span>';
+    b.addEventListener('click', () => { try { go('support'); } catch {} });
+    document.body.appendChild(b);
+  }
+  if (!document.getElementById('net-banner')) {
+    const n = document.createElement('div');
+    n.id = 'net-banner'; n.className = 'net-banner'; n.setAttribute('role', 'status'); n.hidden = true;
+    n.textContent = 'مفيش اتصال بالإنترنت — هنكمّل أول ما الاتصال يرجع';
+    document.body.appendChild(n);
+    const set = online => { n.hidden = online; };
+    if (typeof addEventListener === 'function') {
+      addEventListener('offline', () => set(false));
+      addEventListener('online', () => { if (!n.hidden) toast('رجع الاتصال', 'success'); set(true); });
+    }
+    try { if (navigator.onLine === false) set(false); } catch {}
+  }
+}
 function boot(){
-  if (typeof HSAuthApi !== 'undefined') HSAuthApi.useApp('customer');   /* API actor = the signed-in demo customer */
+  if (typeof HSAuthApi !== 'undefined') HSAuthApi.useApp('customer');
+  try { mountHelpAndNet(); } catch {}
+  try { mountSheetSwipe(); } catch {}   /* API actor = the signed-in demo customer */
   /* live screens follow changes from another tab (storage) and from the server (Firebase sync / RTDB signal) */
   if (typeof HSRealtimeClient !== 'undefined') HSRealtimeClient.subscribe('market:changed', e => { if (e.source === 'storage' || e.source === 'firebase') liveRefresh(e.source === 'storage'); });
   /* site content published from the Admin Center: refresh Home in place (keeps scroll; never interrupts a sheet) */
@@ -1100,7 +1264,7 @@ function boot(){
     const s = state.lastShown;
     if (!s || s.name !== 'home' || state.sheet || !screens.home) return;
     const y = view.scrollTop; view.innerHTML = screens.home(); view.scrollTop = y;
-    try { initCarousel(); bindHomeSearch(); } catch {}
+    try { initCarousel(); bindHomeSearch(); fillTilePrices(); } catch {}
   });
   if (!applyEntry(location.hash)) go('home');   /* رابط عميق مثل #/orders أو #/track/<id>؛ وإلا الرئيسية */
   Intro.init();

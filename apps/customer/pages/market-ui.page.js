@@ -167,7 +167,9 @@ document.addEventListener('click', e => {
       apiCall('close:' + d.id, t, () => HSOrdersApi.close(d.id), () => { show('tracking', d.id); toast('تم إغلاق الطلب'); });
       break;
     case 'cancelReq':
-      askSheet({ id: d.id, kind: 'cancel', title: 'إلغاء الطلب', text: 'هل تريد إلغاء الطلب؟ لا يمكن التراجع.', reasonLabel: 'سبب الإلغاء (اختياري)', confirmLabel: 'تأكيد الإلغاء' });
+      askSheet({ id: d.id, kind: 'cancel', title: 'إلغاء الطلب', text: 'هل تريد إلغاء الطلب؟ لا يمكن التراجع.', reasonLabel: 'سبب الإلغاء (اختياري)', confirmLabel: 'تأكيد الإلغاء',
+        chips: ['المشكلة اتحلت', 'لقيت فني تاني', 'الموعد مش مناسب', 'طلبت بالغلط', 'هغيّر تفاصيل الطلب'],
+        policy: 'الإلغاء مجاني ومن غير أي رسوم طالما الطلب لسه ما اتقبلش من فني.' });
       break;
     case 'rate': openRateSheet(d.id); break;
     case 'rvDone': closeSheet(); break;
@@ -268,7 +270,9 @@ async function apiCall(key, control, request, onOk, onFail) {
 function askSheet(o) {
   sheet(`<h4 id="ask-title">${esc(o.title)}</h4><div class="sub">${esc(o.text)}</div>
     <form class="form" id="askForm" data-id="${esc(o.id)}" data-kind="${esc(o.kind)}" aria-labelledby="ask-title">
+      ${o.chips && o.chips.length ? `<div class="chips ask-chips" role="group" aria-label="أسباب سريعة">${o.chips.map(c => `<button type="button" class="chip" data-ask-chip="${esc(c)}" aria-pressed="false">${esc(c)}</button>`).join('')}</div>` : ''}
       ${o.reasonLabel ? `<div><label for="ask-reason">${esc(o.reasonLabel)}</label><textarea id="ask-reason" name="reason" maxlength="300"></textarea></div>` : ''}
+      ${o.policy ? `<p class="ask-policy">${ic('info')}<span>${esc(o.policy)}</span></p>` : ''}
       <div class="row2"><button class="cta" type="submit">${esc(o.confirmLabel)}</button><button class="cta ghost" type="button" data-act="askCancel">تراجع</button></div>
     </form>`);
 }
@@ -394,3 +398,71 @@ document.addEventListener('click', e => {
 });
 
 /* CSS شريط التحميل وبطاقات المزود نُقل إلى styles.css (قسم V8-C2) */
+
+/* ═════════ round 5: chat, share, receipt, same provider ═════════ */
+const isLiveBackend = () => typeof HSFirebaseConfig !== 'undefined' && HSFirebaseConfig.mode === 'firebase';
+async function shareText(title, text) {
+  try { if (navigator.share) { await navigator.share({ title, text }); return; } } catch (e) { if (e && e.name === 'AbortError') return; }
+  try { await navigator.clipboard.writeText(text); toast('اتنسخت التفاصيل — ابعتها لمين ما تحب'); } catch { toast('مش قادرين نشارك من الجهاز ده'); }
+}
+function requestShareText(r) {
+  const p = MP.providerOf(r.id), L = typeof STATUS_LABEL !== 'undefined' ? STATUS_LABEL : {};
+  const eta = r.status === 'enroute' && r.etaAt ? new Date(r.etaAt).toLocaleTimeString('ar-EG', { hour: 'numeric', minute: '2-digit' }) : '';
+  return [`طلبي على هنصلحلك #${r.no} — ${r.serviceName}`,
+    p ? `الفني: ${p.name}${p.status === 'approved' ? ' (موثّق من المنصة)' : ''}` : '',
+    `الحالة: ${L[r.status] || r.status}`,
+    r.agreedAt ? `الموعد: ${fmtDT(r.agreedAt)}` : '',
+    eta ? `الوصول المتوقع: حوالي ${eta}` : '',
+    `المنطقة: ${[r.gov, r.area].filter(Boolean).join(' — ')}`].filter(Boolean).join('\n');
+}
+function openReceipt(reqId) {
+  const r = MP.get('serviceRequests', reqId), t = (MP.db().transactions || []).find(x => x.reqId === reqId);
+  if (!r || !t) return;
+  const p = MP.providerOf(reqId), gross = (+t.value || 0) + (+t.discount || 0);
+  sheet(`<div class="receipt" id="receipt">
+    <div class="rc-head"><b>هنصلحلك</b><small>إيصال خدمة</small></div>
+    <dl>
+      <div><dt>رقم الطلب</dt><dd>#${esc(r.no)}</dd></div>
+      <div><dt>الخدمة</dt><dd>${esc(r.serviceName)}</dd></div>
+      <div><dt>مقدم الخدمة</dt><dd>${esc(p ? p.name : '—')}</dd></div>
+      <div><dt>التاريخ</dt><dd>${fmtDT(t.at)}</dd></div>
+      ${t.free ? '<div><dt>النوع</dt><dd>خدمة مجانية</dd></div>' : ''}
+      ${t.discount ? `<div><dt>قيمة الخدمة</dt><dd>${money(gross)}</dd></div><div><dt>الخصم</dt><dd>− ${money(t.discount)}</dd></div>` : ''}
+      <div class="rc-total"><dt>الإجمالي</dt><dd>${money(t.value || 0)}</dd></div>
+      <div><dt>طريقة الدفع</dt><dd>كاش لمقدم الخدمة</dd></div>
+    </dl>
+    <p class="rc-note">ملخص من بيانات الطلب على المنصة${isLiveBackend() ? '' : ' (بيانات تجريبية)'}.</p>
+  </div>
+  <div class="row2"><button class="cta" type="button" data-act="receiptPrint">${ic('book')} اطبع أو احفظ PDF</button><button class="cta ghost" type="button" data-act="receiptShare" data-id="${esc(reqId)}">${ic('share')} شارك</button></div>`);
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act="shareReq"],[data-act="receipt"],[data-act="receiptPrint"],[data-act="receiptShare"],[data-act="sameProvider"],[data-ask-chip]');
+  if (!t) return;
+  const d = t.dataset;
+  if (d.askChip === undefined && !['shareReq', 'receipt', 'receiptPrint', 'receiptShare', 'sameProvider'].includes(d.act)) return;
+  if (d.askChip !== undefined) { const ta = document.getElementById('ask-reason'); if (ta) { ta.value = d.askChip; ta.focus(); } t.closest('[role="group"]').querySelectorAll('[data-ask-chip]').forEach(b => { const on = b === t; b.classList.toggle('on', on); b.setAttribute('aria-pressed', String(on)); }); return; }
+  e.preventDefault(); e.stopPropagation();
+  if (d.act === 'shareReq') { const r = MP.get('serviceRequests', d.id); if (r) shareText('تفاصيل طلبي', requestShareText(r)); }
+  else if (d.act === 'receipt') openReceipt(d.id);
+  else if (d.act === 'receiptPrint') { document.documentElement.classList.add('print-receipt'); try { window.print(); } finally { setTimeout(() => document.documentElement.classList.remove('print-receipt'), 500); } }
+  else if (d.act === 'receiptShare') { const el = document.getElementById('receipt'); if (el) shareText('إيصال هنصلحلك', el.innerText.replace(/\n{2,}/g, '\n')); }
+  else if (d.act === 'sameProvider') {
+    apiCall('same:' + d.id, t, () => HSOrdersApi.repeat(d.id, d.pid), res => {
+      const p = MP.get('providers', d.pid), got = MP.providerOf(res.data.id) || MP.activeAssignment(res.data.id);
+      const sameOne = got && (got.id === d.pid || got.providerId === d.pid);
+      toast(sameOne ? `اتبعت الطلب لـ ${p ? p.name : 'نفس الفني'}` : 'اتعمل طلب جديد — الفني مش متاح دلوقتي، وهنلاقيلك فني تاني');
+      show('tracking', res.data.id);
+    });
+  }
+}, true);
+document.addEventListener('submit', e => {
+  const f = e.target; if (!f || f.id !== 'chatForm') return;
+  e.preventDefault();
+  const input = f.querySelector('#chat-text'), text = String(input && input.value || '').trim(); if (!text) return;
+  apiCall('chat:' + f.dataset.id, f.querySelector('button[type="submit"]'), () => HSOrdersApi.message(f.dataset.id, text), () => {
+    show('tracking', f.dataset.id);
+    const box = document.querySelector('.chat-list'); if (box) box.lastElementChild && box.lastElementChild.scrollIntoView({ block: 'nearest' });
+    const again = document.getElementById('chat-text'); if (again) try { again.focus({ preventScroll: true }); } catch {}
+  });
+});
+

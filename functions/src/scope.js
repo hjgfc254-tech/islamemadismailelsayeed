@@ -7,7 +7,7 @@
 const PROVIDER_PUBLIC = ['id', 'name', 'type', 'cats', 'subs', 'govs', 'areas', 'years', 'bio', 'rating', 'jobs', 'avatar', 'status', 'available', 'demo', 'createdAt'];
 const pick = (o, keys) => Object.fromEntries(keys.filter(k => o[k] !== undefined).map(k => [k, o[k]]));
 const publicProvider = p => pick(p, PROVIDER_PUBLIC);
-const PUBLIC_SETTINGS = ['customerFee', 'autoAssign', 'collectionModel', 'contentV'];
+const PUBLIC_SETTINGS = ['customerFee', 'autoAssign', 'collectionModel', 'contentV', 'trend', 'packages', 'referral'];   // promo codes stay admin-only
 
 function base(db) {
   return { v: db.v || 2, meta: {}, serviceAreas: db.serviceAreas || [], customers: [], providers: [], serviceRequests: [],
@@ -27,6 +27,7 @@ function customerRequestView(r) {
   const out = { ...r };
   if (out.pricing) out.pricing = customerPricing(out.pricing);
   if (out.currentQuote) out.currentQuote = customerQuote(out.currentQuote);
+  delete out.customerReview;                       // the provider's rating of the customer is not shown to them
   return out;
 }
 function scopeFor(db, actor) {
@@ -47,7 +48,7 @@ function scopeFor(db, actor) {
     out.serviceRequests = reqs.map(customerRequestView);
     out.assignments = (db.assignments || []).filter(a => ids.has(a.reqId)).map(a => pick(a, ['id', 'reqId', 'providerId', 'status', 'at']));
     out.quotes = (db.quotes || []).filter(q => ids.has(q.reqId)).map(customerQuote);
-    out.transactions = (db.transactions || []).filter(t => t.customerId === actor.id).map(t => pick(t, ['id', 'reqId', 'providerId', 'customerId', 'cat', 'value', 'free', 'at']));
+    out.transactions = (db.transactions || []).filter(t => t.customerId === actor.id).map(t => pick(t, ['id', 'reqId', 'providerId', 'customerId', 'cat', 'value', 'free', 'discount', 'at']));
     out.addresses = (db.addresses || []).filter(a => a.customerId === actor.id);
     out.favorites = (db.favorites || []).filter(f => f.customerId === actor.id);
   } else if (actor.role === 'provider') {
@@ -57,9 +58,12 @@ function scopeFor(db, actor) {
     const reqs = (db.serviceRequests || []).filter(r => offered.has(r.id));
     const ids = new Set(reqs.map(r => r.id));
     /* the customer's phone/address/location are released only once this provider accepted the job */
-    out.serviceRequests = reqs.map(r => (accepted.has(r.id) ? r : { ...r, phone: '', addr: '', geo: null }));
+    out.serviceRequests = reqs.map(r => {
+      const chat = Array.isArray(r.chat) ? r.chat.filter(m => m.pid === actor.id) : [];   // only this provider's own conversation
+      return accepted.has(r.id) ? { ...r, chat } : { ...r, phone: '', addr: '', geo: null, chat: [] };
+    });
     const custIds = new Set(reqs.filter(r => accepted.has(r.id)).map(r => r.customerId));
-    out.customers = (db.customers || []).filter(c => custIds.has(c.id)).map(c => pick(c, ['id', 'name', 'phone', 'status']));
+    out.customers = (db.customers || []).filter(c => custIds.has(c.id)).map(c => pick(c, ['id', 'name', 'phone', 'status', 'rating', 'ratingCount']));
     out.providers = (db.providers || []).map(p => (p.id === actor.id ? p : (p.status === 'approved' ? publicProvider(p) : null))).filter(Boolean);
     out.assignments = (db.assignments || []).filter(a => a.providerId === actor.id);
     out.quotes = (db.quotes || []).filter(q => ids.has(q.reqId) && q.providerId === actor.id);

@@ -92,8 +92,33 @@
 
   function summary(p,groups,transactions) {
     const t=domain.totals(transactions);
+    /* round 5: level & goal, last-7-days summary, today's demand by area */
+    const LEVELS=[['فني جديد',0,0],['فني متمكّن',5,4],['فني محترف',20,4.5],['فني خبير',50,4.7]];
+    const jobs=Math.max(+p.jobs||0,transactions.length), rating=+p.rating||0;
+    let li=0; LEVELS.forEach((L,i)=>{ if(jobs>=L[1]&&(i===0||rating>=L[2])) li=i; });
+    const nextL=LEVELS[li+1], prog=nextL?Math.min(100,Math.round(jobs/nextL[1]*100)):100;
+    const levelCard=`<section class="pv-level" aria-label="مستواك على المنصة"><div><small>مستواك</small><b>${LEVELS[li][0]}</b></div><div class="pv-goal">${nextL?`<small>عشان توصل «${nextL[0]}»: ${Math.max(0,nextL[1]-jobs)} خدمة كمان${rating<nextL[2]?` وتقييم ${nextL[2]} أو أعلى`:''}</small><i style="--p:${prog}%" role="progressbar" aria-valuenow="${prog}" aria-valuemin="0" aria-valuemax="100" aria-label="التقدّم للمستوى التالي"></i>`:'<small>وصلت لأعلى مستوى — كمّل كده</small>'}</div></section>`;
+    const dayMs=864e5, nowMs=Date.now(), inDays=(at,from,to)=>{const t=new Date(at).getTime();return Number.isFinite(t)&&t>nowMs-to*dayMs&&t<=nowMs-from*dayMs;};
+    const wk=transactions.filter(x=>inDays(x.at,0,7)), pw=transactions.filter(x=>inDays(x.at,7,14));
+    const wn=domain.totals(wk).net, pn=domain.totals(pw).net, delta=pn>0?Math.round((wn-pn)/pn*100):null;
+    const wr=(MP.db().reviews||[]).filter(v=>v.providerId===p.id&&inDays(v.at,0,7)), ravg=wr.length?(wr.reduce((s,v)=>s+(+v.stars||0),0)/wr.length).toFixed(1):'—';
+    const weekCard=`<section class="pv-week" aria-labelledby="pvxweek-h"><h2 id="pvxweek-h">آخر 7 أيام</h2><dl><div><dt>مكسبك</dt><dd>${money(wn)}</dd>${delta!=null?`<small class="${delta>=0?'up':'down'}">${delta>=0?'أعلى':'أقل'} ${Math.abs(delta)}% من الأسبوع اللي قبله</small>`:''}</div><div><dt>خدمات</dt><dd>${wk.length}</dd></div><div><dt>تقييمك</dt><dd>${ravg}</dd></div></dl></section>`;
+    let demandCard='';
+    const tr=(MP.db().settings||{}).trend;
+    if(tr&&tr.areas&&typeof MP.cairoDay==='function'&&tr.day===MP.cairoDay()){
+      const govs=new Set(p.govs||[]);
+      const rows=Object.entries(tr.areas).filter(([k])=>!govs.size||govs.has(k.split('|')[0])).sort((a,b)=>b[1]-a[1]).slice(0,5);
+      if(rows.reduce((s,[,n])=>s+n,0)>=3){
+        const max=rows[0][1];
+        demandCard=`<section class="pv-demand" aria-labelledby="pvxdem-h"><h2 id="pvxdem-h">فين الطلب عالي النهارده</h2><ul>${rows.map(([k,n])=>{const [g,ar]=k.split('|');return `<li><span>${esc(ar)}<small>${esc(g)}</small></span><i style="--w:${Math.round(n/max*100)}%" aria-hidden="true"></i><b>${n} طلب</b></li>`;}).join('')}</ul><p class="pv-hint">عدد الطلبات الجديدة في مناطقك النهارده — من غير أي بيانات عملاء.</p></section>`;
+      }
+    }
     const active=groups.new.length+groups.accepted.length+groups.progress.length+groups.quote.length;
-    return `<section class="pv-hero"><div><span class="pv-eyebrow">مساحة مقدم الخدمة</span><h1>أهلًا، ${esc((p.name||'').split(' ')[0])}</h1><p>تابع الطلبات والمواعيد ومستحقاتك التجريبية من مكان واحد.</p></div><button class="pv-availability ${p.available?'is-on':''}" type="button" data-pv-action="availability" aria-pressed="${!!p.available}">${icon('power')} ${p.available?'متاح لاستقبال الطلبات':'متوقف عن استقبال الطلبات'}</button></section><section class="pv-kpis"><article><small>إجراءات معلقة</small><b>${active}</b></article><article><small>طلبات جديدة</small><b>${groups.new.length}</b></article><article><small>قيد التنفيذ</small><b>${groups.progress.length+groups.accepted.length}</b></article><article><small>مكتملة</small><b>${groups.done.length}</b></article><article><small>إجمالي الخدمات</small><b>${money(t.value)}</b></article><article><small>صافي مستحقات تجريبية</small><b>${money(t.net)}</b></article></section>`;
+    const live=!!(root.HSFirebaseConfig&&root.HSFirebaseConfig.mode==='firebase');
+    /* today's earnings: completed services recorded today (provider amount, net of the platform share) */
+    const day=new Date().toDateString(), todayTx=transactions.filter(x=>{const d=new Date(x.at);return !Number.isNaN(d.getTime())&&d.toDateString()===day;}), tt=domain.totals(todayTx);
+    const todayCard=`<section class="pv-today" aria-label="مكسبك النهارده"><div><small>مكسبك النهارده</small><b>${money(tt.net)}</b></div><div><small>خدمات خلصتها النهارده</small><b>${todayTx.length}</b></div><div><small>طلبات جديدة مستنياك</small><b>${groups.new.length}</b></div></section>`;
+    return `<section class="pv-hero"><div><span class="pv-eyebrow">مساحة مقدم الخدمة</span><h1>أهلًا، ${esc((p.name||'').split(' ')[0])}</h1><p>تابع الطلبات والمواعيد ومستحقاتك${live?'':' التجريبية'} من مكان واحد.</p></div><button class="pv-availability ${p.available?'is-on':''}" type="button" data-pv-action="availability" aria-pressed="${!!p.available}">${icon('power')} ${p.available?'متاح لاستقبال الطلبات':'متوقف عن استقبال الطلبات'}</button></section>${todayCard}${levelCard}${weekCard}${demandCard}<section class="pv-kpis"><article><small>إجراءات معلقة</small><b>${active}</b></article><article><small>طلبات جديدة</small><b>${groups.new.length}</b></article><article><small>قيد التنفيذ</small><b>${groups.progress.length+groups.accepted.length}</b></article><article><small>مكتملة</small><b>${groups.done.length}</b></article><article><small>إجمالي الخدمات</small><b>${money(t.value)}</b></article><article><small>صافي مستحقاتك${live?'':' (تجريبي)'}</small><b>${money(t.net)}</b></article></section>`;
   }
 
   function requestCard(item,p) {
@@ -102,9 +127,10 @@
     if(a.status==='offered') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="accept" data-id="${esc(r.id)}">قبول الطلب</button>`,`<button class="pv-btn" data-pv-action="reject" data-id="${esc(r.id)}">رفض</button>`);
     if(a.status==='accepted') {
       if(r.status==='accepted'&&!r.proposal) actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="confirm" data-id="${esc(r.id)}">تأكيد الموعد</button>`,`<button class="pv-btn" data-pv-action="propose" data-id="${esc(r.id)}">اقتراح موعد</button>`);
-      if(r.status==='scheduled') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="enroute" data-id="${esc(r.id)}">أنا في الطريق</button>`);
+      if(r.status==='scheduled') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="enroute" data-id="${esc(r.id)}">أنا في الطريق</button>`,`<span class="pv-eta-pick" role="group" aria-label="أنا في الطريق وهوصل خلال"><small>أو هوصل خلال:</small>${[15,30,45,60].map(m=>`<button class="pv-chip" type="button" data-pv-action="advance" data-next="enroute" data-eta="${m}" data-id="${esc(r.id)}" aria-label="أنا في الطريق وهوصل خلال ${m} دقيقة">${m} د</button>`).join('')}</span>`);
       if(r.status==='enroute') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="arrived" data-id="${esc(r.id)}">وصلت</button>`);
       if(r.status==='arrived') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="started" data-id="${esc(r.id)}">بدأت الخدمة</button>`);
+      if(['completed','closed'].includes(r.status)&&!r.customerReview) actions.push(`<button class="pv-btn" data-pv-action="rate-customer" data-id="${esc(r.id)}">قيّم العميل</button>`);
       if(loc&&loc.available(r,a)) actions.push(`<button class="pv-btn" data-pv-action="customer-location" data-id="${esc(r.id)}">${icon('pin')} موقع العميل</button>`);
       const fs=r.freeService&&r.freeService.status;
       if(fs==='accepted'&&['scheduled','enroute','arrived','started'].includes(r.status)) actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="complete-free" data-id="${esc(r.id)}">تسجيل إكمال الخدمة المجانية</button>`);
@@ -122,7 +148,15 @@
     const journey=a.status==='accepted'&&pvStage!==undefined?`<ol class="pv-journey" aria-label="مراحل الشغل — الحالية: ${PV_STAGES[pvStage]}">${PV_STAGES.map((l,i)=>`<li class="${i<pvStage?'is-done':i===pvStage?'is-now':''}"><i aria-hidden="true"></i><span>${l}</span></li>`).join('')}</ol>`:'';
     const freeNote=r.freeService?`<p class="pv-note">خدمة مجانية (${esc((MP.FREE_REASONS||{})[r.freeService.reason]||'')}): ${({proposed:'بانتظار موافقة العميل',accepted:'وافق العميل — نفّذ وسجّل الإكمال',declined:'رفض العميل؛ يمكن إرسال عرض سعر',completed:'اكتملت بلا مقابل'})[r.freeService.status]||''}</p>`:'';
     const address=a.status==='accepted'?`${esc(r.gov)} · ${esc(r.area)} · ${esc(r.addr)}`:`${esc(r.gov)} · ${esc(r.area)} — يظهر العنوان التفصيلي بعد قبول الطلب`;
-    return `<article class="pv-request"><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header>${journey}<p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.pricing&&r.pricing.providerAmount!=null?`<p class="pv-note">مبلغك المحدد عند الحجز: <b>${money(r.pricing.providerAmount)}</b> — يدفع العميل ${money(r.pricing.customerPrice)} شاملًا رسوم المنصة</p>`:''}${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}<div class="pv-actions"><button class="pv-btn" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">عرض التفاصيل</button>${actions.join('')}</div>${locPanel(r,a)}</article>`;
+    const cust=a.status==='accepted'?MP.get('customers',r.customerId):null;
+    const custNote=cust&&+cust.ratingCount>0?`<p class="pv-note">تقييم العميل من الفنيين: ${esc(cust.rating)} من 5 (${esc(cust.ratingCount)})</p>`:'';
+    const ptx=(MP.db().transactions||[]).find(t=>t.reqId===r.id);
+    const promoNote=r.promo?`<p class="pv-note">${r.discount&&ptx?`حصّل من العميل <b>${money(ptx.value)}</b> بعد خصم ${money(r.discount)} — الخصم من حصة المنصة، ومبلغك ما اتأثرش`:'العميل عنده خصم بتتحمّله المنصة من عمولتها — مبلغك مش بيتأثر، والمبلغ اللي هتحصّله بيظهر بعد تسجيل الإكمال'}</p>`:'';
+    const rateNote=r.customerReview?`<p class="pv-note">قيّمت العميل ${esc(r.customerReview.stars)} من 5</p>`:'';
+    const pkgNote=r.packageName?`<p class="pv-note">الطلب ضمن باقة: <b>${esc(r.packageName)}</b> — اتفق مع العميل على مواعيد الزيارات.</p>`:'';
+    const chatCount=a.status==='accepted'&&Array.isArray(r.chat)?r.chat.filter(m=>m.pid===p.id).length:0;
+    const swipeHint=a.status==='offered'?'<p class="pv-swipe-hint" aria-hidden="true">اسحب الكارت يمين للقبول أو شمال للرفض</p>':'';
+    return `<article class="pv-request"${a.status==='offered'?` data-swipe-id="${esc(r.id)}"`:''}><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header>${journey}<p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.pricing&&r.pricing.providerAmount!=null?`<p class="pv-note">مبلغك المحدد عند الحجز: <b>${money(r.pricing.providerAmount)}</b> — يدفع العميل ${money(r.pricing.customerPrice)} شاملًا رسوم المنصة</p>`:''}${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${pkgNote}${custNote}${promoNote}${rateNote}${swipeHint}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}<div class="pv-actions"><button class="pv-btn" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">عرض التفاصيل${chatCount?` · ${chatCount} رسالة`:''}</button>${actions.join('')}</div>${locPanel(r,a)}</article>`;
   }
 
   function sectionFor(page,p,groups,transactions) {
@@ -130,7 +164,7 @@
     const notifications=typeof MP.notesFor==='function'?MP.notesFor('provider:'+p.id):[];
     const totals=domain.totals(transactions);
     const ctx={p,groups,transactions,reviews,notifications,totals,esc,date,money,catName:MP.catName,
-      summary,requestCard,statusLabel:STATUS_LABEL,items:Object.values(groups).flat(),
+      summary,requestCard,chatPanel,statusLabel:STATUS_LABEL,items:Object.values(groups).flat(),
       renderGroup(key){const items=groups[key]||[];return `<section class="pv-panel"><div class="pv-section-head"><h1>${esc(domain.GROUPS[key]||key)}</h1><span>${items.length} طلب</span></div>${items.length?items.map(x=>requestCard(x,p)).join(''):'<div class="pv-empty">لا توجد طلبات في هذا القسم.</div>'}</section>`;}};
     const renderers={
       home:()=>HSProviderDashboardPage.render(ctx),new:()=>HSProviderIncomingRequestsPage.render(ctx),
@@ -147,6 +181,38 @@
 
   /* render(focusTargets): a route change focuses the main view; a same-route re-render (after an action)
      restores focus to the first matching selector so keyboard users are not dropped to <body>. */
+  /* New request alert: when a request appears in «طلبات جديدة» after the first render — a short tone (if the browser
+     allows audio), a vibration on phones, a polite toast and the tab title, until the provider looks at the app. */
+  /* ── round 5: chat panel on the request page, swipe to accept/decline offers ── */
+  function chatPanel(item){
+    const r=item.request,a=item.assignment,p=currentProvider(); if(!p||a.status!=='accepted') return '';
+    const msgs=(Array.isArray(r.chat)?r.chat:[]).filter(m=>m.pid===p.id), open=!['cancelled','failed','closed'].includes(r.status);
+    if(!open&&!msgs.length) return '';
+    return `<section class="pv-chat" aria-labelledby="pvxchat-h"><h2 id="pvxchat-h">رسائل مع العميل</h2><ol class="pv-chat-list">${msgs.length?msgs.slice(-60).map(m=>`<li class="${m.by==='provider'?'me':'them'}"><p>${esc(m.text)}</p><time>${date(m.at)}</time></li>`).join(''):'<li class="pv-chat-empty">ابعت للعميل أي سؤال عن المشكلة أو الموعد.</li>'}</ol>${open?`<form id="pv-chat-form" class="pv-chat-form" data-id="${esc(r.id)}"><label class="pv-sr" for="pvxchat-text">رسالة للعميل</label><input id="pvxchat-text" name="text" maxlength="500" required autocomplete="off" placeholder="اكتب رسالتك للعميل…"><button class="pv-btn pv-btn-primary">إرسال</button></form>`:''}</section>`;
+  }
+  function mountSwipe(){
+    if(!dom.view||dom.view.dataset.swipe) return; dom.view.dataset.swipe='1';
+    let s=null;
+    dom.view.addEventListener('touchstart',e=>{const c=e.target.closest&&e.target.closest('[data-swipe-id]'); if(!c||e.touches.length!==1||e.target.closest('button,a,input,select,textarea')){s=null;return;} s={c,x:e.touches[0].clientX,y:e.touches[0].clientY,dx:0,h:false};},{passive:true});
+    dom.view.addEventListener('touchmove',e=>{ if(!s) return; const dx=e.touches[0].clientX-s.x, dy=e.touches[0].clientY-s.y; if(!s.h&&Math.abs(dy)>Math.abs(dx)){s=null;return;} s.h=true; s.dx=dx; s.c.style.transition='none'; s.c.style.transform=`translateX(${dx}px)`; s.c.classList.toggle('sw-yes',dx>70); s.c.classList.toggle('sw-no',dx<-70); },{passive:true});
+    dom.view.addEventListener('touchend',()=>{ if(!s) return; const {c,dx}=s; s=null; c.style.transition=''; c.style.transform=''; c.classList.remove('sw-yes','sw-no'); const id=c.dataset.swipeId;
+      const b=dx>110?c.querySelector(`[data-pv-action="accept"][data-id="${id}"]`):dx<-110?c.querySelector(`[data-pv-action="reject"][data-id="${id}"]`):null; if(b) b.click(); });
+  }
+  let knownOffers=null, titleBase='';
+  function noticeNewOffers(groups){
+    const ids=new Set((groups.new||[]).map(x=>x&&x.request&&x.request.id).filter(Boolean));
+    if(knownOffers){
+      const fresh=[...ids].filter(x=>!knownOffers.has(x)).length;
+      if(fresh){
+        try{const AC=root.AudioContext||root.webkitAudioContext;if(AC){const ac=new AC(),o=ac.createOscillator(),g=ac.createGain();o.type='sine';o.frequency.value=880;g.gain.setValueAtTime(0.0001,ac.currentTime);g.gain.exponentialRampToValueAtTime(0.18,ac.currentTime+0.02);g.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+0.5);o.connect(g).connect(ac.destination);o.start();o.stop(ac.currentTime+0.55);}}catch(e){}
+        try{if(root.navigator&&root.navigator.vibrate)root.navigator.vibrate([120,60,120]);}catch(e){}
+        toast(fresh>1?`وصلك ${fresh} طلبات جديدة`:'وصلك طلب جديد');
+        try{if(root.document&&root.document.hidden!==false){titleBase=titleBase||root.document.title;root.document.title='('+ids.size+') طلب جديد — '+titleBase;}}catch(e){}
+      }
+    }
+    knownOffers=ids;
+  }
+  try{root.document.addEventListener('visibilitychange',()=>{if(!root.document.hidden&&titleBase){root.document.title=titleBase;titleBase='';}});}catch(e){}
   function render(focusTargets) {
     const p=currentProvider();
     if(!p){accountPicker();const joining=router.parse(location.hash).page==='join';settle(joining?'join':'picker',joining?'الانضمام كمقدم خدمة':'اختيار حساب العرض',focusTargets);if(joining)openRegisterForm();return;}
@@ -158,6 +224,8 @@
       return;
     }
     const {page,id}=router.parse(location.hash), groups=providerGroups(p), tx=MP.db().transactions.filter(t=>t.providerId===p.id);
+    noticeNewOffers(groups);
+    mountSwipe();
     renderNav(page);
     dom.view.innerHTML=sectionFor(page,p,groups,tx);
     settle(page+'/'+(page==='request'?id:''),titleFor(page),focusTargets);
@@ -188,7 +256,8 @@
     if(kind==='quote') { const q=MP.currentQuote(id); dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-quote-form" data-id="${esc(id)}" ${named('عرض سعر للطلب')}><label>المصنعية<input name="labor" type="number" min="0" step="0.01" required value="${q?.labor??''}"></label><label>قطع الغيار<input name="parts" type="number" min="0" step="0.01" value="${q?.parts??0}"></label><label>رسوم المعاينة<input name="visitFee" type="number" min="0" step="0.01" value="${q?.visitFee??0}"></label><label>الخصم<input name="discount" type="number" min="0" step="0.01" value="${q?.discount??0}"></label><label>ملاحظة<textarea name="note" maxlength="300">${esc(q?.note||'')}</textarea></label><button class="pv-btn pv-btn-primary">إرسال عرض السعر</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`); }
     if(kind==='complete') { const q=MP.currentQuote(id); const suggested=q?.status==='approved'?q.total:''; const p=currentProvider(); const rate=p?Number(MP.rateFor(request.cat,p.id))||0:0; dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-complete-form" data-id="${esc(id)}" data-rate="${rate}" ${named('تسجيل إكمال الطلب')}><label>القيمة النهائية (ج.م)<input name="value" type="number" min="1" step="0.01" required value="${suggested}"${suggested!==''?' readonly aria-describedby="agreed-price-note"':''}></label>${suggested!==''?'<p class="pv-note" id="agreed-price-note">السعر المتفق عليه مع العميل؛ لا يمكن تغييره عند الإكمال.</p>':''}<label>خصومات معلنة<input name="deductions" type="number" min="0" step="0.01" value="0"></label><p class="pv-calc" id="pv-complete-preview" aria-live="polite">${completionPreview(rate,suggested,0)}</p><button class="pv-btn pv-btn-primary">تأكيد اكتمال الخدمة</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`); }
     if(kind==='free') dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-free-form" data-id="${esc(id)}" ${named('خدمة مجانية للطلب')}><label>سبب تنفيذ الخدمة مجانًا<select name="reason" required><option value="">اختر السبب</option>${Object.entries(MP.FREE_REASONS||{}).map(([k,l])=>`<option value="${esc(k)}">${esc(l)}</option>`).join('')}</select></label><p class="pv-hint pv-wide">لا يُسجَّل أي مبلغ ولا عمولة؛ يتطلب موافقة العميل قبل التنفيذ. الخدمة المجانية ليست عرض سعر بقيمة صفر.</p><button class="pv-btn pv-btn-primary">إرسال الاقتراح للعميل</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
-    const form=$('#'+({reject:'pv-reject-form',propose:'pv-propose-form',quote:'pv-quote-form',complete:'pv-complete-form',free:'pv-free-form'}[kind]),dom.view);
+    if(kind==='rate-customer') dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-ratec-form" data-id="${esc(id)}" ${named('تقييم العميل للطلب')}><label>تقييمك للعميل<select name="stars" required><option value="">اختر</option><option value="5">5 — ممتاز</option><option value="4">4 — كويس جدًا</option><option value="3">3 — مقبول</option><option value="2">2 — ضعيف</option><option value="1">1 — سيئ</option></select></label><label>ملاحظة (اختياري)<input name="comment" maxlength="300"></label><p class="pv-hint pv-wide">التقييم بيوصل للإدارة ولباقي الفنيين كمتوسط، والعميل مش بيشوف تقييمك ليه بالتفصيل.</p><button class="pv-btn pv-btn-primary">حفظ التقييم</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
+    const form=$('#'+({reject:'pv-reject-form',propose:'pv-propose-form',quote:'pv-quote-form',complete:'pv-complete-form',free:'pv-free-form','rate-customer':'pv-ratec-form'}[kind]),dom.view);
     if(form) { form.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'center'}); form.querySelector('input,select')?.focus({preventScroll:true}); }
   }
 
@@ -237,7 +306,7 @@
     const nearRequest=[actionSel('advance',id),detailsSel(id)];
     if(action==='customer-location'){showCustomerLocation(id);return;}
     if(action==='customer-location-close'){delete locState[id];render([actionSel('customer-location',id)]);return;}
-    if(action==='reject'||action==='propose'||action==='quote'||action==='complete'||action==='free'){openForm(action,id);return;}
+    if(action==='reject'||action==='propose'||action==='quote'||action==='complete'||action==='free'||action==='rate-customer'){openForm(action,id);return;}
     if(action==='edit-profile'){openProfileForm(p);return;}
     /* Mutations go through the API adapters (services/*-api.js); MP stays the local read model. */
     const failedButton=res=>{render([detailsSel(id)]);toast(isStale(res)?STALE:errorText(res));};
@@ -245,7 +314,7 @@
     if(action==='accept') return perform('accept:'+id,button,()=>api.orders.respond(id,true),()=>{router.navigate('accepted');render();toast('تم قبول الطلب');},failedButton);
     if(action==='complete-free') return perform('complete-free:'+id,button,()=>api.quotes.completeFree(id),()=>{router.navigate('done');render();toast('تم تسجيل إكمال الخدمة المجانية (بلا مقابل)');},failedButton);
     if(action==='confirm') return perform('confirm:'+id,button,()=>api.orders.schedule(id),()=>{render(nearRequest);toast('تم تأكيد الموعد');},failedButton);
-    if(action==='advance') return perform('advance:'+id,button,()=>api.orders.advance(id,next),()=>{followToGroup(id,p);render(nearRequest);toast('تم تحديث حالة الطلب');},()=>{render(nearRequest);toast('تعذر تحديث الحالة؛ راجع تسلسل الطلب');});
+    if(action==='advance') return perform('advance:'+id,button,()=>api.orders.advance(id,next,button.dataset.eta?+button.dataset.eta:undefined),()=>{followToGroup(id,p);render(nearRequest);toast('تم تحديث حالة الطلب');},()=>{render(nearRequest);toast('تعذر تحديث الحالة؛ راجع تسلسل الطلب');});
   }
 
   /* ── API adapter boundary ───────────────────────────────────────────────────────────────────────────
@@ -266,6 +335,10 @@
 
   function onSubmit(event) {
     const form=event.target;
+    if(form&&form.id==='pv-chat-form'){
+      event.preventDefault(); const id=form.dataset.id, text=String(new FormData(form).get('text')||'').trim(); if(!text) return;
+      return perform('chat:'+id,form.querySelector('button'),()=>api.orders.message(id,text),()=>{render(['#pvxchat-text']);},res=>toast(errorText(res)));
+    }
     if(!form.matches('.pv-inline-form'))return;
     event.preventDefault(); const data=new FormData(form), id=form.dataset.id;
     const submitter=form.querySelector?form.querySelector('.pv-btn-primary'):null;
@@ -278,6 +351,7 @@
         toast('تم إرسال طلب التسجيل (تجريبي) — بانتظار اعتماد الإدارة');
       },res=>invalid(form,errorText(res)));
     }
+    if(form.id==='pv-ratec-form'){const stars=+data.get('stars');if(!(stars>=1&&stars<=5))return invalid(form,'اختر التقييم');return perform('ratec:'+id,submitter,()=>api.orders.rateCustomer(id,stars,String(data.get('comment')||'')),()=>{toast('تم حفظ تقييمك للعميل');done([detailsSel(id)]);},stale);}
     if(form.id==='pv-reject-form'){const reason=String(data.get('reason')||'').trim();if(!reason)return invalid(form,'اختر سبب الرفض');return perform('reject:'+id,submitter,()=>api.orders.respond(id,false,reason),()=>{router.navigate('cancelled');toast('تم رفض الطلب');done();},stale);}
     if(form.id==='pv-propose-form'){const value=data.get('at'),at=value?new Date(value):null;if(!at||Number.isNaN(at.getTime()))return invalid(form,'أدخل موعدًا صحيحًا');if(at.getTime()<=Date.now())return invalid(form,'اختر موعدًا مستقبليًا');return perform('propose:'+id,submitter,()=>api.orders.schedule(id,at.toISOString()),()=>{toast('تم إرسال اقتراح الموعد');done([detailsSel(id)]);},stale);}
     if(form.id==='pv-free-form'){const reason=String(data.get('reason')||'');if(!reason)return invalid(form,'اختر سبب الخدمة المجانية','reason');return perform('free:'+id,submitter,()=>api.quotes.proposeFree(id,reason),()=>{done([detailsSel(id)]);toast('أُرسل اقتراح الخدمة المجانية للعميل');},res=>invalid(form,errorText(res)));}

@@ -28,6 +28,9 @@ hansalhlak/
 │   │   │   │   └── employee-status.js
 │   │   │   ├── admin-live-panels.js
 │   │   │   ├── admin-live.js
+│   │   │   ├── command-palette.js
+│   │   │   ├── marketing-editor.js
+│   │   │   ├── mini-charts.js
 │   │   │   └── site-content-editor.js
 │   │   ├── pages/
 │   │   │   ├── admin-dashboard.page.js
@@ -224,6 +227,15 @@ hansalhlak/
 │   │   │       ├── firebase-database.js
 │   │   │       ├── firebase-functions.js
 │   │   │       └── firebase-messaging.js
+│   │   ├── leaflet/
+│   │   │   └── 1.9.4/
+│   │   │       ├── images/
+│   │   │       │   ├── marker-icon-2x.png
+│   │   │       │   ├── marker-icon.png
+│   │   │       │   └── marker-shadow.png
+│   │   │       ├── leaflet.css
+│   │   │       ├── leaflet.js
+│   │   │       └── LICENSE
 │   │   ├── lucide.LICENSE.txt
 │   │   └── README.md
 │   ├── app-icon-192.png
@@ -557,6 +569,7 @@ hansalhlak/
 │       ├── commissions.test.js
 │       ├── complaints-management.test.js
 │       ├── customer-page-renderers.test.js
+│       ├── customer-polish.test.js
 │       ├── customer-providers-page.test.js
 │       ├── customer-request-create.test.js
 │       ├── customer-routing-session.test.js
@@ -599,6 +612,7 @@ hansalhlak/
 │       ├── responsive-audit.test.js
 │       ├── responsive-sweep-regression.test.js
 │       ├── reviews-management.test.js
+│       ├── round5-features.test.js
 │       ├── security.test.js
 │       ├── service-worker-precache.test.js
 │       ├── services-management.test.js
@@ -614,6 +628,7 @@ hansalhlak/
 │       ├── tree.test.js
 │       ├── ui-adapter-integration.test.js
 │       ├── ui-kit.test.js
+│       ├── ui-round3.test.js
 │       ├── upfront-pricing.test.js
 │       └── workforce.test.js
 ├── _redirects

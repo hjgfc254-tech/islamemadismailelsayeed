@@ -42,6 +42,48 @@ const WZ_STEPS11 = [
   'المراجعة',
   'التأكيد'
 ];
+/* Steps with nothing to ask are skipped forward (Back still returns through the history): the specialist questions
+   when the chosen problem has none, and contact details when the signed-in customer's are already valid. The review
+   step shows both with an «edit» link. */
+function wzSkip(n){
+  if (!WZ) return n;
+  const skippable = s => (s === 3 && !CAT.questionsFor(WZ.item, WZ.unknown ? '' : WZ.problem).length) || (s === 8 && !wzCheckStep(8));
+  while (n < 9 && skippable(n)) n++;
+  return n;
+}
+/* Map pin picker: Leaflet (vendored, loaded on first use) + OpenStreetMap tiles (free; attribution shown).
+   Tap or drag the pin; «تأكيد» stores {lat,lng} on the request address (the provider sees it only after accepting). */
+let wzMapPick = null, wzLeaflet = null;
+function wzLoadLeaflet(){
+  if (wzLeaflet) return wzLeaflet;
+  const base = '../../assets/vendor/leaflet/1.9.4/';
+  wzLeaflet = new Promise((resolve, reject) => {
+    if (typeof L !== 'undefined' && L.map) return resolve(L);
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = base + 'leaflet.css'; document.head.appendChild(css);
+    const s = document.createElement('script'); s.src = base + 'leaflet.js'; s.onload = () => resolve(window.L); s.onerror = () => { wzLeaflet = null; reject(new Error('map')); };
+    document.head.appendChild(s);
+  });
+  return wzLeaflet;
+}
+function wzOpenMap(){
+  if (!WZ || typeof sheet !== 'function') return;
+  const start = WZ.address.geo || { lat: 30.0444, lng: 31.2357 };
+  wzMapPick = { lat: start.lat, lng: start.lng };
+  sheet(`<h4>${safeIc('pin')} حدد مكانك على الخريطة</h4><div class="sub">اضغط على المكان أو اسحب العلامة. ده بيساعد الفني يوصلك أسرع.</div>
+    <div id="wz-map" class="wz-map" role="application" aria-label="خريطة لتحديد المكان"></div>
+    <button type="button" class="cta" data-act="wzMapOk">${safeIc('check')} تأكيد المكان</button>`);
+  wzLoadLeaflet().then(Lf => {
+    const el = document.getElementById('wz-map'); if (!el) return;
+    const map = Lf.map(el, { zoomControl: true, attributionControl: true }).setView([start.lat, start.lng], WZ.address.geo ? 17 : 12);
+    Lf.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+    Lf.Icon.Default.imagePath = '../../assets/vendor/leaflet/1.9.4/images/';
+    const pin = Lf.marker([start.lat, start.lng], { draggable: true, keyboard: true, title: 'مكان الخدمة' }).addTo(map);
+    const set = ll => { wzMapPick = { lat: ll.lat, lng: ll.lng }; pin.setLatLng(ll); };
+    pin.on('dragend', () => set(pin.getLatLng()));
+    map.on('click', e => set(e.latlng));
+    setTimeout(() => map.invalidateSize(), 150);
+  }).catch(() => { const el = document.getElementById('wz-map'); if (el) el.innerHTML = '<p class="hint" style="padding:16px">تعذّر تحميل الخريطة — استخدم «موقعي الحالي» أو اكتب العنوان.</p>'; });
+}
 const UNKNOWN_TXT = 'مش عارف أحدد المشكلة — محتاج فني يفحصها';
 
 /* ═════════ حالة النموذج ═════════ */
@@ -76,6 +118,13 @@ function wzNew(cat, itemId, desc){
     done: null,
     __reviewView: 'grid'
   };
+  /* the default saved address (or the only one) is pre-filled: the location step becomes a one-tap confirmation */
+  try {
+    const me = typeof HSCustomerSession !== 'undefined' && HSCustomerSession.customer ? HSCustomerSession.customer() : null;
+    const list = me && typeof MP !== 'undefined' && MP.addressesFor ? MP.addressesFor(me.id) : [];
+    const a = list.find(x => x.default) || (list.length === 1 ? list[0] : null);
+    if (a) w.address = { id: a.id, label: a.label, gov: a.gov, area: a.area, addr: a.addr, detail: a.detail, type: a.type, save: true, default: !!a.default, geo: a.geo || null };
+  } catch {}
   if (cat && CAT.category(cat) && CAT.category(cat).active) {
     w.cat = cat; w.step = 1;
     const it = itemId && (CAT.item(itemId) || CAT.item(cat + '/' + itemId));
@@ -391,7 +440,8 @@ Object.assign(screens, {
 
     /* 1 — الجهاز/نوع العمل */
     if (w.step === 1) {
-      body = crumbHtml(w) + `<div class="cgrid" role="group" aria-label="اختيار الجهاز أو نوع العمل">${CAT.items(w.cat).map(i => `
+      const nItems = CAT.items(w.cat).length;
+      body = crumbHtml(w) + `<div class="cat-hero">${safeIcp(safeIcSec(c.icon), 'dev')}<div><b>${_esc(c.name)}</b><small>${nItems} ${nItems > 10 ? 'خدمة' : 'خدمات'} متاحة<span class="tfrom" data-from-cat="${_esc(c.id)}" hidden></span></small></div></div>` + `<div class="cgrid" role="group" aria-label="اختيار الجهاز أو نوع العمل">${CAT.items(w.cat).map(i => `
         <button type="button" class="icard glass neon ${i.id===w.item?'sel':''}" data-wz-item="${i.id}" aria-pressed="${i.id===w.item}">
           ${safeIcp(safeIcItem(i, c.id), 'dev')}<span>${_esc(i.name)}</span>
         </button>`).join('')}</div>`;
@@ -466,13 +516,19 @@ Object.assign(screens, {
         <label class="hint" style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" id="wz-save-addr" ${w.address.save?'checked':''} style="width:auto"> احفظ هذا العنوان لاستخدامه لاحقًا</label>
         <label class="hint" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="wz-default-addr" ${w.address.default?'checked':''} style="width:auto"> اجعله العنوان الافتراضي</label>
         <button type="button" class="cta ghost" style="margin-top:8px;min-height:46px" data-act="wzGeo">${safeIc('pin')} ${w.address.geo ? 'تم تحديد موقعك' : 'استخدم موقعي الحالي (بموافقتك)'}</button>
+        <button type="button" class="cta ghost" style="margin-top:8px;min-height:46px" data-act="wzMap">${safeIc('search')} ${w.address.geo ? 'عدّل المكان على الخريطة' : 'حدد المكان على الخريطة'}</button>
       </div>`;
     }
 
     /* 7 — الموعد */
     if (w.step === 7) {
       const s = w.schedule;
+      const isoIn = n => { const d = new Date(); d.setDate(d.getDate() + n); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+      const QUICK = [new Date().getHours() < 17 ? ['النهارده بالليل', isoIn(0) + '|evening'] : null, ['بكرة الصبح', isoIn(1) + '|morning'], ['بكرة الضهر', isoIn(1) + '|noon'], ['بكرة بالليل', isoIn(1) + '|evening'], ['أقرب وقت (مرن)', 'flex']].filter(Boolean);
+      const qOn = v => v === 'flex' ? s.flexible : (!s.flexible && v === s.date + '|' + s.period);
+      const quickHtml = `<div class="chips quick-when" role="group" aria-label="اختيار سريع للموعد">${QUICK.map(([l, v]) => `<button type="button" class="chip ${qOn(v) ? 'on' : ''}" data-wz-quick="${v}" aria-pressed="${qOn(v)}">${_esc(l)}</button>`).join('')}</div>`;
       body = `<div class="form">
+        ${quickHtml}
         <label class="hint" style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><input type="checkbox" id="wz-flexible" ${s.flexible?'checked':''} style="width:auto"> موعد مرن (سأتفق مع الفني)</label>
         <div id="wz-date-wrap" style="${s.flexible ? 'display:none' : ''}">
           <label for="wz-date-input">اليوم المفضل *</label>
@@ -532,6 +588,7 @@ Object.assign(screens, {
         <div class="pc-body"><small>سعر الخدمة</small><b class="pc-amount"><span class="sk sk-line w40"></span></b><span class="pc-note"><span class="pc-lock">${safeIc('shield')}</span><span class="pc-text">جارٍ حساب السعر…</span></span></div>
       </div>
       ${CAT.needsVisit(w.item, w.unknown ? '' : w.problem) ? `<div class="need">${safeIc('info')}<span>الفني سيعاين المشكلة أولًا ثم يحدد التكلفة النهائية.</span></div>` : ''}
+      <div class="promo-field"><label for="wz-promo">كود خصم أو كود دعوة (اختياري)</label><input id="wz-promo" value="${_esc(w.promo || '')}" maxlength="16" autocomplete="off" autocapitalize="characters" dir="ltr" placeholder="مثال: RAMADAN"><small>الخصم بيتحسب على المبلغ لما الخدمة تخلص.</small></div>
       ${(typeof HSFirebaseConfig !== 'undefined' && HSFirebaseConfig.mode === 'firebase') ? '' : `<div class="demo-banner">${safeIc('info')}<span>وضع العرض التجريبي — الطلب يُحفظ محليًا ولا يُرسل لفنيين حقيقيين.</span></div>`}`;
     }
 
@@ -572,16 +629,20 @@ Object.assign(screens, {
         : `<button type="button" class="cta ghost" style="margin:0" data-act="wzPrev">رجوع</button>`;
       /* خطوة 0 لها زر رجوع للمتصفح فقط */
       if (w.step === 0) {
-        nav = `<div class="row2" style="margin-top:14px"><button type="button" class="cta" style="margin:0" data-act="wzNext" ${!w.cat?'disabled':''}>التالي</button></div>`;
+        nav = `<div class="row2 wz-nav" style="margin-top:14px"><button type="button" class="cta" style="margin:0" data-act="wzNext" ${!w.cat?'disabled':''}>التالي</button></div>`;
       } else {
-        nav = `<div class="row2" style="margin-top:14px">${nextBtn}${backBtn}</div>`;
+        nav = `<div class="row2 wz-nav" style="margin-top:14px">${nextBtn}${backBtn}</div>`;
       }
     }
 
     /* حفظ أي حالة عرض */
     const wzHead = hasUI() ? (typeof head === 'function' ? head(w.step === 10 ? 'تأكيد الطلب' : 'طلب خدمة', w.step < 10) : '') : '';
     const stepHeading = w.step < 10 ? `<h1 class="wz-a11y-heading" tabindex="-1" data-wz-heading>${_esc(WZ_STEPS11[w.step])}</h1>` : `<h1 class="wz-a11y-heading" tabindex="-1" data-wz-heading>تم إرسال الطلب بنجاح</h1>`;
-    return `<div class="screen">${wzHead}${stepHeading}${w.step < 10 ? wzProgressBar(w.step) : ''}${body}<p id="wz-validation-error" class="wz-validation-error" role="alert" aria-live="assertive" hidden></p>${nav}</div>`;
+    /* desktop: a live summary of the choices so far beside the step (hidden on phones) */
+    const it2 = w.item && CAT.item(w.item), c2 = w.cat && CAT.category(w.cat), pr2 = !w.unknown && w.problem && CAT.problem ? CAT.problem(w.problem) : null;
+    const sumRows = [['القسم', c2 && c2.name], ['الجهاز / العمل', it2 && it2.name], ['المشكلة', w.unknown ? 'تحتاج فحص' : pr2 && pr2.name], ['العنوان', [w.address.gov, w.address.area].filter(Boolean).join(' — ')], ['الموعد', w.schedule.date ? (w.schedule.date + (w.schedule.period ? ' • ' + ({ morning: 'صباحًا', noon: 'ظهرًا', evening: 'مساءً' })[w.schedule.period] : '')) : (w.schedule.flexible ? 'مرن' : '')]].filter(r => r[1]);
+    const aside = w.step > 0 && w.step < 10 && sumRows.length ? `<aside class="wz-summary" aria-label="ملخص طلبك"><b>ملخص طلبك</b><dl>${sumRows.map(([k, v]) => `<div><dt>${k}</dt><dd>${_esc(v)}</dd></div>`).join('')}</dl></aside>` : '';
+    return `<div class="screen wz-screen">${wzHead}${stepHeading}${w.step < 10 ? wzProgressBar(w.step) : ''}<div class="wz-layout"><div class="wz-main">${body}<p id="wz-validation-error" class="wz-validation-error" role="alert" aria-live="assertive" hidden></p>${nav}</div>${aside}</div></div>`;
   }
 });
 
@@ -705,7 +766,9 @@ async function wzSubmit(){
       flexible: !!w.schedule.flexible, whenNote: w.schedule.whenNote,
       phone: w.contact.phone.trim(), name: w.contact.name.trim(),
       contactMethod: w.contact.method,
-      addressId: addressId
+      addressId: addressId,
+      promo: (() => { try { const el = document.getElementById('wz-promo'); const v = el ? el.value : (w.promo || ''); w.promo = String(v || '').trim().toUpperCase(); return w.promo || undefined; } catch { return w.promo || undefined; } })(),
+      packageId: w.packageId || undefined
     };
 
     const created = await HSOrdersApi.create(reqPayload);
@@ -748,7 +811,7 @@ function wzQueueDraftSave(){
 
 /* ═════════ معالجة النقرات ═════════ */
 document.addEventListener('click', e => {
-  const t = e.target.closest('[data-wz-cat],[data-wz-item],[data-wz-prob],[data-wz-unknown],[data-wz-sugg],[data-wz-edit],[data-wz-go],[data-wz-rm],[data-wz-hit],[data-wz-date],[data-wz-period],[data-wz-addr-pick],[data-wz-att-rm],[data-act^="wz"]');
+  const t = e.target.closest('[data-wz-cat],[data-wz-item],[data-wz-prob],[data-wz-unknown],[data-wz-sugg],[data-wz-edit],[data-wz-go],[data-wz-rm],[data-wz-hit],[data-wz-date],[data-wz-period],[data-wz-quick],[data-wz-addr-pick],[data-wz-att-rm],[data-act^="wz"]');
   if (!t) return;
   const d = t.dataset;
   const stop = () => { e.stopImmediatePropagation(); e.preventDefault(); };
@@ -770,9 +833,9 @@ document.addEventListener('click', e => {
     return;
   }
   if (!WZ && !['wzResume','wzDiscardDraft'].includes(d.act)) return;
-  if (!/^(wz|wzAdd|wzSubmit|wzPrev|wzNext|wzTrack|wzGeo|wzAddPhoto|wzAddVideo|wzResume|wzDiscardDraft)$/.test(d.act || '')) {
+  if (!/^(wz|wzAdd|wzSubmit|wzPrev|wzNext|wzTrack|wzGeo|wzMap|wzMapOk|wzAddPhoto|wzAddVideo|wzResume|wzDiscardDraft)$/.test(d.act || '')) {
     /* ليست من صلاحيتنا (قد تكون من market-ui أو غيره) */
-    if (!t.matches('[data-wz-cat],[data-wz-item],[data-wz-prob],[data-wz-unknown],[data-wz-sugg],[data-wz-edit],[data-wz-go],[data-wz-date],[data-wz-period],[data-wz-addr-pick],[data-wz-att-rm]')) return;
+    if (!t.matches('[data-wz-cat],[data-wz-item],[data-wz-prob],[data-wz-unknown],[data-wz-sugg],[data-wz-edit],[data-wz-go],[data-wz-date],[data-wz-period],[data-wz-quick],[data-wz-addr-pick],[data-wz-att-rm]')) return;
   }
   stop();
   if (WZ) { wzClearValidationError(); wzSaveFields(); }
@@ -792,21 +855,22 @@ document.addEventListener('click', e => {
     }
     return wzGo(2);
   }
-  if (d.wzProb) { WZ.problem = d.wzProb; WZ.unknown = false; return wzGo(3); }
-  if ('wzUnknown' in d) { WZ.unknown = true; WZ.problem = ''; return wzGo(3); }
+  if (d.wzProb) { WZ.problem = d.wzProb; WZ.unknown = false; return wzGo(wzSkip(3)); }
+  if ('wzUnknown' in d) { WZ.unknown = true; WZ.problem = ''; return wzGo(wzSkip(3)); }
   if (d.wzSugg) { WZ.desc = d.wzSugg; return show('wizard'); }
   if ('wzEdit' in d) return wzGo(+d.wzEdit);
   if ('wzGo' in d) return wzGo(+d.wzGo);
   if ('wzRm' in d) { WZ.attachments.splice(+d.wzRm, 1); return show('wizard'); }
   if (d.wzDate) { WZ.schedule.date = d.wzDate; return show('wizard'); }
   if (d.wzPeriod) { WZ.schedule.period = d.wzPeriod; return show('wizard'); }
+  if (d.wzQuick) { if (d.wzQuick === 'flex') WZ.schedule.flexible = true; else { const [dt, per] = d.wzQuick.split('|'); WZ.schedule.flexible = false; WZ.schedule.date = dt; WZ.schedule.period = per; } return show('wizard'); }
   if (d.wzAddrPick) {
     try {
       const a = MP.db().addresses.find(x => x.id === d.wzAddrPick);
       if (a) {
         WZ.address = {
           id: a.id, label: a.label, gov: a.gov, area: a.area, addr: a.addr,
-          detail: a.detail, type: a.type, save: true, default: !!a.default, geo: null
+          detail: a.detail, type: a.type, save: true, default: !!a.default, geo: a.geo || null
         };
         show('wizard');
       }
@@ -844,7 +908,7 @@ document.addEventListener('click', e => {
       const m = wzCheckStep(WZ.step);
       if (m) return wzReportValidationError(m);
       wzSaveDraft();
-      wzGo(WZ.step + 1);
+      wzGo(wzSkip(WZ.step + 1));
       break;
     }
     case 'wzPrev': {
@@ -855,6 +919,14 @@ document.addEventListener('click', e => {
       } else if (hasUI()) {
         history.back();
       }
+      break;
+    }
+    case 'wzMap': { wzOpenMap(); break; }
+    case 'wzMapOk': {
+      if (WZ && wzMapPick) { WZ.address.geo = { lat: +wzMapPick.lat.toFixed(6), lng: +wzMapPick.lng.toFixed(6) }; wzSaveDraft(); }
+      if (typeof closeSheet === 'function') closeSheet(true);
+      if (hasUI()) show('wizard');
+      toast('تم تحديد المكان على الخريطة', 'success');
       break;
     }
     case 'wzGeo': {

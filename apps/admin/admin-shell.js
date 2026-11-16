@@ -114,6 +114,7 @@
     <button type="button" class="adm-btn adm-toggle" id="adm-toggle" aria-controls="adm-side" aria-expanded="false" aria-label="فتح القائمة">${icon('menu')}</button>
     <a class="adm-brand" href="#/${DEFAULT_ROUTE}" aria-label="مركز الإدارة — هنصلحلك"><span class="adm-brand-t">هنصلحلك</span><small>مركز الإدارة</small></a>
     ${firebaseMode() ? '' : '<span class="adm-chip" role="note">واجهة تجريبية</span>'}
+    <button type="button" class="adm-btn adm-search-btn" data-adm-palette aria-label="بحث سريع (Ctrl+K)" aria-keyshortcuts="Control+K">${icon('search')}<span>بحث سريع</span><kbd>Ctrl K</kbd></button>
     <div class="adm-account" id="adm-account" hidden></div>
     <a class="adm-btn adm-site" href="../customer/index.html">العودة للموقع</a>
   </header>

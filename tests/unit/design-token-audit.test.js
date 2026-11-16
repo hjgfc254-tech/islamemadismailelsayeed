@@ -7,7 +7,11 @@ const path = require('node:path');
 const { scanProjectStyles } = require('../helpers/design-token-audit');
 
 const ROOT = path.resolve(__dirname, '../..');
-const ADMIN_HARDCODED_BASELINE = 163;
+/* 163 → 173 (2026-11-16, explicit audit): the dashboard trend charts and the Ctrl+K quick search use design tokens for all
+   colours, spacing, type and radii; the 10 remaining literals are layout dimensions with no token equivalent
+   (chart plot height 9rem, chart column min 22rem, dialog width 35rem / 92vw, list max-height 26rem / 55vh, input
+   height 3.4rem, label min-width 4rem, the 700px breakpoint and the 2px bar gap from the dataviz mark spec). */
+const ADMIN_HARDCODED_BASELINE = 173;
 
 test('the live shared design-system stylesheet is loaded by Admin and Customer', () => {
   const admin = fs.readFileSync(path.join(ROOT, 'apps/admin/index.html'), 'utf8');
