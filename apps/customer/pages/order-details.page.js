@@ -12,6 +12,7 @@
     const {id,MP,head,demoBanner,uiOfflineIfNeeded,uiEmpty,esc,ic,icStatus,STATUS_LABEL,money,fmtDT,statusTimeline,uiSuccess,starsHtml}=ctx;
 
     const r = MP.get('serviceRequests', id);
+    if (!r && ctx.loading) return `<div class="screen">${head('متابعة الطلب', true)}<div aria-busy="true" aria-label="جارٍ تحميل الطلب"><div class="sk sk-bar"></div><div class="sk-card"><span class="sk sk-line w60"></span><span class="sk sk-line w80"></span><span class="sk sk-line w40"></span></div><div class="sk-card"><span class="sk sk-line w80"></span><span class="sk sk-line w60"></span></div></div></div>`;
     if (!r) return `<div class="screen">${head('متابعة الطلب', true)}${uiEmpty('list','الطلب غير موجود')}</div>`;
     const p = MP.providerOf(id);
     const as = MP.activeAssignment(id);
@@ -46,11 +47,18 @@
       ? `<div class="need warn">${ic('st-cancelled')}<span>${STATUS_LABEL.cancelled}${r.cancelReason?` — ${esc(r.cancelReason)}`:''}</span></div>`
       : `<div class="need">${ic(icStatus(r.status),'live')}<span><b>${STATUS_LABEL[r.status]||''}</b></span></div>`;
 
+    /* مراحل الطلب (شريط مرئي مختصر فوق السجل الزمني التفصيلي) */
+    const STAGES = [['استلمنا طلبك','st-new',['received','searching','sent']],['تم القبول','st-accepted',['accepted','scheduled']],['في الطريق','st-enroute',['enroute']],['جاري التنفيذ','st-working',['arrived','started','quote']],['تم','st-done',['completed','closed']]];
+    const stageNow = STAGES.findIndex(s => s[2].includes(r.status));
+    const journey = (cancelled || failed || stageNow < 0) ? '' : `<ol class="journey" aria-label="مراحل الطلب — المرحلة الحالية: ${STAGES[stageNow][0]}">${STAGES.map((s,i)=>`<li class="${i<stageNow?'is-done':i===stageNow?'is-now':''}"><i>${ic(i<stageNow?'tick':s[1])}</i><span>${s[0]}</span></li>`).join('')}</ol>`;
+
     /* بيانات المزود / البحث */
+    const rating = p && Number(p.rating) > 0 ? Number(p.rating) : 0;
     const providerBlock = p
-      ? `<div class="prov-inline glass neon">
+      ? `<div class="prov-inline prov-card glass neon">
           <div class="prov-avatar" aria-hidden="true" style="background:${p.avatar||'#FF3D8F'}">${esc((p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>
-          <div class="prov-head"><b>${esc(p.name)}</b><small>${p.cats.map(c=>MP.catName(c)).join('، ')}${p.demo?' • محاكاة':''}</small></div>
+          <div class="prov-head"><b>${esc(p.name)}${p.status==='approved'?` <span class="verified">${ic('shield')} موثّق</span>`:''}</b><small>${p.cats.map(c=>MP.catName(c)).join('، ')}${p.demo?' • محاكاة':''}</small>
+            ${rating || p.jobs ? `<small class="prov-stats">${rating?`${starsHtml(rating)} <b>${rating.toFixed(1)}</b>`:''}${rating && p.jobs?' • ':''}${p.jobs?`${esc(p.jobs)} خدمة منجزة`:''}</small>`:''}</div>
           <button class="tag" data-provider-details="${esc(p.id)}">${ic('info')} التفاصيل</button>
         </div>`
       : as
@@ -145,6 +153,7 @@
 
     return `<div class="screen">${head('متابعة الطلب #'+esc(r.no), true)}${demoBanner()}
       ${uiOfflineIfNeeded()}
+      ${journey}
       ${statusBar}
       <div class="need tracking-next">${ic('info')}<span><b>الخطوة التالية</b><br>${esc(nextStepCopy)}</span></div>
       ${providerBlock}

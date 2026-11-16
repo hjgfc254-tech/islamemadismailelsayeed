@@ -41,6 +41,8 @@ const backend = {
   },
   async revokeSessions(uid) { await admin.auth().revokeRefreshTokens(uid); },
   async deleteDoc(p) { await fs.doc(p).delete(); },
+  /** Public RTDB value (rules: read-only to clients), e.g. public/content {v, at} for live site-content updates. */
+  async setPublic(p, value) { await admin.database().ref(p).set(value); },
   log: (msg, detail) => logger.warn(msg, { detail }),
   /** FCM web push, data-only (the service worker renders it). Returns tokens FCM reports as dead, for cleanup. */
   async sendPush(tokens, msg) {

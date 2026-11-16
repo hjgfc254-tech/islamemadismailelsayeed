@@ -27,7 +27,8 @@ hansalhlak/
 │   │   │   │   ├── employee-invitation.js
 │   │   │   │   └── employee-status.js
 │   │   │   ├── admin-live-panels.js
-│   │   │   └── admin-live.js
+│   │   │   ├── admin-live.js
+│   │   │   └── site-content-editor.js
 │   │   ├── pages/
 │   │   │   ├── admin-dashboard.page.js
 │   │   │   ├── audit-log.page.js
@@ -425,6 +426,7 @@ hansalhlak/
 │   │   └── manifest.json
 │   ├── src/
 │   │   ├── admin-extra.js
+│   │   ├── content.js
 │   │   ├── identity.js
 │   │   ├── limits.js
 │   │   ├── partial.js
@@ -481,6 +483,8 @@ hansalhlak/
 │   │   ├── feature-flags.js
 │   │   ├── legacy-data.js
 │   │   └── routes.js
+│   ├── content/
+│   │   └── site-content.js
 │   ├── design-system/
 │   │   ├── components.css
 │   │   ├── design-system.css
@@ -602,6 +606,7 @@ hansalhlak/
 │       ├── settlements.test.js
 │       ├── shared-components.test.js
 │       ├── shared-foundations.test.js
+│       ├── site-content.test.js
 │       ├── static-audit.test.js
 │       ├── status-badge.test.js
 │       ├── super-dashboard.test.js

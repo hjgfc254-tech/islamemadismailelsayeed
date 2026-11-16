@@ -12,7 +12,9 @@
   const domain = root.HSProviderDomain;
   const currentProvider = () => { const id=session.currentId(); return id ? MP.get('providers',id) : null; };
   const providerGroups = p => domain.groupAssignments(MP.db(),p.id);
-  const toast = message => { dom.toast.textContent=message; dom.toast.classList.add('is-visible'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>dom.toast.classList.remove('is-visible'),2400); };
+  /* type (success|error|warn|info) inferred from the wording; plain text stays the accessible message, CSS adds the glyph */
+  const toastType = m => /^(تعذّر|تعذر|خطأ|فشل|لا يمكن)/.test(m) ? 'error' : /^(اختر|اكتب|أدخل|يرجى)/.test(m) ? 'warn' : /^(تم|شكرًا|أهلاً)/.test(m) ? 'success' : 'info';
+  const toast = message => { const ty=toastType(String(message||'')); dom.toast.textContent=message; try{dom.toast.setAttribute('data-type',ty);}catch(e){} dom.toast.classList.add('is-visible'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>dom.toast.classList.remove('is-visible'),ty==='error'?3600:2400); };
   const STALE = 'تعذر تنفيذ الإجراء؛ تغيرت حالة الطلب. تم تحديث العرض.';
   const BASE_TITLE = 'مساحة مقدم الخدمة | هنصلحلك';
   let lastRouteKey = null, formTrigger = null;
@@ -114,9 +116,13 @@
         if(r.status==='started'&&!(quote&&['pending','approved'].includes(quote.status))&&fs!=='declined') actions.push(`<button class="pv-btn" data-pv-action="free" data-id="${esc(r.id)}">تنفيذ كخدمة مجانية</button>`);
       }
     }
+    /* five-stage progress of an accepted job (same stages the customer sees) */
+    const PV_STAGES=['مقبول','موعد مؤكد','في الطريق','جاري التنفيذ','تم'];
+    const pvStage=({accepted:0,scheduled:1,enroute:2,arrived:3,started:3,quote:3,completed:4,closed:4})[r.status];
+    const journey=a.status==='accepted'&&pvStage!==undefined?`<ol class="pv-journey" aria-label="مراحل الشغل — الحالية: ${PV_STAGES[pvStage]}">${PV_STAGES.map((l,i)=>`<li class="${i<pvStage?'is-done':i===pvStage?'is-now':''}"><i aria-hidden="true"></i><span>${l}</span></li>`).join('')}</ol>`:'';
     const freeNote=r.freeService?`<p class="pv-note">خدمة مجانية (${esc((MP.FREE_REASONS||{})[r.freeService.reason]||'')}): ${({proposed:'بانتظار موافقة العميل',accepted:'وافق العميل — نفّذ وسجّل الإكمال',declined:'رفض العميل؛ يمكن إرسال عرض سعر',completed:'اكتملت بلا مقابل'})[r.freeService.status]||''}</p>`:'';
     const address=a.status==='accepted'?`${esc(r.gov)} · ${esc(r.area)} · ${esc(r.addr)}`:`${esc(r.gov)} · ${esc(r.area)} — يظهر العنوان التفصيلي بعد قبول الطلب`;
-    return `<article class="pv-request"><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header><p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.pricing&&r.pricing.providerAmount!=null?`<p class="pv-note">مبلغك المحدد عند الحجز: <b>${money(r.pricing.providerAmount)}</b> — يدفع العميل ${money(r.pricing.customerPrice)} شاملًا رسوم المنصة</p>`:''}${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}<div class="pv-actions"><button class="pv-btn" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">عرض التفاصيل</button>${actions.join('')}</div>${locPanel(r,a)}</article>`;
+    return `<article class="pv-request"><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header>${journey}<p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.pricing&&r.pricing.providerAmount!=null?`<p class="pv-note">مبلغك المحدد عند الحجز: <b>${money(r.pricing.providerAmount)}</b> — يدفع العميل ${money(r.pricing.customerPrice)} شاملًا رسوم المنصة</p>`:''}${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}<div class="pv-actions"><button class="pv-btn" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">عرض التفاصيل</button>${actions.join('')}</div>${locPanel(r,a)}</article>`;
   }
 
   function sectionFor(page,p,groups,transactions) {

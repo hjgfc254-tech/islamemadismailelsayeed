@@ -20,6 +20,8 @@ const { normalizePhone, APPS } = require('./identity');
 const { scopeFor, customerRequestView, customerQuote } = require('./scope');
 const workforce = require('./workforce');
 const adminExtra = require('./admin-extra');
+const content = require('./content');
+const { invalidateShared } = require('./partial');
 
 const METHODS = ['GET', 'POST', 'PATCH', 'DELETE'];
 const WRITE_LIMIT_PER_MIN = 60;
@@ -40,7 +42,9 @@ function validateApi(data) {
   if (!p || !p.startsWith('/') || p.includes('..')) fail('invalid-argument', 'invalid path');
   const query = d.query && typeof d.query === 'object' ? d.query : {};
   const body = d.body && typeof d.body === 'object' ? d.body : {};
-  if (JSON.stringify(body).length > 100000) fail('invalid-argument', 'request body too large');
+  /* image uploads (Admin site content) carry one compressed image; everything else stays small */
+  const maxBody = app === 'admin' && method === 'POST' && p === '/admin/media' ? 410000 : 100000;
+  if (JSON.stringify(body).length > maxBody) fail('invalid-argument', 'request body too large');
   const idem = d.idempotencyKey == null ? null : (/^[\w-]{8,80}$/.test(String(d.idempotencyKey)) ? String(d.idempotencyKey) : fail('invalid-argument', 'invalid idempotencyKey'));
   return { app, method, path: p, query, body, idem };
 }
@@ -215,6 +219,12 @@ async function api(backend, { auth, data }) {
     }
     const ld = new PartialDb(backend.adapter, tx);
     const actor = await loadActor(ld, token, req.app, admin);
+    if (content.PATH_RE.test(req.path)) {
+      if (!actor || actor.role !== 'admin') return { envelope: { ok: false, status: actor ? 403 : 401, error: { code: actor ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } }, changes: {}, actor };
+      const envelope = await content.handle({ backend, tx, method: req.method, path: req.path, body: req.body, admin });
+      if (idemPath && !isRead) backend.adapter.set(tx, idemPath, { envelope, atMs: Date.now(), path: req.path, expiresAt: new Date(Date.now() + IDEMPOTENCY_TTL_MS) });
+      return { envelope, changes: envelope.ok && !isRead ? { admin: { set: [req.path], del: [] } } : {}, actor, db: {}, quiet: true, contentV: envelope.ok && envelope.data && envelope.data.v };   // audited; clients learn via public/content, no admin re-sync
+    }
     if (adminExtra.PATH_RE.test(req.path)) {
       if (!actor || actor.role !== 'admin') return { envelope: { ok: false, status: actor ? 403 : 401, error: { code: actor ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } }, changes: {}, actor };
       const envelope = await adminExtra.handle({ backend, tx, method: req.method, path: req.path, query: req.query, body: req.body, admin, token });
@@ -247,13 +257,20 @@ async function api(backend, { auth, data }) {
     return { envelope: res.envelope, changes, actor, db: res.db, reads: ld.reads };
   };
   const out = isRead ? await execute(null) : await backend.runTransaction(execute);
+  if (!isRead && out.envelope.ok && /^\/admin\/(settings|content|media)(\/|$)/.test(req.path)) {
+    invalidateShared(backend.adapter); content.invalidate(backend.adapter);     // system docs changed outside PartialDb.commit
+  }
+  if (out.contentV && backend.setPublic) {
+    try { await backend.setPublic('public/content', { v: out.contentV, at: Date.now() }); } catch (e) { if (backend.log) backend.log('content signal failed', e && e.message); }
+  }
   if (Object.keys(out.changes).length) {
     await backend.addDoc('audit', {
       at: new Date().toISOString(), uid: token ? token.uid : null, actor: out.actor ? { role: out.actor.role, id: out.actor.id, adminRole: out.actor.adminRole || null } : null,
       app: req.app, method: req.method, path: req.path, status: out.envelope.status,
       changes: Object.fromEntries(Object.entries(out.changes).map(([k, c]) => [k, { set: c.set.length, del: c.del.length }]))
     });
-    if (out.workforce) { const admins = await backend.queryDocs('admins', 'status', '==', 'active'); await backend.signal(admins.map(a => a.id)); }
+    if (out.quiet) { /* no change signals: site content travels on public/content */ }
+    else if (out.workforce) { const admins = await backend.queryDocs('admins', 'status', '==', 'active'); await backend.signal(admins.map(a => a.id)); }
     else await notifyChanges(backend, out.changes, out.db, token && token.uid);
   }
   return out.envelope;
@@ -325,6 +342,11 @@ async function session(backend, { auth, data }) {
       const actor = { role: 'customer', id: out.result.id, name: out.result.name };
       await linkUser(backend, token.uid, actor, 'customer');
       return { actor, db: scopeFor(out.db, actor) };
+    }
+    case 'content': {
+      /* public site content; only fetched when settings.contentV changes. `have`: media ids this device caches */
+      const have = Array.isArray(d.have) ? d.have.filter(x => typeof x === 'string').slice(0, 300) : [];
+      return content.publicContent(backend, have);
     }
     case 'registerPush': {
       /* a device's FCM token, bound to the signed-in uid (server-side only: clients cannot read or write pushTokens) */

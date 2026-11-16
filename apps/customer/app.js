@@ -177,7 +177,12 @@ const store = {
   set(k,v){ try{ localStorage.setItem('hs_'+k, JSON.stringify(v)); }catch{} }
 };
 let toastT;
-function toast(msg){ const t=$('#toast'); if(!t) return; t.textContent=msg; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2200); }
+/* toast(msg, type?): type success | error | warn | info — inferred from the wording when not given. The text stays
+   plain (textContent); colour and glyph come from CSS (data-type), so screen readers read only the message. */
+const TOAST_TYPE = m => /^(تعذّر|تعذر|خطأ|فشل|لا يمكن|غير مسموح)/.test(m) ? 'error'
+  : /^(اختر|اكتب|أدخل|رقم الهاتف غير|البريد|كلمة المرور|سجّل الدخول|يرجى)/.test(m) ? 'warn'
+  : /^(تم|شكرًا|شكرا|أهلاً|أهلا|تمام)/.test(m) ? 'success' : 'info';
+function toast(msg, type){ const t=$('#toast'); if(!t) return; t.textContent=msg; try { t.setAttribute('data-type', type || TOAST_TYPE(String(msg||''))); } catch {} t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'), (type||TOAST_TYPE(String(msg||'')))==='error' ? 3600 : 2400); }
 
 /* مفتاح مشكلة "قسم:رقم" — توافق خلفي فقط للمفضلة القديمة/الروابط القديمة */
 const getProb = key => {
@@ -220,24 +225,26 @@ const tiles = (small) => `<div class="grid fit">${HOME_ORDER.map(k=>tile(k,small
 const head = (title, back) => `<div class="dhead">${back?`<button class="back" data-back aria-label="رجوع">${ic('back')}</button>`:'<span></span>'}<h2 tabindex="-1">${title}</h2><span></span></div>`;
 
 /* ───────── الشرائح (كما في V6) ───────── */
+/* slides published from the Admin Center (HSSiteContent) replace the built-in GUIDES; action: wizard|services|orders|none */
+const slideList = () => { const s = globalThis.HSSiteContent && HSSiteContent.slides(); return s && s.length ? s : GUIDES; };
 const discover = () => `
 <section class="disc" aria-labelledby="discT">
   <h2 class="sec-title" id="discT">${ic('sparkle')}اكتشف خدمات هنصلحلك</h2>
   <div class="car" id="car" tabindex="0" role="region" aria-roledescription="carousel" aria-label="اكتشف خدمات هنصلحلك">
     <div class="track" id="track">
-      ${GUIDES.map((g,i)=>`
-      <article class="slide s-${g.id} ${g.img?'has-img':'no-img'}" id="guide-slide-${g.id}" role="group" aria-roledescription="slide" aria-label="${i+1} من ${GUIDES.length}" aria-labelledby="guide-tab-${g.id}">
+      ${slideList().map((g,i,L)=>`
+      <article class="slide s-${g.id} ${g.img?'has-img':'no-img'}" id="guide-slide-${g.id}" role="group" aria-roledescription="slide" aria-label="${i+1} من ${L.length}" aria-labelledby="guide-tab-${g.id}">
         ${g.img ? `<img class="s-img" src="${g.img}" alt="" decoding="async" draggable="false" ${i?'loading="lazy"':''} onerror="this.remove()">
         <div class="s-shade"></div>` : `<div class="s-art" aria-hidden="true"><span class="s-num">${String(i+1).padStart(2,'0')}</span><span class="s-ic">${ic(g.icon||'sparkle')}</span></div>`}
         <div class="s-body">
-          <h3>${g.title}</h3>
-          <p>${g.desc}</p>
-          <button class="s-cta" data-act="slide" data-s="${g.id}">${g.cta} ${ic('chev')}</button>
+          <h3>${esc(g.title)}</h3>
+          <p>${esc(g.desc)}</p>
+          ${g.action ? (g.action !== 'none' && g.cta ? `<button class="s-cta" data-act="slideGo" data-to="${esc(g.action)}">${esc(g.cta)} ${ic('chev')}</button>` : '') : `<button class="s-cta" data-act="slide" data-s="${g.id}">${g.cta} ${ic('chev')}</button>`}
         </div>
       </article>`).join('')}
     </div>
   </div>
-  <div class="dots" id="dots" role="tablist" aria-label="مؤشر الشرائح">${GUIDES.map((g,i)=>`<button type="button" role="tab" id="guide-tab-${g.id}" aria-controls="guide-slide-${g.id}" class="${i?'':'on'}" data-dot="${i}" aria-label="${g.title}" aria-selected="${i?'false':'true'}"></button>`).join('')}</div>
+  <div class="dots" id="dots" role="tablist" aria-label="مؤشر الشرائح">${slideList().map((g,i)=>`<button type="button" role="tab" id="guide-tab-${g.id}" aria-controls="guide-slide-${g.id}" class="${i?'':'on'}" data-dot="${i}" aria-label="${g.title}" aria-selected="${i?'false':'true'}"></button>`).join('')}</div>
 </section>`;
 
 let carTimer = null;
@@ -575,7 +582,8 @@ const screens = {
       topbar, renderGreeting, renderDraftResume, ic, ART,
       renderQuickActions, renderActiveRequests, tiles,
       renderCommonProblems, renderRecentUsed, renderSavedAddresses,
-      renderFavorites, discover, renderServiceAreas
+      renderFavorites, discover, renderServiceAreas,
+      siteHero: (globalThis.HSSiteContent && HSSiteContent.hero()) || null, esc
     });
   },
 
@@ -896,10 +904,21 @@ function openTech(key){
 function openNotes(){
   const c = me(); if (!c) { sheet(`<h4>${ic('bell')} الإشعارات</h4><div class="empty" style="padding:24px">${ic('bell')}<p>سجّل بياناتك أولاً لعرض إشعاراتك</p></div>`); return; }
   /* Mark read through notifications-api (own inbox only); the header dot refreshes on the next screen render. */
+  /* read the list (with its unread state) BEFORE marking everything read; group Today / Earlier; a note about a
+     request opens that request */
+  const ns = MP.notesFor('customer:'+c.id).slice(0, 30).map(n => ({ ...n }));
   try { if (typeof HSNotificationsApi !== 'undefined') HSNotificationsApi.markAllRead(); } catch {}
-  const ns = MP.notesFor('customer:'+c.id).slice(0, 30);
+  const today = new Date().toDateString();
+  const isToday = n => { const d = new Date(n.at); return !Number.isNaN(d.getTime()) && d.toDateString() === today; };
+  const row = n => {
+    const inner = `${ic(n.reqId ? 'list' : 'bell')}<div><b>${esc(n.text)}</b><small>${fmtDT(n.at)}</small></div>${n.read ? '' : '<span class="note-dot" aria-label="جديد"></span>'}`;
+    return n.reqId ? `<button type="button" class="note ${n.read ? '' : 'unread'}" data-act="noteOpen" data-id="${esc(n.reqId)}">${inner}${ic('chev','chev')}</button>`
+                   : `<div class="note ${n.read ? '' : 'unread'}">${inner}</div>`;
+  };
+  const group = (title, list) => list.length ? `<div class="note-group">${title}</div>${list.map(row).join('')}` : '';
   sheet(`<h4>${ic('bell')} الإشعارات</h4><div class="sub">تحديثات طلباتك</div>
-    ${ns.length?ns.map(n=>`<div class="note">${ic('bell')}<div><b>${esc(n.text)}</b><small>${fmtDT(n.at)}</small></div></div>`).join(''):`<div class="empty" style="padding:24px">${ic('bell')}<p>لا توجد إشعارات بعد</p></div>`}`);
+    ${ns.length ? group('النهارده', ns.filter(isToday)) + group('قبل كده', ns.filter(n => !isToday(n)))
+      : `<div class="empty" style="padding:24px">${ic('bell')}<p>لا توجد إشعارات بعد</p><small>هنبلغك هنا بكل تحديث على طلباتك.</small></div>`}`);
 }
 
 function openMenu(){
@@ -992,6 +1011,8 @@ document.addEventListener('click', e => {
     case 'menu': openMenu(); break;
     case 'bell': openNotes(); break;
     case 'slide': openSlide(d.s); break;
+    case 'noteOpen': closeSheet(true); state.stack.push('track:'+d.id); history.pushState({tr:1}, ''); show('tracking', d.id); break;
+    case 'slideGo': if (d.to === 'wizard') startRequest(); else if (d.to === 'services') go('sections'); else if (d.to === 'orders') go('orders'); break;
     case 'about': toast('هنصلحلك — منصة تربطك بمقدم الخدمة المناسب'); break;
     case 'newReq': startRequest(); break;
     case 'homeSearchAll': { const qv = ($('#q')||{}).value; go('search', (qv||'').trim()); break; }
@@ -1057,19 +1078,30 @@ const Intro = (() => {
    قبلها كان أول عرض للرئيسية يجري قبل تعريفها فيفقد الترحيب والطلبات النشطة. */
 /* Another tab changed the shared store (e.g. the provider advanced this order): refresh live screens in place —
    keep scroll, never drop focus to <body>, announce politely — but never while a sheet/form is open. */
-function liveRefresh(){
+function liveRefresh(announce){
   const s = state.lastShown;
   if (!s || state.sheet || !['tracking','orders'].includes(s.name) || !screens[s.name]) return;
+  const wasLoading = !!view.querySelector('[aria-busy="true"]');
+  const html = screens[s.name](s.arg);
+  if (html === view.innerHTML) return;                       /* nothing changed for this screen: no flicker, no toast */
   const hadFocus = view.contains(document.activeElement), y = view.scrollTop;
-  view.innerHTML = screens[s.name](s.arg);
+  view.innerHTML = html;
   view.scrollTop = y;
   renderTabs();
   if (hadFocus) { const h = view.querySelector('.dhead h2'); if (h) { try { h.focus({preventScroll:true}); } catch { h.focus(); } } }
-  toast('تم تحديث بيانات الطلب');
+  if (announce && !wasLoading) toast('تم تحديث بيانات الطلب');   /* server syncs refresh silently; placeholders are replaced silently */
 }
 function boot(){
   if (typeof HSAuthApi !== 'undefined') HSAuthApi.useApp('customer');   /* API actor = the signed-in demo customer */
-  if (typeof HSRealtimeClient !== 'undefined') HSRealtimeClient.subscribe('market:changed', e => { if (e.source === 'storage') liveRefresh(); });
+  /* live screens follow changes from another tab (storage) and from the server (Firebase sync / RTDB signal) */
+  if (typeof HSRealtimeClient !== 'undefined') HSRealtimeClient.subscribe('market:changed', e => { if (e.source === 'storage' || e.source === 'firebase') liveRefresh(e.source === 'storage'); });
+  /* site content published from the Admin Center: refresh Home in place (keeps scroll; never interrupts a sheet) */
+  if (typeof addEventListener === 'function') addEventListener('hs:content', () => {
+    const s = state.lastShown;
+    if (!s || s.name !== 'home' || state.sheet || !screens.home) return;
+    const y = view.scrollTop; view.innerHTML = screens.home(); view.scrollTop = y;
+    try { initCarousel(); bindHomeSearch(); } catch {}
+  });
   if (!applyEntry(location.hash)) go('home');   /* رابط عميق مثل #/orders أو #/track/<id>؛ وإلا الرئيسية */
   Intro.init();
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {

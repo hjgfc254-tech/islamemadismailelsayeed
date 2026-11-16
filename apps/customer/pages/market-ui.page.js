@@ -44,11 +44,25 @@ if (typeof window !== 'undefined') {
 }
 
 /* ═════════ بطاقة طلب للعميل (تُستخدم في الطلبات/الرئيسية) ═════════ */
-const reqCard = x => `<button class="prow glass neon" data-track="${x.id}">
+/* V10: a mini five-stage progress line and a badge for what needs the customer now (same stages as tracking) */
+const STAGE_OF = { received:0, searching:0, sent:0, accepted:1, scheduled:1, enroute:2, arrived:3, started:3, quote:3, completed:4, closed:4 };
+function reqBadge(x) {
+  const q = MP.currentQuote ? MP.currentQuote(x.id) : null;
+  if ((q && q.status === 'pending') || (x.status === 'accepted' && x.proposal) || (x.freeService && x.freeService.status === 'proposed')) return ['محتاج قرارك', 'need'];
+  if (x.status === 'completed') return ['أكّد الإتمام', 'need'];
+  if (x.status === 'enroute') return ['في الطريق إليك', 'go'];
+  if (x.status === 'closed' && !(MP.db().reviews || []).some(v => v.reqId === x.id)) return ['قيّم الخدمة', 'rate'];
+  return null;
+}
+const reqCard = x => {
+  const st = STAGE_OF[x.status], badge = reqBadge(x);
+  const mini = st === undefined ? '' : `<span class="mj" aria-hidden="true">${[0,1,2,3,4].map(i => `<i class="${i < st ? 'd' : i === st ? 'n' : ''}"></i>`).join('')}</span>`;
+  return `<button class="prow glass neon" data-track="${x.id}">
   ${icp(icStatus(x.status),'st')}
-  <span class="tx">${esc(x.serviceName)}<small>#${x.no} • ${fmtDT(x.createdAt)}</small></span>
-  <span class="tag ${x.status==='cancelled'||x.status==='failed'?'warn':''}">${ic(icStatus(x.status))} ${STATUS_LABEL[x.status]||''}</span>
+  <span class="tx">${esc(x.serviceName)}<small>#${x.no} • ${fmtDT(x.createdAt)}</small>${mini}</span>
+  ${badge ? `<span class="rb rb-${badge[1]}">${badge[0]}</span>` : `<span class="tag ${x.status==='cancelled'||x.status==='failed'?'warn':''}">${ic(icStatus(x.status))} ${STATUS_LABEL[x.status]||''}</span>`}
 </button>`;
+};
 
 /* ═════════ عرض الحالة الحالية + المسار ═════════ */
 function statusTimeline(r){
@@ -90,7 +104,8 @@ Object.assign(screens, {
   tracking(id){
     return HSCustomerOrderDetailsPage.render({
       id, MP, head, demoBanner, uiOfflineIfNeeded, uiEmpty, esc, ic,
-      icStatus, STATUS_LABEL, money, fmtDT, statusTimeline, uiSuccess, starsHtml
+      icStatus, STATUS_LABEL, money, fmtDT, statusTimeline, uiSuccess, starsHtml,
+      loading: !!(globalThis.HSFirebaseConfig && HSFirebaseConfig.mode === 'firebase' && globalThis.HSBackend && !HSBackend.lastSync)
     });
   }
 });
@@ -112,6 +127,7 @@ document.addEventListener('click', e => {
   if (d.star) {
     document.querySelectorAll('#sheet [data-star]').forEach(b => { b.classList.toggle('on', +b.dataset.star <= +d.star); b.setAttribute('aria-pressed', String(+b.dataset.star === +d.star)); });
     const el = document.getElementById('rv-stars'); if (el) el.value = d.star;
+    const lbl = document.getElementById('rv-star-label'); if (lbl) lbl.textContent = RV_LABEL[+d.star] || '';
     return;
   }
   if (d.providerDetails) {
@@ -154,6 +170,7 @@ document.addEventListener('click', e => {
       askSheet({ id: d.id, kind: 'cancel', title: 'إلغاء الطلب', text: 'هل تريد إلغاء الطلب؟ لا يمكن التراجع.', reasonLabel: 'سبب الإلغاء (اختياري)', confirmLabel: 'تأكيد الإلغاء' });
       break;
     case 'rate': openRateSheet(d.id); break;
+    case 'rvDone': closeSheet(); break;
     case 'complain': openComplainSheet(d.id); break;
     case 'approveQuote':
       apiCall('approve:' + d.id, t, () => HSQuotesApi.approve(d.id), () => { show('tracking', d.id); toast('تمت الموافقة على السعر — سينفّذ مقدم الخدمة ثم يسجّل الإكمال'); });
@@ -258,11 +275,19 @@ function askSheet(o) {
 document.addEventListener('click', e => { if (e.target.closest('[data-act="askCancel"]')) closeSheet(); });
 
 /* ═════════ شيت التقييم (V7) ═════════ */
+const RV_TAGS = ['ملتزم بالموعد', 'شغله نضيف', 'أسعاره مناسبة', 'محترم في التعامل', 'سريع'];
+const RV_LABEL = ['اضغط على النجوم', 'ضعيف', 'مقبول', 'جيد', 'جيد جدًا', 'ممتاز'];
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-rv-tag]'); if (!t) return;
+  const on = t.getAttribute('aria-pressed') !== 'true'; t.setAttribute('aria-pressed', String(on)); t.classList.toggle('on', on);
+});
 function openRateSheet(reqId) {
   const r = MP.get('serviceRequests', reqId);
   if (!r) return;
   sheet(`<h4>${ic('medal')} قيّم مقدم الخدمة</h4><div class="sub">#${esc(r.no)} — ${esc(r.serviceName)}</div>
     <div class="stars-in" role="group" aria-label="عدد النجوم">${[1,2,3,4,5].map(n=>`<button type="button" data-star="${n}" aria-pressed="false" aria-label="${n} من 5 نجوم">${ic('star')}</button>`).join('')}</div>
+    <p class="rv-star-label" id="rv-star-label" aria-live="polite">اضغط على النجوم</p>
+    <div class="rv-tags" role="group" aria-label="اختيارات سريعة">${RV_TAGS.map(t=>`<button type="button" class="chip" data-rv-tag="${esc(t)}" aria-pressed="false">${esc(t)}</button>`).join('')}</div>
     <form class="form" id="rvForm" data-id="${reqId}"><input type="hidden" id="rv-stars" name="stars" value="0">
       <div><label for="rv-quality">جودة التنفيذ</label><select id="rv-quality" name="quality"><option>ممتازة</option><option>جيدة</option><option>مقبولة</option><option>ضعيفة</option></select></div>
       <div><label for="rv-comment">تعليق</label><textarea id="rv-comment" name="comment" placeholder="اكتب تجربتك (اختياري)" maxlength="500"></textarea></div>
@@ -317,11 +342,16 @@ document.addEventListener('submit', e => {
     const id = f.dataset.id;
     /* quality + photo attachment ids travel with the review (stored by the review route, local or Firebase) */
     const extra = { quality: d.get('quality') || undefined, attachments: _rvPhotos.map(x => x.id) };
-    apiCall('review:' + id, f.querySelector('[type=submit]'), () => HSOrdersApi.review(id, s, String(d.get('comment') || ''), extra), () => {
+    const tags = [...document.querySelectorAll('#sheet [data-rv-tag][aria-pressed="true"]')].map(b => b.dataset.rvTag);
+    const comment = [tags.join('، '), String(d.get('comment') || '').trim()].filter(Boolean).join(' — ').slice(0, 500);
+    apiCall('review:' + id, f.querySelector('[type=submit]'), () => HSOrdersApi.review(id, s, comment, extra), () => {
       _rvPhotos = [];
       closeSheet();
       show('tracking', id);
-      toast('شكرًا على تقييمك');
+      sheet(`<div class="done glass neon success-pop" role="status" aria-live="polite">
+        <svg class="success-check" viewBox="0 0 52 52" aria-hidden="true" focusable="false"><circle cx="26" cy="26" r="23"/><path d="M15.5 27.5l7 7 14-15"/></svg>
+        <h3>شكرًا على تقييمك</h3><p class="hint">رأيك بيساعد غيرك يختار الفني المناسب.</p>
+        <button type="button" class="cta" data-act="rvDone">تم</button></div>`);
     });
   }
   if (f.id === 'cmpForm') {
@@ -346,6 +376,7 @@ Object.assign(screens, {
     return HSCustomerOrdersPage.render({
       customer,
       orders: myReqs(),
+      loading: !!(globalThis.HSFirebaseConfig && HSFirebaseConfig.mode === 'firebase' && globalThis.HSBackend && !HSBackend.lastSync),
       filter: (typeof state !== 'undefined' && state.orderFilter) || 'active',
       head, demoBanner, offlineNotice: uiOfflineIfNeeded, empty: uiEmpty,
       buttonIcon: ic, requestCard: reqCard

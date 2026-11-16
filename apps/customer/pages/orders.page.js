@@ -16,6 +16,10 @@
     if(typeof head!=='function'||typeof demoBanner!=='function'||typeof offlineNotice!=='function'||typeof empty!=='function'||typeof buttonIcon!=='function'||typeof requestCard!=='function')
       throw new Error('HSCustomerOrdersPage: required renderer dependency missing');
     const all=(Array.isArray(orders)?orders:[]).slice().sort((a,b)=>new Date(b.createdAt||0)-new Date(a.createdAt||0));
+    /* first server sync still running: placeholder cards instead of a misleading «no orders» */
+    if(ctx.loading&&!all.length){
+      return `<div class="screen">${head('طلباتي')}<div class="plist" aria-busy="true" aria-label="جارٍ تحميل طلباتك">${'<div class="sk-card"><span class="sk sk-line w60"></span><span class="sk sk-line w40"></span><span class="sk sk-line w80"></span></div>'.repeat(3)}</div></div>`;
+    }
     if(!customer||!all.length){
       return `<div class="screen">${head('طلباتي')}${demoBanner()}${offlineNotice()}${empty('list','مفيش طلبات لسه','اختر خدمة من الرئيسية وأرسل طلبك')}<button class="cta" data-go="home">${buttonIcon('home')} اطلب خدمة</button></div>`;
     }

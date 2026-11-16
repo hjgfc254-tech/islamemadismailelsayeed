@@ -37,7 +37,9 @@
         <label class="hs-grid-field"><span>تطبيق رسوم على العميل</span><input type="checkbox" name="customerFee" ${s.customerFee ? 'checked' : ''}></label>
         <label class="hs-grid-field"><span>نسبة المنصة على السعر (٪)</span><input type="number" name="markupRate" min="0" max="100" step="0.5" value="${esc(s.markupRate)}"></label>
         <p class="ord-muted">نموذج التحصيل: العميل يدفع لمقدم الخدمة، وحصة المنصة تُحصَّل من مقدم الخدمة.</p>
-        <p><button type="submit" class="adm-btn adm-btn-p">حفظ الإعدادات</button></p></form>`);
+        <p><button type="submit" class="adm-btn adm-btn-p">حفظ الإعدادات</button></p></form><div data-site-content></div>`);
+      const sc = host.querySelector('[data-site-content]');
+      if (sc && root.HSSiteContentEditor) root.HSSiteContentEditor.mount(sc).catch(() => { sc.innerHTML = '<p>تعذّر تحميل محتوى الواجهة.</p>'; });
       host.querySelector('[data-live-settings]').addEventListener('submit', async (e) => {
         e.preventDefault(); const f = e.target;
         const r1 = await call('POST', '/admin/settings', { autoAssign: f.autoAssign.checked, customerFee: f.customerFee.checked });
@@ -135,7 +137,7 @@
 
   async function mount(id, host) {
     const p = PANELS[id]; if (!p) return false;
-    host.innerHTML = '<p class="ord-muted" role="status">جارٍ التحميل من الخادم…</p>';
+    host.innerHTML = '<div aria-busy="true" role="status" aria-label="جارٍ التحميل من الخادم"><div class="sk sk-bar"></div><div class="sk-card"><span class="sk sk-line w60"></span><span class="sk sk-line w80"></span><span class="sk sk-line w40"></span></div><div class="sk-card"><span class="sk sk-line w80"></span><span class="sk sk-line w60"></span></div></div>';
     try { await p(host); } catch (e) { host.innerHTML = frame('', '<p>تعذّر تحميل البيانات من الخادم.</p>'); }
     return true;
   }

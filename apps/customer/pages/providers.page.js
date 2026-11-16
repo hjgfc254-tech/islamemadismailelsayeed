@@ -54,14 +54,23 @@
     const u = me();
     const isFav = u && MP.isFavorite(u.id, 'provider', p.id);
     const rating = p.rating || MP.rating(p.id);
-    const reviews = MP.db().reviews.filter(v => v.providerId === p.id).slice(0, 5);
-    const ratingCount = MP.db().reviews.filter(v => v.providerId === p.id).length;
+    const allReviews = MP.db().reviews.filter(v => v.providerId === p.id);
+    const reviews = allReviews.slice(0, 5);
+    const ratingCount = allReviews.length;
+    /* rating distribution (5 → 1) from the reviews this device can see */
+    const dist = [5,4,3,2,1].map(n => [n, allReviews.filter(v => Math.round(+v.stars) === n).length]);
+    const breakdown = ratingCount ? `<div class="rating-break glass neon" aria-label="توزيع التقييمات">
+        <div class="rb-score"><b>${(+rating || 0).toFixed(1)}</b>${starsHtml(Math.round(+rating || 0))}<small>${ratingCount} تقييم</small></div>
+        <ul class="rb-bars">${dist.map(([n, c]) => `<li><span>${n}</span><i style="--w:${Math.round(c / ratingCount * 100)}%"></i><small>${c}</small></li>`).join('')}</ul>
+      </div>` : '';
+    const since = p.createdAt ? (() => { const d = new Date(p.createdAt); return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' }); })() : '';
     return `<div class="screen">${head('تفاصيل مقدم الخدمة', true)}${demoBanner()}
       <div class="provider-hero glass neon">
         <div class="prov-avatar" aria-hidden="true" style="background:${p.avatar||'#FF3D8F'}">${esc((p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>
         <div>
-          <h3>${esc(p.name)}</h3>
+          <h3>${esc(p.name)}${p.status==='approved'?` <span class="verified">${ic('shield')} موثّق</span>`:''}</h3>
           <small>${p.cats.map(c=>MP.catName(c)).join('، ')}</small>
+          ${since?`<small class="prov-since">على هنصلحلك منذ ${esc(since)}</small>`:''}
           ${p.demo?`<div class="tag" style="margin-top:6px">محاكاة تجريبية</div>`:''}
         </div>
         <button class="fav-btn ${isFav?'on':''}" data-fav-provider="${esc(p.id)}" aria-label="مفضلة">${ic('heart')}</button>
@@ -82,6 +91,7 @@
         <button class="cta ghost" style="margin:0" data-provider-service-request="${esc(p.cats[0])}">${ic('wrench')} طلب خدمة</button>
       </div>
       <h2 class="sec-title">${ic('medal')}التقييمات (${ratingCount})</h2>
+      ${breakdown}
       ${reviews.length?reviews.map(v=>`<div class="card2 glass neon">
         <div class="top"><b>${starsHtml(v.stars)}</b><span class="tag">${esc(v.quality||'')}</span></div>
         ${v.comment?`<small>${esc(v.comment)}</small>`:''}

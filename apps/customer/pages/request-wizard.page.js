@@ -27,6 +27,8 @@
    ═══════════════════════════════════════════════════════════════ */
 'use strict';
 
+/* «how much is left» in natural Egyptian Arabic (Arabic number agreement: 1 / 2 / 3–10) */
+const wzLeft = n => n <= 0 ? 'آخر خطوة' : n === 1 ? 'فاضل خطوة واحدة وتخلص' : n === 2 ? 'فاضل خطوتين وتخلص' : `فاضل ${n} خطوات`;
 const WZ_STEPS11 = [
   'اختيار القسم',
   'الجهاز أو نوع العمل',
@@ -299,7 +301,7 @@ function wzProgressBar(step){
   /* نعرض 10 شرائح لأن التأكيد شاشة نجاح وليست خطوة */
   const shown = Math.min(step, 9);
   return `<div class="wz-bar" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${shown+1}">${Array.from({length:10}).map((_,i)=>`<i class="${i<shown?'done':i===shown?'on':''}"></i>`).join('')}</div>
-    <div class="wz-cap">${step<10?`الخطوة ${step+1} من 10 — ${WZ_STEPS11[step]}`:'تم إرسال الطلب'}</div>`;
+    <div class="wz-cap">${step<10?`<b>${WZ_STEPS11[step]}</b><span>الخطوة ${step+1} من 10 — ${wzLeft(9-step)}</span>`:'تم إرسال الطلب'}</div>`;
 }
 
 /* ═════════ مسار crumb ═════════ */
@@ -525,7 +527,10 @@ Object.assign(screens, {
         ${sec('الموعد', 7, `<b>${_esc(schedText)}</b>${w.schedule.whenNote ? `<div class="kv">${_esc(w.schedule.whenNote)}</div>` : ''}`)}
         ${sec('التواصل', 8, `<b>${_esc(w.contact.name)} • ${_esc(w.contact.phone)}</b><div class="kv">${({call:'مكالمة',whatsapp:'واتساب',sms:'رسالة'})[w.contact.method] || w.contact.method}</div>`)}
       </div>
-      <div class="need" id="wz-price" data-wz-price-key="${_esc(w.item || '')}" aria-live="polite">${safeIc('wallet')}<span>جارٍ حساب السعر…</span></div>
+      <div class="price-card is-loading" id="wz-price" data-wz-price-key="${_esc(w.item || '')}" aria-live="polite">
+        <div class="pc-ic">${safeIc('wallet')}</div>
+        <div class="pc-body"><small>سعر الخدمة</small><b class="pc-amount"><span class="sk sk-line w40"></span></b><span class="pc-note"><span class="pc-lock">${safeIc('shield')}</span><span class="pc-text">جارٍ حساب السعر…</span></span></div>
+      </div>
       ${CAT.needsVisit(w.item, w.unknown ? '' : w.problem) ? `<div class="need">${safeIc('info')}<span>الفني سيعاين المشكلة أولًا ثم يحدد التكلفة النهائية.</span></div>` : ''}
       ${(typeof HSFirebaseConfig !== 'undefined' && HSFirebaseConfig.mode === 'firebase') ? '' : `<div class="demo-banner">${safeIc('info')}<span>وضع العرض التجريبي — الطلب يُحفظ محليًا ولا يُرسل لفنيين حقيقيين.</span></div>`}`;
     }
@@ -534,18 +539,22 @@ Object.assign(screens, {
       HSApiClient.request('GET', '/pricing').then((res) => {
         const el = typeof document !== 'undefined' && document.getElementById && document.getElementById('wz-price'); if (!el) return;
         const key = el.getAttribute('data-wz-price-key'), price = res.ok && res.data && res.data.prices ? res.data.prices[key] : null;
-        el.querySelector('span').textContent = price ? ('السعر: ' + price + ' ج.م — شامل رسوم المنصة، ويُثبَّت عند إرسال الطلب.') : 'السعر يُحدَّد بعد معاينة الفني.';
+        el.classList.remove('is-loading'); el.classList.toggle('is-fixed', !!price);
+        const amount = el.querySelector('.pc-amount'), note = el.querySelector('.pc-text');
+        if (amount) amount.textContent = price ? (Number(price).toLocaleString('ar-EG') + ' ج.م') : 'بعد المعاينة';
+        if (note) note.textContent = price ? 'السعر ده ثابت وشامل رسوم المنصة — مش هيتغير إلا بموافقتك.' : 'الفني هيعاين المشكلة ويبعتلك عرض سعر توافق عليه قبل التنفيذ.';
       });
     }, 0);
 
     /* 10 — التأكيد */
     if (w.step === 10 && w.done) {
       const r = MP.get('serviceRequests', w.done.id);
-      body = `<div class="done glass neon">
-        ${safeIc('check')}
+      body = `<div class="done glass neon success-pop" role="status" aria-live="polite">
+        <svg class="success-check" viewBox="0 0 52 52" aria-hidden="true" focusable="false"><circle cx="26" cy="26" r="23"/><path d="M15.5 27.5l7 7 14-15"/></svg>
         <h3>تم إرسال طلبك</h3>
-        <p><b>${_esc(w.done.no)}</b></p>
-        <p class="hint">${_esc(c ? c.name : '')} ← ${_esc(it ? it.name : '')}${w.unknown ? '' : ' ← ' + _esc(pr ? pr.name : '')}</p>
+        <p class="done-no">رقم الطلب <b>${_esc(w.done.no)}</b></p>
+        <p class="hint">هنبلغك أول ما فني مناسب يقبل طلبك.</p>
+        ${c || it ? `<p class="hint">${[c && c.name, it && it.name, !w.unknown && pr && pr.name].filter(Boolean).map(_esc).join(' ← ')}</p>` : ''}
         <p class="hint">${{received:'تم الاستلام',searching:'جارٍ البحث عن مقدم خدمة',sent:'تم إرسال الطلب لمقدم الخدمة'}[r ? r.status : 'received'] || ''}</p>
         <button type="button" class="cta" data-act="wzTrack">${safeIc('clock')} متابعة الطلب</button>
         <button type="button" class="cta ghost" data-go="home">${safeIc('home')} الرئيسية</button>

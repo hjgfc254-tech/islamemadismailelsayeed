@@ -852,7 +852,8 @@ const ICON_PHOTOS = (() => {
   for (const [s, p] of Object.entries(ICON_PHOTO_ALIAS)) m['d-' + s] = p;
   return m;
 })();
-const icPhoto = n => (ICON_PHOTOS[n] ? ICON_PHOTO_BASE + ICON_PHOTOS[n] + '.webp' : '');
+/* an image published from the Admin Center (HSSiteContent) overrides the bundled artwork */
+const icPhoto = n => { const o = typeof globalThis !== 'undefined' && globalThis.HSSiteContent && globalThis.HSSiteContent.iconUrl(n); return o || (ICON_PHOTOS[n] ? ICON_PHOTO_BASE + ICON_PHOTOS[n] + '.webp' : ''); };
 /* <img> for a photo icon, or '' when the name has none (callers then fall back to the SVG icon). Decorative: alt="". */
 const icImg = (n, cls = '') => { const src = icPhoto(n); return src ? `<img class="iph ${cls}" src="${src}" alt="" aria-hidden="true" loading="lazy" decoding="async" draggable="false" width="112" height="112">` : ''; };
 const icItem = (item, catId) => { const s = item && (item.slug || String(item.id || '').split('/').pop()); return s && icExists('d-' + s) ? 'd-' + s : icCat(catId || (item && item.cat)); };

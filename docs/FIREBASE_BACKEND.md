@@ -185,3 +185,20 @@ Customers choose how to sign in. SMS is no longer mandatory.
 - **Delivery:** each new in-app notification addressed to a customer or provider (unread, under 2 minutes old) is sent to that user's devices as a data-only FCM message `{title, body, link, tag}`. The send happens after the request commits, and a failed push never fails the request. Tokens that FCM reports as dead are deleted.
 - **Display:** `service-worker.js` shows the notification, in RTL with the app icon, unless the app is already open and focused. Tapping it opens the deep link: `#/track/<id>` for customers, `#/request/<id>` for providers.
 - **Prerequisite:** push works only on an https origin, so the frontend must be hosted.
+## Site content from the Admin Center (2026-11-15)
+Admins manage the Customer Home hero, the "Discover" slides and the category/item icons from the «إعدادات النظام» page ("واجهة الموقع" section). There is no Firebase Storage yet.
+
+- **Images:** the browser resizes and compresses each image to WebP, at most about 280 KB (hero 1400 px, slide 1200 px, icon 256 px square). Each image is stored in its own document, `media/{id}`, as a data URL. The server checks the real file bytes (webp, jpeg or png), not just the extension.
+- **Content:** `system/content` holds `{v, hero, slides[], icons{name: mediaId}}`. Publishing writes the new version and also sets `system/settings.contentV`.
+- **Delivery (cost-aware):**
+  - Every sync already returns `settings.contentV`, so no extra read is needed.
+  - Clients call `session.content {have:[cached media ids]}` only when the version is newer, and only the missing images are returned.
+  - Clients keep the JSON in `localStorage` (`hs_site_content`) and the images in the Cache API (`hs-media-v1`).
+  - The server caches the current version in memory per instance.
+- **Live updates:** Functions write `public/content {v}`, the only public, read-only RTDB node. Open pages, including guests', refresh their content in place.
+- **Routes:** `GET|PATCH /admin/content`, `POST /admin/media`, `DELETE /admin/media/:id`. Owner or admin role only. A media file still referenced by the content cannot be deleted (409). Publishing is audited, and admin screens are not re-synced.
+
+## Firestore cost controls
+- **Shared cache:** public data that every sync re-reads (system docs, service areas, up to 200 approved providers) is cached in instance memory for 30 s and cleared by any commit that touches it. A warm guest sync costs 0 reads; a cold one costs about 3 + the number of providers.
+- **Request limits:** only `POST /admin/media` raises the request-body limit (410 000 chars); every other route keeps 100 000.
+- **Test backend:** the in-memory backend used by tests enforces Firestore's "all reads before writes" transaction rule.

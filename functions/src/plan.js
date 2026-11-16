@@ -135,8 +135,8 @@ async function plan(ld, { method, path, query, body, actor }) {
 /** Actor-scoped read model loads for session.sync (bounded windows; the UI pages beyond them on demand). */
 async function syncPlan(ld, actor) {
   await ld.loadSystem();
-  await ld.where('serviceAreas', []);
-  const approved = await ld.where('providers', [['status', '==', 'approved']], { limit: 200 });
+  await ld.whereShared('serviceAreas', []);                                                   // public: instance-cached
+  const approved = await ld.whereShared('providers', [['status', '==', 'approved']], { limit: 200 });
   if (!actor) return;
   const tag = actor.role + ':' + actor.id;
   const inbox = ld.where('notifications', [['to', '==', tag]], { orderBy: ['at', 'desc'], limit: 50 });

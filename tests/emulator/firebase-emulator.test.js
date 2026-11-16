@@ -96,6 +96,12 @@ test('emulator: real Auth → callable Functions → Firestore → RTDB signals,
   assert.equal(other.status, 401, 'another user’s signal is denied');
   const write = await j(`${DB}/signals/${sara.uid}.json?ns=${RTDB_NS}&auth=${sara.token}`, { method: 'PUT', body: JSON.stringify({ at: 1 }) });
   assert.equal(write.status, 401, 'clients cannot write signals');
+  const pub = await j(`${DB}/public/content.json?ns=${RTDB_NS}`);
+  assert.equal(pub.status, 200, 'the public content version is readable without sign-in');
+  const pubWrite = await j(`${DB}/public/content.json?ns=${RTDB_NS}&auth=${sara.token}`, { method: 'PUT', body: JSON.stringify({ v: 999 }) });
+  assert.equal(pubWrite.status, 401, 'clients cannot write the public content version');
+  const pubOther = await j(`${DB}/public.json?ns=${RTDB_NS}`);
+  assert.equal(pubOther.status, 401, 'nothing else under /public is readable');
 });
 
 test('emulator: concurrent creates keep unique request numbers (transactional counter)', async () => {

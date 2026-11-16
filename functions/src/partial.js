@@ -20,6 +20,17 @@ const IN_CHUNK = 30;
 const strip = d => { const c = { ...d }; delete c._k; return c; };
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
+/* Short-lived per-instance cache for PUBLIC data that every sync re-reads (system docs, service areas, approved
+   providers). Used only outside transactions (writes always read fresh inside their transaction); any commit that
+   touches these collections clears it on this instance; other instances converge within SHARED_TTL_MS.
+   Keyed per adapter so separate backends (tests, emulator) never share entries. Cuts guest/customer sync reads from
+   ~200 per call to ~0 while warm. */
+const SHARED_TTL_MS = 30000;
+const SHARED_KEYS = new Set(['providers', 'serviceAreas', 'meta', 'settings']);
+const shared = new WeakMap();
+const sharedFor = adapter => { let m = shared.get(adapter); if (!m) { m = new Map(); shared.set(adapter, m); } return m; };
+function invalidateShared(adapter) { shared.delete(adapter); }
+
 class PartialDb {
   constructor(adapter, tx) {
     this.adapter = adapter; this.tx = tx;
@@ -32,10 +43,28 @@ class PartialDb {
   _put(key, id, data) { if (data) this.maps[key].set(id, data); }
   async loadSystem() {
     if (this.system) return this.system;
+    const cache = !this.tx && sharedFor(this.adapter), hit = cache && cache.get('system');
+    if (hit && Date.now() - hit.at < SHARED_TTL_MS) { this.system = JSON.parse(JSON.stringify(hit.value)); return this.system; }
     const [meta, settings] = await Promise.all([this.adapter.get(this.tx, 'system/meta'), this.adapter.get(this.tx, 'system/settings')]);
     this.reads += 2;
     this.system = { meta, settings };
+    if (cache) cache.set('system', { at: Date.now(), value: JSON.parse(JSON.stringify(this.system)) });
     return this.system;
+  }
+  /** where() through the shared instance cache (public data only; never inside a transaction). */
+  async whereShared(key, filters, opts = {}) {
+    if (this.tx) return this.where(key, filters, opts);
+    const cache = sharedFor(this.adapter), ck = key + '|' + JSON.stringify(filters) + '|' + JSON.stringify(opts), hit = cache.get(ck);
+    if (hit && Date.now() - hit.at < SHARED_TTL_MS) {
+      for (const r of hit.rows) this._put(key, r.id, JSON.parse(JSON.stringify(r.data)));
+      return hit.rows.map(r => strip(r.data));
+    }
+    const q = { where: filters }; if (opts.orderBy) q.orderBy = opts.orderBy; if (opts.limit) q.limit = opts.limit;
+    const rows = await this.adapter.query(null, colName(key), q);
+    this.reads += Math.max(1, rows.length);
+    for (const r of rows) this._put(key, r.id, r.data);
+    cache.set(ck, { at: Date.now(), rows: JSON.parse(JSON.stringify(rows)) });
+    return rows.map(r => strip(r.data));
   }
   /** One document by id (cached; misses are remembered too). */
   async doc(key, id) {
@@ -103,7 +132,7 @@ class PartialDb {
   /** Writes only changed/new documents and deletions among the loaded ones. Returns {changes, writes}. */
   commit(next) {
     const changes = {}; let writes = 0;
-    const note = (k, t, id) => { (changes[k] = changes[k] || { set: [], del: [] })[t].push(id); writes++; };
+    const note = (k, t, id) => { (changes[k] = changes[k] || { set: [], del: [] })[t].push(id); writes++; if (SHARED_KEYS.has(k)) invalidateShared(this.adapter); };
     const tx = this.tx, a = this.adapter;
     const prevMeta = this.system && this.system.meta;
     const nextMeta = { ...(next.meta || {}), v: next.v || 2 };
@@ -157,4 +186,4 @@ function firestoreAdapter(fs, FieldPath) {
   };
 }
 
-module.exports = { PartialDb, firestoreAdapter, encodeCursor, decodeCursor, NEWEST_FIRST };
+module.exports = { PartialDb, firestoreAdapter, encodeCursor, decodeCursor, NEWEST_FIRST, invalidateShared, SHARED_TTL_MS };

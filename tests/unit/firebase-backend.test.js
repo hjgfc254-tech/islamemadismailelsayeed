@@ -17,9 +17,12 @@ function memBackend(bootstrapEmails = ['owner@example.com']) {
   const stats = { reads: 0, queries: [] };
   const rows = col => [...docs].filter(([p]) => p.startsWith(col + '/') && p.split('/').length === 2).map(([p, d]) => ({ id: p.split('/')[1], data: clone(d) }));
   const match = (r, [f, op, v]) => { const x = f === 'id' ? r.id : r.data[f]; return op === '==' ? x === v : op === 'in' ? v.includes(x) : op === 'array-contains' ? Array.isArray(x) && x.includes(v) : false; };
+  /* like Firestore: inside a transaction every read must come before any write */
+  const noReadAfterWrite = tx => { if (tx && tx.wrote) throw new Error('Firestore transactions require all reads to be executed before all writes.'); };
   const adapter = {
-    async get(tx, p) { stats.reads++; return docs.has(p) ? clone(docs.get(p)) : null; },
+    async get(tx, p) { noReadAfterWrite(tx); stats.reads++; return docs.has(p) ? clone(docs.get(p)) : null; },
     async query(tx, col, q) {
+      noReadAfterWrite(tx);
       stats.queries.push({ col, where: q.where || [], limit: q.limit || null });
       let out = rows(col).filter(r => (q.where || []).every(w => match(r, w)));
       if (q.orderBy) {
@@ -32,8 +35,8 @@ function memBackend(bootstrapEmails = ['owner@example.com']) {
       return out;
     },
     async count(col, where) { stats.reads++; return rows(col).filter(r => (where || []).every(w => match(r, w))).length; },
-    set(tx, p, d) { docs.set(p, clone(d)); },
-    del(tx, p) { docs.delete(p); }
+    set(tx, p, d) { if (tx) tx.wrote = true; docs.set(p, clone(d)); },
+    del(tx, p) { if (tx) tx.wrote = true; docs.delete(p); }
   };
   return {
     docs, signals, adapter, stats,
@@ -287,6 +290,70 @@ test('customer sign-up without SMS: email or quick (anonymous) account bound by 
 
   const viaOtp = await reg(SARA, { name: 'سارة' });
   assert.equal(b.col('customers').find(c => c.id === viaOtp.actor.id).phoneVerified, true, 'phone OTP sign-up is unchanged and marked verified');
+});
+test('site content from the Admin Center: images in Firestore, versioned content, cheap public reads, live signal', async () => {
+  const b = await setup();
+  const signals = [];
+  b.setPublic = async (p, v) => { signals.push({ p, v }); };
+  const webp = 'data:image/webp;base64,' + Buffer.concat([Buffer.from('RIFF'), Buffer.alloc(4), Buffer.from('WEBPVP8 '), Buffer.alloc(64, 7)]).toString('base64');
+  await service.session(b, { auth: SARA, data: { op: 'registerCustomer', name: 'سارة' } });
+  assert.equal((await call(b, SARA, 'customer', 'POST', '/admin/media', { kind: 'hero', data: webp })).status, 403, 'customers cannot upload');
+  assert.equal((await call(b, null, 'admin', 'POST', '/admin/media', { kind: 'hero', data: webp })).status, 401, 'nor anonymous callers');
+  assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/media', { kind: 'hero', data: 'data:image/webp;base64,AAAA' })).status, 422, 'bytes must really be an image');
+  assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/media', { kind: 'hero', data: 'data:text/html;base64,PGgxPg==' })).status, 422, 'only webp/jpeg/png');
+  await assert.rejects(call(b, OWNER, 'admin', 'POST', '/admin/media', { kind: 'hero', data: 'data:image/webp;base64,' + 'A'.repeat(500000) }), /too large/, 'size limit at the request boundary');
+  assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/media', { kind: 'hero', data: 'data:image/webp;base64,' + 'A'.repeat(405000) })).status, 422, 'size limit of the image itself');
+  await assert.rejects(call(b, OWNER, 'admin', 'POST', '/admin/employees', { name: 'x', pad: 'A'.repeat(200000) }), /too large/, 'other routes keep the small limit');
+  const up = await call(b, OWNER, 'admin', 'POST', '/admin/media', { kind: 'hero', data: webp, w: 1200, h: 800 });
+  assert.equal(up.status, 201); const mid = up.data.id;
+  const icon = (await call(b, OWNER, 'admin', 'POST', '/admin/media', { kind: 'icon', data: webp, w: 224, h: 224 })).data.id;
+
+  assert.equal((await call(b, OWNER, 'admin', 'PATCH', '/admin/content', { hero: { title: 'عنوان', media: 'mnotreal123' } })).status, 422, 'unknown media refused');
+  const put = await call(b, OWNER, 'admin', 'PATCH', '/admin/content', {
+    hero: { eyebrow: 'منصة', title: 'كل خدماتك', accent: 'في مكان واحد', sub: 'وصف', cta: 'ابدأ', media: mid },
+    slides: [{ id: 'steps', title: 'شريحة', desc: 'نص', cta: 'ابدأ', action: 'wizard', media: mid }, { id: 'new-one', title: 'عرض', action: 'evil', active: false }],
+    icons: { 'c-electric': icon, 'd-wiring': icon, '<script>': icon }
+  });
+  assert.equal(put.status, 422, 'invalid icon keys refused');
+  const ok = await call(b, OWNER, 'admin', 'PATCH', '/admin/content', {
+    hero: { eyebrow: 'منصة', title: 'كل خدماتك', accent: 'في مكان واحد', sub: 'وصف', cta: 'ابدأ', media: mid },
+    slides: [{ id: 'steps', title: 'شريحة', desc: 'نص', cta: 'ابدأ', action: 'wizard', media: mid }, { id: 'new-one', title: 'عرض', action: 'evil', active: false }],
+    icons: { 'c-electric': icon, 'd-wiring': icon }
+  });
+  assert.equal(ok.status, 200); assert.equal(ok.data.v, 1);
+  assert.equal(ok.data.slides[1].action, 'none', 'unknown actions are neutralised'); assert.equal(ok.data.slides[1].active, false);
+  assert.deepEqual(signals.at(-1), { p: 'public/content', v: signals.at(-1).v }); assert.equal(signals.at(-1).v.v, 1, 'live content signal published');
+
+  const guest = await service.session(b, { auth: null, data: { op: 'sync', app: 'customer' } });
+  assert.equal(guest.db.settings.contentV, 1, 'the content version travels with the normal sync (no extra read)');
+  const full = await service.session(b, { auth: null, data: { op: 'content', have: [] } });
+  assert.equal(full.v, 1); assert.equal(full.hero.title, 'كل خدماتك');
+  assert.deepEqual(Object.keys(full.media).sort(), [icon, mid].sort(), 'only referenced images are sent');
+  assert.match(full.media[mid], /^data:image\/webp;base64,/);
+  const cached = await service.session(b, { auth: null, data: { op: 'content', have: [mid, icon] } });
+  assert.deepEqual(cached.media, {}, 'images the device already has are not resent');
+
+  assert.equal((await call(b, OWNER, 'admin', 'DELETE', `/admin/media/${mid}`)).status, 409, 'an image in use cannot be deleted');
+  await call(b, OWNER, 'admin', 'PATCH', '/admin/content', { hero: null, slides: null });
+  assert.equal((await call(b, OWNER, 'admin', 'DELETE', `/admin/media/${mid}`)).status, 200, 'unused images can be deleted');
+  assert.equal(b.col('media').length, 1);
+  assert.equal((await service.session(b, { auth: null, data: { op: 'sync', app: 'customer' } })).db.settings.contentV, 2, 'the new version is visible immediately after a change (cache invalidated; the refused update did not count)');
+});
+test('Firestore cost: repeated syncs reuse the instance cache for public data; a provider change invalidates it', async () => {
+  const b = await setup();
+  const reg = await call(b, KARIM, 'provider', 'POST', '/providers/register', PROVIDER_FORM);
+  await call(b, OWNER, 'admin', 'POST', `/admin/providers/${reg.data.id}/status`, { status: 'approved' });
+  const guestSync = () => service.session(b, { auth: null, data: { op: 'sync', app: 'customer' } });
+  const first = await guestSync();
+  assert.ok(first.reads >= 3, 'cold sync reads system docs, service areas and providers: ' + first.reads);
+  assert.equal(first.db.providers.length, 1);
+  const second = await guestSync();
+  assert.equal(second.reads, 0, 'warm guest sync costs no Firestore reads');
+  assert.equal(second.db.providers.length, 1, 'and returns the same public data');
+  await call(b, OWNER, 'admin', 'POST', `/admin/providers/${reg.data.id}/status`, { status: 'suspended' });
+  const third = await guestSync();
+  assert.ok(third.reads > 0, 'a provider change invalidates the cache');
+  assert.equal(third.db.providers.length, 0, 'suspended provider no longer listed (no stale data after a change on this instance)');
 });
 test('web push: devices register per uid; a new notification is pushed only to its owner; dead tokens are cleaned', async () => {
   const b = await setup();

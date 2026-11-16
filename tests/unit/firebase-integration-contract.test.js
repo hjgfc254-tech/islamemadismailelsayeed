@@ -27,6 +27,10 @@ test('security rules: no direct client access to Firestore; RTDB exposes only th
   assert.equal(db['.read'], false); assert.equal(db['.write'], false);
   assert.equal(db.signals.$uid['.read'], 'auth != null && auth.uid === $uid');
   assert.equal(db.signals.$uid['.write'], false);
+  /* the only public node: the site-content version (a number + timestamp, written by Functions only) */
+  assert.deepEqual(Object.keys(db).filter(k => !k.startsWith('.')).sort(), ['public', 'signals']);
+  assert.deepEqual(Object.keys(db.public), ['content']);
+  assert.equal(db.public.content['.read'], true); assert.equal(db.public.content['.write'], false);
 });
 
 test('apps load the backend bridge; Firebase is the default with an explicit local override; Storage is not used', () => {

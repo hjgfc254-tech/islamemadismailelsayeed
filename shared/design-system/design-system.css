@@ -473,3 +473,14 @@ input[type="checkbox"][role="switch"],.switch input{accent-color:var(--brand-pri
 .icard.sel{background:var(--mint);border-color:var(--brand-primary);box-shadow:inset 0 0 0 1px var(--brand-primary)}
 .icard.sel .ip{background:var(--surface-primary)}
 .wz-bar i{background:var(--border-subtle)}
+
+/* ── V10 polish: loading skeletons + press feedback (shared by all apps) ───────────────────────────── */
+.sk{display:block;border-radius:8px;background:linear-gradient(90deg,var(--surface-sunken) 0%,color-mix(in srgb,var(--surface-sunken) 55%,var(--surface-primary)) 50%,var(--surface-sunken) 100%);background-size:200% 100%;animation:skShimmer 1.3s ease-in-out infinite}
+.sk-line{height:12px;margin:8px 0}.sk-line.w40{width:40%}.sk-line.w60{width:60%}.sk-line.w80{width:80%}
+.sk-bar{height:44px;border-radius:14px;margin:10px 0 14px}
+.sk-card{padding:14px 16px;margin:0 0 10px;border:1px solid var(--border-subtle);border-radius:var(--r-lg);background:var(--surface-primary)}
+@keyframes skShimmer{from{background-position:100% 0}to{background-position:-100% 0}}
+.tile,.cta,.hero-cta,.s-cta,.adm-btn,.auth-guest,.prow,.icard,.card2,.chip,.ic-btn,.pv-btn{transition:transform var(--motion-fast) var(--ease-out),box-shadow var(--motion-base) var(--ease-out),background-color var(--motion-fast),border-color var(--motion-fast)}
+.tile:active,.cta:active,.hero-cta:active,.s-cta:active,.adm-btn:active,.auth-guest:active,.prow:active,.icard:active,.chip:active,.ic-btn:active,.pv-btn:active{transform:scale(.97)}
+@media (hover:hover){.tile:hover,.prow:hover,.icard:hover{transform:translateY(-2px);box-shadow:var(--shadow-2)}}
+@media (prefers-reduced-motion:reduce){.sk{animation:none}.tile:active,.cta:active,.hero-cta:active,.s-cta:active,.adm-btn:active,.auth-guest:active,.prow:active,.icard:active,.chip:active,.ic-btn:active,.pv-btn:active,.tile:hover,.prow:hover,.icard:hover{transform:none}}

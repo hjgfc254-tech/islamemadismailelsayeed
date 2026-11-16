@@ -176,6 +176,18 @@ withBrowser(async ({ wsUrl }) => {
   await d.evaluate(`location.hash = '#/audit'; true`);
   ok(await d.waitFor('document.body.textContent.includes("claimOwner")', 12000), 'the audit log panel shows real server audit entries');
   ok(await d.evaluate('!document.querySelector("[data-adm-not-connected]")'), 'no Admin page is left gated');
+  /* site content: the settings panel embeds the editor; an image is compressed in the browser and stored in Firestore;
+     publishing raises the version and a Customer page picks the new hero up live (RTDB public/content) */
+  await d.evaluate(`location.hash = '#/settings'; true`);
+  ok(await d.waitFor('!!document.querySelector("[data-sc-save]") && !!document.querySelector("[data-sc-hero=title]")', 15000), 'settings panel shows the site-content editor');
+  const upload = await d.evaluate(`(async () => { const cv = document.createElement('canvas'); cv.width = 320; cv.height = 200; const g = cv.getContext('2d'); g.fillStyle = '#B4511C'; g.fillRect(0, 0, 320, 200);
+    const blob = await new Promise(r => cv.toBlob(r, 'image/png')); const img = await HSSiteContentEditor.compress(new File([blob], 'hero.png', { type: 'image/png' }), 'hero');
+    const r = await HSApiClient.request('POST', '/admin/media', { body: { kind: 'hero', data: img.data, w: img.w, h: img.h } }); return r.ok ? r.data.id : 'ERR ' + JSON.stringify(r.error); })()`);
+  ok(/^m[a-z0-9]+$/.test(upload), 'browser-compressed image stored on the server: ' + upload);
+  const published = await d.evaluate(`HSApiClient.request('PATCH', '/admin/content', { body: { hero: { eyebrow: 'جديد', title: 'عنوان من لوحة الإدارة', accent: 'مباشر', sub: 'وصف', cta: 'اطلب الآن', media: ${JSON.stringify(upload)} } } }).then(r => r.ok ? r.data.v : 'ERR')`);
+  ok(Number(published) >= 1, 'content published as a new version: ' + published);
+  await cdp.send('Page.navigate', { url: BASE + '/apps/customer/index.html?backend=firebase&emulators=1#/home' });
+  ok(await d.waitFor('document.body.textContent.includes("عنوان من لوحة الإدارة") && !!document.querySelector(".hero .hero-photo[src^=blob], .hero .hero-photo[src^=data]")', 25000), 'the Customer Home shows the published hero text and image');
 
   const errs = d.errors.filter(e => !/favicon|ERR_FAILED/.test(e));
   ok(errs.length === 0, 'no console errors: ' + (errs.slice(0, 3).join(' | ') || 'none'));

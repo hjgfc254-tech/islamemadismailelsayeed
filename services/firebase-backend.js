@@ -94,11 +94,26 @@ async function start() {
         reflectSession(actor, r.db || {});
         if (globalThis.HSRealtimeClient) globalThis.HSRealtimeClient.notify({ source: 'firebase' });
         document.dispatchEvent(new CustomEvent('hs:backend-sync', { detail: { actor, provider: r.provider } }));
+        refreshContent(r.db && r.db.settings && r.db.settings.contentV);
         return r;
       } finally { syncing = null; }
     })();
     return syncing;
   }
+
+  /* Site content (hero / slides / icons from the Admin Center): fetched only when the announced version is newer than
+     this device's copy (or a published image is not cached here); only the missing images travel. */
+  let contentBusy = null;
+  function refreshContent(v) {
+    const S = globalThis.HSSiteContent;
+    if (!S || !(Number(v) > 0) || contentBusy) return;
+    if (Number(v) <= S.version() && !S.missing().length) return;
+    contentBusy = callSession({ op: 'content', have: S.cachedIds() })
+      .then(r => S.apply(r.data)).catch(e => console.warn('[backend] content refresh failed', e && e.message))
+      .finally(() => { contentBusy = null; });
+  }
+  /* live: the public, read-only RTDB value public/content changes when the admin publishes (guests included) */
+  try { D.onValue(D.ref(rtdb, 'public/content'), snap => { const val = snap.val(); if (val && val.v) refreshContent(val.v); }); } catch (e) {}
 
   C.setActorResolver(() => actor);
   /* Mutations: identical in-flight requests are merged (double clicks), and each carries an idempotency key so a
