@@ -193,3 +193,19 @@ test('round 5 screens: tracking shows chat + share, closed orders offer receipt 
   const pv = P.boot({ session: 'p_demo1' }).html();
   assert.match(pv, /class="pv-level"/); assert.match(pv, /class="pv-week"/);
 });
+test('round 6: home footer links, «امتى محتاج الفني؟» pre-fills the next request, tab tap to top, pull to refresh', () => {
+  const { boot: bootCustomer } = require('../helpers/customer-app-harness.js');
+  const app = bootCustomer({});
+  const html = app.html();
+  assert.match(html, /data-support="policy-privacy">سياسة الخصوصية/); assert.match(html, /data-support="policy-terms"/);
+  assert.match(html, /data-go="support">مركز المساعدة/); assert.match(html, /class="when-pick"/);
+  app.run("sessionStorage.setItem('hs_when_pref','tomorrow'); startRequest('electric')");
+  assert.equal(app.run('WZ.schedule.flexible'), false);
+  assert.match(app.run('WZ.schedule.date'), /^\d{4}-\d{2}-\d{2}$/);
+  app.run("sessionStorage.setItem('hs_when_pref','flex'); startRequest('electric')");
+  assert.equal(app.run('WZ.schedule.flexible'), true);
+  const src = fs.readFileSync(path.join(ROOT, 'apps/customer/app.js'), 'utf8');
+  assert.match(src, /function mountPullRefresh\(\)/); assert.match(src, /tapping the tab you are on scrolls back to the top/);
+  const css = fs.readFileSync(path.join(ROOT, 'apps/customer/styles/customer.css'), 'utf8');
+  assert.match(css, /#view \.hero \.art\{height:clamp\(96px,26vw,124px\)\}/, 'hero kept but shorter on phones');
+});

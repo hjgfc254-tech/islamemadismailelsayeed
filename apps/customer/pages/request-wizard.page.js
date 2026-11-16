@@ -152,6 +152,7 @@ let WZ_PENDING_FILE = null;
 /* ═════════ فتح النموذج ═════════ */
 function startRequest(cat, itemId, desc){
   WZ = wzNew(cat, itemId, desc);
+  if (typeof applyWhenPref === 'function') applyWhenPref(WZ);   /* «امتى محتاج الفني؟» from Home */
   WZ_DRAFT_ID = 'dr_' + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
   if (hasUI()) {
     try { closeSheet(true); } catch {}

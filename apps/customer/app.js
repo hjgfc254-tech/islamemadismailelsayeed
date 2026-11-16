@@ -209,6 +209,7 @@ const topbar = () => {
   <div class="tb-actions">
     <button class="ic-btn avatar" data-go="account" aria-label="حسابي">${ic('user')}</button>
     <button class="ic-btn ${hasNotes?'dot':''}" data-act="bell" aria-label="الإشعارات">${ic('bell')}</button>
+    <button class="ic-btn mini-search" data-act="miniSearch" aria-label="ابحث عن خدمة">${ic('search')}</button>
   </div>
   <div class="logo"><img class="wordmark" src="../../assets/brand/logo-v10-lockup.webp" alt="هنصلحلك HANSALEHLAK" width="615" height="160" decoding="async" draggable="false"></div>
   <div class="tb-actions"><button class="ic-btn" data-act="menu" aria-label="القائمة">${ic('menu')}</button></div>
@@ -498,6 +499,84 @@ document.addEventListener('click', e => {
   if (d.act === 'invite') return openInvite(t);
   if (d.act === 'inviteShare') return typeof shareText === 'function' ? shareText('كود دعوة هنصلحلك', d.msg) : null;
 }, true);
+/* ═════════ round 6: interactive Home — when-chips, pull to refresh, tap feedback, tab tap → top, sticky search ═════════ */
+const WHEN_KEY = 'hs_when_pref';
+const whenPref = () => { try { return sessionStorage.getItem(WHEN_KEY) || ''; } catch { return ''; } };
+/* «امتى محتاج الفني؟» — the choice pre-fills the schedule step of the next request */
+function homeWhen(){
+  const cur = whenPref();
+  const opts = [['today', 'النهارده'], ['tomorrow', 'بكرة'], ['flex', 'أي وقت يناسب الفني']];
+  return `<section class="when-pick" aria-labelledby="whenT"><h2 class="sec-title" id="whenT">${ic('clock')}امتى محتاج الفني؟</h2>
+    <div class="chips" role="radiogroup" aria-labelledby="whenT">${opts.map(([v, l]) => `<button type="button" class="chip ${cur === v ? 'on' : ''}" role="radio" aria-checked="${cur === v}" data-when="${v}">${l}</button>`).join('')}</div>
+    ${cur ? `<small class="when-note">هنحط الموعد ده في طلبك الجاي، وتقدر تغيّره وانت بتطلب.</small>` : ''}</section>`;
+}
+/* applied when a new request starts (request-wizard calls it after wzNew) */
+function applyWhenPref(w){
+  const v = whenPref(); if (!w || !w.schedule || !v) return;
+  const iso = n => { const d = new Date(); d.setDate(d.getDate() + n); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+  if (v === 'flex') { w.schedule.flexible = true; return; }
+  w.schedule.flexible = false; w.schedule.date = iso(v === 'today' ? 0 : 1);
+  if (!w.schedule.period) w.schedule.period = v === 'today' && new Date().getHours() >= 12 ? 'evening' : 'morning';
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-when]'); if (!t) return;
+  const v = t.dataset.when, next = whenPref() === v ? '' : v;      // tapping the selected chip clears it
+  try { if (next) sessionStorage.setItem(WHEN_KEY, next); else sessionStorage.removeItem(WHEN_KEY); } catch {}
+  const box = t.closest('.when-pick'); if (box) box.outerHTML = homeWhen();
+  toast(next ? 'تمام — هنحطه في طلبك' : 'اتلغى الاختيار');
+});
+
+/* light haptic tick on phones for primary taps (no-op where vibration is unsupported) */
+document.addEventListener('click', e => {
+  if (!e.target.closest('.cta,.hero-cta,.tile,.chip,.tab,.prow')) return;
+  try { if (navigator.vibrate && matchMedia('(pointer:coarse)').matches) navigator.vibrate(8); } catch {}
+}, { passive: true });
+
+/* Pull down at the top of Home / Orders to refresh from the server */
+function mountPullRefresh(){
+  if (!view || view.dataset.ptr) return; view.dataset.ptr = '1';
+  const ind = document.createElement('div'); ind.className = 'ptr'; ind.setAttribute('aria-hidden', 'true'); ind.innerHTML = ic('arrow');
+  document.body.appendChild(ind);
+  let y0 = null, dy = 0, busy = false;
+  const can = () => !busy && !state.sheet && view.scrollTop <= 0 && state.lastShown && ['home', 'orders', 'tracking'].includes(state.lastShown.name);
+  view.addEventListener('touchstart', e => { y0 = can() && e.touches.length === 1 ? e.touches[0].clientY : null; dy = 0; }, { passive: true });
+  view.addEventListener('touchmove', e => {
+    if (y0 == null) return; dy = e.touches[0].clientY - y0;
+    if (dy <= 0) { ind.style.cssText = ''; return; }
+    const d = Math.min(90, dy * 0.5);
+    ind.style.cssText = `opacity:${Math.min(1, d / 60)};transform:translate(-50%,${d}px) rotate(${d * 3}deg)`;
+    ind.classList.toggle('ready', d >= 60);
+  }, { passive: true });
+  view.addEventListener('touchend', async () => {
+    if (y0 == null) return; y0 = null;
+    const go = Math.min(90, dy * 0.5) >= 60; dy = 0;
+    if (!go) { ind.style.cssText = ''; ind.classList.remove('ready'); return; }
+    busy = true; ind.classList.add('spin'); ind.style.cssText = 'opacity:1;transform:translate(-50%,56px)';
+    try { if (globalThis.HSBackend && typeof HSBackend.sync === 'function') await HSBackend.sync(); } catch {}
+    const s = state.lastShown; if (s) { const y = view.scrollTop; show(s.name, s.arg); view.scrollTop = y; }
+    ind.classList.remove('spin', 'ready'); ind.style.cssText = ''; busy = false;
+    toast('اتحدّثت البيانات');
+  });
+}
+
+/* Sticky mini search: once the Home hero scrolls away, a compact search button appears in the top bar */
+function mountStickySearch(){
+  if (!view || view.dataset.sticky) return; view.dataset.sticky = '1';
+  let raf = 0;
+  view.addEventListener('scroll', () => {
+    if (raf) return;
+    raf = requestAnimationFrame(() => {
+      raf = 0;
+      const hero = view.querySelector('.hero'), on = !!hero && state.lastShown && state.lastShown.name === 'home' && hero.getBoundingClientRect().bottom < 60;
+      document.documentElement.classList.toggle('show-mini-search', on);
+    });
+  }, { passive: true });
+}
+document.addEventListener('click', e => {
+  const ms = e.target.closest('[data-act="miniSearch"]'); if (!ms || ms.dataset.act !== 'miniSearch' || typeof view.scrollTo !== 'function') return;
+  view.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  setTimeout(() => { const q = document.getElementById('q'); if (q) try { q.focus({ preventScroll: true }); } catch {} }, 350);
+});
 function homeActiveRequests(){
   try {
     const c = homeMe(); if (!c) return [];
@@ -687,7 +766,7 @@ const screens = {
       demo: !(globalThis.HSFirebaseConfig && HSFirebaseConfig.mode === 'firebase'),
       firstVisit: !(homeMe() && MP.reqs().some(r => r.customerId === homeMe().id)),
       latestReviews: homeLatestReviews(),
-      addressBar: homeAddressBar(), trending: homeTrending(), packages: homePackages(), invite: homeInvite()
+      addressBar: homeAddressBar(), when: homeWhen(), trending: homeTrending(), packages: homePackages(), invite: homeInvite()
     });
   },
 
@@ -1111,10 +1190,17 @@ document.addEventListener('click', e => {
   const t = e.target.closest('[data-go],[data-dev],[data-prob],[data-act],[data-back],[data-fav],[data-step],[data-chip],[data-repeat],[data-provider],[data-provider-service]');
   if (!t) return;
   const d = t.dataset;
-  if (d.go) return go(d.go);
+  if (d.go) {   /* tapping the tab you are on scrolls back to the top (like native apps) */
+    if (d.go === state.tab && state.lastShown && state.lastShown.name === d.go && !state.stack.length && view.scrollTop > 40 && typeof view.scrollTo === 'function') { view.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); return; }
+    return go(d.go);
+  }
   if (d.dev) return openDevice(d.dev);
   if (d.prob){ const r = t.closest('#sheet') ? origin : null; return openProblem(d.prob, r); }
-  if ('back' in d) return history.back();
+  if ('back' in d) {   /* back with a stack → browser history; opened directly (deep link / action / tab page) → the tab, or Home */
+    if (state.stack.length) return history.back();
+    const cur = state.lastShown && state.lastShown.name;
+    return go(state.tab && state.tab !== cur ? state.tab : 'home');
+  }
   if ('step' in d){ t.classList.toggle('done'); return stepProgress(); }
   if (d.chip){ const i=$('#hs-q') || $('#q2') || $('#q'); if (i){ i.value=d.chip; i.dispatchEvent(new Event('input')); } return; }
   if (d.fav){
@@ -1256,7 +1342,8 @@ function mountHelpAndNet(){
 function boot(){
   if (typeof HSAuthApi !== 'undefined') HSAuthApi.useApp('customer');
   try { mountHelpAndNet(); } catch {}
-  try { mountSheetSwipe(); } catch {}   /* API actor = the signed-in demo customer */
+  try { mountSheetSwipe(); } catch {}
+  try { mountPullRefresh(); mountStickySearch(); } catch {}   /* API actor = the signed-in demo customer */
   /* live screens follow changes from another tab (storage) and from the server (Firebase sync / RTDB signal) */
   if (typeof HSRealtimeClient !== 'undefined') HSRealtimeClient.subscribe('market:changed', e => { if (e.source === 'storage' || e.source === 'firebase') liveRefresh(e.source === 'storage'); });
   /* site content published from the Admin Center: refresh Home in place (keeps scroll; never interrupts a sheet) */

@@ -2622,7 +2622,7 @@
         "tests/e2e/customer-sheet-focus.browser.py"
       ],
       "notes": "2026-11-13 TASK 04: Bottom Sheet initial focus, Tab/Shift+Tab containment, Escape, focus restoration/fallback, and background inert/aria-hidden isolation implemented and browser-tested. origin remains the legacy problem-list return context; route-style close focuses the destination #view.",
-      "sha256": "0d19a4acec37a2859b5443b992e802f002cad8099443b36e8479eb2d46c93685",
+      "sha256": "1f9efe8b2f4daf4ddba5b3a278cc76e8884df04fd9041b01fc5916c766ffd72f",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2661,7 +2661,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 90112
+      "bytes": 96366
     },
     {
       "path": "apps/customer/customer-router.js",
@@ -3003,7 +3003,7 @@
       "next_action": "Keep this module presentation-only; extract individual sections only when tests establish stable contracts.",
       "explicit_references": [],
       "notes": "Extracted from screens.home on 2026-11-13. Script loaded before app.js. Tests: customer-page-renderers.test.js and home.test.js.",
-      "sha256": "23a0d597a99c47980dded949442702e5f98026bd438a366ef92142ec15d0acdd",
+      "sha256": "34d9cafe519bf40ead9f7a19ddc4d500ec570b51f755de66272a0756d99e015e",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3040,7 +3040,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 7988
+      "bytes": 8882
     },
     {
       "path": "apps/customer/pages/market-ui.page.js",
@@ -3299,7 +3299,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "c0c82bd8602ed89ea5a786b71f8a12055f6260c060c619ab6428138a890082cc",
+      "sha256": "ad2e36b9a3461e28f1469b14270fdbc2ee083ca09e71cd47cc015f6060118d8d",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3338,7 +3338,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 63433
+      "bytes": 63551
     },
     {
       "path": "apps/customer/pages/search.page.js",
@@ -3501,7 +3501,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "bd0c8804f3a8b606e988e645fef852fa39b40a89e40aa7af2c05603de5008ac3",
+      "sha256": "958a2865d4cb0a5a4c810d217582fbe5c0bf3ab352eb6214dc53ad2d35387db2",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3540,7 +3540,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 105389
+      "bytes": 107458
     },
     {
       "path": "apps/guest/guest-entry.js",
@@ -12145,7 +12145,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "0cca2e4f37182559c81eff6ca847d450f00f991872f736fce2bbf782fff05e48",
+      "sha256": "0d8fac05737aa51bc520733fb0154800a15ebfc47e6e67d45efc27015ce7d653",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -15124,7 +15124,7 @@
       "functional_title": "Accessible tabs integration contracts",
       "current_responsibility": "Verifies Customer/Admin loading order, Service Worker precache, and feature wiring.",
       "next_action": "Run with npm test.",
-      "sha256": "a710a1149cfa63fb872f4f347919b9cf448444c32e7db3d05f9f97c036ab235d",
+      "sha256": "8374b1b7dfd6d9246344c0858a614272532624cfd1b420f0f517193a6a134bf6",
       "bytes": 1367
     },
     {
@@ -15544,7 +15544,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "ed91bfbbf2f4bbce26d12ea68ccffa2677886755847d298293f01c349c3ff056",
+      "sha256": "d7c2dcb1309eb80a9df3acd34e17bc6f398e6616c44423109800b3ce8a6d668e",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -16011,7 +16011,7 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "4f177072badeb23f3c95535568d59c78cd1f9769bb2c719335ecc62b7a6d17a4",
+      "sha256": "dfcbcebee41b9e58ea03f0d41c8a2c0e09b0ed6a673b92e994ea8cec174bb90b",
       "bytes": 6979
     },
     {
@@ -16274,8 +16274,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "d20671806d0bf45e6a77210e8594870cb994b48cd0865e3e3ab4d1b14b1e5fc6",
-      "bytes": 13465
+      "sha256": "e20b1bc20388c1de3f98dc73060b77106e0390f13501a06b9c569468904c8594",
+      "bytes": 14761
     },
     {
       "path": "tests/unit/security.test.js",
@@ -16419,7 +16419,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "ddafb56c7d0cd979f23cba43832ab8dd255cdc33abd0d96a6fae6dd11069d28e",
+      "sha256": "fe0d63a552af21ba194929c09d9b8cd43abdd870fd5799824f74931398ecaa97",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
