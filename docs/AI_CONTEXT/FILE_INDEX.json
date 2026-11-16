@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 552,
+  "file_count": 553,
   "files": [
     {
       "path": "_redirects",
@@ -2001,8 +2001,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 277930,
-      "sha256": "eb4ad2129ef23820ca97374c48e377042b014c478c6317143414541fdeb69f17"
+      "bytes": 278144,
+      "sha256": "7135a4151295b34cefffc3a6343e259b000e92591ee506da48a2cf94575a0730"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2015,8 +2015,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 141787,
-      "sha256": "e3b030022aedb03554595da49db83f2ca2c3ad7c124a9ac2656becc57001e977"
+      "bytes": 141986,
+      "sha256": "2856796da32620a3160612cd7815e4408c26652cff54cf367910355b67c969db"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2355,6 +2355,13 @@
       "sha256": "bbaed65f3749e8756cf105def3d30c8381f1842da31e0d1d7ce4597e81295fd5"
     },
     {
+      "path": "docs/PLAYBOOKS.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 13618,
+      "sha256": "5e4b3bdc0cf1efa25e8311457ea66c5bfe348775ed5f2dd0123b965fe768126b"
+    },
+    {
       "path": "docs/PROJECT_CONTROL_CENTER_GUIDE.md",
       "area": "docs",
       "status": "CONFIGURATION",
@@ -2372,8 +2379,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 26511,
-      "sha256": "ae938cdb0eeb19732e45a93267e225cc51467947ef0c8f8da2b23d1f2a93579a"
+      "bytes": 26540,
+      "sha256": "b42929c7909a7d5bf89c32e8256384199908189025e8a6f77b4930a691585921"
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",

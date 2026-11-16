@@ -340,6 +340,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | docs/NEW_FILES_REPORT.md | CONFIGURATION | Documentation for NEW_FILES_REPORT | Update only when related implementation changes. |
 | docs/P1_PROVIDER_AUDIT.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
 | docs/PERMISSIONS.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
+| docs/PLAYBOOKS.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | docs/PROJECT_CONTROL_CENTER_GUIDE.md | CONFIGURATION | دليل الدفتر السابق الذي كان يحفظ التقدم في Local Storage فقط. | احتفظ به كمرجع تاريخي؛ الدليل الجديد هو PROJECT_ENGINEER_GUIDE.md. |
 | docs/PROJECT_REFERENCE.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | docs/PROJECT_TREE.md | CONFIGURATION | Documentation for PROJECT_TREE | Update only when related implementation changes. |

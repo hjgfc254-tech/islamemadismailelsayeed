@@ -2,8 +2,8 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 552,
-    "total_files": 552,
+    "file_count": 553,
+    "total_files": 553,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 50,
@@ -23,7 +23,7 @@
       "IMPLEMENTED (SHELL, DEMO)": 1,
       "IMPLEMENTED (SHELL)": 2,
       "LEGACY": 1,
-      "NEEDS_REVIEW": 176,
+      "NEEDS_REVIEW": 177,
       "PARTIALLY IMPLEMENTED": 1,
       "PLACEHOLDER": 64,
       "TEST": 78
@@ -9332,7 +9332,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "eb4ad2129ef23820ca97374c48e377042b014c478c6317143414541fdeb69f17",
+      "sha256": "7135a4151295b34cefffc3a6343e259b000e92591ee506da48a2cf94575a0730",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -9368,7 +9368,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 277930
+      "bytes": 278144
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -9428,7 +9428,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "e3b030022aedb03554595da49db83f2ca2c3ad7c124a9ac2656becc57001e977",
+      "sha256": "2856796da32620a3160612cd7815e4408c26652cff54cf367910355b67c969db",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -9464,7 +9464,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 141787
+      "bytes": 141986
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -10943,6 +10943,18 @@
       "bytes": 824
     },
     {
+      "path": "docs/PLAYBOOKS.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "PLAYBOOKS.md",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "5e4b3bdc0cf1efa25e8311457ea66c5bfe348775ed5f2dd0123b965fe768126b",
+      "bytes": 13618
+    },
+    {
       "path": "docs/PROJECT_CONTROL_CENTER_GUIDE.md",
       "area": "docs",
       "status": "CONFIGURATION",
@@ -11012,7 +11024,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "ae938cdb0eeb19732e45a93267e225cc51467947ef0c8f8da2b23d1f2a93579a",
+      "sha256": "b42929c7909a7d5bf89c32e8256384199908189025e8a6f77b4930a691585921",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11049,7 +11061,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 26511
+      "bytes": 26540
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
