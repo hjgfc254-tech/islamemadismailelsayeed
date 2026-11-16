@@ -1126,11 +1126,14 @@ html.show-mini-search .mini-search{display:inline-grid;animation:fadeIn .2s ease
 .site-foot .foot-cols button,.site-foot .foot-cols a{justify-content:flex-start;min-height:40px;padding:0 6px;text-align:start}
 .foot-copy{margin-top:6px}
 @media (prefers-reduced-motion:reduce){.tile:active,.cta:active,.hero-cta:active,.chip:active,.prow:active,.ic-btn:active{transform:none}.ptr.spin{animation-duration:2s}html.show-mini-search .mini-search{animation:none}}
-/* ── Hero on phones: the image keeps its full size and becomes the hero background; the text sits on it
-      (instead of below it), so the whole hero is shorter without shrinking the picture ── */
+
+/* ── Hero on phones: the picture keeps its natural size (design-system height, nothing on top of it);
+      only the text block under it is compacted so the hero as a whole is shorter ── */
 @media (max-width:767px){
-  #view .hero{position:relative;display:block;min-height:0;overflow:hidden}
-  #view .hero .art{position:absolute;inset:0;height:auto;min-height:0;order:0}
-  #view .hero .art .hero-photo{object-position:30% 12%}
-  #view .hero .txt{position:relative;z-index:2;padding:clamp(92px,26vw,120px) 14px 16px;background:linear-gradient(to top,rgba(31,27,23,.94) 0%,rgba(31,27,23,.82) 52%,rgba(31,27,23,.25) 82%,rgba(31,27,23,0) 100%)}
+  #view .hero .txt{padding:12px 14px 14px}
+  #view .hero .hero-eyebrow{margin-bottom:4px;font-size:12px}
+  #view .hero .txt>p:not(.hero-eyebrow){display:none}
+  #view .hero h1{font-size:clamp(20px,5.6vw,25px);line-height:1.25}
+  #view .hero .hero-search{margin-top:10px}
+  #view .hero .hero-cta{margin-top:8px;min-height:44px}
 }

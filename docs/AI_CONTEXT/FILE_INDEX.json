@@ -566,8 +566,8 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 108068,
-      "sha256": "76ef62833b0af543eb62c80e45de73deafb5e8d39aebaf6d26e8b0fdad3dbae7"
+      "bytes": 107963,
+      "sha256": "4061ebb7dcf2b3be7cea3e00cbbe1b19ebf9a3b05647d5588112ecab8294d1c9"
     },
     {
       "path": "apps/guest/guest-entry.js",
@@ -2793,7 +2793,7 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 10596,
-      "sha256": "0d8fac05737aa51bc520733fb0154800a15ebfc47e6e67d45efc27015ce7d653"
+      "sha256": "42b2e23927f627720b8509c698d2d9862c8e55c4b3f20f0ec9c1d1a6fa0925ce"
     },
     {
       "path": "services/admin-api.js",
@@ -3353,7 +3353,7 @@
       "area": "tests",
       "status": "TEST",
       "bytes": 1367,
-      "sha256": "8374b1b7dfd6d9246344c0858a614272532624cfd1b420f0f517193a6a134bf6"
+      "sha256": "f2b5e8b01dd5cbae2dd5a9b07bc90642901788116ef546b596614fa341c90429"
     },
     {
       "path": "tests/unit/accessible-tabs.test.js",
@@ -3507,7 +3507,7 @@
       "area": "tests",
       "status": "IMPLEMENTED",
       "bytes": 2304,
-      "sha256": "d7c2dcb1309eb80a9df3acd34e17bc6f398e6616c44423109800b3ce8a6d668e"
+      "sha256": "abcfab404b5f4d5ed19d2b430aa93645cdd9a1873d482a4b2e559f12b0be045c"
     },
     {
       "path": "tests/unit/design-token-audit.test.js",
@@ -3668,7 +3668,7 @@
       "area": "tests",
       "status": "TEST",
       "bytes": 6979,
-      "sha256": "dfcbcebee41b9e58ea03f0d41c8a2c0e09b0ed6a673b92e994ea8cec174bb90b"
+      "sha256": "fea65b05423262599845fb0e1cd6075279fdebc9e9842894b1cdc5d5ddfdbfaf"
     },
     {
       "path": "tests/unit/provider-request-domain.test.js",
@@ -3744,8 +3744,8 @@
       "path": "tests/unit/round5-features.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 14899,
-      "sha256": "26b1d252fa263312aca0ba238a9a9d38995566d2194644b240fe0e659c66c856"
+      "bytes": 14977,
+      "sha256": "3c00f3602c550b7a03be03e227703e0af981b5eb03360d4e3f29d0ba824baf53"
     },
     {
       "path": "tests/unit/security.test.js",
@@ -3808,7 +3808,7 @@
       "area": "tests",
       "status": "IMPLEMENTED",
       "bytes": 2195,
-      "sha256": "fe0d63a552af21ba194929c09d9b8cd43abdd870fd5799824f74931398ecaa97"
+      "sha256": "80b53262aa4c1e6ed3dff502436ea35d4844a20535ed9f260e9e1ced5dc12123"
     },
     {
       "path": "tests/unit/status-badge.test.js",

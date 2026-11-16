@@ -208,5 +208,6 @@ test('round 6: home footer links, «امتى محتاج الفني؟» pre-fills
   assert.match(src, /function mountPullRefresh\(\)/); assert.match(src, /tapping the tab you are on scrolls back to the top/);
   const css = fs.readFileSync(path.join(ROOT, 'apps/customer/styles/customer.css'), 'utf8');
   assert.doesNotMatch(css, /#view \.hero \.art\{height:clamp/, 'the hero image is not shrunk');
-  assert.match(css, /#view \.hero \.art\{position:absolute;inset:0;height:auto/, 'on phones the image is the hero background (shorter hero, full image)');
+  assert.doesNotMatch(css, /#view \.hero \.art\{position:absolute/, 'nothing is drawn over the hero picture');
+  assert.match(css, /#view \.hero \.txt>p:not\(\.hero-eyebrow\)\{display:none\}/, 'the text block is compacted instead');
 });
