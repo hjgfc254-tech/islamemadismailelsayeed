@@ -1,43 +1,130 @@
 {
-    "functions":  [
-                      {
-                          "source":  "functions",
-                          "codebase":  "default",
-                          "ignore":  [
-                                         "node_modules",
-                                         ".git",
-                                         "firebase-debug.log",
-                                         "firebase-debug.*.log"
-                                     ]
-                      }
-                  ],
-    "firestore":  {
-                      "rules":  "firestore.rules",
-                      "indexes":  "firestore.indexes.json"
-                  },
-    "database":  {
-                     "rules":  "database.rules.json"
-                 },
-    "emulators":  {
-                      "auth":  {
-                                   "host":  "127.0.0.1",
-                                   "port":  9099
-                               },
-                      "functions":  {
-                                        "host":  "127.0.0.1",
-                                        "port":  5001
-                                    },
-                      "firestore":  {
-                                        "host":  "127.0.0.1",
-                                        "port":  8080
-                                    },
-                      "database":  {
-                                       "host":  "127.0.0.1",
-                                       "port":  9000
-                                   },
-                      "ui":  {
-                                 "enabled":  false
-                             },
-                      "singleProjectMode":  true
-                  }
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ]
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "emulators": {
+    "auth": {
+      "host": "127.0.0.1",
+      "port": 9099
+    },
+    "functions": {
+      "host": "127.0.0.1",
+      "port": 5001
+    },
+    "firestore": {
+      "host": "127.0.0.1",
+      "port": 8080
+    },
+    "database": {
+      "host": "127.0.0.1",
+      "port": 9000
+    },
+    "ui": {
+      "enabled": false
+    },
+    "singleProjectMode": true
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "functions/**",
+      "tests/**",
+      "docs/**",
+      "scripts/**",
+      "backend/**",
+      "database/**",
+      "graphify-out/**",
+      "ai-workforce/**",
+      "design-reference/**",
+      "firebase-*-backup-*/**",
+      "**/*.md",
+      "**/*.bak",
+      "**/*.zip",
+      "**/*.log",
+      "package.json",
+      "package-lock.json",
+      "firestore.rules",
+      "database.rules.json",
+      "firestore.indexes.json",
+      "_redirects"
+    ],
+    "redirects": [
+      {
+        "source": "/",
+        "destination": "/apps/customer/index.html",
+        "type": 302
+      },
+      {
+        "source": "/provider{,/**}",
+        "destination": "/apps/provider/index.html",
+        "type": 302
+      },
+      {
+        "source": "/admin{,/**}",
+        "destination": "/apps/admin/index.html",
+        "type": 302
+      }
+    ],
+    "headers": [
+      {
+        "source": "/service-worker.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(js|css|html|json)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(webp|png|jpg|jpeg|svg|woff2)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=604800"
+          }
+        ]
+      },
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          }
+        ]
+      }
+    ]
+  }
 }

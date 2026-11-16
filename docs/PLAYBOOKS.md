@@ -23,8 +23,9 @@ Related: `docs/PROJECT_REFERENCE.md` (what everything is), `docs/DESIGN_MAP.md` 
 7. Deploy what changed (playbooks 2–3), then smoke-test (§2.5).
 
 ## 2. Publish the website on Firebase Hosting (first time)
-**Status today:** `firebase.json` has **no `hosting` section** yet, and the site root has no `index.html` (the customer
-app is `apps/customer/index.html`). `_redirects` is a Netlify-style file; Firebase ignores it.
+**Status (2026-11-16):** the `hosting` block is in `firebase.json` (public = repo root with a strict ignore list; `/`, `/provider`,
+`/admin` redirect to the apps). A preview channel was deployed and verified (private files 404, all three apps run in
+Firebase mode with no console errors). Go live with `firebase deploy --only hosting`. `_redirects` is Netlify-only.
 
 **Steps**
 1. Add a `hosting` block to `firebase.json` (public = repo root, but **exclude everything that is not the website**):

@@ -10951,8 +10951,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "5e4b3bdc0cf1efa25e8311457ea66c5bfe348775ed5f2dd0123b965fe768126b",
-      "bytes": 13618
+      "sha256": "9e5a5d89b7119593f73c51935ab591802be160c3f6e2078a40030b3b93eea98b",
+      "bytes": 13769
     },
     {
       "path": "docs/PROJECT_CONTROL_CENTER_GUIDE.md",
@@ -11331,8 +11331,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "5d6d00ffd349a95d3a91f25e8f417d231b6bb8b78480a2d54f9892723886b059",
-      "bytes": 1739
+      "sha256": "2ecfc669e889df6a31a2b13aad3555a501c3ef0d843775e4ed7ce203ce84b40b",
+      "bytes": 2602
     },
     {
       "path": "firestore.indexes.json",
