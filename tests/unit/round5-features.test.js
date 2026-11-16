@@ -207,5 +207,6 @@ test('round 6: home footer links, «امتى محتاج الفني؟» pre-fills
   const src = fs.readFileSync(path.join(ROOT, 'apps/customer/app.js'), 'utf8');
   assert.match(src, /function mountPullRefresh\(\)/); assert.match(src, /tapping the tab you are on scrolls back to the top/);
   const css = fs.readFileSync(path.join(ROOT, 'apps/customer/styles/customer.css'), 'utf8');
-  assert.match(css, /#view \.hero \.art\{height:clamp\(96px,26vw,124px\)\}/, 'hero kept but shorter on phones');
+  assert.doesNotMatch(css, /#view \.hero \.art\{height:clamp/, 'the hero image is not shrunk');
+  assert.match(css, /#view \.hero \.art\{position:absolute;inset:0;height:auto/, 'on phones the image is the hero background (shorter hero, full image)');
 });

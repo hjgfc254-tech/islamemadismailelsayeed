@@ -566,8 +566,8 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 107458,
-      "sha256": "958a2865d4cb0a5a4c810d217582fbe5c0bf3ab352eb6214dc53ad2d35387db2"
+      "bytes": 108068,
+      "sha256": "76ef62833b0af543eb62c80e45de73deafb5e8d39aebaf6d26e8b0fdad3dbae7"
     },
     {
       "path": "apps/guest/guest-entry.js",
@@ -3744,8 +3744,8 @@
       "path": "tests/unit/round5-features.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 14761,
-      "sha256": "e20b1bc20388c1de3f98dc73060b77106e0390f13501a06b9c569468904c8594"
+      "bytes": 14899,
+      "sha256": "26b1d252fa263312aca0ba238a9a9d38995566d2194644b240fe0e659c66c856"
     },
     {
       "path": "tests/unit/security.test.js",
