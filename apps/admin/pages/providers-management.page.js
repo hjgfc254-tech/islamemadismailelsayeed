@@ -21,7 +21,7 @@
   /** Allowed review moves (local simulation only). */
   const NEXT = {
     pending: [{ to: 'approved', text: 'قبول المزود محليًا', cls: 'adm-btn-p' }, { to: 'rejected', text: 'رفض الطلب محليًا', cls: 'adm-btn-d' }],
-    approved: [{ to: 'suspended', text: 'تعليق المزود محليًا', cls: 'adm-btn-d' }],
+    approved: [{ to: 'warned', text: 'إنذار: اتفاق بره المنصة', cls: 'adm-btn' }, { to: 'suspended', text: 'تعليق المزود محليًا', cls: 'adm-btn-d' }],   /* «warned» is an action, not a status: the 2nd warning suspends */
     suspended: [{ to: 'approved', text: 'إعادة التفعيل محليًا', cls: 'adm-btn-p' }],
     rejected: [{ to: 'pending', text: 'إعادة للمراجعة محليًا', cls: 'adm-btn' }]
   };
@@ -100,7 +100,7 @@
       <dl class="ord-facts">
         <div><dt>الهاتف (تجريبي)</dt><dd><bdi dir="ltr">${esc(p.phone)}</bdi></dd></div><div><dt>التخصص</dt><dd>${esc(p.specialty)}</dd></div>
         <div><dt>المنطقة</dt><dd>${esc(p.area)}</dd></div><div><dt>تاريخ التسجيل</dt><dd>${esc(dt(p.joined))}</dd></div>
-        <div><dt>التقييم</dt><dd>${p.rating == null ? '—' : nf(p.rating) + ' / ' + nf(5)}</dd></div><div><dt>الأعمال المنجزة</dt><dd>${nf(p.jobs)}</dd></div></dl>
+        <div><dt>التقييم</dt><dd>${p.rating == null ? '—' : nf(p.rating) + ' / ' + nf(5)}</dd></div><div><dt>الأعمال المنجزة</dt><dd>${nf(p.jobs)}</dd></div><div><dt>الإنذارات</dt><dd>${nf(p.warnings || 0)}${(p.warnings || 0) >= 1 ? ' — الإنذار التاني بيوقف الحساب' : ''}</dd></div></dl>
       <section aria-labelledby="ord-h-docs"><h3 id="ord-h-docs">المستندات</h3>
         <ul class="ord-notes">${DOCS.map((d) => `<li>${esc(d.label)} — ${p.docs[d.key] ? 'مرفق' : '<b>ناقص</b>'}</li>`).join('')}</ul>
         ${docsComplete(p) ? '' : '<p class="ord-muted">المستندات غير مكتملة.</p>'}</section>
@@ -143,7 +143,8 @@
       if (L && b.dataset.ordStatus) { L.status('providers', openId, b.dataset.ordStatus).then((res) => { if (res.ok) { providers = L.rows('providers'); sync(); paintDlg('[data-ord-close]'); } else showErr(L.errorText(res)); }); return; }
       if (L && b.hasAttribute('data-ord-note')) { showErr(L.UNSUPPORTED); return; }
       try {
-        if (b.dataset.ordStatus) { providers = setStatus(providers, openId, b.dataset.ordStatus); sync(); paintDlg('[data-ord-close]'); }
+        if (b.dataset.ordStatus === 'warned') { providers = providers.map((p) => (p.id !== openId ? p : { ...p, warnings: (p.warnings || 0) + 1, status: (p.warnings || 0) + 1 >= 2 ? 'suspended' : p.status })); sync(); paintDlg('[data-ord-close]'); return; }
+    if (b.dataset.ordStatus) { providers = setStatus(providers, openId, b.dataset.ordStatus); sync(); paintDlg('[data-ord-close]'); }
         else if (b.hasAttribute('data-ord-note')) { providers = addNote(providers, openId, dlgEl.querySelector('#ord-note').value); sync(); paintDlg('#ord-note'); }
       } catch (err) { showErr(err.message === 'Empty note' ? 'اكتب نص الملاحظة أولًا.' : 'تعذر تنفيذ الإجراء على هذا المزود.'); }
     });

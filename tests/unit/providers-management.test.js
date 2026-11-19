@@ -16,7 +16,7 @@ test('fixtures: unique ids, fake phones, all 4 statuses, only approved/suspended
     else{assert.strictEqual(p.jobs,0);assert.strictEqual(p.rating,null)}});
 });
 test('allowedNext: review moves only; unknown → none',()=>{
-  assert.deepStrictEqual(P.allowedNext('pending').sort(),['approved','rejected']);assert.deepStrictEqual(P.allowedNext('approved'),['suspended']);
+  assert.deepStrictEqual(P.allowedNext('pending').sort(),['approved','rejected']);assert.deepStrictEqual(P.allowedNext('approved'),['warned','suspended']);   /* «warned» = admin warning action (2nd one suspends), not a stored status */
   assert.deepStrictEqual(P.allowedNext('suspended'),['approved']);assert.deepStrictEqual(P.allowedNext('rejected'),['pending']);assert.deepStrictEqual(P.allowedNext('x'),[]);
 });
 test('setStatus is immutable and rejects invalid moves / unknown ids',()=>{

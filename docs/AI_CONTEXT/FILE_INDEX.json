@@ -167,8 +167,8 @@
       "path": "apps/admin/modules/admin-live.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 20217,
-      "sha256": "5606c2d1ad69a67c9f72e5f8acda6d8058f8f52c19586097e9c10def6bf1e3f1"
+      "bytes": 20459,
+      "sha256": "efb152d15058e86feeb175de722233a19ae60f487d682a674b17fe1716ce69c4"
     },
     {
       "path": "apps/admin/modules/ai-settings.js",
@@ -342,8 +342,8 @@
       "path": "apps/admin/pages/providers-management.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 12733,
-      "sha256": "c26f5d37bcfd96fc9cb2170e36a47becce880f45bdf82820b9f4c731116c15fe"
+      "bytes": 13305,
+      "sha256": "61824de353ba2ddf7da74df338a8f363df616ad9738554fe68ce68eff945703c"
     },
     {
       "path": "apps/admin/pages/quotes-management.page.js",
@@ -3863,8 +3863,8 @@
       "path": "tests/unit/providers-management.test.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 3336,
-      "sha256": "75ab803f150f093738f627b28ceff0d429a119d4cdf308915af38018c0b9961f"
+      "bytes": 3427,
+      "sha256": "82c56e589ac2f37b5185ad6b556ca876e0a0ca36bf820e1dd7d68d37370a14a7"
     },
     {
       "path": "tests/unit/quotes-management.test.js",

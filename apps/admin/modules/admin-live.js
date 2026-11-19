@@ -53,7 +53,7 @@
       let rating = null; try { rating = MP.rating(p.id); } catch (e) { rating = null; }
       const submitted = !!(p.docs && String(p.docs).trim());       /* the backend stores one documents field */
       return {
-        id: p.id, name: p.name, phone: p.phone || '', specialty: (p.cats || []).map(catName).join('، '), area: (p.areas && p.areas.length ? p.areas : (p.govs || [])).join('، '),
+        id: p.id, name: p.name, phone: p.phone || '', warnings: +p.warnings || 0, specialty: (p.cats || []).map(catName).join('، '), area: (p.areas && p.areas.length ? p.areas : (p.govs || [])).join('، '),
         status: p.status, rating: rating == null ? (p.rating || null) : rating, jobs: +p.jobs || 0, docs: { id: submitted, skill: submitted, photo: submitted },
         joined: p.createdAt || null, notes: []
       };
@@ -173,6 +173,7 @@
     const enc = encodeURIComponent(id);
     if (entity === 'orders' && next === 'cancelled') return call('POST', '/requests/' + enc + '/cancel', { reason: (extra && extra.reason) || 'إلغاء من الإدارة' });
     if (entity === 'customers' && (next === 'active' || next === 'suspended')) return call('POST', '/admin/customers/' + enc + '/status', { status: next });
+    if (entity === 'providers' && next === 'warned') return call('POST', '/admin/providers/' + enc + '/warn', { reason: (extra && extra.reason) || 'اتفاق مع العملاء بره المنصة' });
     if (entity === 'providers' && ['approved', 'rejected', 'suspended'].includes(next)) return call('POST', '/admin/providers/' + enc + '/status', { status: next });
     if (entity === 'settlements' && next === 'completed' && /^stl:pending:/.test(id)) {
       /* collect the provider's whole uncollected platform share: mark each pending transaction collected (existing route) */
@@ -188,7 +189,7 @@
   const errorText = (res) => (res && res.error && res.error.message) || 'تعذّر تنفيذ الإجراء.';
 
   /* actions the server can really perform (everything else is hidden in live mode instead of failing on click) */
-  const SUPPORTED = { orders: ['cancelled'], customers: ['active', 'suspended'], providers: ['approved', 'rejected', 'suspended'], complaints: ['resolved'], reviews: ['hidden', 'published'], settlements: ['completed'], quotes: [] };
+  const SUPPORTED = { orders: ['cancelled'], customers: ['active', 'suspended'], providers: ['approved', 'rejected', 'suspended', 'warned'], complaints: ['resolved'], reviews: ['hidden', 'published'], settlements: ['completed'], quotes: [] };
   const supports = (entity, next) => (SUPPORTED[entity] || []).includes(next);
   /* page route → entity; prunes unsupported status buttons / options as dialogs render (one observer for all pages) */
   const ROUTE_ENTITY = { orders: 'orders', customers: 'customers', providers: 'providers', complaints: 'complaints', reviews: 'reviews', settlements: 'settlements', quotes: 'quotes' };
