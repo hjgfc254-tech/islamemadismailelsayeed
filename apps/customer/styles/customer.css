@@ -1264,3 +1264,29 @@ html.ob-open,html.ob-open body{overflow:hidden}
 .ob-skip{position:absolute;z-index:2;top:calc(14px + env(safe-area-inset-top));inset-inline-start:16px;min-height:40px;padding:0 16px;border:0;border-radius:999px;background:rgba(0,0,0,.28);color:#fff;font:inherit;font-size:14px;font-weight:700;backdrop-filter:blur(6px);cursor:pointer}
 @media (min-width:768px){#onboard{display:grid;place-items:center;background:rgba(31,27,23,.72)}.ob-track,#onboard .ob-bar,#onboard .ob-skip{max-width:430px}#onboard>.ob-track{width:430px;height:min(92vh,860px);border-radius:28px;box-shadow:var(--shadow-3)}#onboard .ob-bar{inset-inline:auto;width:382px;bottom:calc(50% - min(46vh,430px) + 36px)}#onboard .ob-skip{top:calc(50% - min(46vh,430px) + 14px);inset-inline-start:calc(50% - 199px)}}
 @media (prefers-reduced-motion:reduce){#onboard,.ob-slide img,.ob-copy,.ob-dots button{transition:none}.ob-slide img{transform:none}.ob-copy{opacity:1;transform:none}}
+/* ══ UI audit fixes (phones) ══ */
+/* the [hidden] attribute must win over display:flex */
+.chat-typing[hidden]{display:none}
+/* legacy pink / mint leftovers in the request flow → brand copper */
+#view .rsec .rh button{color:var(--accent-ink);font-weight:700}
+#view .crumbs button{background:var(--accent-soft);color:var(--accent-ink)}
+@media (max-width:767px){
+  /* trust strip: three compact badges in one row instead of three tall cards */
+  #view .trust-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}
+  #view .trust-strip li{display:grid;justify-items:center;gap:6px;padding:12px 6px;text-align:center;min-height:0}
+  #view .trust-strip li small{display:none}
+  #view .trust-strip li b{font-size:12px;line-height:1.35}
+  #view .trust-strip li .i{width:34px;height:34px;padding:8px}
+  /* categories: an app-like 4-column grid (7 categories → 4 + 3) */
+  #view .grid.fit{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+  #view .grid.fit>.tile{flex:none;max-width:none;width:auto;min-height:0;padding:8px 4px;grid-column:auto}
+  #view .grid.fit>.tile:last-child:nth-child(3n+1){grid-column:auto}
+  #view .grid.fit>.tile .tart{width:56px;height:56px}
+  #view .grid.fit .tile .tl{font-size:11.5px}
+  /* the photo «trust» block repeats the strip and «how it works» on phones */
+  #view .trust{display:none}
+  /* request flow: three items per row → less scrolling */
+  #view .cgrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  #view .icard{min-height:0;padding:10px 4px;font-size:12px;gap:6px}
+  #view .icard .icp,#view .icard .tart{width:58px;height:58px}
+}

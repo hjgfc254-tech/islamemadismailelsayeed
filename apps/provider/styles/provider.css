@@ -174,3 +174,6 @@
 .pv-praise li{display:inline-flex;align-items:center;gap:8px;padding:5px 5px 5px 12px;border-radius:999px;background:var(--surface-sunken);font-size:13px}
 .pv-praise b{display:grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-size:12px}
 @media (prefers-reduced-motion:reduce){.pv-typing i{animation:none;opacity:.8}}
+.pv-typing[hidden]{display:none}
+.pv-kpis-slim{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pv-kpis-slim b{font-size:18px}

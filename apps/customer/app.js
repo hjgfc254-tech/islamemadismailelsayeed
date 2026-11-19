@@ -681,6 +681,7 @@ function renderSavedAddresses(){
   let list = [];
   try { list = MP.addressesFor(c.id); } catch {}
   const head2 = `<h2 class="sec-title">${ic('pin')}عناويني${list.length?`<button class="sec-more" data-go="addresses">إدارة (${list.length})</button>`:''}</h2>`;
+  if (!list.length && state.lastShown && state.lastShown.name === 'home') return '';   /* Home stays short: the address is asked inside the request */
   if (!list.length) {
     const emptyHtml = (typeof UIK !== 'undefined') ? UIK.empty('pin','مفيش عناوين محفوظة','ضيف عنوانك علشان طلباتك تبقى أسرع')
       : `<div class="empty">${ic('pin')}<p>مفيش عناوين محفوظة</p></div>`;

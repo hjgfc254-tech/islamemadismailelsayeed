@@ -447,8 +447,8 @@
       "path": "apps/customer/app.js",
       "area": "apps/customer",
       "status": "PARTIALLY IMPLEMENTED",
-      "bytes": 100917,
-      "sha256": "04d696659388160c653710910461a2ee5ac78c8e174caa0482ce258e68d514da"
+      "bytes": 101069,
+      "sha256": "2d10f985168911e07a116ab15d86caf20f20a41fe92521c5e6290e698a43b791"
     },
     {
       "path": "apps/customer/customer-router.js",
@@ -580,8 +580,8 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 122392,
-      "sha256": "f7c82e18b05b8d83e49860d9fb0ad961dbe29a59a56b6d02f421d21fa2a80684"
+      "bytes": 124027,
+      "sha256": "4b132e75718ba493b4a294eaf8b7fffbe809c9e0b81c23129d2a4b618a1d7490"
     },
     {
       "path": "apps/guest/guest-entry.js",
@@ -608,8 +608,8 @@
       "path": "apps/provider/app.js",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 58108,
-      "sha256": "0a6d3cf91be9c183da71521179bd495f0c4753bc360d6db8afb0c88304dc7dbc"
+      "bytes": 57875,
+      "sha256": "49a897970283487001a21de5f0770581d5064b6f9ebf45712325ac7f450a1510"
     },
     {
       "path": "apps/provider/index.html",
@@ -769,8 +769,8 @@
       "path": "apps/provider/styles/provider.css",
       "area": "apps/provider",
       "status": "IMPLEMENTED (RESPONSIVE FRONTEND)",
-      "bytes": 29411,
-      "sha256": "6c6a99f68a6392c0d91d23118ceaca417687749562e60812a132044433c6d74a"
+      "bytes": 29538,
+      "sha256": "cfd514679043f0f8f325b6a0b0e5fd41658165b4ffc8aa93a3e3363fac1d475c"
     },
     {
       "path": "assets/app-icon-192.png",
@@ -3611,8 +3611,8 @@
       "path": "tests/unit/home.test.js",
       "area": "tests",
       "status": "IMPLEMENTED",
-      "bytes": 10214,
-      "sha256": "a48c57ba579ba176f1140d5fe5fd3d4059f25882388919a6c427d3700b1bf7c6"
+      "bytes": 10278,
+      "sha256": "5969fa19dbd58f57ecffea6dcf566e03fec1f683190e857be27ce2a35406c417"
     },
     {
       "path": "tests/unit/icon-asset-audit.test.js",

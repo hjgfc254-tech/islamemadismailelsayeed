@@ -48,7 +48,7 @@ run("store.set('user',{name:'أحمد علي',phone:'01000000000'}); MP.customer
 ok(view().includes('يا أحمد')&&!view().includes('يا أحمد علي'),'greets by first name');
 ok(view().includes('تحب نصلّحلك'),'no-active subtitle');
 ok(!view().includes('طلباتك النشطة'),'no active section without requests');
-ok(view().includes('مفيش عناوين محفوظة'),'addresses empty state');
+ok(!view().includes('مفيش عناوين محفوظة'),'Home stays short: no empty addresses block (the address is asked inside the request)');
 ok(!els['#tabbar'].innerHTML.includes('tab-badge'),'no tab badge without active');
 
 /* 5) طلب نشط: بطاقة + شارة + سطر «الخطوة التالية» */
