@@ -185,8 +185,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "d11b4a0640ffd88cb28e6a85c3a49d4c2c9defe2c6bb5def4fd4cae9a41f2c91",
-      "bytes": 571
+      "sha256": "f1e1cf479715fdbbd31e17fec7cb607b0f4009b6f05b597912023ba031debd1e",
+      "bytes": 568
     },
     {
       "path": ".gitignore",
@@ -11192,8 +11192,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "c7d769f8ebdfa14ba58e3b228fe16a9df46c3dee8677b4f62f9909896d667dd5",
-      "bytes": 2012
+      "sha256": "8b5c9c3afdb9efb4cfa770023f51567bed6f1ada81c9110744904c14ad2188be",
+      "bytes": 712
     },
     {
       "path": "functions/src/limits.js",
@@ -11276,8 +11276,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "a6aba416111fd56b4d7499a05c9d7d89081b04b8496445993109d854c9ce12a7",
-      "bytes": 5362
+      "sha256": "fabc05e6c6e19bd649a8a54a972c98562ce2d2c136e8486ca3b5a1b8ec716969",
+      "bytes": 1838
     },
     {
       "path": "functions/src/workforce.js",
