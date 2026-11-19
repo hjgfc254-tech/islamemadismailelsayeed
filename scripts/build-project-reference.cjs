@@ -85,6 +85,8 @@ stored as **\`requests\`**; \`meta\`/\`settings\` live in \`system/meta\`, \`sys
 | \`system/settings\` | defaultRate, rates{cat:%}, prices{itemKey: base}, markupRate, customerFee, autoAssign, collectionModel, contentV, **trend{day,cats{},areas{"gov|area":n}}**, **packages[{id,name,cat,visits,price,desc,active}]**, **referral{on,reward}**, **warranty{default,cats{},items{}}** (days), **arrivalPin** (bool), **promos[{code,kind,value,maxOff,uses,used,firstOnly,until,active}]** (admin-only) |
 | \`system/content\` | v, hero{eyebrow,title,accent,sub,cta,media}, slides[], icons{name:mediaId}, banner{on,text,action}, updatedAt, by |
 | \`system/rbac\` | roles, overrides (employee permission catalogue) |
+| \`system/ai\` | AI routing providers (keys server-only), features {text, photo}, daily limits — Admin → إعدادات النظام → التوجيه الذكي |
+| \`aiUsage\` | {day, n} per user and \`_all\` — AI daily limits |
 | \`media\` | kind (hero/slide/icon), data (data:image/webp;base64…), bytes, w, h, at |
 | \`users/{uid}\` | tag (\`customer:<id>\` / \`provider:<id>\`) — identity link for signals |
 | \`admins/{uid}\` | employeeId, role, status, name |

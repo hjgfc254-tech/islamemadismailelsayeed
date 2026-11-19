@@ -28,6 +28,7 @@ hansalhlak/
 │   │   │   │   └── employee-status.js
 │   │   │   ├── admin-live-panels.js
 │   │   │   ├── admin-live.js
+│   │   │   ├── ai-settings.js
 │   │   │   ├── command-palette.js
 │   │   │   ├── marketing-editor.js
 │   │   │   ├── mini-charts.js
@@ -77,6 +78,7 @@ hansalhlak/
 │   │   ├── pages/
 │   │   │   ├── account.page.js
 │   │   │   ├── addresses.page.js
+│   │   │   ├── ai-assist.js
 │   │   │   ├── discover.page.js
 │   │   │   ├── home.page.js
 │   │   │   ├── market-ui.page.js
@@ -453,6 +455,7 @@ hansalhlak/
 │   │   └── manifest.json
 │   ├── src/
 │   │   ├── admin-extra.js
+│   │   ├── ai.js
 │   │   ├── content.js
 │   │   ├── identity.js
 │   │   ├── limits.js

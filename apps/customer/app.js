@@ -1218,10 +1218,10 @@ function openSlide(id){
 
 let PENDING_PHOTO = null;
 function openCam(file){
+  if (globalThis.HSAiAssist && HSAiAssist.flags().photo) { HSAiAssist.routePhoto(file); return; }   /* «صوّر المشكلة»: the server suggests the service */
   const url = URL.createObjectURL(file);
   sheet(`<h4>${ic('camera')} صورة المشكلة</h4><div class="sub">اختر القسم المناسب لبدء طلبك، ثم أضف الصورة من خطوة المرفقات</div>
     <img class="preview" src="${url}" alt="صورة المشكلة">
-    <div class="demo-banner">${ic('info')}<span>في V7 تُضاف الصور عبر خطوة المرفقات داخل النموذج (IndexedDB). اضغط على القسم لبدء الطلب.</span></div>
     ${tiles(true)}`);
   origin = null;
 }

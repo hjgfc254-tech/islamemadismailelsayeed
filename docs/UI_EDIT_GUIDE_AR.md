@@ -40,6 +40,7 @@
 | طلباتي | `pages/orders.page.js` | `.prow`، `.mj` |
 | **متابعة الطلب** | `pages/order-details.page.js` + `pages/trust-features.js` (كود الوصول، الضمان، البقشيش، قبل/بعد) + `pages/market-ui.page.js` (الأزرار والنوافذ) | `.journey`، `.arrive-card`، `.prov-card`، `.chat-box`، `.warranty-strip`، `.tip-card`، `.ba` |
 | ملف الفني | `pages/providers.page.js` | `.provider-hero`، `.rating-break`، `.praise` |
+| «وجّهني» تحت البحث + تحليل صورة الكاميرا | `pages/ai-assist.js` | `.ai-guide`، `.ai-pick`، `.ai-wait` |
 | حسابي + «بيتي» | `pages/account.page.js` + `pages/trust-features.js` (`myHome`) | `.auth-card`، `.myhome`، `.mh-list` |
 | العناوين | `pages/addresses.page.js` | `.addr-*` |
 | الدعم والأسئلة والسياسات | `pages/support.page.js` (`FAQ`, `POLICIES`) | `.card2` |
@@ -65,6 +66,7 @@
 | البحث السريع Ctrl+K | `modules/command-palette.js` | `.cp*` |
 | واجهة الموقع (هيرو، شرائح، صور، شريط إعلانات) | `modules/site-content-editor.js` | — |
 | الضمان، كود الوصول، الخصومات، الدعوة، الباقات | `modules/marketing-editor.js` | `.mk-*` |
+| التوجيه الذكي (مفاتيح DeepSeek / Gemini، الترتيب، التشغيل) | `modules/ai-settings.js` | `.ai-row` |
 | كل صفحة إدارة | `pages/<الاسم>.page.js` | `admin-components.css` |
 
 > في الإدارة استخدم متغيرات الهوية (`var(--accent)`) بدل الألوان الثابتة — فيه اختبار بيعدّ القيم الثابتة.

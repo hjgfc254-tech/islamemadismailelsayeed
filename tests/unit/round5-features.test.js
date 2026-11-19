@@ -326,3 +326,16 @@ test('first-visit onboarding: three photos, once per device, skipped for returni
   assert.match(fs.readFileSync(path.join(ROOT, 'apps/customer/index.html'), 'utf8'), /pages\/onboarding\.js/);
   assert.match(fs.readFileSync(path.join(ROOT, 'apps/customer/app.js'), 'utf8'), /hero-tech-v2\.webp/);
 });
+test('AI assist UI: hidden unless the admin enabled it on the real server; admin editors send their data as the request body', () => {
+  const src = fs.readFileSync(path.join(ROOT, 'apps/customer/pages/ai-assist.js'), 'utf8');
+  assert.match(src, /HSFirebaseConfig\.mode === 'firebase' && root\.HSBackend && typeof root\.HSBackend\.ai === 'function'/, 'local demo never shows it');
+  assert.doesNotMatch(src.replace(/\/\*[\s\S]*?\*\//g, ''), /ذكاء|AI\b/, 'no «AI» wording in the customer UI');
+  assert.match(src, /WZ\.step = r\.problem \? 3 : 2/, 'accepting opens the request at the details screen');
+  const app = fs.readFileSync(path.join(ROOT, 'apps/customer/app.js'), 'utf8');
+  assert.match(app, /HSAiAssist\.flags\(\)\.photo\) \{ HSAiAssist\.routePhoto\(file\)/);
+  assert.doesNotMatch(app, /في V7 تُضاف الصور/, 'developer note no longer shown to customers');
+  /* regression: the admin editors must wrap their payload as { body } (HSApiClient.request(method, path, { body })) */
+  assert.match(fs.readFileSync(path.join(ROOT, 'apps/admin/modules/marketing-editor.js'), 'utf8'), /request\('PATCH', '\/admin\/marketing', \{ body: \{/);
+  const aiAdmin = fs.readFileSync(path.join(ROOT, 'apps/admin/modules/ai-settings.js'), 'utf8');
+  assert.match(aiAdmin, /request\('PATCH', '\/admin\/ai', \{ body: \{/); assert.match(aiAdmin, /type="password" data-ai-p="apiKey"/);
+});

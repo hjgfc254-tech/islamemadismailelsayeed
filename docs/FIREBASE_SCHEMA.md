@@ -55,6 +55,10 @@ written by `functions/src/store.js`.
 
 ## Backend-only collections
 
+- `system/ai` — AI routing config (server-only, never synced): `providers[{id,label,kind: deepseek|gemini|openai,model,baseUrl,apiKey,roles[text|vision],enabled}]` in priority order, `features{text,photo}`, `dailyLimit`, `globalDailyLimit`. Admin API returns keys masked (last 4). Public on/off flags are mirrored to `system/settings.ai`.
+- `aiUsage/{uid}` and `aiUsage/_all` — `{day, n}` daily counters for the AI limits.
+
+
 - `jobPhotos/{reqId}` — before / after photos of a job as compressed data URLs (each ≤ 180k chars), `share` = the customer's consent to show them in the provider portfolio. Read only by `GET /requests/:id/photos` and `GET /providers/:id/portfolio` (`providerId == x AND share == true`), never in a sync.
 - RTDB `typing/{reqId}/{uid}` — «بيكتب…» flag `{r: customer|provider, at}`, written by the user only.
 

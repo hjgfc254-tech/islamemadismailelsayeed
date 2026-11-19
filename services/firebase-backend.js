@@ -256,6 +256,8 @@ async function start() {
   const HSBackend = {
     mode: 'firebase',
     setTyping, onTyping,
+    /** «اكتب مشكلتك» / «صوّر المشكلة»: {kind:'text', text} | {kind:'photo', image} → {cat, item, problem, …} (throws when unavailable) */
+    async ai(payload) { return (await callSession({ op: 'ai', ...payload })).data; },
     get actor() { return actor; },
     get lastSync() { return last; },
     sync,

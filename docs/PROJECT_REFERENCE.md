@@ -71,6 +71,8 @@ stored as **`requests`**; `meta`/`settings` live in `system/meta`, `system/setti
 | `system/settings` | defaultRate, rates{cat:%}, prices{itemKey: base}, markupRate, customerFee, autoAssign, collectionModel, contentV, **trend{day,cats{},areas{"gov|area":n}}**, **packages[{id,name,cat,visits,price,desc,active}]**, **referral{on,reward}**, **warranty{default,cats{},items{}}** (days), **arrivalPin** (bool), **promos[{code,kind,value,maxOff,uses,used,firstOnly,until,active}]** (admin-only) |
 | `system/content` | v, hero{eyebrow,title,accent,sub,cta,media}, slides[], icons{name:mediaId}, banner{on,text,action}, updatedAt, by |
 | `system/rbac` | roles, overrides (employee permission catalogue) |
+| `system/ai` | AI routing providers (keys server-only), features {text, photo}, daily limits — Admin → إعدادات النظام → التوجيه الذكي |
+| `aiUsage` | {day, n} per user and `_all` — AI daily limits |
 | `media` | kind (hero/slide/icon), data (data:image/webp;base64…), bytes, w, h, at |
 | `users/{uid}` | tag (`customer:<id>` / `provider:<id>`) — identity link for signals |
 | `admins/{uid}` | employeeId, role, status, name |
@@ -177,6 +179,10 @@ written by `functions/src/store.js`.
 **Device-local, never stored server-side:** `drafts` and `searchHistory`; `services` is derived from the catalogue.
 
 ## Backend-only collections
+
+- `system/ai` — AI routing config (server-only, never synced): `providers[{id,label,kind: deepseek|gemini|openai,model,baseUrl,apiKey,roles[text|vision],enabled}]` in priority order, `features{text,photo}`, `dailyLimit`, `globalDailyLimit`. Admin API returns keys masked (last 4). Public on/off flags are mirrored to `system/settings.ai`.
+- `aiUsage/{uid}` and `aiUsage/_all` — `{day, n}` daily counters for the AI limits.
+
 
 - `jobPhotos/{reqId}` — before / after photos of a job as compressed data URLs (each ≤ 180k chars), `share` = the customer's consent to show them in the provider portfolio. Read only by `GET /requests/:id/photos` and `GET /providers/:id/portfolio` (`providerId == x AND share == true`), never in a sync.
 - RTDB `typing/{reqId}/{uid}` — «بيكتب…» flag `{r: customer|provider, at}`, written by the user only.
@@ -1274,7 +1280,7 @@ service cloud.firestore {
 | `docs/MIGRATION_PLAN.md` | CONFIGURATION | 1820 |
 | `docs/PERMISSIONS.md` | CONFIGURATION | 824 |
 | `docs/PLAYBOOKS.md` | NEEDS_REVIEW | 13769 |
-| `docs/PROJECT_REFERENCE.md` | NEEDS_REVIEW | 91167 |
+| `docs/PROJECT_REFERENCE.md` | NEEDS_REVIEW | 92172 |
 | `docs/PROJECT_TREE.md` | CONFIGURATION | 27184 |
 | `docs/README.md` | NEEDS_REVIEW | 3408 |
 | `docs/SECURITY_MODEL.md` | CONFIGURATION | 1054 |

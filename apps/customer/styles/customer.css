@@ -1273,3 +1273,17 @@ html.ob-open,html.ob-open body{overflow:hidden}
   #view .icard{min-height:0;padding:10px 4px;font-size:12px;gap:6px}
   #view .icard .icp,#view .icard .tart{width:58px;height:58px}
 }
+/* ── «وجّهني» / «صوّر المشكلة» (server-side routing) ── */
+@keyframes aiDot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+#view .ai-guide{display:inline-flex;align-items:center;gap:8px;grid-area:sg;justify-self:start;margin:6px 14px 0;min-height:40px;padding:0 14px;border:0;border-radius:999px;background:var(--accent);color:var(--on-accent);font:inherit;font-size:13.5px;font-weight:700;cursor:pointer;animation:trPop .25s ease both}
+#view .ai-guide[hidden]{display:none}
+.ai-wait{display:grid;justify-items:center;gap:8px;padding:28px 12px;text-align:center}
+.ai-wait b{font-size:16px}.ai-wait small{color:var(--text-muted)}
+.ai-dots{display:flex;gap:6px}.ai-dots i{width:10px;height:10px;border-radius:50%;background:var(--accent);animation:aiDot 1.2s infinite}
+.ai-dots i:nth-child(2){animation-delay:.15s}.ai-dots i:nth-child(3){animation-delay:.3s}
+.ai-pick{display:flex;align-items:center;gap:12px;margin:10px 0;padding:14px;border:1px solid var(--accent);border-radius:18px;background:var(--accent-soft)}
+.ai-pick .ai-ic img{width:52px;height:52px;border-radius:14px}
+.ai-pick span{display:grid}.ai-pick small{color:var(--text-muted);font-size:12px}.ai-pick b{font-size:16px}
+.ai-facts{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px;padding:0}
+.ai-facts li{display:grid;padding:6px 12px;border-radius:12px;background:var(--surface-sunken)}.ai-facts small{font-size:11px;color:var(--text-muted)}
+@media (prefers-reduced-motion:reduce){.ai-dots i,#view .ai-guide{animation:none}}

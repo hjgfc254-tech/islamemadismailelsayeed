@@ -7,7 +7,7 @@
 const PROVIDER_PUBLIC = ['id', 'name', 'type', 'cats', 'subs', 'govs', 'areas', 'years', 'bio', 'rating', 'jobs', 'avatar', 'status', 'available', 'demo', 'createdAt'];
 const pick = (o, keys) => Object.fromEntries(keys.filter(k => o[k] !== undefined).map(k => [k, o[k]]));
 const publicProvider = p => pick(p, PROVIDER_PUBLIC);
-const PUBLIC_SETTINGS = ['customerFee', 'autoAssign', 'collectionModel', 'contentV', 'trend', 'packages', 'referral', 'arrivalPin'];   // promo codes stay admin-only
+const PUBLIC_SETTINGS = ['customerFee', 'autoAssign', 'collectionModel', 'contentV', 'trend', 'packages', 'referral', 'arrivalPin', 'ai'];   // ai = {text, photo} flags only (keys live in system/ai)   // promo codes stay admin-only
 
 function base(db) {
   return { v: db.v || 2, meta: {}, serviceAreas: db.serviceAreas || [], customers: [], providers: [], serviceRequests: [],

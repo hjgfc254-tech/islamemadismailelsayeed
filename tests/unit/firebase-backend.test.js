@@ -696,3 +696,41 @@ test('round 8 on the server: arrival code never reaches the provider, wrong code
   const claim = await call(b, SARA, 'customer', 'POST', `/requests/${id}/warranty`, { desc: 'رجعت تفصل' });
   assert.equal(claim.status, 201, JSON.stringify(claim.error)); assert.equal(claim.data.warrantyOf, id);
 });
+test('AI routing: keys stay on the server, providers fail over in order, answers are validated against the catalogue, daily limits', async () => {
+  const b = await setup();
+  const ai = require(path.join(FN, 'ai.js'));
+  ai.resetHealth();
+  await service.session(b, { auth: SARA, data: { op: 'registerCustomer', name: 'سارة' } });   // a backend with data (an empty one returns the defaults)
+  const calls = [];
+  /* fake network: provider A (deepseek) is down, provider B (gemini) answers */
+  ai.setFetch(async (url, init) => {
+    calls.push(url);
+    const body = JSON.parse(init.body);
+    if (url.includes('deepseek')) return { ok: false, status: 503, json: async () => ({}) };
+    const sys = body.systemInstruction.parts[0].text;
+    const text = sys.includes('Problems (id | name)') ? JSON.stringify({ problem: 'appliances/ac/no-cooling', confidence: 0.9 })
+      : JSON.stringify({ item: 'appliances/ac', confidence: 0.92, summary: 'تكييف مش بيبرّد', brand: '', model: '', code: '' });
+    return { ok: true, status: 200, json: async () => ({ candidates: [{ content: { parts: [{ text }] } }] }) };
+  });
+  assert.equal((await call(b, null, 'admin', 'GET', '/admin/ai')).status, 401);
+  const save = await call(b, OWNER, 'admin', 'PATCH', '/admin/ai', { features: { text: true, photo: true }, dailyLimit: 2,
+    providers: [{ label: 'DeepSeek 1', kind: 'deepseek', apiKey: 'sk-aaaaaaaaaaaa1111', roles: ['text'] }, { label: 'Gemini', kind: 'gemini', apiKey: 'AIzaBBBBBBBBBBBB2222', roles: ['text', 'vision'] }] });
+  assert.equal(save.ok, true, JSON.stringify(save.error));
+  assert.deepEqual(save.data.providers.map(p => [p.label, p.hasKey, p.keyLast4, p.apiKey]), [['DeepSeek 1', true, '1111', undefined], ['Gemini', true, '2222', undefined]], 'keys never come back');
+  const guest = await service.session(b, { auth: null, data: { op: 'sync', app: 'customer' } });
+  assert.deepEqual(guest.db.settings.ai, { text: true, photo: true }, 'apps only see the on/off flags');
+  assert.equal(JSON.stringify(guest).includes('sk-aaaa'), false);
+  /* keep a key when the admin saves without retyping it */
+  const again = await call(b, OWNER, 'admin', 'PATCH', '/admin/ai', { providers: save.data.providers.map(p => ({ id: p.id, label: p.label, kind: p.kind, roles: p.roles })) });
+  assert.equal(again.data.providers[0].keyLast4, '1111');
+  await assert.rejects(service.session(b, { auth: null, data: { op: 'ai', kind: 'text', text: 'التكييف مش بيبرد' } }), /سجّل الدخول/);
+  const r = await service.session(b, { auth: SARA, data: { op: 'ai', kind: 'text', text: 'التكييف بينقط مية ومش بيبرد' } });
+  assert.deepEqual([r.cat, r.item, r.problem, r.provider], ['appliances', 'appliances/ac', 'appliances/ac/no-cooling', 'Gemini'], 'failed over to the second provider');
+  assert.ok(calls[0].includes('deepseek'), 'tried the first provider first');
+  /* an answer outside the catalogue is dropped */
+  ai.setFetch(async () => ({ ok: true, status: 200, json: async () => ({ candidates: [{ content: { parts: [{ text: '{"item":"made/up","confidence":1}' }] } }] }) }));
+  const bad = await service.session(b, { auth: SARA, data: { op: 'ai', kind: 'text', text: 'حاجة غريبة خالص' } });
+  assert.equal(bad.item, '', 'never invents a service');
+  await assert.rejects(service.session(b, { auth: SARA, data: { op: 'ai', kind: 'text', text: 'تالت محاولة' } }), /الحد اليومي|للحد اليومي/, 'per-user daily limit');
+  ai.setFetch((...x) => globalThis.fetch(...x)); ai.resetHealth();
+});

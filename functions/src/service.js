@@ -21,6 +21,7 @@ const { scopeFor, customerRequestView, customerQuote } = require('./scope');
 const workforce = require('./workforce');
 const adminExtra = require('./admin-extra');
 const content = require('./content');
+const ai = require('./ai');
 const { invalidateShared } = require('./partial');
 
 const METHODS = ['GET', 'POST', 'PATCH', 'DELETE'];
@@ -219,6 +220,11 @@ async function api(backend, { auth, data }) {
     }
     const ld = new PartialDb(backend.adapter, tx);
     const actor = await loadActor(ld, token, req.app, admin);
+    if (ai.PATH_RE.test(req.path)) {          // AI providers / keys (server-only document system/ai)
+      if (!actor || actor.role !== 'admin') return { envelope: { ok: false, status: actor ? 403 : 401, error: { code: actor ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } }, changes: {}, actor };
+      const envelope = await ai.handle({ backend, tx, method: req.method, path: req.path, body: req.body, admin });
+      return { envelope, changes: envelope.ok && !isRead ? { admin: { set: [req.path], del: [] } } : {}, actor, db: {}, quiet: true };
+    }
     if (content.PATH_RE.test(req.path)) {
       if (!actor || actor.role !== 'admin') return { envelope: { ok: false, status: actor ? 403 : 401, error: { code: actor ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } }, changes: {}, actor };
       const envelope = await content.handle({ backend, tx, method: req.method, path: req.path, body: req.body, admin });
@@ -257,7 +263,7 @@ async function api(backend, { auth, data }) {
     return { envelope: res.envelope, changes, actor, db: res.db, reads: ld.reads };
   };
   const out = isRead ? await execute(null) : await backend.runTransaction(execute);
-  if (!isRead && out.envelope.ok && /^\/admin\/(settings|content|media)(\/|$)/.test(req.path)) {
+  if (!isRead && out.envelope.ok && /^\/admin\/(settings|content|media|ai)(\/|$)/.test(req.path)) {
     invalidateShared(backend.adapter); content.invalidate(backend.adapter);     // system docs changed outside PartialDb.commit
   }
   if (out.contentV && backend.setPublic) {
@@ -347,6 +353,7 @@ async function session(backend, { auth, data }) {
       await linkUser(backend, token.uid, actor, 'customer');
       return { actor, db: scopeFor(out.db, actor) };
     }
+    case 'ai': return ai.classify(backend, token, d, fail);   // «اكتب مشكلتك» / «صوّر المشكلة» → catalogue item + problem
     case 'content': {
       /* public site content; only fetched when settings.contentV changes. `have`: media ids this device caches */
       const have = Array.isArray(d.have) ? d.have.filter(x => typeof x === 'string').slice(0, 300) : [];

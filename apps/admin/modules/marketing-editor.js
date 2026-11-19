@@ -95,7 +95,7 @@
       else if (d.mkDelPkg !== undefined) { work.packages.splice(+d.mkDelPkg, 1); render(); }
       else if (d.mkSave !== undefined) {
         b.disabled = true; status('جارٍ الحفظ…');
-        const r = await C().request('PATCH', '/admin/marketing', { promos: work.promos, referral: work.referral, packages: work.packages, warranty: work.warranty, arrivalPin: work.arrivalPin });
+        const r = await C().request('PATCH', '/admin/marketing', { body: { promos: work.promos, referral: work.referral, packages: work.packages, warranty: work.warranty, arrivalPin: work.arrivalPin } });
         b.disabled = false;
         if (r.ok) { work.promos = r.data.promos.map((p) => ({ ...p })); work.packages = r.data.packages.map((p) => ({ ...p })); work.warranty = { ...r.data.warranty, cats: { ...r.data.warranty.cats }, items: { ...r.data.warranty.items } }; work.arrivalPin = !!r.data.arrivalPin; render(); status('تم الحفظ — التغييرات ظاهرة للعملاء.'); }
         else status(errText(r));

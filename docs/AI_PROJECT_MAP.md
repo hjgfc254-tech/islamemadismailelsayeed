@@ -27,6 +27,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | apps/admin/modules/access-control/role-editor.js | IMPLEMENTED (FRONTEND DEMO) | HSAdminRoleEditor: role editor dialog (fields, permission checkboxes, preset picker, impact review, log). | Read when relevant; keep tests/docs aligned with behavior changes. |
 | apps/admin/modules/admin-live-panels.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | apps/admin/modules/admin-live.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| apps/admin/modules/ai-settings.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | apps/admin/modules/audit/audit-details.js | IMPLEMENTED (FRONTEND DEMO) | HSAdminAuditDetails: read-only audit event details dialog markup. | Read when relevant; keep tests/docs aligned with behavior changes. |
 | apps/admin/modules/audit/audit-filters.js | IMPLEMENTED (FRONTEND DEMO) | HSAdminAuditFilters: audit grid search keys and module/result/actor filters. | Read when relevant; keep tests/docs aligned with behavior changes. |
 | apps/admin/modules/command-palette.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
@@ -74,6 +75,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | apps/customer/index.html | IMPLEMENTED | Customer app document and ordered classic-script entry; hosts the modal Bottom Sheet dialog container. | Protect with regression tests; do not rewrite unnecessarily. |
 | apps/customer/pages/account.page.js | IMPLEMENTED | Customer account, orders, favorites, notifications and profile views. | Protect with regression tests; do not rewrite unnecessarily. |
 | apps/customer/pages/addresses.page.js | IMPLEMENTED | Customer address CRUD and default address selection. | Protect with regression tests; do not rewrite unnecessarily. |
+| apps/customer/pages/ai-assist.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | apps/customer/pages/discover.page.js | IMPLEMENTED | Service/category/device/problem discovery views. | Protect with regression tests; do not rewrite unnecessarily. |
 | apps/customer/pages/home.page.js | IMPLEMENTED (DEMO) | Dependency-injected presentation renderer for Customer Home; app.js owns data, navigation and interactions. | Keep this module presentation-only; extract individual sections only when tests establish stable contracts. |
 | apps/customer/pages/market-ui.page.js | IMPLEMENTED | Marketplace UI: providers, order details, tracking, ratings, complaints. | Protect with regression tests; do not rewrite unnecessarily. |
@@ -391,6 +393,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | functions/package-lock.json | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/package.json | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/admin-extra.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| functions/src/ai.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/content.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/identity.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/limits.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
