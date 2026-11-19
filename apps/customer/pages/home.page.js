@@ -78,17 +78,23 @@
     </div>
   </section>
   <div class="join glass neon">${ic('user')}<div><b>عايز تقدم خدماتك؟</b><small>انضم كمقدم خدمة — التسجيل يُراجَع من الإدارة قبل استقبال الطلبات</small></div><a class="tag" href="../provider/index.html#/join">انضم كمقدم خدمة</a></div>
-  <footer class="site-foot">
-    <img class="wordmark" src="../../assets/brand/logo-v10-lockup.webp" alt="هنصلحلك HANSALEHLAK" width="615" height="160" loading="lazy" decoding="async">
-    <p>منصة واحدة، خدمات أسهل.</p>
+  <footer class="site-foot" aria-label="عن هنصلحلك">
+    <div class="foot-brand">
+      <img class="wordmark" src="../../assets/brand/logo-v10-lockup.webp" alt="هنصلحلك HANSALEHLAK" width="615" height="160" loading="lazy" decoding="async">
+      <p>منصة واحدة، خدمات أسهل.</p>
+      <ul class="foot-trust" aria-label="ليه هنصلحلك">
+        <li>${ic('shield')}<span>فنيين بتراجعهم الإدارة</span></li>
+        <li>${ic('check')}<span>مفيش سعر من غير موافقتك</span></li>
+        <li>${ic('clock')}<span>ضمان على الشغل</span></li>
+      </ul>
+    </div>
     <div class="foot-cols">
       <nav aria-label="التطبيق"><b>التطبيق</b><button type="button" data-go="sections">الخدمات</button><button type="button" data-go="orders">طلباتي</button><button type="button" data-go="account">حسابي</button></nav>
       <nav aria-label="المساعدة"><b>المساعدة</b><button type="button" data-go="support">مركز المساعدة</button><button type="button" data-support="faq">الأسئلة الشائعة</button><button type="button" data-support="complaint">ابعت شكوى</button></nav>
       <nav aria-label="السياسات"><b>السياسات</b><button type="button" data-support="policy-privacy">سياسة الخصوصية</button><button type="button" data-support="policy-terms">شروط الاستخدام</button><button type="button" data-support="policy-cancel">سياسة الإلغاء</button></nav>
       <nav aria-label="الفنيين"><b>للفنيين</b><a href="../provider/index.html#/join">انضم كمقدم خدمة</a><a href="../provider/index.html">دخول الفنيين</a></nav>
     </div>
-    <small class="foot-copy">© ${new Date().getFullYear()} هنصلحلك — كل الحقوق محفوظة</small>
-    ${ctx.demo === false ? '' : '<small>نسخة عرض تجريبية — البيانات محلية على هذا الجهاز.</small>'}
+    <div class="foot-bottom"><small class="foot-copy">© ${new Date().getFullYear()} هنصلحلك — كل الحقوق محفوظة</small>${ctx.demo === false ? '' : '<small>نسخة عرض تجريبية — البيانات محلية على هذا الجهاز.</small>'}</div>
   </footer>
   </div>`;
   };

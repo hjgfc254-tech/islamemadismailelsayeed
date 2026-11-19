@@ -517,8 +517,8 @@
       "path": "apps/customer/pages/home.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 9017,
-      "sha256": "def381ef48fbe84e510038d94aaf4d6aa9e058e37a2579d44e92f4b05fa317a1"
+      "bytes": 9439,
+      "sha256": "75d8d50d2ff62c41edb8804f9cabb2d943d64eda921d501a3e0d9ad814afb636"
     },
     {
       "path": "apps/customer/pages/market-ui.page.js",
@@ -608,8 +608,8 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 130282,
-      "sha256": "0c6f6a78e5dba4af0c9d513f66ac329438be30679ecce6bc2f5882188990471b"
+      "bytes": 132455,
+      "sha256": "d5f343d9c6e37e8e90d5705f96a754eeda2d56cb606889f4d78be09e5e2af924"
     },
     {
       "path": "apps/customer/styles/overrides.css",
@@ -3387,8 +3387,8 @@
       "path": "tests/e2e/responsive-sweep.cdp.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 12661,
-      "sha256": "a56c53c8218ed40315390c76b83a5ac476f1dab8e43552b754a0d25c61e3a2ec"
+      "bytes": 12703,
+      "sha256": "be08362980eb0b483213d60d596fc85e9aea512a07f710e6b9e7c44f1294e2dd"
     },
     {
       "path": "tests/e2e/security.browser.js",

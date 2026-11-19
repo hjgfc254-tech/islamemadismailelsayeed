@@ -80,7 +80,7 @@ async function run({ exe, wsUrl }) {
 
     /* Guest */
     await fresh(C);
-    await step(`localStorage.clear();sessionStorage.clear();sessionStorage.setItem('hs_intro_v1','1');MP.reset();MP.db().settings.autoAssign=false`);
+    await step(`localStorage.clear();sessionStorage.clear();sessionStorage.setItem('hs_intro_v1','1');localStorage.setItem('hs_onboard_v1','1');MP.reset();MP.db().settings.autoAssign=false`);
     await fresh(C + '#/home'); await check(`${tag} guest home`);
     await fresh(C + '#/account'); await check(`${tag} guest sign-in form`);
     await fresh(C + '#/orders'); await check(`${tag} guest blocked route → sign-in`);

@@ -3038,7 +3038,7 @@
       "next_action": "Keep this module presentation-only; extract individual sections only when tests establish stable contracts.",
       "explicit_references": [],
       "notes": "Extracted from screens.home on 2026-11-13. Script loaded before app.js. Tests: customer-page-renderers.test.js and home.test.js.",
-      "sha256": "def381ef48fbe84e510038d94aaf4d6aa9e058e37a2579d44e92f4b05fa317a1",
+      "sha256": "75d8d50d2ff62c41edb8804f9cabb2d943d64eda921d501a3e0d9ad814afb636",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3075,7 +3075,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 9017
+      "bytes": 9439
     },
     {
       "path": "apps/customer/pages/market-ui.page.js",
@@ -3572,7 +3572,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "0c6f6a78e5dba4af0c9d513f66ac329438be30679ecce6bc2f5882188990471b",
+      "sha256": "d5f343d9c6e37e8e90d5705f96a754eeda2d56cb606889f4d78be09e5e2af924",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3611,7 +3611,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 130282
+      "bytes": 132455
     },
     {
       "path": "apps/customer/styles/overrides.css",
@@ -14301,8 +14301,8 @@
         "docs/RESPONSIVE_AUDIT.md"
       ],
       "notes": "Last run 2026-11-14: 280/280.",
-      "sha256": "a56c53c8218ed40315390c76b83a5ac476f1dab8e43552b754a0d25c61e3a2ec",
-      "bytes": 12661,
+      "sha256": "be08362980eb0b483213d60d596fc85e9aea512a07f710e6b9e7c44f1294e2dd",
+      "bytes": 12703,
       "has_real_logic": true,
       "actual_status_ar": "اختبار متصفح"
     },
