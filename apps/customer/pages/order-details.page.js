@@ -158,7 +158,7 @@
     if (rev) {
       actions.push(uiSuccess('star', `تقييمك: ${starsHtml(rev.stars)}`));
     }
-    if (r.status === 'searching') {
+    if (r.status === 'searching' && !r.bidding) {   /* in an offers round the customer chooses among the offers instead */
       actions.push(`<button class="cta ghost" data-act="viewMatches" data-id="${id}">${ic('search')} عرض مقدمي الخدمة المتاحين</button>`);
     }
     if (canCancel) {
@@ -189,6 +189,7 @@
       ${statusBar}
       ${T ? T.arrivalCard(r) : etaBlock}
       ${T ? T.warrantyStrip(r) : ''}
+      ${root.HSOffers ? root.HSOffers.block(r) : ''}
       <div class="need tracking-next">${ic('info')}<span><b>الخطوة التالية</b><br>${esc(nextStepCopy)}</span></div>
       ${providerBlock}
       ${T && p ? T.tagChips(p.id, 3) : ''}

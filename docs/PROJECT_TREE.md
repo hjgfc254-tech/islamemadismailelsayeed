@@ -82,6 +82,7 @@ hansalhlak/
 │   │   │   ├── discover.page.js
 │   │   │   ├── home.page.js
 │   │   │   ├── market-ui.page.js
+│   │   │   ├── offers.js
 │   │   │   ├── onboarding.js
 │   │   │   ├── order-details.page.js
 │   │   │   ├── orders.page.js

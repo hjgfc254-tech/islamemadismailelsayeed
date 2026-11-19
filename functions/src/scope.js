@@ -7,7 +7,7 @@
 const PROVIDER_PUBLIC = ['id', 'name', 'type', 'cats', 'subs', 'govs', 'areas', 'years', 'bio', 'rating', 'jobs', 'avatar', 'status', 'available', 'demo', 'createdAt'];
 const pick = (o, keys) => Object.fromEntries(keys.filter(k => o[k] !== undefined).map(k => [k, o[k]]));
 const publicProvider = p => pick(p, PROVIDER_PUBLIC);
-const PUBLIC_SETTINGS = ['customerFee', 'autoAssign', 'collectionModel', 'contentV', 'trend', 'packages', 'referral', 'arrivalPin', 'ai'];   // ai = {text, photo} flags only (keys live in system/ai)   // promo codes stay admin-only
+const PUBLIC_SETTINGS = ['customerFee', 'autoAssign', 'collectionModel', 'contentV', 'trend', 'packages', 'referral', 'arrivalPin', 'ai', 'bidding'];   // ai = {text, photo} flags only (keys live in system/ai)   // promo codes stay admin-only
 
 function base(db) {
   return { v: db.v || 2, meta: {}, serviceAreas: db.serviceAreas || [], customers: [], providers: [], serviceRequests: [],
@@ -46,7 +46,7 @@ function scopeFor(db, actor) {
     out.customers = (db.customers || []).filter(c => c.id === actor.id);
     out.providers = (db.providers || []).filter(p => p.status === 'approved' || linked.has(p.id)).map(publicProvider);
     out.serviceRequests = reqs.map(customerRequestView);
-    out.assignments = (db.assignments || []).filter(a => ids.has(a.reqId)).map(a => pick(a, ['id', 'reqId', 'providerId', 'status', 'at']));
+    out.assignments = (db.assignments || []).filter(a => ids.has(a.reqId)).map(a => pick(a, ['id', 'reqId', 'providerId', 'status', 'at', 'bidding', 'offer']));   // offer = customer totals only (the provider's base stays private)
     out.quotes = (db.quotes || []).filter(q => ids.has(q.reqId)).map(customerQuote);
     out.transactions = (db.transactions || []).filter(t => t.customerId === actor.id).map(t => pick(t, ['id', 'reqId', 'providerId', 'customerId', 'cat', 'value', 'free', 'discount', 'at']));
     out.addresses = (db.addresses || []).filter(a => a.customerId === actor.id);

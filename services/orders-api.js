@@ -35,10 +35,8 @@
     if (!actor || !r) return false;
     if (actor.role === 'admin') return true;
     if (actor.role === 'customer') return r.customerId === actor.id;
-    if (actor.role === 'provider') {
-      const a = store.activeAssignment(r.id);
-      const p = store.providerOf(r.id);
-      return (a && a.providerId === actor.id) || (p && p.id === actor.id) || false;
+    if (actor.role === 'provider') {   /* offered (incl. one of several offers) or accepted for THIS provider */
+      return (store.db().assignments || []).some(a => a.reqId === r.id && a.providerId === actor.id && ['offered', 'accepted'].includes(a.status));
     }
     return false;
   }
@@ -52,6 +50,9 @@
     const out = { ...r, currentQuote: store.currentQuote(r.id) || null, statusLabel: (store.STATUS_LABEL && store.STATUS_LABEL[r.status]) || r.status };
     if (actor && actor.role === 'provider') { out.chat = typeof store.chatFor === 'function' ? store.chatFor(r.id, actor.id) : []; delete out.pin; }   // the provider gets the arrival code from the customer
     if (actor && actor.role === 'customer') delete out.customerReview;     // the provider's rating of the customer stays private
+    if (actor && actor.role !== 'provider' && r.bidding && typeof store.offersFor === 'function') {   // offers: customer-facing totals only
+      out.offers = store.offersFor(r.id).map(a => { const p = store.get('providers', a.providerId) || {}; return { providerId: a.providerId, name: p.name || '', rating: p.rating || null, jobs: p.jobs || 0, status: a.status, offer: a.offer }; });
+    }
     return out;
   };
   /* Discount on a new request: an admin promo code, a friend's invite code (first request only), or the customer's
@@ -138,6 +139,10 @@
   client.define('POST', '/requests/:id/respond', { roles: ['provider'], summary: 'Accept or decline an offered assignment.' }, ({ params, body, actor, store }) => {
     const r = load(store, actor, params.id); if (!r) return notFound();
     if (!body.accept && !String(body.reason || '').trim()) return fail('VALIDATION', 'اذكر سبب الاعتذار', { reason: 'مطلوب' });
+    if (r.bidding && !store.providerOf(r.id)) {   /* offers round: answer with an offer, or decline your own invitation */
+      if (body.accept) return fail('CONFLICT', 'ابعت عرضك الأول — العميل هو اللي بيختار');
+      return store.declineBid(r.id, actor.id, body.reason || '') ? view(store, r, actor) : fail('CONFLICT', 'لا يوجد عرض بانتظار ردّك على هذا الطلب');
+    }
     return store.respond(r.id, !!body.accept, body.reason || '') ? view(store, r, actor) : fail('CONFLICT', 'لا يوجد عرض بانتظار ردّك على هذا الطلب');
   });
 
@@ -199,6 +204,22 @@
     return store.review(r.id, { stars, comment: String(body.comment || '').slice(0, 1000), ...extra }) ? ok(view(store, r, actor), 201) : fail('CONFLICT', 'تم تقييم هذا الطلب من قبل');
   });
 
+  /* ── round 9: offers ── */
+  client.define('POST', '/requests/:id/bid', { roles: ['provider'], summary: 'Send or update an offer {kind: quote or inspection, labor + parts or fee, note, eta}.' }, ({ params, body, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    const res = store.bid(r.id, actor.id, body || {});
+    return res.ok ? ok({ offer: res.offer }, 201) : fail(/أعلى من الحد|اكتب/.test(res.msg) ? 'VALIDATION' : 'CONFLICT', res.msg);
+  });
+  client.define('POST', '/requests/:id/choose', { roles: ['customer'], summary: 'Choose one of the offers {providerId}.' }, ({ params, body, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    const res = store.chooseBid(r.id, String((body && body.providerId) || ''));
+    return res.ok ? view(store, r, actor) : fail('CONFLICT', res.msg);
+  });
+  client.define('POST', '/requests/:id/inspection-only', { roles: ['provider'], summary: 'Close an inspection the customer did not continue: the visit fee is the job.' }, ({ params, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    const p = store.providerOf(r.id); if (!p || p.id !== actor.id) return fail('FORBIDDEN');
+    return store.inspectionOnly(r.id) ? view(store, r, actor) : fail('CONFLICT', 'المعاينة بس بتتسجل لما يكون الطلب معاينة ومفيش عرض إصلاح متوافق عليه');
+  });
   /* ── round 8: warranty claim, tip, read receipts, before/after photos ── */
   client.define('POST', '/requests/:id/warranty', { roles: ['customer'], summary: '«المشكلة رجعت» within the warranty: a linked request to the same provider {desc}.' }, ({ params, body, actor, store }) => {
     const r = load(store, actor, params.id); if (!r) return notFound();
@@ -259,6 +280,9 @@
     respond: (reqId, accept, reason) => client.post('/requests/' + id(reqId) + '/respond', { accept, reason }),
     schedule: (reqId, at) => client.post('/requests/' + id(reqId) + '/schedule', at ? { at } : {}),
     advance: (reqId, to, eta, pin) => client.post('/requests/' + id(reqId) + '/advance', Object.assign({ to }, eta ? { eta } : {}, pin ? { pin } : {})),
+    bid: (reqId, b) => client.post('/requests/' + id(reqId) + '/bid', b),
+    choose: (reqId, providerId) => client.post('/requests/' + id(reqId) + '/choose', { providerId }),
+    inspectionOnly: reqId => client.post('/requests/' + id(reqId) + '/inspection-only', {}),
     warranty: (reqId, desc) => client.post('/requests/' + id(reqId) + '/warranty', { desc }),
     tip: (reqId, amount) => client.post('/requests/' + id(reqId) + '/tip', { amount }),
     chatSeen: reqId => client.post('/requests/' + id(reqId) + '/chat-seen', {}),

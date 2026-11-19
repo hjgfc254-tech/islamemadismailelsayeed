@@ -1287,3 +1287,22 @@ html.ob-open,html.ob-open body{overflow:hidden}
 .ai-facts{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:0 0 12px;padding:0}
 .ai-facts li{display:grid;padding:6px 12px;border-radius:12px;background:var(--surface-sunken)}.ai-facts small{font-size:11px;color:var(--text-muted)}
 @media (prefers-reduced-motion:reduce){.ai-dots i,#view .ai-guide{animation:none}}
+/* ══ round 9: offers round (customer) ══ */
+.offers{margin:12px 0}
+.of-count{display:inline-grid;place-items:center;min-width:24px;height:24px;margin-inline-start:6px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-size:13px;font-variant-numeric:tabular-nums}
+.of-intro{margin:0 0 10px;color:var(--text-secondary);font-size:13px;line-height:1.7}
+.of-wait{display:grid;justify-items:center;gap:6px;padding:22px 12px;border:1px dashed var(--border-default);border-radius:18px;text-align:center}
+.of-wait b{font-size:15px}.of-wait small{color:var(--text-muted)}
+.of-best{margin:0 0 10px}
+.of-list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.of-card{display:grid;gap:10px;padding:14px;border:1px solid var(--border-subtle);border-radius:18px;background:var(--surface-primary);animation:trPop .3s ease both}
+.of-card.is-best{border-color:var(--accent);box-shadow:0 8px 22px -14px rgba(180,81,28,.6)}
+.of-top{display:flex;align-items:center;gap:10px}
+.of-top .prov-avatar{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;color:#fff;font-weight:800}
+.of-who{flex:1;display:grid;min-width:0}.of-who b{font-size:14.5px}.of-who small{color:var(--text-muted);font-size:12px}
+.of-price{display:grid;justify-items:end;text-align:end}.of-price b{font-size:19px;font-variant-numeric:tabular-nums}.of-price small{font-size:11px;color:var(--text-muted)}
+.of-split{display:flex;gap:14px;font-size:12.5px;color:var(--text-secondary)}.of-split b{font-variant-numeric:tabular-nums;color:var(--text-primary)}
+.of-note{margin:0;font-size:13px;color:var(--text-secondary)}
+.of-pick{margin:0;min-height:44px}
+.of-more{margin:8px 0 0;font-size:12px;color:var(--text-muted);text-align:center}
+@media (prefers-reduced-motion:reduce){.of-card{animation:none}}

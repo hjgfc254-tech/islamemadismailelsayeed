@@ -338,6 +338,7 @@ const MP = (() => {
       notify('admin','طلب جديد '+r.no+' — '+r.serviceName, r.id);
       const pref = d.preferProvider && get('providers', d.preferProvider);   /* «اطلب نفس الفني تاني» */
       if (pref && pref.status === 'approved' && pref.available !== false && (pref.cats || []).includes(r.cat)) api.assign(r.id, pref.id);
+      else if (api.biddingOn()) api.openBidding(r);
       else if (db.settings.autoAssign) api.assign(r.id);
       save(); return r;
     },
@@ -430,7 +431,7 @@ const MP = (() => {
         labor:+q.labor||0, parts:+q.parts||0, visitFee:+q.visitFee||0, discount:+q.discount||0,
         total, note:q.note||'', status:'pending', at:now()
       };
-      if (r.pricing) { const nq = quoteFor(total, r.pricing.rate); quote.providerAmount = nq.providerAmount; quote.customerTotal = nq.customerPrice; quote.platformFee = nq.platformFee; }
+      if (r.pricing || r.inspection) { const nq = quoteFor(total, r.pricing ? r.pricing.rate : r.inspection.rate); quote.providerAmount = nq.providerAmount; quote.customerTotal = nq.customerPrice; quote.platformFee = nq.platformFee; }
       if (prev && prev.status === 'pending') prev.status = 'superseded';
       db.quotes.unshift(quote);
       r.quoteId = quote.id;
@@ -449,7 +450,7 @@ const MP = (() => {
       const p = api.providerOf(reqId); if (!p) return false;
       q.status = 'approved'; q.approvedAt = now();
       r.agreedValue = q.total;
-      if (r.pricing) { r.pricing = quoteFor(q.total, r.pricing.rate); r.agreedValue = r.pricing.customerPrice; }   /* adjusted upfront price */
+      if (r.pricing || r.inspection) { r.pricing = quoteFor(q.total, r.pricing ? r.pricing.rate : r.inspection.rate); r.agreedValue = r.pricing.customerPrice; if (r.inspection) r.inspection.waived = true; }   /* inspection fee deducted (not charged on top) */   /* adjusted upfront price */
       log(r,'started','العميل وافق على السعر ('+q.total+' ج.م) — جارٍ التنفيذ');
       notify('provider:'+p.id,'العميل وافق على السعر — نفّذ الخدمة ثم سجّل الإكمال (الطلب '+r.no+')',r.id);
       save(); return true;
@@ -613,10 +614,106 @@ const MP = (() => {
       return c.refCode;
     },
     cairoDay,
+    /* ═════════ round 9: offers — up to 3 nearby providers send an offer, the customer chooses ═════════
+       Switched on by the admin (settings.bidding). Mode per request: «quote» (labor + parts) or «inspection» (visit fee)
+       — inspection when the problem is marked «needs a visit» in the catalogue or the customer doesn't know the problem;
+       a provider may also answer a quote request with «محتاج معاينة». The server adds the platform share
+       (quoteFor + markupRate) and refuses prices above the admin caps. Choosing an offer fixes the price on the request
+       (r.pricing — the existing fixed-price completion path) or the inspection fee (r.inspection); an approved repair
+       quote after an inspection replaces it (the inspection fee is deducted = not charged on top). */
+    biddingOn(){ return !!(db.settings && db.settings.bidding); },
+    needsInspection(r){
+      /* unknown / «other» problems always start with a visit; otherwise the admin's list decides (problem > item > category), default: direct price */
+      if (r.unknownProblem || !r.problemId || /\/other(-|$)|diagnos/.test(String(r.problemId))) return true;
+      const m = db.settings.inspection || {};
+      const v = [m.problems && m.problems[r.problemId], m.items && m.items[r.itemId], m.cats && m.cats[r.cat]].find(x => typeof x === 'boolean');
+      return v === true;
+    },
+    inspectionCap(cat){
+      const c = db.settings.inspectionCap || {}, v = c.cats && c.cats[cat] != null && c.cats[cat] !== '' ? c.cats[cat] : c.default;
+      return +v > 0 ? +v : 300;
+    },
+    priceCap(r){
+      const c = db.settings.priceCaps || {};
+      const v = [c.problems && c.problems[r.problemId], c.items && c.items[r.itemId], c.cats && c.cats[r.cat]].find(x => x != null && x !== '' && +x > 0);
+      return v ? +v : 0;
+    },
+    /** invite up to `n` more matching providers (default 3) to send an offer */
+    openBidding(r, n){
+      if (!r.bidding) r.bidding = { mode: api.needsInspection(r) ? 'inspection' : 'quote', until: new Date(Date.now() + (+db.settings.bidWindowMin || 15) * 60000).toISOString() };
+      const invited = new Set(db.assignments.filter(a => a.reqId === r.id).map(a => a.providerId));
+      const pick = candidates(r).filter(p => !invited.has(p.id)).slice(0, n || 3);
+      for (const p of pick) {
+        db.assignments.push({ id: uid('a'), reqId: r.id, providerId: p.id, status: 'offered', reason: '', at: now(), bidding: true });
+        notify('provider:' + p.id, (r.bidding.mode === 'inspection' ? 'طلب معاينة ' : 'طلب جديد ') + r.no + ' — ابعت عرضك', r.id);
+      }
+      if (!pick.length && !db.assignments.some(a => a.reqId === r.id && a.status === 'offered')) notify('admin', 'مفيش فنيين متاحين يبعتوا عروض على الطلب ' + r.no, r.id);
+      return pick.length;
+    },
+    offersFor(reqId){ return db.assignments.filter(a => a.reqId === reqId && a.bidding && a.offer && ['offered', 'accepted'].includes(a.status)); },
+    bid(reqId, providerId, b){
+      const r = get('serviceRequests', reqId);
+      const a = db.assignments.find(x => x.reqId === reqId && x.providerId === providerId && x.status === 'offered' && x.bidding);
+      if (!r || !a || !r.bidding || !['received', 'searching', 'sent'].includes(r.status)) return { ok: false, msg: 'الطلب ده مش متاح للعروض دلوقتي' };
+      const kind = b && b.kind === 'inspection' ? 'inspection' : 'quote';
+      let labor = 0, parts = 0, fee = 0, base;
+      if (kind === 'inspection') {
+        fee = Math.round(+b.fee || 0); const cap = api.inspectionCap(r.cat);
+        if (!(fee > 0)) return { ok: false, msg: 'اكتب سعر المعاينة' };
+        if (fee > cap) return { ok: false, msg: 'سعر المعاينة أعلى من الحد المسموح (' + cap + ' ج.م)' };
+        base = fee;
+      } else {
+        labor = Math.max(0, Math.round(+b.labor || 0)); parts = Math.max(0, Math.round(+b.parts || 0)); base = labor + parts;
+        if (!(labor > 0)) return { ok: false, msg: 'اكتب سعر المصنعية' };
+        const cap = api.priceCap(r);
+        if (cap && base > cap) return { ok: false, msg: 'السعر أعلى من الحد المسموح للمشكلة دي (' + cap + ' ج.م) — لو محتاج تشوف الأول اختار «محتاج معاينة»' };
+      }
+      const q = quoteFor(base, markupRate()), k = q.customerPrice / base;
+      const note = String((b && b.note) || '').trim().slice(0, 300), eta = String((b && b.eta) || '').trim().slice(0, 40);
+      const first = !a.bid;
+      a.bid = { kind, labor, parts, fee, base, rate: q.rate, note, eta, at: now() };
+      /* what the customer sees: totals with the platform share included, never the provider's base */
+      a.offer = { kind, total: q.customerPrice, labor: kind === 'quote' ? Math.round(labor * k) : 0, parts: kind === 'quote' ? q.customerPrice - Math.round(labor * k) : 0, note, eta, at: a.bid.at };
+      if (first) notify('customer:' + r.customerId, 'وصلك عرض جديد على طلبك ' + r.no + ' — قارن واختار', r.id);
+      save(); return { ok: true, offer: a.offer };
+    },
+    chooseBid(reqId, providerId){
+      const r = get('serviceRequests', reqId);
+      const a = db.assignments.find(x => x.reqId === reqId && x.providerId === providerId && x.status === 'offered' && x.bidding && x.bid);
+      if (!r || !a || !r.bidding || !['received', 'searching', 'sent'].includes(r.status)) return { ok: false, msg: 'العرض ده مش متاح' };
+      db.assignments.filter(x => x.reqId === reqId && x !== a && x.status === 'offered').forEach(x => { x.status = 'withdrawn'; notify('provider:' + x.providerId, 'العميل اختار عرض تاني على الطلب ' + r.no, r.id); });
+      a.status = 'accepted';
+      r.pin = String(1000 + Math.floor(Math.random() * 9000));
+      const q = quoteFor(a.bid.base, a.bid.rate);
+      if (a.bid.kind === 'quote') { r.pricing = q; r.agreedValue = q.customerPrice; }
+      else { r.inspection = { fee: a.bid.base, customerFee: q.customerPrice, rate: a.bid.rate }; r.agreedValue = q.customerPrice; }
+      r.bidding.chosen = a.providerId; r.bidding.kind = a.bid.kind;
+      const p = get('providers', a.providerId);
+      log(r, 'accepted', 'العميل اختار عرض ' + (p ? p.name : '') + (a.bid.kind === 'inspection' ? ' (معاينة)' : ''));
+      notify('provider:' + a.providerId, 'العميل اختار عرضك على الطلب ' + r.no + ' — اتفق معاه على الموعد', r.id);
+      save(); return { ok: true };
+    },
+    declineBid(reqId, providerId, reason){
+      const r = get('serviceRequests', reqId);
+      const a = db.assignments.find(x => x.reqId === reqId && x.providerId === providerId && x.status === 'offered' && x.bidding);
+      if (!r || !a) return false;
+      a.status = 'rejected'; a.reason = reason || '';
+      if (!db.assignments.some(x => x.reqId === reqId && x.status === 'offered')) api.openBidding(r, 1);   /* keep the request moving */
+      save(); return true;
+    },
+    /** after an inspection the customer declined the repair: the visit fee is the job (fixed-price completion) */
+    inspectionOnly(reqId){
+      const r = get('serviceRequests', reqId); if (!r || !r.inspection || r.inspection.waived) return false;
+      const q = api.currentQuote(reqId); if (q && ['pending', 'approved'].includes(q.status)) return false;
+      r.pricing = quoteFor(r.inspection.fee, r.inspection.rate); r.agreedValue = r.pricing.customerPrice; r.inspection.only = true;
+      return api.complete(reqId);
+    },
     /* ═════════ round 8: trust features — arrival code, warranty, tips, read receipts, «بيتي», before/after photos ═════════ */
     /** Warranty days for a request: per item, then per category, then the default — all set by the admin (settings.warranty). */
     warrantyDays(r){
       const w = (db.settings && db.settings.warranty) || {};
+      if (r.inspection && r.inspection.only) return 0;                 /* a visit without the repair carries no warranty */
+      if (!db.settings || !db.settings.warranty) return 30;                /* default: a month (the admin can change it) */
       const pick = [w.items && w.items[r.itemId], w.cats && w.cats[r.cat], w.default].find(x => x != null && x !== '');
       return Math.max(0, Math.min(365, Math.round(+pick || 0)));
     },

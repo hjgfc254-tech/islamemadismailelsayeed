@@ -69,6 +69,15 @@
 - **التالي:** استكمال فحص Customer (addresses/orders/tracking/support/details)، ثم Provider عبر legacy bridge، ثم Admin page/dialog keyboard traversal. قارئات الشاشة وFirefox/WebKit/Safari والأجهزة الفعلية لم تُختبر. Phase 5 item 4 ما زال جزئيًا؛ لا يوجد ادعاء WCAG.
 
 
+## 2026-11-19 — Offers round, inspection path, price caps (round 9)
+- **Switch:** Admin → live settings → «عروض الفنيين والمعاينة» (`settings.bidding`, off by default; old flow unchanged when off).
+- **Flow:** new request → `MP.openBidding` invites up to 3 `candidates()` (`assignments[].bidding`) → each provider `POST /requests/:id/bid` (quote: labor + parts, or inspection: fee) → customer sees `offers` (totals with the platform share via `quoteFor(markupRate)`; the base `bid` never leaves the server) → `POST /requests/:id/choose` accepts one, the others become `withdrawn` + notified. A decline re-invites one more.
+- **Inspection:** unknown / «other» problems, or admin marks `settings.inspection{cats,items,problems}`. Fee capped by `settings.inspectionCap` (default 300). Chosen → `r.inspection`; an approved repair quote replaces it (`inspection.waived` = fee deducted); a declined repair → `POST /requests/:id/inspection-only` charges the visit alone (no warranty).
+- **Caps:** `settings.priceCaps{cats,items,problems}` — the server refuses higher quote offers (422).
+- **Warranty:** defaults to 30 days when the admin never set it; zero for inspection-only.
+- **UI:** customer `apps/customer/pages/offers.js` (`HSOffers`) in tracking; provider bid form `#pv-bid-form`; admin `marketing-editor.js` fieldset.
+- **Tests:** `round5-features` «offers round…», `firebase-backend` «offers round on the server…».
+- **Not done yet:** automatic closing when the 15-minute window ends (offers stay open until the customer chooses); a price library that learns from accepted quotes; per-item/problem caps UI (API accepts them); escrow (needs a payment gateway). Not deployed.
 ## Round 5 (2026-11-16) — marketplace features (Uber/DiDi/Talabat-style)
 - Domain (shared, runs locally and on Functions): `MP.message/chatFor/rateCustomer/setEta/refCodeFor/cairoDay`, `applyDiscount` (promo/invite/credit, paid from the platform fee, capped at it — provider net unchanged), `bumpTrend` (per-day category/area counts in `settings.trend`), `createRequest` keeps `promo`, `packageId/packageName`, `preferProvider`.
 - Routes: `POST /requests/:id/messages`, `POST /requests/:id/rate-customer`, `POST /customers/me/ref-code`, `GET|PATCH /admin/marketing`; `/requests` accepts `promo`, `packageId`; `/advance` accepts `eta`; `/repeat` accepts the previous `providerId`.

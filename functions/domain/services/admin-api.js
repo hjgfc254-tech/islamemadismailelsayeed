@@ -128,6 +128,18 @@
       const def = days(w.default == null ? 0 : w.default); if (def == null) errors.warranty = 'أيام الضمان من 0 لـ 365';
       out.warranty = { default: def || 0, cats: map(w.cats), items: map(w.items) };
     }
+    if (body.bidding !== undefined) { if (typeof body.bidding !== 'boolean') errors.bidding = 'قيمة غير صالحة'; else out.bidding = body.bidding; }
+    if (body.inspection !== undefined) {           /* «needs a visit first» marks: {cats, items, problems} → true / false */
+      const v = body.inspection || {}, bools = o => { const m = {}; for (const [k, x] of Object.entries(o && typeof o === 'object' ? o : {})) { if (typeof x !== 'boolean') continue; if (!/^[a-z0-9/-]{2,80}$/.test(k)) errors.inspection = 'مفتاح غير صالح'; else m[k] = x; } return m; };
+      out.inspection = { cats: bools(v.cats), items: bools(v.items), problems: bools(v.problems) };
+    }
+    if (body.bidWindowMin !== undefined) { const n = Math.round(+body.bidWindowMin); if (!(n >= 5 && n <= 120)) errors.bidWindowMin = 'من 5 لـ 120 دقيقة'; else out.bidWindowMin = n; }
+    for (const key of ['inspectionCap', 'priceCaps']) {           /* EGP caps: default + per category (+ per item / problem for prices) */
+      if (body[key] === undefined) continue;
+      const v = body[key] || {}, money = x => { const n = Math.round(+x); return Number.isFinite(n) && n >= 0 && n <= 100000 ? n : null; };
+      const map = o => { const m = {}; for (const [k, x] of Object.entries(o && typeof o === 'object' ? o : {})) { if (x === '' || x == null) continue; const n = money(x); if (n == null || !/^[a-z0-9/-]{2,80}$/.test(k)) errors[key] = 'أرقام صحيحة بالجنيه'; else m[k] = n; } return m; };
+      out[key] = key === 'inspectionCap' ? { default: money(v.default) || 0, cats: map(v.cats) } : { cats: map(v.cats), items: map(v.items), problems: map(v.problems) };
+    }
     if (body.arrivalPin !== undefined) { if (typeof body.arrivalPin !== 'boolean') errors.arrivalPin = 'قيمة غير صالحة'; else out.arrivalPin = body.arrivalPin; }
     if (body.packages !== undefined) {
       if (!Array.isArray(body.packages) || body.packages.length > 12) errors.packages = 'حتى 12 باقة';
@@ -146,7 +158,8 @@
     }
     return { out, errors };
   }
-  const marketingView = s => ({ promos: Array.isArray(s.promos) ? s.promos : [], referral: s.referral || { on: false, reward: 0 }, packages: Array.isArray(s.packages) ? s.packages : [], warranty: s.warranty || { default: 0, cats: {}, items: {} }, arrivalPin: !!s.arrivalPin });
+  const marketingView = s => ({ promos: Array.isArray(s.promos) ? s.promos : [], referral: s.referral || { on: false, reward: 0 }, packages: Array.isArray(s.packages) ? s.packages : [], warranty: s.warranty || { default: 30, cats: {}, items: {} }, arrivalPin: !!s.arrivalPin,
+    bidding: !!s.bidding, bidWindowMin: +s.bidWindowMin || 15, inspectionCap: s.inspectionCap || { default: 300, cats: {} }, priceCaps: s.priceCaps || { cats: {}, items: {}, problems: {} }, inspection: s.inspection || { cats: {}, items: {}, problems: {} } });
   client.define('POST', '/admin/reviews/:id/visibility', { roles: A, summary: 'Hide or re-publish a review {hidden, reason}.' }, ({ params, body, actor, store }) => {
     const denied = guard(actor, 'reviews', 'decide'); if (denied) return denied;
     if (typeof body.hidden !== 'boolean') return fail('VALIDATION', 'حدد إخفاء أو نشر', { hidden: 'boolean' });

@@ -47,6 +47,7 @@ async function candidates(ld, cat) {
 async function plan(ld, { method, path, query, body, actor }) {
   const sys = await ld.loadSystem();
   const autoAssign = !sys.settings || sys.settings.autoAssign !== false;
+  const bidding = !!(sys.settings && sys.settings.bidding);   // offers round: invite up to 3 candidates
   const seg = path.split('/').filter(Boolean);
   const tag = actor ? actor.role + ':' + actor.id : null;
   if (actor && actor.role === 'customer') await ld.doc('customers', actor.id);
@@ -55,7 +56,7 @@ async function plan(ld, { method, path, query, body, actor }) {
   /* ── requests ── */
   if (seg[0] === 'requests') {
     if (seg.length === 1 && method === 'POST') {
-      if (autoAssign) await candidates(ld, body.cat);
+      if (autoAssign || bidding) await candidates(ld, body.cat);
       if (body.promo && actor && actor.role === 'customer') {     // promo rules read: first request? whose invite code?
         await Promise.all([ld.where('serviceRequests', [['customerId', '==', actor.id]], { limit: 1 }), ld.where('customers', [['refCode', '==', String(body.promo).trim().toUpperCase()]], { limit: 1 })]);
       }
@@ -78,9 +79,10 @@ async function plan(ld, { method, path, query, body, actor }) {
     if ((act === 'provider' || act === 'repeat') && body.providerId) await ld.doc('providers', body.providerId);
     if (act === 'photos') await ld.doc('jobPhotos', r.id);                       // before / after photos of this job
     if (act === 'warranty' && r.warrantyClaimId) await ld.doc('serviceRequests', r.warrantyClaimId);
-    if ((act === 'respond' && !body.accept && autoAssign) || act === 'cancel' || ((act === 'repeat' || act === 'warranty') && autoAssign)) await candidates(ld, r.cat);
-    if (act === 'complete' && r.promo && r.promo.ref) await ld.doc('customers', r.promo.ref);   // invite reward goes to the friend
-    if (act === 'review' || act === 'close' || act === 'complete') {
+    if ((act === 'respond' && !body.accept && (autoAssign || bidding)) || act === 'cancel' || ((act === 'repeat' || act === 'warranty') && (autoAssign || bidding))) await candidates(ld, r.cat);
+    if (r.bidding) await ld.docsIn('providers', [...ld.maps.assignments.values()].filter(a => a.reqId === r.id && a.bidding).map(a => a.providerId));   // offer cards: name / rating / jobs
+    if ((act === 'complete' || act === 'inspection-only') && r.promo && r.promo.ref) await ld.doc('customers', r.promo.ref);   // invite reward goes to the friend
+    if (act === 'review' || act === 'close' || act === 'complete' || act === 'inspection-only') {
       const accepted = [...ld.maps.assignments.values()].find(a => a.reqId === r.id && a.status === 'accepted');
       if (accepted) await ld.where('reviews', [['providerId', '==', accepted.providerId]]);
     }

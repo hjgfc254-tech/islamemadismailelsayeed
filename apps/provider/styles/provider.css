@@ -177,3 +177,8 @@
 .pv-typing[hidden]{display:none}
 .pv-kpis-slim{grid-template-columns:repeat(3,minmax(0,1fr))}
 .pv-kpis-slim b{font-size:18px}
+
+/* offers round */
+.pv-note-bid{display:flex;align-items:flex-start;gap:8px;color:var(--accent-ink)}
+.pv-bid-kind{display:flex;flex-wrap:wrap;gap:14px;border:0;margin:0;padding:0}.pv-bid-kind legend{font-weight:700;margin-bottom:6px}.pv-bid-kind label{display:inline-flex;align-items:center;gap:6px}
+#pv-bid-form [hidden]{display:none}

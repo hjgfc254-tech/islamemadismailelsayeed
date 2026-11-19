@@ -339,3 +339,65 @@ test('AI assist UI: hidden unless the admin enabled it on the real server; admin
   const aiAdmin = fs.readFileSync(path.join(ROOT, 'apps/admin/modules/ai-settings.js'), 'utf8');
   assert.match(aiAdmin, /request\('PATCH', '\/admin\/ai', \{ body: \{/); assert.match(aiAdmin, /type="password" data-ai-p="apiKey"/);
 });
+test('offers round: up to 3 providers, caps, customer chooses; inspection fee deducted when the repair is approved, or charged alone', async () => {
+  const t = boot();
+  assert.equal((await marketing(t, { bidding: true, bidWindowMin: 15, inspectionCap: { default: 200 }, priceCaps: { cats: { electric: 1000 } } })).ok, true);
+  const quotable = t.run(`(() => { for (const it of CAT.items('electric')) for (const p of CAT.problems(it.id)) if (!p.id.includes('/other')) return [it.id, p.id]; return null; })()`);
+  assert.ok(quotable, 'catalogue has a fixed-price problem');
+  /* ── quote mode ── */
+  const r = (await create(t, SARA, { itemId: quotable[0], serviceId: quotable[0], problemId: quotable[1] })).data;
+  assert.equal(r.bidding.mode, 'quote');
+  const invited = t.run(`MP.db().assignments.filter(a => a.reqId === ${JSON.stringify(r.id)} && a.bidding).map(a => a.providerId)`);
+  assert.ok(invited.length >= 1 && invited.length <= 3, 'up to 3 providers invited');
+  const [pA, pB] = invited;
+  t.as('provider', pA);
+  assert.equal((await t.O.respond(r.id, true)).status, 409, 'no blind accept — send an offer');
+  assert.equal((await t.O.bid(r.id, { kind: 'quote', labor: 2000, parts: 0 })).status, 422, 'above the admin cap');
+  assert.equal((await t.O.bid(r.id, { kind: 'quote', labor: 300, parts: 100, note: 'هغيّر المفتاح' })).status, 201);
+  if (pB) { t.as('provider', pB); await t.O.bid(r.id, { kind: 'quote', labor: 350, parts: 100 }); assert.equal((await t.O.get(r.id)).data.offers, undefined, 'a provider never sees the other offers'); }
+  t.as('customer', SARA);
+  const seen = (await t.O.get(r.id)).data.offers;
+  const mine = seen.find(o => o.providerId === pA);
+  assert.ok(mine.offer.total > 400, 'platform share added'); assert.equal(mine.offer.base, undefined); assert.equal(mine.offer.labor + mine.offer.parts, mine.offer.total);
+  assert.equal((await t.O.choose(r.id, pA)).ok, true);
+  const after = t.run(`MP.get('serviceRequests', ${JSON.stringify(r.id)})`);
+  assert.equal(after.status, 'accepted'); assert.equal(after.pricing.customerPrice, mine.offer.total);
+  if (pB) assert.equal(t.run(`MP.db().assignments.find(a => a.reqId === ${JSON.stringify(r.id)} && a.providerId === ${JSON.stringify(pB)}).status`), 'withdrawn');
+  t.as('provider', pA);
+  await t.O.schedule(r.id); for (const to of ['enroute', 'arrived', 'started']) assert.equal((await t.O.advance(r.id, to)).ok, true, to);
+  assert.equal((await t.O.complete(r.id)).ok, true);
+  const tx = t.run(`MP.db().transactions.find(x => x.reqId === ${JSON.stringify(r.id)})`);
+  assert.equal(tx.value, mine.offer.total); assert.equal(tx.net, 400, 'the provider gets exactly their offer');
+  const wDays = Math.round((Date.parse(t.run(`MP.get('serviceRequests', ${JSON.stringify(r.id)}).warrantyUntil`)) - Date.now()) / 864e5);
+  assert.ok(wDays >= 29 && wDays <= 30, 'a month of warranty by default');
+  /* ── inspection mode (the customer doesn't know the problem) ── */
+  const s2 = (await create(t, SARA)).data;
+  assert.equal(s2.bidding.mode, 'inspection');
+  const inv2 = t.run(`MP.db().assignments.filter(a => a.reqId === ${JSON.stringify(s2.id)} && a.bidding).map(a => a.providerId)`);
+  t.as('provider', inv2[0]);
+  assert.equal((await t.O.bid(s2.id, { kind: 'inspection', fee: 250 })).status, 422, 'inspection fee cap');
+  assert.equal((await t.O.bid(s2.id, { kind: 'inspection', fee: 150 })).status, 201);
+  t.as('customer', SARA); await t.O.choose(s2.id, inv2[0]);
+  const insp = t.run(`MP.get('serviceRequests', ${JSON.stringify(s2.id)}).inspection`);
+  assert.equal(insp.fee, 150); assert.ok(insp.customerFee > 150);
+  t.as('provider', inv2[0]);
+  await t.O.schedule(s2.id); for (const to of ['enroute', 'arrived', 'started']) await t.O.advance(s2.id, to);
+  /* customer declines the repair → the visit alone is charged, no warranty */
+  assert.equal((await t.g.HSQuotesApi.submit(s2.id, { labor: 600, parts: 0 })).ok, true);
+  t.as('customer', SARA); assert.equal((await t.g.HSQuotesApi.reject(s2.id, 'غالي')).ok, true);
+  t.as('provider', inv2[0]); assert.equal((await t.O.inspectionOnly(s2.id)).ok, true);
+  const tx2 = t.run(`MP.db().transactions.find(x => x.reqId === ${JSON.stringify(s2.id)})`);
+  assert.equal(tx2.value, insp.customerFee); assert.equal(tx2.net, 150);
+  assert.equal(t.run(`MP.get('serviceRequests', ${JSON.stringify(s2.id)}).warrantyUntil`), undefined, 'no warranty for a visit without repair');
+  /* approved repair after an inspection → the fee is deducted (not charged on top) */
+  const s3 = (await create(t, SARA)).data;
+  const inv3 = t.run(`MP.db().assignments.filter(a => a.reqId === ${JSON.stringify(s3.id)} && a.bidding).map(a => a.providerId)`);
+  t.as('provider', inv3[0]); await t.O.bid(s3.id, { kind: 'inspection', fee: 100 });
+  t.as('customer', SARA); await t.O.choose(s3.id, inv3[0]);
+  t.as('provider', inv3[0]); await t.O.schedule(s3.id); for (const to of ['enroute', 'arrived', 'started']) await t.O.advance(s3.id, to);
+  await t.g.HSQuotesApi.submit(s3.id, { labor: 500, parts: 200 });
+  t.as('customer', SARA); assert.equal((await t.g.HSQuotesApi.approve(s3.id)).ok, true);
+  t.as('provider', inv3[0]); assert.equal((await t.O.complete(s3.id)).ok, true);
+  const tx3 = t.run(`MP.db().transactions.find(x => x.reqId === ${JSON.stringify(s3.id)})`);
+  assert.equal(tx3.net, 700, 'repair only — the inspection fee is inside it, not added');
+});
