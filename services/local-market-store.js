@@ -376,7 +376,8 @@ const MP = (() => {
         a.status='rejected'; a.reason=reason||'';
         log(r,'searching','رفض مقدم الخدمة: '+(reason||'بدون سبب'));
         notify('admin','رُفض الطلب '+r.no+' — '+(reason||''),r.id);
-        if (db.settings.autoAssign) api.assign(reqId);
+        if (r.warrantyOf && !r.warrantyPayer) { r.warrantyPayer = a.providerId; notify('admin','الفني الأصلي رفض طلب الضمان '+r.no+' — هيتبعت لفني تاني والتكلفة على الفني الأصلي',r.id); api.assign(reqId); }
+        else if (db.settings.autoAssign) api.assign(reqId);
       }
       save(); return true;
     },
@@ -432,6 +433,7 @@ const MP = (() => {
         total, note:q.note||'', status:'pending', at:now()
       };
       if (r.pricing || r.inspection) { const nq = quoteFor(total, r.pricing ? r.pricing.rate : r.inspection.rate); quote.providerAmount = nq.providerAmount; quote.customerTotal = nq.customerPrice; quote.platformFee = nq.platformFee; }
+      if (r.pricing && total > r.pricing.providerAmount * 1.5) { quote.flagged = true; notify('admin', 'سعر جديد أعلى من المتفق عليه بأكتر من 50% على الطلب ' + r.no + ' (' + r.pricing.providerAmount + ' ← ' + total + ')', r.id); }
       if (prev && prev.status === 'pending') prev.status = 'superseded';
       db.quotes.unshift(quote);
       r.quoteId = quote.id;
@@ -503,6 +505,7 @@ const MP = (() => {
       if(!r || !p || !r.freeService || r.freeService.status!=='accepted') return false;
       if(!['scheduled','enroute','arrived','started'].includes(r.status)) return false;
       r.finalValue = 0; r.freeService.status = 'completed'; r.freeService.completedAt = now();
+      api.settleWarranty(r, p.id);
       log(r,'completed','خدمة مجانية — بدون مقابل ('+api.FREE_REASONS[r.freeService.reason]+')');
       if (!db.transactions.some(t => t.reqId===reqId)) {
         db.transactions.push({id:uid('t'),reqId,providerId:p.id,customerId:r.customerId,cat:r.cat,value:0,rate:0,commission:0,deductions:0,net:0,free:true,model:'free',collection:'none',demo:true,at:now()});
@@ -554,13 +557,16 @@ const MP = (() => {
       log(r,'closed','أكّد العميل الإتمام'); save(); return true;
     },
 
-    cancel(reqId, reason){
+    cancel(reqId, reason, byAdmin){
       const r = get('serviceRequests',reqId);
       if(!r || FINAL_STATUSES.has(r.status)) return false;
       const idx = FLOW.findIndex(f=>f[0]===r.status);
       if (idx >= FLOW.findIndex(f=>f[0]==='started')) return false;
       const a = api.activeAssignment(reqId);
-      if(a){ a.status='withdrawn'; notify('provider:'+a.providerId,'ألغى العميل الطلب '+r.no,r.id); }
+      const fee = !byAdmin && a && a.status === 'accepted' && ['enroute', 'arrived'].includes(r.status) ? api.cancelFee() : 0;
+      db.assignments.filter(x => x.reqId === reqId && x !== a && x.status === 'offered').forEach(x => { x.status = 'withdrawn'; });   /* other open offers */
+      if(a){ a.status='withdrawn'; notify('provider:'+a.providerId,'ألغى العميل الطلب '+r.no+(fee?' — ليك رسوم انتقال '+fee+' ج.م':''),r.id); }
+      if (fee) { r.cancelFee = fee; db.transactions.push({id:uid('t'),reqId,providerId:a.providerId,customerId:r.customerId,cat:r.cat,value:fee,rate:0,commission:0,deductions:0,net:fee,kind:'cancel-fee',model:db.settings.collectionModel,collection:'pending',demo:true,at:now()}); }
       log(r,'cancelled',reason||''); save(); return true;
     },
 
@@ -631,7 +637,7 @@ const MP = (() => {
     },
     inspectionCap(cat){
       const c = db.settings.inspectionCap || {}, v = c.cats && c.cats[cat] != null && c.cats[cat] !== '' ? c.cats[cat] : c.default;
-      return +v > 0 ? +v : 300;
+      return +v > 0 ? +v : 0;                   /* 0 = no cap until the admin sets one */
     },
     priceCap(r){
       const c = db.settings.priceCaps || {};
@@ -660,7 +666,7 @@ const MP = (() => {
       if (kind === 'inspection') {
         fee = Math.round(+b.fee || 0); const cap = api.inspectionCap(r.cat);
         if (!(fee > 0)) return { ok: false, msg: 'اكتب سعر المعاينة' };
-        if (fee > cap) return { ok: false, msg: 'سعر المعاينة أعلى من الحد المسموح (' + cap + ' ج.م)' };
+        if (cap && fee > cap) return { ok: false, msg: 'سعر المعاينة أعلى من الحد المسموح (' + cap + ' ج.م)' };
         base = fee;
       } else {
         labor = Math.max(0, Math.round(+b.labor || 0)); parts = Math.max(0, Math.round(+b.parts || 0)); base = labor + parts;
@@ -668,7 +674,7 @@ const MP = (() => {
         const cap = api.priceCap(r);
         if (cap && base > cap) return { ok: false, msg: 'السعر أعلى من الحد المسموح للمشكلة دي (' + cap + ' ج.م) — لو محتاج تشوف الأول اختار «محتاج معاينة»' };
       }
-      const q = quoteFor(base, markupRate()), k = q.customerPrice / base;
+      const q = quoteFor(base, kind === 'inspection' ? api.inspectionRate() : markupRate()), k = q.customerPrice / base;
       const note = String((b && b.note) || '').trim().slice(0, 300), eta = String((b && b.eta) || '').trim().slice(0, 40);
       const first = !a.bid;
       a.bid = { kind, labor, parts, fee, base, rate: q.rate, note, eta, at: now() };
@@ -703,16 +709,73 @@ const MP = (() => {
     },
     /** after an inspection the customer declined the repair: the visit fee is the job (fixed-price completion) */
     inspectionOnly(reqId){
-      const r = get('serviceRequests', reqId); if (!r || !r.inspection || r.inspection.waived) return false;
+      const r = get('serviceRequests', reqId); if (!r) return false;
       const q = api.currentQuote(reqId); if (q && ['pending', 'approved'].includes(q.status)) return false;
-      r.pricing = quoteFor(r.inspection.fee, r.inspection.rate); r.agreedValue = r.pricing.customerPrice; r.inspection.only = true;
+      if (r.inspection && !r.inspection.waived) { r.pricing = quoteFor(r.inspection.fee, r.inspection.rate); r.inspection.only = true; }
+      else if (!r.inspection && q && q.status === 'rejected' && +db.settings.visitFee > 0) { r.pricing = quoteFor(+db.settings.visitFee, api.inspectionRate()); r.visitOnly = true; }   /* the customer refused the new price */
+      else return false;
+      r.agreedValue = r.pricing.customerPrice;
       return api.complete(reqId);
+    },
+    /* ═════════ round 10: the owner's rules — wider search, visit fee, cancel fee, warranty payer, cash confirmation ═════════ */
+    inspectionRate(){ const v = db.settings.inspectionRate; return v != null && v !== '' ? Math.max(0, +v) : 0; },   /* platform share on a visit fee (default none) */
+    cancelFee(){ const v = db.settings.cancelFee; return v != null && v !== '' ? Math.max(0, Math.round(+v)) : 50; },
+    /** window over and nobody answered: invite up to 3 more providers of the same specialty from other governorates, tell the admin */
+    widenBidding(reqId){
+      const r = get('serviceRequests', reqId);
+      if (!r || !r.bidding || r.bidding.widened || api.providerOf(reqId) || !['received', 'searching', 'sent'].includes(r.status)) return false;
+      if (Date.parse(r.bidding.until) > Date.now() || api.offersFor(reqId).length) return false;
+      const invited = new Set(db.assignments.filter(a => a.reqId === r.id).map(a => a.providerId));
+      const pick = db.providers.filter(p => p.status === 'approved' && p.available && (p.cats || []).includes(r.cat) && !invited.has(p.id))
+        .sort((x, y) => (rating(y.id) || 0) - (rating(x.id) || 0)).slice(0, 3);
+      for (const p of pick) {
+        db.assignments.push({ id: uid('a'), reqId: r.id, providerId: p.id, status: 'offered', reason: '', at: now(), bidding: true, wide: true });
+        notify('provider:' + p.id, 'طلب ' + r.no + ' في ' + (r.area || r.gov || 'منطقة قريبة') + ' — مفيش فني قريب، ابعت عرضك لو تقدر توصل', r.id);
+      }
+      r.bidding.widened = true; r.bidding.until = new Date(Date.now() + (+db.settings.bidWindowMin || 15) * 60000).toISOString();
+      notify('admin', 'مفيش عروض على الطلب ' + r.no + ' — البحث اتوسّع لـ ' + pick.length + ' فني من مناطق تانية', r.id);
+      save(); return true;
+    },
+    /** cash after completion: each side says whether the money changed hands; a mismatch opens a complaint for the admin */
+    cashConfirm(reqId, side, paid){
+      const r = get('serviceRequests', reqId);
+      if (!r || !['completed', 'closed'].includes(r.status) || !['customer', 'provider'].includes(side) || +r.finalValue === 0) return false;
+      r.cash = r.cash || {}; r.cash[side] = !!paid; r.cash[side + 'At'] = now();
+      const t = db.transactions.find(x => x.reqId === reqId);
+      if (r.cash.customer === true && r.cash.provider === true && t) t.collection = 'collected';
+      if (r.cash.customer != null && r.cash.provider != null && r.cash.customer !== r.cash.provider && !r.cash.disputed) {
+        r.cash.disputed = true;
+        api.complain(reqId, 'system', 'خلاف على الدفع: العميل ' + (r.cash.customer ? 'بيقول إنه دفع' : 'بيقول إنه مدفعش') + ' والفني ' + (r.cash.provider ? 'بيقول إنه استلم' : 'بيقول إنه ما استلمش'), { kind: 'payment' });
+      }
+      save(); return true;
+    },
+    /** off-platform deals: the admin warns; the second warning suspends the provider */
+    warnProvider(pid, reason){
+      const p = get('providers', pid); if (!p) return false;
+      p.warnings = (+p.warnings || 0) + 1; p.lastWarning = { reason: String(reason || '').slice(0, 200), at: now() };
+      if (p.warnings >= 2) p.status = 'suspended';
+      notify('provider:' + pid, p.warnings >= 2 ? 'تم إيقاف حسابك بعد إنذار تاني — كلّم الإدارة' : 'إنذار من الإدارة: ' + (p.lastWarning.reason || 'الاتفاق مع العملاء بره المنصة ممنوع'), '');
+      save(); return true;
+    },
+    /** a warranty job done by someone else: the substitute is paid the original labor, charged to the original provider */
+    settleWarranty(r, doer){
+      const old = r.warrantyOf && get('serviceRequests', r.warrantyOf); if (!old || !r.warrantyPayer || r.warrantyPayer === doer) return;
+      const a = db.assignments.find(x => x.reqId === old.id && x.status === 'accepted');
+      const q = old.quoteId && db.quotes.find(x => x.id === old.quoteId && x.status === 'approved');
+      const t = db.transactions.find(x => x.reqId === old.id && !x.kind);
+      const amt = Math.round((a && a.bid && a.bid.labor) || (q && q.labor) || (t && t.net) || 0);
+      if (!(amt > 0)) { notify('admin', 'طلب ضمان ' + r.no + ' اتنفذ بفني بديل — حدد مستحقاته يدويًا', r.id); return; }
+      const base = { reqId: r.id, customerId: r.customerId, cat: r.cat, rate: 0, commission: 0, deductions: 0, model: db.settings.collectionModel, collection: 'pending', demo: true, at: now() };
+      db.transactions.push({ id: uid('t'), ...base, providerId: doer, value: 0, net: amt, kind: 'warranty-payout' });
+      db.transactions.push({ id: uid('t'), ...base, providerId: r.warrantyPayer, value: 0, net: -amt, kind: 'warranty-charge' });
+      notify('provider:' + r.warrantyPayer, 'اتخصم ' + amt + ' ج.م من مستحقاتك — فني تاني نفّذ ضمان الطلب ' + old.no, r.id);
+      notify('provider:' + doer, 'هتاخد ' + amt + ' ج.م على ضمان الطلب ' + r.no + ' (على حساب الفني الأصلي)', r.id);
     },
     /* ═════════ round 8: trust features — arrival code, warranty, tips, read receipts, «بيتي», before/after photos ═════════ */
     /** Warranty days for a request: per item, then per category, then the default — all set by the admin (settings.warranty). */
     warrantyDays(r){
       const w = (db.settings && db.settings.warranty) || {};
-      if (r.inspection && r.inspection.only) return 0;                 /* a visit without the repair carries no warranty */
+      if ((r.inspection && r.inspection.only) || r.visitOnly) return 0;                /* a visit without the repair carries no warranty */
       if (!db.settings || !db.settings.warranty) return 30;                /* default: a month (the admin can change it) */
       const pick = [w.items && w.items[r.itemId], w.cats && w.cats[r.cat], w.default].find(x => x != null && x !== '');
       return Math.max(0, Math.min(365, Math.round(+pick || 0)));
@@ -727,6 +790,7 @@ const MP = (() => {
       const r = api.repeatRequest(oldId, p.id);
       if (!r) return { ok: false, msg: 'تعذّر فتح طلب الضمان' };
       r.warrantyOf = oldId; r.serviceName = 'ضمان: ' + old.serviceName;
+      r.freeService = { status: 'accepted', reason: 'warranty', by: 'system', at: now() };   /* labor warranty: nothing to pay */
       r.desc = String(desc || '').trim().slice(0, 1000) || 'المشكلة رجعت بعد الخدمة';
       old.warrantyClaimId = r.id;
       notify('admin', 'طلب ضمان ' + r.no + ' على الطلب ' + old.no, r.id);

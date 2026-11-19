@@ -195,8 +195,8 @@
       "path": "apps/admin/modules/marketing-editor.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 14678,
-      "sha256": "c4d42cd621b51917b2651f2da542dfc0a61c0354926dc839b4004f3580655e08"
+      "bytes": 15781,
+      "sha256": "3181f747b468ab01a6657934f8e34661ebeb5970796aa641a3279301bac66d3a"
     },
     {
       "path": "apps/admin/modules/mini-charts.js",
@@ -524,15 +524,15 @@
       "path": "apps/customer/pages/market-ui.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 33026,
-      "sha256": "89b0d0e4a52422b824274bfadbe8d2ac4ef697a624c130e78175fabbb07c4062"
+      "bytes": 33365,
+      "sha256": "74b18d1abad2190ff6d9fe77b1d372ba40fcd7655e9a830fc9b8b7636d35fb63"
     },
     {
       "path": "apps/customer/pages/offers.js",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 5544,
-      "sha256": "a8f74f705bf4b7945ab162a463c13870a065d6b5577a28c2568c944dbc1e4187"
+      "bytes": 7574,
+      "sha256": "9b11429b291a4905e0eba0947591f5ff3904a1a129049c98c5a9f72b9a4cdccf"
     },
     {
       "path": "apps/customer/pages/onboarding.js",
@@ -545,8 +545,8 @@
       "path": "apps/customer/pages/order-details.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 18571,
-      "sha256": "4e6a86c884f7d69b853a76bba6b4f847b9df087c093cbc4bce77f11dedb9ba4d"
+      "bytes": 18886,
+      "sha256": "30a19b97aa671a99324673147d76ad26679cc3c55ada2682b4054aa256e623ef"
     },
     {
       "path": "apps/customer/pages/orders.page.js",
@@ -608,8 +608,8 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 126468,
-      "sha256": "03d27e874f9153dd5827fcde93425c86cd004990684219ef848c8c203d15c7fe"
+      "bytes": 127087,
+      "sha256": "030e2a244c0d52d2e66e6c2a850744060767c6561ec04f68bcf365aa222cc876"
     },
     {
       "path": "apps/customer/styles/overrides.css",
@@ -643,8 +643,8 @@
       "path": "apps/provider/app.js",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 62501,
-      "sha256": "5b080760cb8e282a5c4a370f87e8241fd938688d228b972aa7931f3358981559"
+      "bytes": 63446,
+      "sha256": "2cf4c67ebd1e819b073c4b9925be18e5c998eb56861150cc2c6a6a6f67183d14"
     },
     {
       "path": "apps/provider/index.html",
@@ -2092,8 +2092,8 @@
       "path": "docs/API_CONTRACTS.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 18712,
-      "sha256": "94c6905cd86bc4119d89c1d43ff2d418bba5d8158d1ae11bf1184f6188fd8400"
+      "bytes": 19142,
+      "sha256": "28bd33172805f6809f6bbc90f29ffc2ba3559c6214f0555038860e3542e20d83"
     },
     {
       "path": "docs/ARCHITECTURE.md",
@@ -2456,8 +2456,8 @@
       "path": "docs/HANDOFF_NEXT_AI.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 87850,
-      "sha256": "737d870f39edac4e182b43e167b156ea8c13a1dcb5ab5ae0474904ef40bdb8c0"
+      "bytes": 89554,
+      "sha256": "52e041c5f19c738e6275ad159bd92ae2f011951e63db557047d26a1429ba0e7c"
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -2604,14 +2604,14 @@
       "area": "functions",
       "status": "NEEDS_REVIEW",
       "bytes": 2051,
-      "sha256": "5c3f57f46cc39d00990c9fb7a791ddcd3b3c902c2863385ed8c9fbab51fd1199"
+      "sha256": "7702eb9178d3a4ab913e97aa51f1c15bbc993b49a5beaf34872265b0493467a0"
     },
     {
       "path": "functions/domain/services/admin-api.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 15463,
-      "sha256": "f905686ebe9a8f6ddafd6e5886af1dab6c9355a5d4c49e177bb294e649256f16"
+      "bytes": 16648,
+      "sha256": "287ee261f4b776503d006b5417dd7cbd976b553afece2214fa364df1afddaa27"
     },
     {
       "path": "functions/domain/services/api-client.js",
@@ -2659,8 +2659,8 @@
       "path": "functions/domain/services/local-market-store.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 67005,
-      "sha256": "993f1fe1f72f7b4c1d1c9899602388d503a78a583ee1af0c12bf7be5ea4696ac"
+      "bytes": 73997,
+      "sha256": "98d953312dd22fdcc9d5749a8ff359e9947fe721e8f4c4ceeb77c828ed69de60"
     },
     {
       "path": "functions/domain/services/notifications-api.js",
@@ -2673,8 +2673,8 @@
       "path": "functions/domain/services/orders-api.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 25889,
-      "sha256": "b9a8bbf355740964b5c1b8b3bbcc61753043b32bcd1aa810b56d6f7920e22c01"
+      "bytes": 27239,
+      "sha256": "b7df2077fbf2c2f8c4efc87a0208d521ccb7786c599a35d9b1f618cb701548a4"
     },
     {
       "path": "functions/domain/services/provider-api.js",
@@ -2771,8 +2771,8 @@
       "path": "functions/src/plan.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 11924,
-      "sha256": "019bfee95e75ab93422534a264ba7434d456de1fb3c9f0a15e3bb2f2a6f4d65e"
+      "bytes": 12125,
+      "sha256": "6043858c1ac51deedcc9d520bd2c184d9ca38174a347c149b43c7cc6960daf5a"
     },
     {
       "path": "functions/src/runtime.js",
@@ -2785,8 +2785,8 @@
       "path": "functions/src/scope.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 5736,
-      "sha256": "0a4e9a87d6edaccf214b5205e47cbd3f0d55b1a59492d7bf5941fe5b5fc361ce"
+      "bytes": 5761,
+      "sha256": "c9f0666d4838575d3b6dcb698cbe9cd3bfbffda12b9afb4d7257f662ae4ecee2"
     },
     {
       "path": "functions/src/service.js",
@@ -2897,8 +2897,8 @@
       "path": "services/admin-api.js",
       "area": "services",
       "status": "IMPLEMENTED (MOCK ADAPTER)",
-      "bytes": 15463,
-      "sha256": "f905686ebe9a8f6ddafd6e5886af1dab6c9355a5d4c49e177bb294e649256f16"
+      "bytes": 16648,
+      "sha256": "287ee261f4b776503d006b5417dd7cbd976b553afece2214fa364df1afddaa27"
     },
     {
       "path": "services/api-client.js",
@@ -2967,8 +2967,8 @@
       "path": "services/local-market-store.js",
       "area": "services",
       "status": "IMPLEMENTED",
-      "bytes": 67005,
-      "sha256": "993f1fe1f72f7b4c1d1c9899602388d503a78a583ee1af0c12bf7be5ea4696ac"
+      "bytes": 73997,
+      "sha256": "98d953312dd22fdcc9d5749a8ff359e9947fe721e8f4c4ceeb77c828ed69de60"
     },
     {
       "path": "services/notifications-api.js",
@@ -2981,8 +2981,8 @@
       "path": "services/orders-api.js",
       "area": "services",
       "status": "IMPLEMENTED (MOCK ADAPTER)",
-      "bytes": 25889,
-      "sha256": "b9a8bbf355740964b5c1b8b3bbcc61753043b32bcd1aa810b56d6f7920e22c01"
+      "bytes": 27239,
+      "sha256": "b7df2077fbf2c2f8c4efc87a0208d521ccb7786c599a35d9b1f618cb701548a4"
     },
     {
       "path": "services/provider-api.js",
@@ -3842,8 +3842,8 @@
       "path": "tests/unit/round5-features.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 31683,
-      "sha256": "a657ab4b9308731ba956dd0611591d82e6c6150504537e131ed53363fac547ca"
+      "bytes": 37197,
+      "sha256": "ba21af4c7efb32cbc1a359a353f31c15881493231cb4c6363379ce465a3c4d3d"
     },
     {
       "path": "tests/unit/security.test.js",

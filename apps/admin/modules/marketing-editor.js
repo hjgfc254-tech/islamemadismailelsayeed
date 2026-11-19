@@ -19,7 +19,8 @@
     const work = { promos: (res.data.promos || []).map((p) => ({ ...p })), referral: { on: false, reward: 0, ...(res.data.referral || {}) }, packages: (res.data.packages || []).map((p) => ({ ...p })),
       warranty: { default: 30, cats: {}, items: {}, ...(res.data.warranty || {}) }, arrivalPin: !!res.data.arrivalPin,
       bidding: !!res.data.bidding, bidWindowMin: +res.data.bidWindowMin || 15,
-      inspectionCap: { default: 300, ...(res.data.inspectionCap || {}) }, priceCaps: { cats: {}, items: {}, problems: {}, ...(res.data.priceCaps || {}) },
+      cancelFee: res.data.cancelFee != null ? +res.data.cancelFee : 50, visitFee: +res.data.visitFee || 0, inspectionRate: +res.data.inspectionRate || 0,
+      inspectionCap: { default: 0, ...(res.data.inspectionCap || {}) }, priceCaps: { cats: {}, items: {}, problems: {}, ...(res.data.priceCaps || {}) },
       inspection: { cats: {}, items: {}, problems: {}, ...(res.data.inspection || {}) } };
     work.inspectionCap.cats = { ...(work.inspectionCap.cats || {}) }; work.priceCaps.cats = { ...(work.priceCaps.cats || {}) }; work.inspection.cats = { ...(work.inspection.cats || {}) };
     work.warranty.cats = { ...(work.warranty.cats || {}) }; work.warranty.items = { ...(work.warranty.items || {}) };
@@ -42,7 +43,10 @@
         <fieldset class="ord-dlg-in"><legend>عروض الفنيين والمعاينة</legend>
           <label class="hs-grid-field"><span>الطلب يروح لأقرب 3 فنيين وكل واحد يبعت سعره والعميل يختار</span><input type="checkbox" data-mk-bid ${work.bidding ? 'checked' : ''}></label>
           <label class="hs-grid-field"><span>مهلة العروض (دقيقة)</span><input type="number" min="5" max="120" data-mk-bidwin value="${esc(work.bidWindowMin)}"></label>
-          <label class="hs-grid-field"><span>أقصى سعر معاينة افتراضي (ج.م)</span><input type="number" min="0" data-mk-icap-default value="${esc(work.inspectionCap.default || 0)}"></label>
+          <label class="hs-grid-field"><span>أقصى سعر معاينة افتراضي (ج.م) — فاضي = بدون حد</span><input type="number" min="0" placeholder="بدون حد" data-mk-icap-default value="${work.inspectionCap.default ? esc(work.inspectionCap.default) : ''}"></label>
+          <label class="hs-grid-field"><span>عمولة المنصة على المعاينة (٪)</span><input type="number" min="0" max="50" data-mk-num="inspectionRate" value="${esc(work.inspectionRate)}"></label>
+          <label class="hs-grid-field"><span>رسوم الإلغاء بعد ما الفني يتحرك (ج.م — بتروح للفني)</span><input type="number" min="0" data-mk-num="cancelFee" value="${esc(work.cancelFee)}"></label>
+          <label class="hs-grid-field"><span>رسوم الزيارة لو العميل رفض السعر الجديد (ج.م) — صفر = بدون</span><input type="number" min="0" data-mk-num="visitFee" value="${esc(work.visitFee)}"></label>
           <p class="ord-muted">لكل قسم: «معاينة الأول» يخلي كل طلباته تبدأ بمعاينة (المشاكل غير المعروفة أو «أخرى» دايمًا معاينة). أقصى سعر للإصلاح: السيرفر بيرفض أي عرض أعلى منه. فاضي = من غير حد.</p>
           <div class="mk-warranty">${cats().map((c) => `<div class="mk-row"><b>${esc(c.name)}</b>
             <label class="hs-grid-field"><span>معاينة الأول</span><input type="checkbox" data-mk-insp-cat="${esc(c.id)}" ${work.inspection.cats[c.id] ? 'checked' : ''}></label>
@@ -98,6 +102,7 @@
       if (t.dataset.mkWItem) { if (t.value === '') delete work.warranty.items[t.dataset.mkWItem]; else work.warranty.items[t.dataset.mkWItem] = Number(t.value); }
       if (t.hasAttribute && t.hasAttribute('data-mk-pin')) work.arrivalPin = t.checked;
       if (t.hasAttribute && t.hasAttribute('data-mk-bid')) work.bidding = t.checked;
+      if (t.dataset && t.dataset.mkNum) work[t.dataset.mkNum] = +t.value || 0;
       if (t.hasAttribute && t.hasAttribute('data-mk-bidwin')) work.bidWindowMin = +t.value || 15;
       if (t.hasAttribute && t.hasAttribute('data-mk-icap-default')) work.inspectionCap.default = +t.value || 0;
       if (t.dataset && t.dataset.mkInspCat) { if (t.checked) work.inspection.cats[t.dataset.mkInspCat] = true; else delete work.inspection.cats[t.dataset.mkInspCat]; }
@@ -116,7 +121,7 @@
       else if (d.mkSave !== undefined) {
         b.disabled = true; status('جارٍ الحفظ…');
         const r = await C().request('PATCH', '/admin/marketing', { body: { promos: work.promos, referral: work.referral, packages: work.packages, warranty: work.warranty, arrivalPin: work.arrivalPin,
-        bidding: work.bidding, bidWindowMin: work.bidWindowMin, inspectionCap: work.inspectionCap, priceCaps: work.priceCaps, inspection: work.inspection } });
+        bidding: work.bidding, bidWindowMin: work.bidWindowMin, cancelFee: work.cancelFee, visitFee: work.visitFee, inspectionRate: work.inspectionRate, inspectionCap: work.inspectionCap, priceCaps: work.priceCaps, inspection: work.inspection } });
         b.disabled = false;
         if (r.ok) { work.promos = r.data.promos.map((p) => ({ ...p })); work.packages = r.data.packages.map((p) => ({ ...p })); work.warranty = { ...r.data.warranty, cats: { ...r.data.warranty.cats }, items: { ...r.data.warranty.items } }; work.arrivalPin = !!r.data.arrivalPin; render(); status('تم الحفظ — التغييرات ظاهرة للعملاء.'); }
         else status(errText(r));

@@ -49,6 +49,12 @@
   client.define('GET', '/admin/providers', { roles: A, summary: 'All providers (?status=).' }, ({ query, actor, store }) =>
     guard(actor, 'providers', 'view') || store.db().providers.filter(p => !query.status || p.status === query.status));
 
+  client.define('POST', '/admin/providers/:id/warn', { roles: A, summary: 'Warn a provider (e.g. off-platform deals) {reason}; the second warning suspends.' }, ({ params, body, actor, store }) => {
+    const denied = guard(actor, 'providers', 'decide'); if (denied) return denied;
+    const p = store.get('providers', params.id); if (!p) return fail('NOT_FOUND', 'مقدم الخدمة غير موجود');
+    store.warnProvider(p.id, String((body && body.reason) || 'الاتفاق مع العملاء بره المنصة'));
+    return store.get('providers', p.id);
+  });
   client.define('POST', '/admin/providers/:id/status', { roles: A, summary: 'Approve / reject / suspend a provider.' }, ({ params, body, actor, store }) => {
     const denied = guard(actor, 'providers', 'decide'); if (denied) return denied;
     const p = store.get('providers', params.id); if (!p) return fail('NOT_FOUND', 'مقدم الخدمة غير موجود');
@@ -133,6 +139,8 @@
       const v = body.inspection || {}, bools = o => { const m = {}; for (const [k, x] of Object.entries(o && typeof o === 'object' ? o : {})) { if (typeof x !== 'boolean') continue; if (!/^[a-z0-9/-]{2,80}$/.test(k)) errors.inspection = 'مفتاح غير صالح'; else m[k] = x; } return m; };
       out.inspection = { cats: bools(v.cats), items: bools(v.items), problems: bools(v.problems) };
     }
+    for (const key of ['cancelFee', 'visitFee']) { if (body[key] === undefined) continue; const n = Math.round(+body[key]); if (!(n >= 0 && n <= 5000)) errors[key] = 'من 0 لـ 5000 ج.م'; else out[key] = n; }
+    if (body.inspectionRate !== undefined) { const n = +body.inspectionRate; if (!(n >= 0 && n <= 50)) errors.inspectionRate = 'من 0 لـ 50٪'; else out.inspectionRate = n; }
     if (body.bidWindowMin !== undefined) { const n = Math.round(+body.bidWindowMin); if (!(n >= 5 && n <= 120)) errors.bidWindowMin = 'من 5 لـ 120 دقيقة'; else out.bidWindowMin = n; }
     for (const key of ['inspectionCap', 'priceCaps']) {           /* EGP caps: default + per category (+ per item / problem for prices) */
       if (body[key] === undefined) continue;
@@ -159,7 +167,7 @@
     return { out, errors };
   }
   const marketingView = s => ({ promos: Array.isArray(s.promos) ? s.promos : [], referral: s.referral || { on: false, reward: 0 }, packages: Array.isArray(s.packages) ? s.packages : [], warranty: s.warranty || { default: 30, cats: {}, items: {} }, arrivalPin: !!s.arrivalPin,
-    bidding: !!s.bidding, bidWindowMin: +s.bidWindowMin || 15, inspectionCap: s.inspectionCap || { default: 300, cats: {} }, priceCaps: s.priceCaps || { cats: {}, items: {}, problems: {} }, inspection: s.inspection || { cats: {}, items: {}, problems: {} } });
+    bidding: !!s.bidding, bidWindowMin: +s.bidWindowMin || 15, inspectionCap: s.inspectionCap || { default: 0, cats: {} }, cancelFee: s.cancelFee != null ? +s.cancelFee : 50, visitFee: +s.visitFee || 0, inspectionRate: +s.inspectionRate || 0, priceCaps: s.priceCaps || { cats: {}, items: {}, problems: {} }, inspection: s.inspection || { cats: {}, items: {}, problems: {} } });
   client.define('POST', '/admin/reviews/:id/visibility', { roles: A, summary: 'Hide or re-publish a review {hidden, reason}.' }, ({ params, body, actor, store }) => {
     const denied = guard(actor, 'reviews', 'decide'); if (denied) return denied;
     if (typeof body.hidden !== 'boolean') return fail('VALIDATION', 'حدد إخفاء أو نشر', { hidden: 'boolean' });
@@ -184,6 +192,7 @@
     setReviewHidden: (rid, hidden, reason) => client.post('/admin/reviews/' + id(rid) + '/visibility', { hidden, reason }),
     saveMarketing: patch => client.patch('/admin/marketing', patch),
     providers: status => client.get('/admin/providers' + (status ? '?status=' + id(status) : '')),
+    warnProvider: (pid, reason) => client.post('/admin/providers/' + id(pid) + '/warn', { reason }),
     setProviderStatus: (pid, status) => client.post('/admin/providers/' + id(pid) + '/status', { status }),
     setSpecialRate: (pid, specialRate) => client.post('/admin/providers/' + id(pid) + '/rate', { specialRate }),
     candidates: reqId => client.get('/admin/requests/' + id(reqId) + '/candidates'),

@@ -379,7 +379,7 @@ test('offers round: up to 3 providers, caps, customer chooses; inspection fee de
   assert.equal((await t.O.bid(s2.id, { kind: 'inspection', fee: 150 })).status, 201);
   t.as('customer', SARA); await t.O.choose(s2.id, inv2[0]);
   const insp = t.run(`MP.get('serviceRequests', ${JSON.stringify(s2.id)}).inspection`);
-  assert.equal(insp.fee, 150); assert.ok(insp.customerFee > 150);
+  assert.equal(insp.fee, 150); assert.equal(insp.customerFee, 150, 'no platform share on a visit unless the admin sets inspectionRate');
   t.as('provider', inv2[0]);
   await t.O.schedule(s2.id); for (const to of ['enroute', 'arrived', 'started']) await t.O.advance(s2.id, to);
   /* customer declines the repair → the visit alone is charged, no warranty */
@@ -400,4 +400,73 @@ test('offers round: up to 3 providers, caps, customer chooses; inspection fee de
   t.as('provider', inv3[0]); assert.equal((await t.O.complete(s3.id)).ok, true);
   const tx3 = t.run(`MP.db().transactions.find(x => x.reqId === ${JSON.stringify(s3.id)})`);
   assert.equal(tx3.net, 700, 'repair only — the inspection fee is inside it, not added');
+});
+test('owner rules: wider search, revised price flag + visit fee, travel fee on late cancel, warranty free + payer, cash confirmation, warnings', async () => {
+  const t = boot();
+  assert.equal((await marketing(t, { bidding: true, cancelFee: 60, visitFee: 80, inspectionRate: 0 })).ok, true);
+  const quotable = t.run(`(() => { for (const it of CAT.items('electric')) for (const p of CAT.problems(it.id)) if (!p.id.includes('/other')) return [it.id, p.id]; return null; })()`);
+  const pick = id => t.run(`MP.db().assignments.filter(a => a.reqId === ${JSON.stringify(id)} && a.bidding).map(a => a.providerId)`);
+  const R = id => t.run(`MP.get('serviceRequests', ${JSON.stringify(id)})`);
+  /* 1) nobody answered in time → one wider search, admin told */
+  const w = (await create(t, SARA, { itemId: quotable[0], serviceId: quotable[0], problemId: quotable[1] })).data;
+  for (const pid of pick(w.id)) { t.as('provider', pid); await t.O.respond(w.id, false, 'مشغول'); }
+  t.run(`MP.get('serviceRequests', ${JSON.stringify(w.id)}).bidding.until = new Date(Date.now() - 1000).toISOString()`);
+  t.as('customer', SARA);
+  const wid = await t.O.widen(w.id);
+  assert.equal(wid.ok, true); assert.equal(R(w.id).bidding.widened, true);
+  assert.equal((await t.O.widen(w.id)).status, 409, 'only once');
+  /* 2) revised price far above the agreed one is flagged; refused → visit fee only, no warranty */
+  const r = (await create(t, SARA, { itemId: quotable[0], serviceId: quotable[0], problemId: quotable[1] })).data;
+  const pA = pick(r.id)[0];
+  t.as('provider', pA); await t.O.bid(r.id, { kind: 'quote', labor: 200 });
+  t.as('customer', SARA); await t.O.choose(r.id, pA);
+  t.as('provider', pA); await t.O.schedule(r.id); for (const to of ['enroute', 'arrived', 'started']) await t.O.advance(r.id, to);
+  assert.equal((await t.g.HSQuotesApi.submit(r.id, { labor: 400 })).ok, true);
+  assert.equal(t.run(`MP.currentQuote(${JSON.stringify(r.id)}).flagged`), true);
+  t.as('customer', SARA); await t.g.HSQuotesApi.reject(r.id, 'غالي');
+  t.as('provider', pA); assert.equal((await t.O.inspectionOnly(r.id)).ok, true);
+  const tx = t.run(`MP.db().transactions.find(x => x.reqId === ${JSON.stringify(r.id)})`);
+  assert.equal(tx.net, 80); assert.equal(R(r.id).warrantyUntil, undefined);
+  /* 5) cash: both confirm → collected; mismatch → complaint */
+  t.as('customer', SARA); assert.equal((await t.O.cash(r.id, true)).ok, true);
+  t.as('provider', pA); await t.O.cash(r.id, false);
+  assert.equal(R(r.id).cash.disputed, true);
+  assert.ok(t.run(`MP.db().complaints.some(k => k.reqId === ${JSON.stringify(r.id)} && k.kind === 'payment')`));
+  /* 3) cancel: free before the provider moves, travel fee after */
+  const c = (await create(t, SARA, { itemId: quotable[0], serviceId: quotable[0], problemId: quotable[1] })).data;
+  const pC = pick(c.id)[0];
+  t.as('provider', pC); await t.O.bid(c.id, { kind: 'quote', labor: 300 });
+  t.as('customer', SARA); await t.O.choose(c.id, pC);
+  t.as('provider', pC); await t.O.schedule(c.id); await t.O.advance(c.id, 'enroute');
+  t.as('customer', SARA); assert.equal((await t.O.cancel(c.id, 'غيرت رأيي')).ok, true);
+  const cf = t.run(`MP.db().transactions.find(x => x.reqId === ${JSON.stringify(c.id)})`);
+  assert.equal(cf.kind, 'cancel-fee'); assert.equal(cf.net, 60); assert.equal(cf.providerId, pC);
+  /* 4) warranty: free for the customer; original declines → substitute paid, original charged */
+  const g = (await create(t, SARA, { itemId: quotable[0], serviceId: quotable[0], problemId: quotable[1] })).data;
+  const pG = pick(g.id)[0];
+  t.as('provider', pG); await t.O.bid(g.id, { kind: 'quote', labor: 250, parts: 50 });
+  t.as('customer', SARA); await t.O.choose(g.id, pG);
+  t.as('provider', pG); await t.O.schedule(g.id); for (const to of ['enroute', 'arrived', 'started']) await t.O.advance(g.id, to);
+  await t.O.complete(g.id);
+  t.as('customer', SARA);
+  const claim = await t.O.warranty(g.id, 'رجعت تاني');
+  assert.equal(claim.status, 201, JSON.stringify(claim.error));
+  const cid = claim.data.id;
+  assert.equal(R(cid).freeService.status, 'accepted', 'nothing to pay');
+  t.run(`MP.db().providers.push({ ...MP.get('providers', ${JSON.stringify(pG)}), id: 'p_sub', name: 'فني بديل' })`);   /* a second provider in the same area */
+  t.as('provider', pG); assert.equal((await t.O.respond(cid, false, 'مش فاضي')).ok, true);
+  assert.equal(R(cid).warrantyPayer, pG);
+  const sub = t.run(`(MP.db().assignments.find(a => a.reqId === ${JSON.stringify(cid)} && a.status === 'offered') || {}).providerId`);
+  assert.ok(sub, 'a substitute was offered the warranty job');
+  {
+    t.as('provider', sub); await t.O.respond(cid, true); await t.O.schedule(cid); for (const to of ['enroute', 'arrived', 'started']) await t.O.advance(cid, to);
+    assert.equal((await t.g.HSQuotesApi.completeFree(cid)).ok, true);
+    const ts = t.run(`MP.db().transactions.filter(x => x.reqId === ${JSON.stringify(cid)})`);
+    assert.equal(ts.find(x => x.kind === 'warranty-payout').net, 250); assert.equal(ts.find(x => x.kind === 'warranty-charge').net, -250);
+  }
+  /* 5b) warnings: the second suspends */
+  t.as('admin', 'e_owner');
+  assert.equal((await t.g.HSAdminApi.warnProvider(pA, 'اتفاق بره المنصة')).ok, true);
+  await t.g.HSAdminApi.warnProvider(pA, '');
+  assert.equal(t.run(`MP.get('providers', ${JSON.stringify(pA)}).status`), 'suspended');
 });

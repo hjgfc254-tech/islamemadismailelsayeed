@@ -79,7 +79,8 @@ async function plan(ld, { method, path, query, body, actor }) {
     if ((act === 'provider' || act === 'repeat') && body.providerId) await ld.doc('providers', body.providerId);
     if (act === 'photos') await ld.doc('jobPhotos', r.id);                       // before / after photos of this job
     if (act === 'warranty' && r.warrantyClaimId) await ld.doc('serviceRequests', r.warrantyClaimId);
-    if ((act === 'respond' && !body.accept && (autoAssign || bidding)) || act === 'cancel' || ((act === 'repeat' || act === 'warranty') && (autoAssign || bidding))) await candidates(ld, r.cat);
+    if ((act === 'respond' && !body.accept && (autoAssign || bidding)) || act === 'cancel' || ((act === 'repeat' || act === 'warranty') && (autoAssign || bidding)) || act === 'widen' || (act === 'respond' && r.warrantyOf)) await candidates(ld, r.cat);
+    if (r.warrantyOf && (act === 'respond' || act === 'free')) await requestBundle(ld, r.warrantyOf);   // warranty payer / substitute payout
     if (r.bidding) await ld.docsIn('providers', [...ld.maps.assignments.values()].filter(a => a.reqId === r.id && a.bidding).map(a => a.providerId));   // offer cards: name / rating / jobs
     if ((act === 'complete' || act === 'inspection-only') && r.promo && r.promo.ref) await ld.doc('customers', r.promo.ref);   // invite reward goes to the friend
     if (act === 'review' || act === 'close' || act === 'complete' || act === 'inspection-only') {

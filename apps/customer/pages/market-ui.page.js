@@ -169,7 +169,8 @@ document.addEventListener('click', e => {
     case 'cancelReq':
       askSheet({ id: d.id, kind: 'cancel', title: 'إلغاء الطلب', text: 'هل تريد إلغاء الطلب؟ لا يمكن التراجع.', reasonLabel: 'سبب الإلغاء (اختياري)', confirmLabel: 'تأكيد الإلغاء',
         chips: ['المشكلة اتحلت', 'لقيت فني تاني', 'الموعد مش مناسب', 'طلبت بالغلط', 'هغيّر تفاصيل الطلب'],
-        policy: 'الإلغاء مجاني ومن غير أي رسوم طالما الطلب لسه ما اتقبلش من فني.' });
+        policy: (() => { const rq = MP.get('serviceRequests', d.id) || {}, s = MP.db().settings || {}, fee = s.cancelFee != null && s.cancelFee !== '' ? +s.cancelFee : 50;
+          return ['enroute', 'arrived'].includes(rq.status) && fee > 0 ? 'الفني اتحرك بالفعل — الإلغاء دلوقتي عليه رسوم انتقال ' + fee + ' ج.م بتروح للفني.' : 'الإلغاء مجاني طالما الفني لسه ما اتحركش.'; })() });
       break;
     case 'rate': openRateSheet(d.id); break;
     case 'rvDone': closeSheet(); break;

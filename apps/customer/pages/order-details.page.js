@@ -22,7 +22,7 @@
     const rev = MP.db().reviews.find(v => v.reqId === id);
     const quote = MP.currentQuote(id);
     const inProgress = ['accepted','scheduled','enroute','arrived','started'].includes(r.status);
-    const canCancel = ['received', 'searching', 'sent'].includes(r.status);   /* free cancellation until a provider accepts (the store refuses later anyway) */
+    const canCancel = ['received', 'searching', 'sent', 'accepted', 'scheduled', 'enroute', 'arrived'].includes(r.status);   /* free until the provider is on the way, then the admin's travel fee */   /* free cancellation until a provider accepts (the store refuses later anyway) */
     const canComplain = !cancelled && !failed;
 
     /* عنوان الحالة */
@@ -189,7 +189,8 @@
       ${statusBar}
       ${T ? T.arrivalCard(r) : etaBlock}
       ${T ? T.warrantyStrip(r) : ''}
-      ${root.HSOffers ? root.HSOffers.block(r) : ''}
+      ${root.HSOffers ? root.HSOffers.block(r) + root.HSOffers.cashCard(r) : ''}
+      ${r.warrantyOf ? `<div class="need promo-note">${ic('shield')}<span>طلب ضمان — مش هتدفع حاجة على المصنعية.</span></div>` : ''}
       <div class="need tracking-next">${ic('info')}<span><b>الخطوة التالية</b><br>${esc(nextStepCopy)}</span></div>
       ${providerBlock}
       ${T && p ? T.tagChips(p.id, 3) : ''}

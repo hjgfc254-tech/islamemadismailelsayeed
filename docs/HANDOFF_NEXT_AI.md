@@ -69,6 +69,16 @@
 - **التالي:** استكمال فحص Customer (addresses/orders/tracking/support/details)، ثم Provider عبر legacy bridge، ثم Admin page/dialog keyboard traversal. قارئات الشاشة وFirefox/WebKit/Safari والأجهزة الفعلية لم تُختبر. Phase 5 item 4 ما زال جزئيًا؛ لا يوجد ادعاء WCAG.
 
 
+## 2026-11-19 — Owner rules on top of the offers round (round 10)
+- **No built-in price numbers:** inspection / price caps exist only when the admin sets them (`inspectionCap.default` 0 = no cap).
+- **Window over, no offers:** customer button «دوّر على فنيين في مناطق تانية» → `POST /requests/:id/widen` (once): up to 3 same-specialty providers from other governorates + admin notice. Offers ready after the window → a «choose one» banner; after 60 min «اختارلي الأنسب» pulses. No server-side timer/push yet.
+- **Revised price on site:** a quote > 150% of the agreed provider amount is `flagged` + admin notice. If the customer refuses → provider «سجّل الزيارة بس» charges `settings.visitFee` (admin; 0 = off), no warranty (`r.visitOnly`).
+- **Cancel:** free until `enroute`; at `enroute`/`arrived` the customer pays `settings.cancelFee` (default 50) → `cancel-fee` transaction to the provider. Admin cancels are free.
+- **Warranty (labor):** a claim is a free service (`freeService.reason = 'warranty'`). If the original provider declines → `warrantyPayer`, re-assigned; on completion the substitute gets the original labor (`warranty-payout`) and the original is charged (`warranty-charge`).
+- **Cash:** `POST /requests/:id/cash {paid}` from both sides; both yes → `collection: 'collected'`; mismatch → automatic `payment` complaint.
+- **Off-platform deals:** `POST /admin/providers/:id/warn` (`HSAdminApi.warnProvider`); the second warning suspends. API only — no Admin button yet.
+- **Commission:** one rate (`markupRate`); visits use `settings.inspectionRate` (default 0).
+- **Test:** `round5-features` «owner rules…».
 ## 2026-11-19 — Offers round, inspection path, price caps (round 9)
 - **Switch:** Admin → live settings → «عروض الفنيين والمعاينة» (`settings.bidding`, off by default; old flow unchanged when off).
 - **Flow:** new request → `MP.openBidding` invites up to 3 `candidates()` (`assignments[].bidding`) → each provider `POST /requests/:id/bid` (quote: labor + parts, or inspection: fee) → customer sees `offers` (totals with the platform share via `quoteFor(markupRate)`; the base `bid` never leaves the server) → `POST /requests/:id/choose` accepts one, the others become `withdrawn` + notified. A decline re-invites one more.

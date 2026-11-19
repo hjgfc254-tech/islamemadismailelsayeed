@@ -119,6 +119,9 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /requests/:id/review` | customer | orders-api.js | Rate the provider once {stars 1–5, comment}. |
 | `POST /requests/:id/messages` | customer, provider | orders-api.js | Message the other side of an accepted job {text ≤ 500}. |
 | `POST /requests/:id/rate-customer` | provider | orders-api.js | Provider rates the customer once after the job {stars 1–5, comment}. |
+| `POST /requests/:id/widen` | customer | orders-api.js | No offers after the window: invite providers from other areas (once). |
+| `POST /requests/:id/cash` | customer, provider | orders-api.js | Cash after completion: did the money change hands {paid}. A mismatch opens a complaint. |
+| `POST /admin/providers/:id/warn` | admin | admin-api.js | Warn a provider (e.g. off-platform deals) {reason}; the second warning suspends. |
 | `POST /requests/:id/bid` | provider | orders-api.js | Send or update an offer {kind: quote or inspection, labor + parts or fee, note, eta}. |
 | `POST /requests/:id/choose` | customer | orders-api.js | Choose one of the offers {providerId}. |
 | `POST /requests/:id/inspection-only` | provider | orders-api.js | Close an inspection the customer did not continue: the visit fee is the job. |

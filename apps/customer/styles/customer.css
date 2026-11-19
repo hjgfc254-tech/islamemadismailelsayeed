@@ -1305,4 +1305,10 @@ html.ob-open,html.ob-open body{overflow:hidden}
 .of-note{margin:0;font-size:13px;color:var(--text-secondary)}
 .of-pick{margin:0;min-height:44px}
 .of-more{margin:8px 0 0;font-size:12px;color:var(--text-muted);text-align:center}
-@media (prefers-reduced-motion:reduce){.of-card{animation:none}}
+@media (prefers-reduced-motion:reduce){.of-card{animation:none}}.of-ready{display:flex;align-items:center;gap:8px;margin:0 0 10px;padding:10px 12px;border-radius:14px;background:var(--accent-soft,rgba(180,81,28,.1));font-size:13px;font-weight:700}
+.of-best.is-late{animation:ofPulse 1.6s ease-in-out 3}
+@keyframes ofPulse{50%{transform:scale(1.03)}}
+.of-wait .cta{margin-top:6px}
+.of-cash{display:grid;gap:10px;margin:12px 0;padding:14px;border:1px solid var(--border-subtle);border-radius:18px;background:var(--surface-primary)}
+.of-cash div{display:flex;gap:8px}.of-cash .cta{flex:1;margin:0;min-height:44px}
+@media (prefers-reduced-motion:reduce){.of-best.is-late{animation:none}}
