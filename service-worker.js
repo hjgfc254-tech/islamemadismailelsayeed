@@ -18,7 +18,7 @@
    • CLEAR_CACHE  — مسح كل الكاش (لأدوات العرض التجريبي).
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'hansalhlak-v11-firebase-11';
+const CACHE = 'hansalhlak-v11-firebase-12';
 
 /* الملفات الأساسية — يجب أن تعمل offline بعد أول زيارة */
 const FILES = [
@@ -26,6 +26,7 @@ const FILES = [
   'index.html',
   'apps/customer/index.html',
   'apps/customer/styles/customer.css',
+  'apps/customer/styles/overrides.css',
   'shared/design-system/design-system.css',
   'shared/icons/icon-registry.js',
   'shared/components/accessible-tabs.js',
@@ -58,6 +59,7 @@ const FILES = [
   'apps/customer/pages/request-create.page.js',
   'apps/provider/index.html',
   'apps/provider/styles/provider.css',
+  'apps/provider/styles/overrides.css',
   'apps/provider/provider-request-domain.js',
   'apps/provider/provider-domain.js',
   'apps/provider/provider-location.js',

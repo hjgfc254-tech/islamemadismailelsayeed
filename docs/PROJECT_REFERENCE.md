@@ -764,7 +764,11 @@ service cloud.firestore {
       "firestore.rules",
       "database.rules.json",
       "firestore.indexes.json",
-      "_redirects"
+      "_redirects",
+      "local-only/**",
+      "tools-lab/**",
+      ".serena/**",
+      ".claude/**"
     ],
     "redirects": [
       {
@@ -781,6 +785,11 @@ service cloud.firestore {
         "source": "/admin{,/**}",
         "destination": "/apps/admin/index.html",
         "type": 302
+      },
+      {
+        "source": "/privacy",
+        "destination": "/legal/privacy.html",
+        "type": 301
       }
     ],
     "headers": [
@@ -849,7 +858,7 @@ service cloud.firestore {
 | File | Status | Bytes |
 |---|---|---|
 | `.claude/skills/browser-qa/SKILL.md` | DOCUMENTATION | 4627 |
-| `.claude/skills/finish-gate/SKILL.md` | DOCUMENTATION | 2943 |
+| `.claude/skills/finish-gate/SKILL.md` | DOCUMENTATION | 2951 |
 | `.claude/skills/vm-script-test/SKILL.md` | DOCUMENTATION | 4653 |
 
 ### .firebaserc (1)
@@ -876,19 +885,13 @@ service cloud.firestore {
 |---|---|---|
 | `.repomixignore` | NEEDS_REVIEW | 714 |
 
-### HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md (1)
-
-| File | Status | Bytes |
-|---|---|---|
-| `HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md` | DOCUMENTATION | 33783 |
-
 ### admin (1)
 
 | File | Status | Bytes |
 |---|---|---|
 | `apps/admin/rbac-store.js` | IMPLEMENTED (DEMO) | 15489 |
 
-### apps/admin (51)
+### apps/admin (52)
 
 | File | Status | Bytes |
 |---|---|---|
@@ -897,7 +900,7 @@ service cloud.firestore {
 | `apps/admin/admin-session.js` | IMPLEMENTED (FRONTEND DEMO) | 1857 |
 | `apps/admin/admin-shell.js` | IMPLEMENTED (SHELL, DEMO) | 25478 |
 | `apps/admin/app.js` | IMPLEMENTED (FRONTEND DEMO) | 5163 |
-| `apps/admin/index.html` | IMPLEMENTED (SHELL HOST) | 4929 |
+| `apps/admin/index.html` | IMPLEMENTED (SHELL HOST) | 4981 |
 | `apps/admin/login.html` | IMPLEMENTED (FRONTEND DEMO) | 812 |
 | `apps/admin/modules/access-control/permission-matrix.js` | IMPLEMENTED (FRONTEND DEMO) | 2356 |
 | `apps/admin/modules/access-control/permission-presets.js` | IMPLEMENTED (FRONTEND DEMO) | 2066 |
@@ -907,7 +910,7 @@ service cloud.firestore {
 | `apps/admin/modules/audit/audit-details.js` | IMPLEMENTED (FRONTEND DEMO) | 2422 |
 | `apps/admin/modules/audit/audit-filters.js` | IMPLEMENTED (FRONTEND DEMO) | 1382 |
 | `apps/admin/modules/command-palette.js` | NEEDS_REVIEW | 5202 |
-| `apps/admin/modules/marketing-editor.js` | NEEDS_REVIEW | 8499 |
+| `apps/admin/modules/marketing-editor.js` | NEEDS_REVIEW | 11351 |
 | `apps/admin/modules/mini-charts.js` | NEEDS_REVIEW | 3590 |
 | `apps/admin/modules/site-content-editor.js` | NEEDS_REVIEW | 15530 |
 | `apps/admin/modules/workforce/employee-form.js` | IMPLEMENTED (FRONTEND DEMO) | 4303 |
@@ -940,32 +943,36 @@ service cloud.firestore {
 | `apps/admin/pages/workforce.page.js` | IMPLEMENTED (DEMO) | 16342 |
 | `apps/admin/permission-guard.js` | IMPLEMENTED (FRONTEND DEMO) | 2507 |
 | `apps/admin/README.md` | DOCUMENTATION | 1444 |
-| `apps/admin/styles/admin-components.css` | IMPLEMENTED (SHELL PARTS) | 33634 |
+| `apps/admin/styles/admin-components.css` | IMPLEMENTED (SHELL PARTS) | 34240 |
 | `apps/admin/styles/admin-responsive.css` | IMPLEMENTED (SHELL) | 1708 |
 | `apps/admin/styles/admin.css` | IMPLEMENTED (SHELL) | 5444 |
+| `apps/admin/styles/overrides.css` | NEEDS_REVIEW | 1187 |
 
-### apps/customer (18)
+### apps/customer (21)
 
 | File | Status | Bytes |
 |---|---|---|
-| `apps/customer/app.js` | PARTIALLY IMPLEMENTED | 100727 |
+| `apps/customer/app.js` | PARTIALLY IMPLEMENTED | 101052 |
 | `apps/customer/customer-router.js` | IMPLEMENTED (FRONTEND DEMO) | 3508 |
 | `apps/customer/customer-session.js` | IMPLEMENTED (FRONTEND DEMO) | 4646 |
-| `apps/customer/index.html` | IMPLEMENTED | 7014 |
-| `apps/customer/pages/account.page.js` | IMPLEMENTED | 27323 |
+| `apps/customer/index.html` | IMPLEMENTED | 7158 |
+| `apps/customer/pages/account.page.js` | IMPLEMENTED | 27375 |
 | `apps/customer/pages/addresses.page.js` | IMPLEMENTED | 10307 |
 | `apps/customer/pages/discover.page.js` | IMPLEMENTED | 15067 |
-| `apps/customer/pages/home.page.js` | IMPLEMENTED (DEMO) | 8998 |
+| `apps/customer/pages/home.page.js` | IMPLEMENTED (DEMO) | 9017 |
 | `apps/customer/pages/market-ui.page.js` | IMPLEMENTED | 33026 |
-| `apps/customer/pages/order-details.page.js` | IMPLEMENTED (DEMO) | 17848 |
+| `apps/customer/pages/onboarding.js` | NEEDS_REVIEW | 5565 |
+| `apps/customer/pages/order-details.page.js` | IMPLEMENTED (DEMO) | 18430 |
 | `apps/customer/pages/orders.page.js` | IMPLEMENTED (DEMO) | 3051 |
-| `apps/customer/pages/providers.page.js` | IMPLEMENTED | 10898 |
+| `apps/customer/pages/providers.page.js` | IMPLEMENTED | 11099 |
 | `apps/customer/pages/request-create.page.js` | IMPLEMENTED (FRONTEND DEMO) | 2370 |
 | `apps/customer/pages/request-wizard.page.js` | IMPLEMENTED | 67896 |
 | `apps/customer/pages/search.page.js` | IMPLEMENTED | 35413 |
 | `apps/customer/pages/support.page.js` | IMPLEMENTED | 21736 |
+| `apps/customer/pages/trust-features.js` | NEEDS_REVIEW | 18859 |
 | `apps/customer/README.md` | CONFIGURATION | 323 |
-| `apps/customer/styles/customer.css` | IMPLEMENTED | 109725 |
+| `apps/customer/styles/customer.css` | IMPLEMENTED | 123069 |
+| `apps/customer/styles/overrides.css` | NEEDS_REVIEW | 2036 |
 
 ### apps/guest (3)
 
@@ -975,12 +982,12 @@ service cloud.firestore {
 | `apps/guest/guest-policy.js` | IMPLEMENTED (FRONTEND DEMO) | 1752 |
 | `apps/guest/README.md` | DOCUMENTATION | 947 |
 
-### apps/provider (24)
+### apps/provider (25)
 
 | File | Status | Bytes |
 |---|---|---|
-| `apps/provider/app.js` | IMPLEMENTED (FRONTEND DEMO) | 51633 |
-| `apps/provider/index.html` | IMPLEMENTED (FRONTEND DEMO) | 2941 |
+| `apps/provider/app.js` | IMPLEMENTED (FRONTEND DEMO) | 57875 |
+| `apps/provider/index.html` | IMPLEMENTED (FRONTEND DEMO) | 2993 |
 | `apps/provider/login.html` | IMPLEMENTED (FRONTEND DEMO) | 822 |
 | `apps/provider/pages/active-jobs.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 174 |
 | `apps/provider/pages/dashboard.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 1482 |
@@ -1001,21 +1008,25 @@ service cloud.firestore {
 | `apps/provider/provider-router.js` | IMPLEMENTED (FRONTEND ROUTER) | 821 |
 | `apps/provider/provider-session.js` | IMPLEMENTED (FRONTEND DEMO) | 516 |
 | `apps/provider/provider-shell.js` | IMPLEMENTED (FRONTEND SHELL) | 1162 |
-| `apps/provider/README.md` | CONFIGURATION | 2115 |
-| `apps/provider/styles/provider.css` | IMPLEMENTED (RESPONSIVE FRONTEND) | 27618 |
+| `apps/provider/README.md` | CONFIGURATION | 2123 |
+| `apps/provider/styles/overrides.css` | NEEDS_REVIEW | 1123 |
+| `apps/provider/styles/provider.css` | IMPLEMENTED (RESPONSIVE FRONTEND) | 29538 |
 
-### assets (98)
+### assets (101)
 
 | File | Status | Bytes |
 |---|---|---|
 | `assets/app-icon-192.png` | NEEDS_REVIEW | 14352 |
 | `assets/app-icon-512.png` | NEEDS_REVIEW | 52706 |
-| `assets/brand/hero-technician.jpg` | NEEDS_REVIEW | 73867 |
+| `assets/brand/hero-tech-v2.webp` | NEEDS_REVIEW | 60916 |
 | `assets/brand/logo-v10-lockup-light.webp` | NEEDS_REVIEW | 21732 |
 | `assets/brand/logo-v10-lockup.webp` | NEEDS_REVIEW | 32586 |
 | `assets/brand/logo-v10-mark.webp` | NEEDS_REVIEW | 29120 |
 | `assets/brand/logo-v10-word.webp` | NEEDS_REVIEW | 29510 |
-| `assets/brand/README.md` | NEEDS_REVIEW | 1252 |
+| `assets/brand/onboard-1.webp` | NEEDS_REVIEW | 68280 |
+| `assets/brand/onboard-2.webp` | NEEDS_REVIEW | 82928 |
+| `assets/brand/onboard-3.webp` | NEEDS_REVIEW | 92840 |
+| `assets/brand/README.md` | NEEDS_REVIEW | 1329 |
 | `assets/brand/trust-handshake.jpg` | NEEDS_REVIEW | 61382 |
 | `assets/icons/svc/appliances/ac.webp` | NEEDS_REVIEW | 5920 |
 | `assets/icons/svc/appliances/cooker.webp` | NEEDS_REVIEW | 9872 |
@@ -1182,34 +1193,61 @@ service cloud.firestore {
 
 | File | Status | Bytes |
 |---|---|---|
-| `database.rules.json` | NEEDS_REVIEW | 283 |
+| `database.rules.json` | NEEDS_REVIEW | 630 |
 
-### docs (78)
+### docs (81)
 
 | File | Status | Bytes |
 |---|---|---|
-| `docs/ADMIN_BACKEND_STATUS.md` | NEEDS_REVIEW | 5123 |
 | `docs/ADMIN_MODULES.md` | CONFIGURATION | 1309 |
-| `docs/AI_AGENT_CONTINUATION_PROTOCOL.md` | DOCUMENTATION | 12910 |
+| `docs/AI_AGENT_CONTINUATION_PROTOCOL.md` | DOCUMENTATION | 12918 |
 | `docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md` | DOCUMENTATION | 4382 |
 | `docs/AI_CONTEXT/DOMAIN_MAPS/CUSTOMER.md` | DOCUMENTATION | 7442 |
 | `docs/AI_CONTEXT/DOMAIN_MAPS/FRONTEND_RUNTIME.md` | DOCUMENTATION | 3744 |
 | `docs/AI_CONTEXT/DOMAIN_MAPS/FUTURE_BACKEND_BOUNDARY.md` | DOCUMENTATION | 1611 |
-| `docs/AI_CONTEXT/DOMAIN_MAPS/PROVIDER.md` | DOCUMENTATION | 11273 |
-| `docs/AI_CONTEXT/DOMAIN_MAPS/SHARED_AND_SERVICES.md` | DOCUMENTATION | 2812 |
+| `docs/AI_CONTEXT/DOMAIN_MAPS/PROVIDER.md` | DOCUMENTATION | 11289 |
+| `docs/AI_CONTEXT/DOMAIN_MAPS/SHARED_AND_SERVICES.md` | DOCUMENTATION | 2836 |
 | `docs/AI_CONTEXT/DOMAIN_MAPS/TESTING.md` | DOCUMENTATION | 5646 |
 | `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md` | DOCUMENTATION | 7594 |
 | `docs/AI_CONTEXT/FILE_INDEX.json` | DOCUMENTATION |  |
-| `docs/AI_CONTEXT/README.md` | DOCUMENTATION | 1240 |
-| `docs/AI_CONTEXT/START_HERE.md` | DOCUMENTATION | 6003 |
+| `docs/AI_CONTEXT/README.md` | DOCUMENTATION | 1248 |
+| `docs/AI_CONTEXT/START_HERE.md` | DOCUMENTATION | 6325 |
 | `docs/AI_CONTEXT/WORKFLOW.md` | DOCUMENTATION | 1652 |
-| `docs/AI_NEXT_IMPLEMENTATION_ORDER.md` | CONFIGURATION | 14359 |
-| `docs/AI_PROJECT_MAP.csv` | CONFIGURATION | 277569 |
+| `docs/AI_NEXT_IMPLEMENTATION_ORDER.md` | CONFIGURATION | 14399 |
+| `docs/AI_PROJECT_MAP.csv` | CONFIGURATION | 272991 |
 | `docs/AI_PROJECT_MAP.json` | CONFIGURATION |  |
-| `docs/AI_PROJECT_MAP.md` | CONFIGURATION | 141872 |
-| `docs/API_CONTRACTS.md` | CONFIGURATION | 17082 |
-| `docs/ARCHITECTURE_BLUEPRINT_V1.md` | CONFIGURATION | 54657 |
+| `docs/AI_PROJECT_MAP.md` | CONFIGURATION | 144959 |
+| `docs/API_CONTRACTS.md` | CONFIGURATION | 18321 |
 | `docs/ARCHITECTURE.md` | CONFIGURATION | 1980 |
+| `docs/archive/ADMIN_BACKEND_STATUS.md` | NEEDS_REVIEW | 5123 |
+| `docs/archive/ARCHITECTURE_BLUEPRINT_V1.md` | NEEDS_REVIEW | 54657 |
+| `docs/archive/DEPENDENCY_GRAPH.md` | NEEDS_REVIEW | 3030 |
+| `docs/archive/DESIGN_SYSTEM_AUDIT.md` | NEEDS_REVIEW | 7383 |
+| `docs/archive/DEVELOPMENT_PROGRESS.md` | NEEDS_REVIEW | 38834 |
+| `docs/archive/EMPTY_PLACEHOLDERS.md` | NEEDS_REVIEW | 15964 |
+| `docs/archive/ENGINEERING_ENVIRONMENT_REPORT.md` | NEEDS_REVIEW | 3461 |
+| `docs/archive/FILE_MAP.md` | NEEDS_REVIEW | 86240 |
+| `docs/archive/FINAL_8_PERCENT_ENGINEERING_FINDINGS.md` | NEEDS_REVIEW | 7588 |
+| `docs/archive/FINAL_AUDIT.md` | NEEDS_REVIEW | 3993 |
+| `docs/archive/FIREBASE_BACKEND_BLUEPRINT.md` | NEEDS_REVIEW | 17300 |
+| `docs/archive/FIREBASE_DATA_INVENTORY.md` | NEEDS_REVIEW | 6346 |
+| `docs/archive/FIREBASE_MIGRATION_PLAN.md` | NEEDS_REVIEW | 3491 |
+| `docs/archive/HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md` | NEEDS_REVIEW | 33783 |
+| `docs/archive/HANSALHLAK_V8_PROGRESS.md` | NEEDS_REVIEW | 29460 |
+| `docs/archive/ICON_ASSET_AUDIT.md` | NEEDS_REVIEW | 4834 |
+| `docs/archive/ICON_SYSTEM_REPORT.md` | NEEDS_REVIEW | 4583 |
+| `docs/archive/IMPLEMENTATION_STATUS.md` | NEEDS_REVIEW | 29171 |
+| `docs/archive/INTRO_V2_REPORT.md` | NEEDS_REVIEW | 3809 |
+| `docs/archive/KEYBOARD_ACCESSIBILITY_AUDIT.md` | NEEDS_REVIEW | 7603 |
+| `docs/archive/MIGRATION_REPORT.md` | NEEDS_REVIEW | 6236 |
+| `docs/archive/NEW_FILES_REPORT.md` | NEEDS_REVIEW | 7786 |
+| `docs/archive/P1_PROVIDER_AUDIT.md` | NEEDS_REVIEW | 4676 |
+| `docs/archive/PROJECT_CONTROL_CENTER_GUIDE.md` | NEEDS_REVIEW | 2381 |
+| `docs/archive/PROMPT_LOG_V8.md` | NEEDS_REVIEW | 30100 |
+| `docs/archive/PROVIDER_LEGACY_PARITY_AUDIT.md` | NEEDS_REVIEW | 6575 |
+| `docs/archive/REMOVED_FILES_REPORT.md` | NEEDS_REVIEW | 299 |
+| `docs/archive/RESPONSIVE_AUDIT.md` | NEEDS_REVIEW | 5797 |
+| `docs/archive/TEST_RESULTS.md` | NEEDS_REVIEW | 16582 |
 | `docs/AUTHENTICATION.md` | CONFIGURATION | 948 |
 | `docs/DATA_MODEL.md` | CONFIGURATION | 1381 |
 | `docs/DECISIONS/2026-11-09-audit-log-demo-assumptions.md` | DECISION | 1546 |
@@ -1219,21 +1257,10 @@ service cloud.firestore {
 | `docs/DECISIONS/2026-11-09-settlements-demo-assumptions.md` | DECISION | 3082 |
 | `docs/DECISIONS/2026-11-09-system-settings-demo-assumptions.md` | DECISION | 2370 |
 | `docs/DECISIONS/2026-11-10-super-dashboard-demo-assumptions.md` | DECISION | 4656 |
-| `docs/DEPENDENCY_GRAPH.md` | CONFIGURATION | 3030 |
-| `docs/DESIGN_MAP.md` | NEEDS_REVIEW | 6095 |
-| `docs/DESIGN_SYSTEM_AUDIT.md` | DOCUMENTATION | 7383 |
-| `docs/DESIGN_SYSTEM_V9.md` | NEEDS_REVIEW | 6789 |
-| `docs/DEVELOPMENT_PROGRESS.md` | CONFIGURATION | 38834 |
-| `docs/EMPTY_PLACEHOLDERS.md` | CONFIGURATION | 15964 |
-| `docs/ENGINEERING_ENVIRONMENT_REPORT.md` | DOCUMENTATION | 3461 |
-| `docs/FILE_MAP.md` | CONFIGURATION | 86240 |
-| `docs/FINAL_8_PERCENT_ENGINEERING_FINDINGS.md` | NEEDS_REVIEW | 7588 |
-| `docs/FINAL_AUDIT.md` | CONFIGURATION | 3993 |
-| `docs/FIREBASE_BACKEND_BLUEPRINT.md` | NEEDS_REVIEW | 17300 |
-| `docs/FIREBASE_BACKEND.md` | NEEDS_REVIEW | 17906 |
-| `docs/FIREBASE_DATA_INVENTORY.md` | NEEDS_REVIEW | 6346 |
-| `docs/FIREBASE_MIGRATION_PLAN.md` | NEEDS_REVIEW | 3491 |
-| `docs/FIREBASE_SCHEMA.md` | NEEDS_REVIEW | 7504 |
+| `docs/DESIGN_MAP.md` | NEEDS_REVIEW | 6301 |
+| `docs/DESIGN_SYSTEM_V9.md` | NEEDS_REVIEW | 6806 |
+| `docs/FIREBASE_BACKEND.md` | NEEDS_REVIEW | 17914 |
+| `docs/FIREBASE_SCHEMA.md` | NEEDS_REVIEW | 7927 |
 | `docs/FRONTEND_ARCHITECTURE.md` | DOCUMENTATION | 4873 |
 | `docs/FRONTEND_COMPONENT_CATALOG.md` | DOCUMENTATION | 5262 |
 | `docs/FRONTEND_DESIGN_SYSTEM.md` | DOCUMENTATION | 4953 |
@@ -1242,36 +1269,23 @@ service cloud.firestore {
 | `docs/FRONTEND_PAGE_CATALOG.md` | DOCUMENTATION | 14612 |
 | `docs/FRONTEND_QA_ACCEPTANCE.md` | DOCUMENTATION | 3456 |
 | `docs/FRONTEND_TEAM_AI_PROTOCOL.md` | DOCUMENTATION | 4790 |
-| `docs/HANDOFF_NEXT_AI.md` | DOCUMENTATION | 85985 |
+| `docs/HANDOFF_NEXT_AI.md` | DOCUMENTATION | 86121 |
 | `docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md` | DOCUMENTATION | 21527 |
-| `docs/HANSALHLAK_V8_PROGRESS.md` | CONFIGURATION | 29460 |
-| `docs/ICON_ASSET_AUDIT.md` | DOCUMENTATION | 4834 |
-| `docs/ICON_SYSTEM_REPORT.md` | CONFIGURATION | 4583 |
-| `docs/IMPLEMENTATION_STATUS.md` | CONFIGURATION | 29171 |
-| `docs/INTRO_V2_REPORT.md` | CONFIGURATION | 3809 |
-| `docs/KEYBOARD_ACCESSIBILITY_AUDIT.md` | DOCUMENTATION | 7603 |
 | `docs/MIGRATION_PLAN.md` | CONFIGURATION | 1820 |
-| `docs/MIGRATION_REPORT.md` | CONFIGURATION | 6236 |
-| `docs/NEW_FILES_REPORT.md` | CONFIGURATION | 7786 |
-| `docs/P1_PROVIDER_AUDIT.md` | CONFIGURATION | 4676 |
 | `docs/PERMISSIONS.md` | CONFIGURATION | 824 |
 | `docs/PLAYBOOKS.md` | NEEDS_REVIEW | 13769 |
-| `docs/PROJECT_CONTROL_CENTER_GUIDE.md` | CONFIGURATION | 2381 |
-| `docs/PROJECT_REFERENCE.md` | NEEDS_REVIEW | 88706 |
-| `docs/PROJECT_TREE.md` | CONFIGURATION | 26550 |
-| `docs/PROMPT_LOG_V8.md` | CONFIGURATION | 30100 |
-| `docs/PROVIDER_LEGACY_PARITY_AUDIT.md` | DOCUMENTATION | 6575 |
-| `docs/REMOVED_FILES_REPORT.md` | CONFIGURATION | 299 |
-| `docs/RESPONSIVE_AUDIT.md` | DOCUMENTATION | 5797 |
+| `docs/PROJECT_REFERENCE.md` | NEEDS_REVIEW | 91167 |
+| `docs/PROJECT_TREE.md` | CONFIGURATION | 27184 |
+| `docs/README.md` | NEEDS_REVIEW | 3408 |
 | `docs/SECURITY_MODEL.md` | CONFIGURATION | 1054 |
-| `docs/TEST_RESULTS.md` | CONFIGURATION | 16582 |
-| `docs/TESTING_STRATEGY.md` | DOCUMENTATION | 7738 |
+| `docs/TESTING_STRATEGY.md` | DOCUMENTATION | 7746 |
+| `docs/UI_EDIT_GUIDE_AR.md` | NEEDS_REVIEW | 6982 |
 
 ### firebase.json (1)
 
 | File | Status | Bytes |
 |---|---|---|
-| `firebase.json` | NEEDS_REVIEW | 2602 |
+| `firebase.json` | NEEDS_REVIEW | 2800 |
 
 ### firestore.indexes.json (1)
 
@@ -1297,16 +1311,16 @@ service cloud.firestore {
 | `functions/domain/apps/admin/permission-guard.js` | NEEDS_REVIEW | 2507 |
 | `functions/domain/apps/admin/rbac-store.js` | NEEDS_REVIEW | 15489 |
 | `functions/domain/manifest.json` | NEEDS_REVIEW | 2051 |
-| `functions/domain/services/admin-api.js` | NEEDS_REVIEW | 12445 |
+| `functions/domain/services/admin-api.js` | NEEDS_REVIEW | 13517 |
 | `functions/domain/services/api-client.js` | NEEDS_REVIEW | 9021 |
 | `functions/domain/services/auth-api.js` | NEEDS_REVIEW | 4274 |
-| `functions/domain/services/catalog-api.js` | NEEDS_REVIEW | 3962 |
-| `functions/domain/services/customer-api.js` | NEEDS_REVIEW | 7853 |
+| `functions/domain/services/catalog-api.js` | NEEDS_REVIEW | 4536 |
+| `functions/domain/services/customer-api.js` | NEEDS_REVIEW | 8882 |
 | `functions/domain/services/finance-api.js` | NEEDS_REVIEW | 7175 |
 | `functions/domain/services/local-catalog.js` | NEEDS_REVIEW | 51241 |
-| `functions/domain/services/local-market-store.js` | NEEDS_REVIEW | 51507 |
+| `functions/domain/services/local-market-store.js` | NEEDS_REVIEW | 58828 |
 | `functions/domain/services/notifications-api.js` | NEEDS_REVIEW | 1769 |
-| `functions/domain/services/orders-api.js` | NEEDS_REVIEW | 18573 |
+| `functions/domain/services/orders-api.js` | NEEDS_REVIEW | 23216 |
 | `functions/domain/services/provider-api.js` | NEEDS_REVIEW | 5961 |
 | `functions/domain/services/quotes-api.js` | NEEDS_REVIEW | 7074 |
 | `functions/domain/services/support-api.js` | NEEDS_REVIEW | 4297 |
@@ -1319,12 +1333,18 @@ service cloud.firestore {
 | `functions/src/identity.js` | NEEDS_REVIEW | 2012 |
 | `functions/src/limits.js` | NEEDS_REVIEW | 2572 |
 | `functions/src/partial.js` | NEEDS_REVIEW | 12796 |
-| `functions/src/plan.js` | NEEDS_REVIEW | 11134 |
+| `functions/src/plan.js` | NEEDS_REVIEW | 11531 |
 | `functions/src/runtime.js` | NEEDS_REVIEW | 4332 |
-| `functions/src/scope.js` | NEEDS_REVIEW | 5454 |
-| `functions/src/service.js` | NEEDS_REVIEW | 29606 |
-| `functions/src/store.js` | NEEDS_REVIEW | 5293 |
+| `functions/src/scope.js` | NEEDS_REVIEW | 5569 |
+| `functions/src/service.js` | NEEDS_REVIEW | 29788 |
+| `functions/src/store.js` | NEEDS_REVIEW | 5362 |
 | `functions/src/workforce.js` | NEEDS_REVIEW | 9869 |
+
+### legal (1)
+
+| File | Status | Bytes |
+|---|---|---|
+| `legal/privacy.html` | NEEDS_REVIEW | 8459 |
 
 ### root (10)
 
@@ -1332,21 +1352,21 @@ service cloud.firestore {
 |---|---|---|
 | `_redirects` | CONFIGURATION | 244 |
 | `.editorconfig` | CONFIGURATION | 232 |
-| `.gitignore` | CONFIGURATION | 883 |
+| `.gitignore` | CONFIGURATION | 965 |
 | `AGENTS.md` | DOCUMENTATION | 289 |
 | `CLAUDE.md` | DOCUMENTATION | 4030 |
 | `index.html` | CONFIGURATION | 423 |
 | `manifest.json` | CONFIGURATION | 629 |
 | `package.json` | CONFIGURATION | 1200 |
 | `README.md` | CONFIGURATION | 4086 |
-| `service-worker.js` | CONFIGURATION | 10597 |
+| `service-worker.js` | CONFIGURATION | 10790 |
 
 ### scripts (6)
 
 | File | Status | Bytes |
 |---|---|---|
 | `scripts/build-lucide-icons.cjs` | NEEDS_REVIEW | 7133 |
-| `scripts/build-project-reference.cjs` | NEEDS_REVIEW | 14383 |
+| `scripts/build-project-reference.cjs` | NEEDS_REVIEW | 14715 |
 | `scripts/inventory-files.mjs` | IMPLEMENTED | 1990 |
 | `scripts/refresh-project-inventory.mjs` | CONFIGURATION | 5760 |
 | `scripts/sync-functions-domain.cjs` | NEEDS_REVIEW | 2238 |
@@ -1356,19 +1376,19 @@ service cloud.firestore {
 
 | File | Status | Bytes |
 |---|---|---|
-| `services/admin-api.js` | IMPLEMENTED (MOCK ADAPTER) | 12445 |
+| `services/admin-api.js` | IMPLEMENTED (MOCK ADAPTER) | 13517 |
 | `services/api-client.js` | IMPLEMENTED (MOCK ADAPTER) | 9021 |
 | `services/auth-api.js` | IMPLEMENTED (MOCK ADAPTER) | 4274 |
-| `services/catalog-api.js` | IMPLEMENTED (MOCK ADAPTER) | 3962 |
-| `services/customer-api.js` | IMPLEMENTED (MOCK ADAPTER) | 7853 |
+| `services/catalog-api.js` | IMPLEMENTED (MOCK ADAPTER) | 4536 |
+| `services/customer-api.js` | IMPLEMENTED (MOCK ADAPTER) | 8882 |
 | `services/finance-api.js` | IMPLEMENTED (MOCK ADAPTER) | 7175 |
-| `services/firebase-backend.js` | NEEDS_REVIEW | 28584 |
+| `services/firebase-backend.js` | NEEDS_REVIEW | 29523 |
 | `services/firebase-config.js` | NEEDS_REVIEW | 2507 |
 | `services/local-attachments.js` | IMPLEMENTED | 14813 |
 | `services/local-catalog.js` | IMPLEMENTED | 51241 |
-| `services/local-market-store.js` | IMPLEMENTED | 51507 |
+| `services/local-market-store.js` | IMPLEMENTED | 58828 |
 | `services/notifications-api.js` | IMPLEMENTED (MOCK ADAPTER) | 1769 |
-| `services/orders-api.js` | IMPLEMENTED (MOCK ADAPTER) | 18573 |
+| `services/orders-api.js` | IMPLEMENTED (MOCK ADAPTER) | 23216 |
 | `services/provider-api.js` | IMPLEMENTED (MOCK ADAPTER) | 5961 |
 | `services/quotes-api.js` | IMPLEMENTED (MOCK ADAPTER) | 7074 |
 | `services/README.md` | CONFIGURATION | 940 |
@@ -1472,11 +1492,11 @@ service cloud.firestore {
 | `tests/unit/dialogs.test.js` | TEST | 3204 |
 | `tests/unit/discover.test.js` | IMPLEMENTED | 12452 |
 | `tests/unit/finance-dashboard.test.js` | TEST | 4333 |
-| `tests/unit/firebase-backend.test.js` | NEEDS_REVIEW | 55000 |
-| `tests/unit/firebase-integration-contract.test.js` | NEEDS_REVIEW | 7794 |
+| `tests/unit/firebase-backend.test.js` | NEEDS_REVIEW | 58374 |
+| `tests/unit/firebase-integration-contract.test.js` | NEEDS_REVIEW | 8165 |
 | `tests/unit/firebase-mode-data.test.js` | NEEDS_REVIEW | 16151 |
 | `tests/unit/frontend-contracts.test.js` | TEST | 8944 |
-| `tests/unit/home.test.js` | IMPLEMENTED | 10214 |
+| `tests/unit/home.test.js` | IMPLEMENTED | 10278 |
 | `tests/unit/icon-asset-audit.test.js` | TEST | 4660 |
 | `tests/unit/inventory-reproducibility.test.js` | TEST | 3440 |
 | `tests/unit/legacy-migration.test.js` | TEST | 7717 |
@@ -1490,7 +1510,7 @@ service cloud.firestore {
 | `tests/unit/provider-app-routing.test.js` | TEST | 5579 |
 | `tests/unit/provider-customer-location.test.js` | NEEDS_REVIEW | 7450 |
 | `tests/unit/provider-domain.test.js` | TEST | 8366 |
-| `tests/unit/provider-pages.test.js` | TEST | 6980 |
+| `tests/unit/provider-pages.test.js` | TEST | 7009 |
 | `tests/unit/provider-request-domain.test.js` | TEST | 18661 |
 | `tests/unit/providers-management.test.js` | TEST | 3336 |
 | `tests/unit/quotes-management.test.js` | TEST | 6130 |
@@ -1501,7 +1521,7 @@ service cloud.firestore {
 | `tests/unit/responsive-audit.test.js` | IMPLEMENTED | 4495 |
 | `tests/unit/responsive-sweep-regression.test.js` | TEST | 2480 |
 | `tests/unit/reviews-management.test.js` | TEST | 4794 |
-| `tests/unit/round5-features.test.js` | NEEDS_REVIEW | 19311 |
+| `tests/unit/round5-features.test.js` | NEEDS_REVIEW | 24863 |
 | `tests/unit/security.test.js` | TEST | 6317 |
 | `tests/unit/service-worker-precache.test.js` | TEST | 2791 |
 | `tests/unit/services-management.test.js` | TEST | 4892 |

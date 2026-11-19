@@ -59,7 +59,7 @@ map onto the tokens.
 |---|---|---|
 | `logo-wordmark.png` | Logo & Identity (laptop screen) | Customer app bar and footer, desktop header, Provider and Admin brand |
 | `logo-wordmark-light.png` | Same | Cinematic intro, dark surfaces |
-| `hero-technician.jpg` | Hansalehlak Identity | Customer homepage hero |
+| `hero-tech-v2.webp` | Hansalehlak Identity (platform uniform) | Customer homepage hero |
 | `trust-handshake.jpg` | One Integrated Experience | Homepage trust band |
 
 - The two logo files are dark-green and white versions with a transparent background, 517×162.

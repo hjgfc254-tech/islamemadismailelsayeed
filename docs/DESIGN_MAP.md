@@ -13,6 +13,8 @@ spacing, layout) lives in CSS. Never hard-code colors — use the tokens in `sha
 | Logo / favicon / app icon | `assets/brand/logo-v10-*.webp`, `assets/app-icon-192.png`, `assets/app-icon-512.png`, `manifest.json` |
 | PWA name, theme color, splash background | `manifest.json` |
 
+**Owner overrides:** each app loads `styles/overrides.css` LAST (customer, provider, admin) — personal look changes go there, sectioned per page; the Arabic per-page guide is `docs/UI_EDIT_GUIDE_AR.md`.
+
 **Load order matters.** Customer: `apps/customer/styles/customer.css` loads **before** `design-system.css`, so a rule
 in design-system wins at equal specificity — in customer.css use a more specific selector (e.g. prefix `#view`).
 Provider: `design-system.css` then `apps/provider/styles/provider.css`. Admin: `design-system.css`, then

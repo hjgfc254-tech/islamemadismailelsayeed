@@ -6,7 +6,8 @@
 | `logo-v10-lockup-light.webp` | Same lockup; wordmark recoloured light for dark sidebars | Admin sidebar (`admin-components.css`) |
 | `logo-v10-mark.webp` | House mark only | Intro, favicon, account sign-in card |
 | `logo-v10-word.webp` | Arabic and Latin wordmark lines | Intro |
-| `hero-technician.jpg` | Approved board photography | Home hero |
+| `hero-tech-v2.webp` | Owner photography (platform uniform) | Home hero |
+| `onboard-1..3.webp` | Owner photography | First-visit onboarding |
 | `trust-handshake.jpg` | Approved board photography | Home trust band |
 
 App icons: `assets/app-icon-192.png` and `assets/app-icon-512.png`. They are the mark on white and are referenced by `manifest.json`.

@@ -136,7 +136,7 @@ Canonical generated inventory:
 - `docs/AI_CONTEXT/FILE_INDEX.json` — compact lookup for agents.
 - `docs/AI_PROJECT_MAP.md` / `.csv` — human/export views.
 - `docs/PROJECT_TREE.md` — tree.
-- `docs/EMPTY_PLACEHOLDERS.md` — placeholder register.
+- `docs/archive/EMPTY_PLACEHOLDERS.md` — placeholder register.
 
 After file or documentation changes:
 ```bash

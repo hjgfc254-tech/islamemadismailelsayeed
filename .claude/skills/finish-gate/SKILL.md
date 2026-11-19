@@ -24,7 +24,7 @@ Shell is Windows PowerShell 5.1: no `&&`; chain with `;` or `if ($?) { ... }`.
 
 ## 3. Documentation updates (only those affected)
 - Relevant `docs/AI_CONTEXT/DOMAIN_MAPS/<domain>.md`
-- `docs/IMPLEMENTATION_STATUS.md`, `docs/AI_NEXT_IMPLEMENTATION_ORDER.md`
+- `docs/archive/IMPLEMENTATION_STATUS.md`, `docs/AI_NEXT_IMPLEMENTATION_ORDER.md`
 - `docs/AI_CONTEXT/DOMAIN_MAPS/TESTING.md` when test counts or commands change
 - `docs/HANDOFF_NEXT_AI.md` — append the protocol §9 report
 - `docs/AI_CONTEXT/START_HERE.md` — baseline count and exact next task; keep it short

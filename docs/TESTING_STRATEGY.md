@@ -94,7 +94,7 @@ Do not install a browser or test dependency without documenting its version, set
 
 
 ## Accessible tabs keyboard regression
-`tests/unit/accessible-tabs.test.js` covers roving tabindex, LTR/RTL arrows, Home/End and teardown. `tests/unit/accessible-tabs-contract.test.js` ensures the shared helper is loaded before the app/page code, precached, and wired to the intended tablists. These tests do not replace full browser/screen-reader accessibility QA; see `docs/KEYBOARD_ACCESSIBILITY_AUDIT.md`.
+`tests/unit/accessible-tabs.test.js` covers roving tabindex, LTR/RTL arrows, Home/End and teardown. `tests/unit/accessible-tabs-contract.test.js` ensures the shared helper is loaded before the app/page code, precached, and wired to the intended tablists. These tests do not replace full browser/screen-reader accessibility QA; see `docs/archive/KEYBOARD_ACCESSIBILITY_AUDIT.md`.
 
 
 ## Provider standalone verification status (2026-11-13)

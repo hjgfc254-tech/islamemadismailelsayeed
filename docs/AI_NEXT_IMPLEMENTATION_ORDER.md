@@ -53,9 +53,9 @@
 8. ✅ `super-dashboard.page.js` منجز (2026-11-10، لوحة المالك للقراءة فقط مشتقة من الصفحات المنفذة) — **المرحلة 4 مكتملة ضمن العرض التجريبي**: كل عناصر قائمة الإدارة لها صفحة مسجّلة.
 
 ## المرحلة 5 — توحيد التجربة والجودة
-1. ✅ **منجز (2026-11-10)** — تدقيق نظام التصميم عبر التطبيقات: `docs/DESIGN_SYSTEM_AUDIT.md` + `tests/helpers/design-token-audit.js` + `tests/unit/design-token-audit.test.js`. تم تأكيد `shared/design-system/design-system.css` كمصدر tokens الفعلي، وجرد 5 ملفات CSS. خط أساس Admin = 163 قيمة حرفية؛ اختبار الحارس يمنع الزيادة. لم تتغير CSS الإنتاجية.
-2. ✅ **منجز (2026-11-10)** — Icon and Asset Audit: `docs/ICON_ASSET_AUDIT.md` + `tests/unit/icon-asset-audit.test.js`. تم فحص 188 تعريفًا و23 alias و6 أصول. إصلاح مرجع ديناميكي مفقود `inbox` في مساحة المزود؛ رُفع إصدار Service Worker cache إلى `hansalhlak-v8-architecture-2`. لا حذف أصول.
-3. ✅ **منجز (2026-11-13)** — Responsive browser sweep: فحص Chromium/Playwright لـCustomer وProvider (عبر الجسر) وAdmin (كل الصفحات) عند 1280/768/390/320؛ 5 عيوب أُصلحت بجذورها مع اختبارات Regression (`tests/unit/responsive-sweep-regression.test.js`, `tests/e2e/responsive-sweep.browser.js`). لم يُتحقق من خط Cairo (محجوب) ولا WebKit/Firefox. التقرير: `docs/RESPONSIVE_AUDIT.md`.
+1. ✅ **منجز (2026-11-10)** — تدقيق نظام التصميم عبر التطبيقات: `docs/archive/DESIGN_SYSTEM_AUDIT.md` + `tests/helpers/design-token-audit.js` + `tests/unit/design-token-audit.test.js`. تم تأكيد `shared/design-system/design-system.css` كمصدر tokens الفعلي، وجرد 5 ملفات CSS. خط أساس Admin = 163 قيمة حرفية؛ اختبار الحارس يمنع الزيادة. لم تتغير CSS الإنتاجية.
+2. ✅ **منجز (2026-11-10)** — Icon and Asset Audit: `docs/archive/ICON_ASSET_AUDIT.md` + `tests/unit/icon-asset-audit.test.js`. تم فحص 188 تعريفًا و23 alias و6 أصول. إصلاح مرجع ديناميكي مفقود `inbox` في مساحة المزود؛ رُفع إصدار Service Worker cache إلى `hansalhlak-v8-architecture-2`. لا حذف أصول.
+3. ✅ **منجز (2026-11-13)** — Responsive browser sweep: فحص Chromium/Playwright لـCustomer وProvider (عبر الجسر) وAdmin (كل الصفحات) عند 1280/768/390/320؛ 5 عيوب أُصلحت بجذورها مع اختبارات Regression (`tests/unit/responsive-sweep-regression.test.js`, `tests/e2e/responsive-sweep.browser.js`). لم يُتحقق من خط Cairo (محجوب) ولا WebKit/Firefox. التقرير: `docs/archive/RESPONSIVE_AUDIT.md`.
 4. 🟡 **قيد التنفيذ (2026-11-13)** — Keyboard & Accessibility Sweep: أُنجز Bottom Sheet focus management (25 Chromium checks لكل 1280/768/390/320)، home + dedicated Search keyboard/ARIA، carousel tab relationships، Request Wizard step focus + validation announcement/first-invalid focus + labels/required semantics، وإصلاح labels في Account. النتائج الحالية: search/carousel 28/28، Wizard/account 24/24، Bottom Sheet regression 100/100. هذا لا يغلق التدقيق الشامل. التالي: تدقيق بقية Customer flows (addresses/orders/tracking/support/details)، ثم Provider عبر legacy bridge، ثم Admin page/dialog keyboard traversal، مع اختبار قارئات الشاشة والمتصفحات الإضافية عندما تتاح.
 5. console/network smoke checks.
 6. تحديث docs وAI_PROJECT_MAP بعد كل batch.
@@ -68,7 +68,7 @@
 انظر `docs/HANDOFF_NEXT_AI.md` للملف التالي وطريقة المتابعة.
 
 ### Accessibility progress note — 2026-11-13
-A focused shared keyboard-tabs helper is now implemented and tested: `shared/components/accessible-tabs.js`. It is wired to Admin Notifications/Permissions/Security and the Customer guide carousel. This is a useful subtask within Phase 5 item 4, but it does **not** close the full keyboard/accessibility sweep. See `docs/KEYBOARD_ACCESSIBILITY_AUDIT.md`.
+A focused shared keyboard-tabs helper is now implemented and tested: `shared/components/accessible-tabs.js`. It is wired to Admin Notifications/Permissions/Security and the Customer guide carousel. This is a useful subtask within Phase 5 item 4, but it does **not** close the full keyboard/accessibility sweep. See `docs/archive/KEYBOARD_ACCESSIBILITY_AUDIT.md`.
 
 
 ### TASK 04 — Customer Bottom Sheet focus management (2026-11-13)
@@ -85,7 +85,7 @@ A focused shared keyboard-tabs helper is now implemented and tested: `shared/com
 - ✅ **P0 (منجز 2026-11-13):** `provider-app-actions.test.js` (25) و`provider-app-routing.test.js` (12) عبر `tests/helpers/provider-app-harness.js`؛ أُصلحت رسائل النجاح الكاذبة عند الإجراءات القديمة (stale)، وإلزام سبب الرفض، ورفض المواعيد الماضية، والتحقق من مبالغ عرض السعر، وانتقال `advance` لمجموعة الطلب الجديدة. التفاصيل في `DOMAIN_MAPS/PROVIDER.md` §6.
 - ✅ **P1 (منجز 2026-11-13):** إدارة التركيز عند تغيير المسار وبعد الإجراءات، عناوين الصفحات، نماذج inline بأسماء وصولية ونموذج واحد فقط وEscape وإرجاع التركيز، احترام reduced motion — `provider-app-a11y.test.js` (14). التالي: P2.
 - ✅ **P2 (منجز 2026-11-13):** فحص متصفح حقيقي (Edge عبر DevTools Protocol بلا اعتماديات) عند 1280/768/430/390/320px — 170/170. أُصلحت أيقونات بلا حجم/تعبئة سوداء، وأنماط مفقودة (زر التوفر، الإشعار toast، ملاحظة الموعد، ملخص عرض السعر)، وfavicon مفقود. السكربت: `tests/e2e/provider-standalone.cdp.js`.
-- ✅ **P3 (منجز 2026-11-13):** `docs/PROVIDER_LEGACY_PARITY_AUDIT.md` — لا حذف. الفجوات: G1 تسجيل مقدم خدمة جديد، G2 تعديل الملف (قرار: يبقى معطلًا)، G3 معاينة العمولة عند الإكمال، G4 صفحة `login.html` المؤقتة. ✅ أُغلقت G1 وG3 وG4 (2026-11-13). قرار معلّق للمستخدم: توجيه مداخل العميل إلى تطبيق المزود المستقل.
+- ✅ **P3 (منجز 2026-11-13):** `docs/archive/PROVIDER_LEGACY_PARITY_AUDIT.md` — لا حذف. الفجوات: G1 تسجيل مقدم خدمة جديد، G2 تعديل الملف (قرار: يبقى معطلًا)، G3 معاينة العمولة عند الإكمال، G4 صفحة `login.html` المؤقتة. ✅ أُغلقت G1 وG3 وG4 (2026-11-13). قرار معلّق للمستخدم: توجيه مداخل العميل إلى تطبيق المزود المستقل.
 - ✅ **المرحلة 5 البند 4 — الطلبات/التتبع (منجز 2026-11-13):** إدارة التركيز في `show()`/`renderTabs()`، تركيز زر التصفية، `aria-current="step"` في المسار الزمني؛ `customer-screen-focus.test.js` (9) و`tests/e2e/customer-orders.cdp.js` (60/60).
 - **التالي:** نفس البند لمسارَي العناوين والدعم.
 - البروتوكول الإلزامي لاستلام أي وكيل جديد: `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`.

@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 560,
+  "file_count": 564,
   "files": [
     {
       "path": "_redirects",
@@ -20,8 +20,8 @@
       "path": ".claude/skills/finish-gate/SKILL.md",
       "area": ".claude",
       "status": "DOCUMENTATION",
-      "bytes": 2943,
-      "sha256": "ee0fdb8cc1212820283740580e397d185cf4c6f8f362dba169ed6cf20a851a90"
+      "bytes": 2951,
+      "sha256": "c44818dd187fd6276ba8fc5bbf551cf0e289eccde296851bff71ad4245844b8b"
     },
     {
       "path": ".claude/skills/vm-script-test/SKILL.md",
@@ -55,8 +55,8 @@
       "path": ".gitignore",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 883,
-      "sha256": "a6f3e353ac65916a69ac4c672936c88cf1d69936a129bfb3be7ead0c7dac20bc"
+      "bytes": 965,
+      "sha256": "b5d4503ad21993100d1d476c1a2080980c1c4df8bd6b63b33dbcda605bd85907"
     },
     {
       "path": ".graphifyignore",
@@ -118,8 +118,8 @@
       "path": "apps/admin/index.html",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL HOST)",
-      "bytes": 4929,
-      "sha256": "dcda207a764c73a159b6188cf525daa9d1e07afba508ef6bee2a4beaa242c2ae"
+      "bytes": 4981,
+      "sha256": "9bdec109d7b40e00efcc7fc416c730c44ea433cb6c5cc90f8be9b0aea6a49086"
     },
     {
       "path": "apps/admin/login.html",
@@ -444,11 +444,18 @@
       "sha256": "5dde144c1798a553d12b9a403f28386a352f052e7a2aea998f0b1c20ebfd0a8c"
     },
     {
+      "path": "apps/admin/styles/overrides.css",
+      "area": "apps/admin",
+      "status": "NEEDS_REVIEW",
+      "bytes": 1187,
+      "sha256": "c23c0ac467c0246dc0df4eba207420b500f8b4c2b8939e8ac9bc1bcb964e30ac"
+    },
+    {
       "path": "apps/customer/app.js",
       "area": "apps/customer",
       "status": "PARTIALLY IMPLEMENTED",
-      "bytes": 101069,
-      "sha256": "2d10f985168911e07a116ab15d86caf20f20a41fe92521c5e6290e698a43b791"
+      "bytes": 101052,
+      "sha256": "7d772d04e0b0bb4bfdde9ac244d3b8b09594864126cff2621c375b5ff558b250"
     },
     {
       "path": "apps/customer/customer-router.js",
@@ -468,8 +475,8 @@
       "path": "apps/customer/index.html",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 7106,
-      "sha256": "d8f4ed46fef4f767dc9ef970d3d4279f30283af12fa468352ab9989353111054"
+      "bytes": 7158,
+      "sha256": "d65a3e110a6e94797a890bce3dee3ca3ccbe4cd969e97e180b3e7e0938f5ed45"
     },
     {
       "path": "apps/customer/pages/account.page.js",
@@ -580,8 +587,15 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 124027,
-      "sha256": "4b132e75718ba493b4a294eaf8b7fffbe809c9e0b81c23129d2a4b618a1d7490"
+      "bytes": 123069,
+      "sha256": "c28fec5040c7bad9efb55c5eecaf80e8c93f406c676f91ca2517b58138e1dea8"
+    },
+    {
+      "path": "apps/customer/styles/overrides.css",
+      "area": "apps/customer",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2036,
+      "sha256": "a350db45421783a5e674efbea9dbacf4c32a84bc6b83a241d706e82f31c03785"
     },
     {
       "path": "apps/guest/guest-entry.js",
@@ -615,8 +629,8 @@
       "path": "apps/provider/index.html",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 2941,
-      "sha256": "765bc8d09d78cd8ef63fcf24eab875db69af8afe3d496eda57442da9e6c45de8"
+      "bytes": 2993,
+      "sha256": "28c86c700fe8b0e13af1e59486e649c5a688be6ba4062dd4d64b85aeb55823c3"
     },
     {
       "path": "apps/provider/login.html",
@@ -762,8 +776,15 @@
       "path": "apps/provider/README.md",
       "area": "apps/provider",
       "status": "CONFIGURATION",
-      "bytes": 2115,
-      "sha256": "73723425028b88330ec435b6d70bd0f048c5f8938bb0cd2f5be19b36b25f3a8e"
+      "bytes": 2123,
+      "sha256": "eb3a71bdc9414beba35f941a0a8c38234caa212901abed92a100dfef39a2be46"
+    },
+    {
+      "path": "apps/provider/styles/overrides.css",
+      "area": "apps/provider",
+      "status": "NEEDS_REVIEW",
+      "bytes": 1123,
+      "sha256": "49d5430174e1ee9f7b2831f4c7d5c060906cbae18191a16488dfce92e610da6d"
     },
     {
       "path": "apps/provider/styles/provider.css",
@@ -792,13 +813,6 @@
       "status": "NEEDS_REVIEW",
       "bytes": 60916,
       "sha256": "db1d5a63e64f8b2ae74edf22c171722bcefafb366122c1f7433c1d1aba0bc1e9"
-    },
-    {
-      "path": "assets/brand/hero-technician.jpg",
-      "area": "assets",
-      "status": "NEEDS_REVIEW",
-      "bytes": 73867,
-      "sha256": "17ecff3bcde6648c0af2a288454856fdf669f4bf437eb60bd9d48e98a0c66f6a"
     },
     {
       "path": "assets/brand/logo-v10-lockup-light.webp",
@@ -853,8 +867,8 @@
       "path": "assets/brand/README.md",
       "area": "assets",
       "status": "NEEDS_REVIEW",
-      "bytes": 1252,
-      "sha256": "7a7cea988f85a2a40cbea22818e04f51096927e7ada9ac7c943ef2df7e9d28f4"
+      "bytes": 1329,
+      "sha256": "600ad3c463fde4bd6cb6b181760ef639d8186a5b8eb4c3e233db1a8df559dfdf"
     },
     {
       "path": "assets/brand/trust-handshake.jpg",
@@ -1928,13 +1942,6 @@
       "sha256": "cd02917ad2958a4be0bb215003361dd0287f5986ed23da8627867820db9277b9"
     },
     {
-      "path": "docs/ADMIN_BACKEND_STATUS.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 5123,
-      "sha256": "082d325567e06ad0b0bf7723aff6384f9898caec74025d45616ea98c55c223c9"
-    },
-    {
       "path": "docs/ADMIN_MODULES.md",
       "area": "docs",
       "status": "CONFIGURATION",
@@ -1945,8 +1952,8 @@
       "path": "docs/AI_AGENT_CONTINUATION_PROTOCOL.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 12910,
-      "sha256": "21d3e81aba8a52342a6282690f604aaea3a923cbf251ce7c042d969ae1642840"
+      "bytes": 12918,
+      "sha256": "ac7f91eeaa1b83baa04f3e5d104d83bd74d5748a45a70febdd63366d3714770b"
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md",
@@ -1980,15 +1987,15 @@
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/PROVIDER.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 11273,
-      "sha256": "be953c4c17b298af06d9cc6d950667062098d15e3a398cc1f72f9bdb083e62f1"
+      "bytes": 11289,
+      "sha256": "b852b00bd81d2fcfaeb4b9f3c27dcb8aeef6eb16296a89838e487a72b8084259"
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/SHARED_AND_SERVICES.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 2812,
-      "sha256": "a727152b01064f66b6749565471047893e2c815f28b5536f366cc52db0b484b6"
+      "bytes": 2836,
+      "sha256": "9333c50630d55456ae3a81038ce419384a765f267adf8d76c3d8b2c03518221d"
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/TESTING.md",
@@ -2015,15 +2022,15 @@
       "path": "docs/AI_CONTEXT/README.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 1240,
-      "sha256": "7a3ffcc3156fb3720c40f52befd2d364c0c5ad6dda4406a497178017f9a950be"
+      "bytes": 1248,
+      "sha256": "8c7853affe835d237c1aa6284d39eba1b9b1dfbe561ffbcad6525a2800779784"
     },
     {
       "path": "docs/AI_CONTEXT/START_HERE.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 6003,
-      "sha256": "ce353e11e2f47e3ec3a2cb5dc3e9d8ea1eadb71669b2ea5099b5746b593fb0d6"
+      "bytes": 6325,
+      "sha256": "24fb647da14e404d55a2c8e260f7a0df12f0450322d36a83fc6783446f1d1db9"
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -2036,15 +2043,15 @@
       "path": "docs/AI_NEXT_IMPLEMENTATION_ORDER.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 14359,
-      "sha256": "afe0e29d33f5a09707f8eea2653be2996c4391bdaebe55df697fa368ac7e20b4"
+      "bytes": 14399,
+      "sha256": "ce1d2fa6a75f85118108f73bc3a0ecc8014daaf02d41de4d999a157b46b69c3e"
     },
     {
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 279191,
-      "sha256": "d73fe7fd53b6433971fc03753d0670b277a0a9e850e9964aa87804b759d8f29e"
+      "bytes": 272991,
+      "sha256": "be8699d8dc3d0e08a4130f571b14c68ef20fc26f7d8831f5c7ff3df8a361a332"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2057,8 +2064,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 143345,
-      "sha256": "5ffed79161dcf1cc7515e090c043894d4274dae9469b37ac7ffff0d1e13c0eea"
+      "bytes": 144959,
+      "sha256": "ac43df8f5aaa5e21a44b6c325cf7e571afe6f20e6fa2836625317518b6c188c0"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2068,18 +2075,214 @@
       "sha256": "b47154a0effb7bb6bd2913d667897af3ad4f889831bade88f6784da9b79a0f8d"
     },
     {
-      "path": "docs/ARCHITECTURE_BLUEPRINT_V1.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 54657,
-      "sha256": "5ef5cd65c26d944db1dfa093c6c0d61dc9faaf04c4f28cfb8a5793d5d22bb83f"
-    },
-    {
       "path": "docs/ARCHITECTURE.md",
       "area": "docs",
       "status": "CONFIGURATION",
       "bytes": 1980,
       "sha256": "c754190a1d2b0b7ac7e3b3b76f5ea4ca294c1752b7c97590a502c7fafefad636"
+    },
+    {
+      "path": "docs/archive/ADMIN_BACKEND_STATUS.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 5123,
+      "sha256": "082d325567e06ad0b0bf7723aff6384f9898caec74025d45616ea98c55c223c9"
+    },
+    {
+      "path": "docs/archive/ARCHITECTURE_BLUEPRINT_V1.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 54657,
+      "sha256": "5ef5cd65c26d944db1dfa093c6c0d61dc9faaf04c4f28cfb8a5793d5d22bb83f"
+    },
+    {
+      "path": "docs/archive/DEPENDENCY_GRAPH.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 3030,
+      "sha256": "eaf4f87f65dca6d7fca18af5fe3417e86039417aea351e663f109aec3d3a1ef7"
+    },
+    {
+      "path": "docs/archive/DESIGN_SYSTEM_AUDIT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7383,
+      "sha256": "88efa953edb754f66ad1f57aff7eb8512626c3e7f7d1a90b891945448afc1a4c"
+    },
+    {
+      "path": "docs/archive/DEVELOPMENT_PROGRESS.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 38834,
+      "sha256": "fd18e44fcf95005c913d923d415788dcc638e24631b996d935c461c494a61c75"
+    },
+    {
+      "path": "docs/archive/EMPTY_PLACEHOLDERS.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 15964,
+      "sha256": "e205702fb67d74ebd56dffa115d38e12b4c506ccf09123b18b3ed1fbded13ddc"
+    },
+    {
+      "path": "docs/archive/ENGINEERING_ENVIRONMENT_REPORT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 3461,
+      "sha256": "4ec0c2c9e460f5cd500bbce04183b5094258318e875ade93fc257e25615014b9"
+    },
+    {
+      "path": "docs/archive/FILE_MAP.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 86240,
+      "sha256": "0b245e9bf3c98810c64f16b4b2a615c59cd9745764789d8ec04e76ea45e4f61e"
+    },
+    {
+      "path": "docs/archive/FINAL_8_PERCENT_ENGINEERING_FINDINGS.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7588,
+      "sha256": "60b87be37007cbe92477308577d1a4337c5b1d01af8d6a2cf6a6ac902927e47d"
+    },
+    {
+      "path": "docs/archive/FINAL_AUDIT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 3993,
+      "sha256": "c713686ea99eca7b72eceaf0700155b46763d97ebc345a2eae96e34f4426bf35"
+    },
+    {
+      "path": "docs/archive/FIREBASE_BACKEND_BLUEPRINT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 17300,
+      "sha256": "0f3e46830d4cf74e9a112fda7ec7ce398f0414b8cb8a99e1f9920f9f50286f38"
+    },
+    {
+      "path": "docs/archive/FIREBASE_DATA_INVENTORY.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 6346,
+      "sha256": "d19afaf517074ef6bdd1adacb33a4f3d92773742f95032f27dabc5660f89eeb5"
+    },
+    {
+      "path": "docs/archive/FIREBASE_MIGRATION_PLAN.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 3491,
+      "sha256": "7a078dfabfbf0e47256ef6cd95d8f51881965938ccbd40b11d35618f9314cb24"
+    },
+    {
+      "path": "docs/archive/HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 33783,
+      "sha256": "4bc31ca46f62d79e74c2fcd9ba396d91a2bbcee5952f6e296aa230262f768817"
+    },
+    {
+      "path": "docs/archive/HANSALHLAK_V8_PROGRESS.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 29460,
+      "sha256": "f3531da4d3dbd915e483b26b3b4c799e871a335a67fa261fe357aa8917ea9ca5"
+    },
+    {
+      "path": "docs/archive/ICON_ASSET_AUDIT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 4834,
+      "sha256": "1fdb91a53318480179b416b179ada7ee7b828b8120b84fa8b678592ab9e5faa4"
+    },
+    {
+      "path": "docs/archive/ICON_SYSTEM_REPORT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 4583,
+      "sha256": "f37200ac995e9156d798630ec45cfbbd0024de965bba290928177f2f7dddbdd8"
+    },
+    {
+      "path": "docs/archive/IMPLEMENTATION_STATUS.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 29171,
+      "sha256": "2935677c1fe522d8b78b5689f8072083178ffd617696ca9c6e8570d91fddc350"
+    },
+    {
+      "path": "docs/archive/INTRO_V2_REPORT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 3809,
+      "sha256": "0ffa8afd68e3f051d8c36fbdf523f38a17edbaa4c610707ec6ed278c6794269c"
+    },
+    {
+      "path": "docs/archive/KEYBOARD_ACCESSIBILITY_AUDIT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7603,
+      "sha256": "fd81b672b2df3ca033db98972ec3cbb747895c6faeec5ba3cdb87ba226cf5775"
+    },
+    {
+      "path": "docs/archive/MIGRATION_REPORT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 6236,
+      "sha256": "492b25b5fc14d18d6f9f007b83385b132f04b250aeddfa6bb5e135f084dfa730"
+    },
+    {
+      "path": "docs/archive/NEW_FILES_REPORT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7786,
+      "sha256": "6309d0c17d91dd001589a15df141bb15303e97eac9d2c6c1231bee0e2f0cd94e"
+    },
+    {
+      "path": "docs/archive/P1_PROVIDER_AUDIT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 4676,
+      "sha256": "05329c4c2084695a87e218b401c8b5c838adcd379066099713c8371f02b022c1"
+    },
+    {
+      "path": "docs/archive/PROJECT_CONTROL_CENTER_GUIDE.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2381,
+      "sha256": "704e8695f83efa57a05598bb1c736a6bc19ccc2256a9f8a087f6c414188e1cbc"
+    },
+    {
+      "path": "docs/archive/PROMPT_LOG_V8.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 30100,
+      "sha256": "9c287c24893b5c04215903ec20172ab767353cf01f2d898bc6c767264e5c4d9f"
+    },
+    {
+      "path": "docs/archive/PROVIDER_LEGACY_PARITY_AUDIT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 6575,
+      "sha256": "f99a76b72aeb7550ddeeeb392c22aa7fbf5320a997dfe2972b5aa50254d73805"
+    },
+    {
+      "path": "docs/archive/REMOVED_FILES_REPORT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 299,
+      "sha256": "f67ae5f74ad0fcedffb739c05d0c2ad5901e95f85384abebde79af9537d95ed6"
+    },
+    {
+      "path": "docs/archive/RESPONSIVE_AUDIT.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 5797,
+      "sha256": "bc3464923ae195f5332b0de60e6d070aad58e76df7e66c355fc18c015df9e9f9"
+    },
+    {
+      "path": "docs/archive/TEST_RESULTS.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 16582,
+      "sha256": "030b9f7e73164dc317da4340f3358309027b7e8286b12ef4f20101d93cf723df"
     },
     {
       "path": "docs/AUTHENTICATION.md",
@@ -2145,102 +2348,25 @@
       "sha256": "08b7dd65c391f1bac45a045e023b2b4c3ddeed0571ec2d2d326ded3a8348a6d9"
     },
     {
-      "path": "docs/DEPENDENCY_GRAPH.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 3030,
-      "sha256": "eaf4f87f65dca6d7fca18af5fe3417e86039417aea351e663f109aec3d3a1ef7"
-    },
-    {
       "path": "docs/DESIGN_MAP.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 6095,
-      "sha256": "303139d2d92a5358d9091d9df0abd53a4563d1a037a9b92bab495b09b42b57ec"
-    },
-    {
-      "path": "docs/DESIGN_SYSTEM_AUDIT.md",
-      "area": "docs",
-      "status": "DOCUMENTATION",
-      "bytes": 7383,
-      "sha256": "88efa953edb754f66ad1f57aff7eb8512626c3e7f7d1a90b891945448afc1a4c"
+      "bytes": 6301,
+      "sha256": "4b2c8e82a59f820ef4745e7f3c89e161434d0d071d45a9085e5ced9073fd3c37"
     },
     {
       "path": "docs/DESIGN_SYSTEM_V9.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 6789,
-      "sha256": "d3fa0fb148f733445f70411ad199ce46bdaaf429d6c2bb69732ed2153c3d881e"
-    },
-    {
-      "path": "docs/DEVELOPMENT_PROGRESS.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 38834,
-      "sha256": "fd18e44fcf95005c913d923d415788dcc638e24631b996d935c461c494a61c75"
-    },
-    {
-      "path": "docs/EMPTY_PLACEHOLDERS.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 15964,
-      "sha256": "e205702fb67d74ebd56dffa115d38e12b4c506ccf09123b18b3ed1fbded13ddc"
-    },
-    {
-      "path": "docs/ENGINEERING_ENVIRONMENT_REPORT.md",
-      "area": "docs",
-      "status": "DOCUMENTATION",
-      "bytes": 3461,
-      "sha256": "4ec0c2c9e460f5cd500bbce04183b5094258318e875ade93fc257e25615014b9"
-    },
-    {
-      "path": "docs/FILE_MAP.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 86240,
-      "sha256": "0b245e9bf3c98810c64f16b4b2a615c59cd9745764789d8ec04e76ea45e4f61e"
-    },
-    {
-      "path": "docs/FINAL_8_PERCENT_ENGINEERING_FINDINGS.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 7588,
-      "sha256": "60b87be37007cbe92477308577d1a4337c5b1d01af8d6a2cf6a6ac902927e47d"
-    },
-    {
-      "path": "docs/FINAL_AUDIT.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 3993,
-      "sha256": "c713686ea99eca7b72eceaf0700155b46763d97ebc345a2eae96e34f4426bf35"
-    },
-    {
-      "path": "docs/FIREBASE_BACKEND_BLUEPRINT.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 17300,
-      "sha256": "0f3e46830d4cf74e9a112fda7ec7ce398f0414b8cb8a99e1f9920f9f50286f38"
+      "bytes": 6806,
+      "sha256": "e7b5404918c0a45e7d08c62f3703f8c9195645f95d4ecb296c2f155a79da1faa"
     },
     {
       "path": "docs/FIREBASE_BACKEND.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 17906,
-      "sha256": "8cce457feb6f5831db70f809dde76da69ae2c74b095c99f2860e50b6b48036e3"
-    },
-    {
-      "path": "docs/FIREBASE_DATA_INVENTORY.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 6346,
-      "sha256": "d19afaf517074ef6bdd1adacb33a4f3d92773742f95032f27dabc5660f89eeb5"
-    },
-    {
-      "path": "docs/FIREBASE_MIGRATION_PLAN.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 3491,
-      "sha256": "7a078dfabfbf0e47256ef6cd95d8f51881965938ccbd40b11d35618f9314cb24"
+      "bytes": 17914,
+      "sha256": "04319e190373e9b3a6072796e5cd39c5fbf7cf3924402c6fb44882918de9d76a"
     },
     {
       "path": "docs/FIREBASE_SCHEMA.md",
@@ -2309,8 +2435,8 @@
       "path": "docs/HANDOFF_NEXT_AI.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 85985,
-      "sha256": "ca20921cde239a999ca8b5dd8c6d55f9a27df02b7b142466264e902499820b42"
+      "bytes": 86121,
+      "sha256": "c45b76839dd9525c6c837c1d7a2484cd7df4853815394ac1360e6c1a4ed678e7"
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -2320,74 +2446,11 @@
       "sha256": "181e47cc9f4729b06af323832f24fe5a66999b437d406f87cf79c37051e62c21"
     },
     {
-      "path": "docs/HANSALHLAK_V8_PROGRESS.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 29460,
-      "sha256": "f3531da4d3dbd915e483b26b3b4c799e871a335a67fa261fe357aa8917ea9ca5"
-    },
-    {
-      "path": "docs/ICON_ASSET_AUDIT.md",
-      "area": "docs",
-      "status": "DOCUMENTATION",
-      "bytes": 4834,
-      "sha256": "1fdb91a53318480179b416b179ada7ee7b828b8120b84fa8b678592ab9e5faa4"
-    },
-    {
-      "path": "docs/ICON_SYSTEM_REPORT.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 4583,
-      "sha256": "f37200ac995e9156d798630ec45cfbbd0024de965bba290928177f2f7dddbdd8"
-    },
-    {
-      "path": "docs/IMPLEMENTATION_STATUS.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 29171,
-      "sha256": "2935677c1fe522d8b78b5689f8072083178ffd617696ca9c6e8570d91fddc350"
-    },
-    {
-      "path": "docs/INTRO_V2_REPORT.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 3809,
-      "sha256": "0ffa8afd68e3f051d8c36fbdf523f38a17edbaa4c610707ec6ed278c6794269c"
-    },
-    {
-      "path": "docs/KEYBOARD_ACCESSIBILITY_AUDIT.md",
-      "area": "docs",
-      "status": "DOCUMENTATION",
-      "bytes": 7603,
-      "sha256": "fd81b672b2df3ca033db98972ec3cbb747895c6faeec5ba3cdb87ba226cf5775"
-    },
-    {
       "path": "docs/MIGRATION_PLAN.md",
       "area": "docs",
       "status": "CONFIGURATION",
       "bytes": 1820,
       "sha256": "7dd6a5cfb498f4ab6a42a17370098eb0ed818ee8e40e45d0c337e172f43d1ff8"
-    },
-    {
-      "path": "docs/MIGRATION_REPORT.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 6236,
-      "sha256": "492b25b5fc14d18d6f9f007b83385b132f04b250aeddfa6bb5e135f084dfa730"
-    },
-    {
-      "path": "docs/NEW_FILES_REPORT.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 7786,
-      "sha256": "6309d0c17d91dd001589a15df141bb15303e97eac9d2c6c1231bee0e2f0cd94e"
-    },
-    {
-      "path": "docs/P1_PROVIDER_AUDIT.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 4676,
-      "sha256": "05329c4c2084695a87e218b401c8b5c838adcd379066099713c8371f02b022c1"
     },
     {
       "path": "docs/PERMISSIONS.md",
@@ -2404,53 +2467,25 @@
       "sha256": "9e5a5d89b7119593f73c51935ab591802be160c3f6e2078a40030b3b93eea98b"
     },
     {
-      "path": "docs/PROJECT_CONTROL_CENTER_GUIDE.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 2381,
-      "sha256": "704e8695f83efa57a05598bb1c736a6bc19ccc2256a9f8a087f6c414188e1cbc"
-    },
-    {
       "path": "docs/PROJECT_REFERENCE.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 91167,
-      "sha256": "1c6b21c24cc9af4fdaabb4f98966205dd3774d0d2fe3037fdb888689b50c6001"
+      "bytes": 92172,
+      "sha256": "dcfcf72568d1e7813962c28ef3d3ad0b4ba564f2b830a00134f5ff46673f40f6"
     },
     {
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 26835,
-      "sha256": "b5e721cbd1723da34f4c55d7ddbeb8bf82ca859e6a9657251d7c3fed31ceeafd"
+      "bytes": 27184,
+      "sha256": "d5d906f8fb7041cd8e6795ba4ad60f991aa9b5194ae0ce8c9ddb738bba213b24"
     },
     {
-      "path": "docs/PROMPT_LOG_V8.md",
+      "path": "docs/README.md",
       "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 30100,
-      "sha256": "9c287c24893b5c04215903ec20172ab767353cf01f2d898bc6c767264e5c4d9f"
-    },
-    {
-      "path": "docs/PROVIDER_LEGACY_PARITY_AUDIT.md",
-      "area": "docs",
-      "status": "DOCUMENTATION",
-      "bytes": 6575,
-      "sha256": "f99a76b72aeb7550ddeeeb392c22aa7fbf5320a997dfe2972b5aa50254d73805"
-    },
-    {
-      "path": "docs/REMOVED_FILES_REPORT.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 299,
-      "sha256": "f67ae5f74ad0fcedffb739c05d0c2ad5901e95f85384abebde79af9537d95ed6"
-    },
-    {
-      "path": "docs/RESPONSIVE_AUDIT.md",
-      "area": "docs",
-      "status": "DOCUMENTATION",
-      "bytes": 5797,
-      "sha256": "bc3464923ae195f5332b0de60e6d070aad58e76df7e66c355fc18c015df9e9f9"
+      "status": "NEEDS_REVIEW",
+      "bytes": 3408,
+      "sha256": "a6b3414d207df58fd4bb4c1646f3ec3d8193814d71019c1c5e5e058b95f0ba2e"
     },
     {
       "path": "docs/SECURITY_MODEL.md",
@@ -2460,25 +2495,25 @@
       "sha256": "ca837535d861170766edeb027c5b730efb16e2d95d5e35ea340227a0887ac915"
     },
     {
-      "path": "docs/TEST_RESULTS.md",
-      "area": "docs",
-      "status": "CONFIGURATION",
-      "bytes": 16582,
-      "sha256": "030b9f7e73164dc317da4340f3358309027b7e8286b12ef4f20101d93cf723df"
-    },
-    {
       "path": "docs/TESTING_STRATEGY.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 7738,
-      "sha256": "41277d5bbf1dc378efb6f6cb14709e255e2089acde3c44239f728cd56ea94c35"
+      "bytes": 7746,
+      "sha256": "20b9c91cb238add29e7ceb18d5729b71460130116de655a86a1349dc43288467"
+    },
+    {
+      "path": "docs/UI_EDIT_GUIDE_AR.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 6982,
+      "sha256": "f0123e50d9a288ff55fdb413e202c77a2195ceaa728fc61e76eaa72fb4f06ef8"
     },
     {
       "path": "firebase.json",
       "area": "firebase.json",
       "status": "NEEDS_REVIEW",
-      "bytes": 2715,
-      "sha256": "c48a00ba263156a41cf978ec87bf5383c6e222fff4857c781dd05db7f8c64fbf"
+      "bytes": 2800,
+      "sha256": "c651ab79ffe4f8c4e7f289a1a64875460b9eb9cfef45e53a24583632718d304f"
     },
     {
       "path": "firestore.indexes.json",
@@ -2747,13 +2782,6 @@
       "sha256": "9c74a98425bf405586c2863e4136dd7f8962358cabcdc475d5ee59eff16c58b0"
     },
     {
-      "path": "HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md",
-      "area": "HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md",
-      "status": "DOCUMENTATION",
-      "bytes": 33783,
-      "sha256": "4bc31ca46f62d79e74c2fcd9ba396d91a2bbcee5952f6e296aa230262f768817"
-    },
-    {
       "path": "index.html",
       "area": "root",
       "status": "CONFIGURATION",
@@ -2834,8 +2862,8 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 10710,
-      "sha256": "8fecf6cdcff6ae88b6e483f87add450893eb62683d0a5ffcc34ff651c8ed808a"
+      "bytes": 10790,
+      "sha256": "091138a31c8a120454f7bef5b1092bc34d20b898dc9cff18647a35e20ac2f155"
     },
     {
       "path": "services/admin-api.js",
@@ -3395,7 +3423,7 @@
       "area": "tests",
       "status": "TEST",
       "bytes": 1368,
-      "sha256": "081cd56f1e36722dde513593e6108cb2ecf8128ceb4978c8d4db6849970696c4"
+      "sha256": "5c5bb24530cc01fc31febea849b6628af31b55a354dcb016d198edb929ac70aa"
     },
     {
       "path": "tests/unit/accessible-tabs.test.js",
@@ -3549,7 +3577,7 @@
       "area": "tests",
       "status": "IMPLEMENTED",
       "bytes": 2305,
-      "sha256": "aaec495498fb66508507ca0786926a9c677c79f20590652804daaf0586d7b164"
+      "sha256": "2a5a67b5b047b9dac347c8e9b034d13d7c132d490e6c014e22b9a24448940a83"
     },
     {
       "path": "tests/unit/design-token-audit.test.js",
@@ -3710,7 +3738,7 @@
       "area": "tests",
       "status": "TEST",
       "bytes": 7009,
-      "sha256": "d3e5e511d88cdd61cd32420d19df292c47b10cd02fe7009f05568c92cca03680"
+      "sha256": "04b2830f7965575dac8109f0446e7624b60652132efd92738abb38e3de99e592"
     },
     {
       "path": "tests/unit/provider-request-domain.test.js",
@@ -3850,7 +3878,7 @@
       "area": "tests",
       "status": "IMPLEMENTED",
       "bytes": 2196,
-      "sha256": "968d4c913078722e52f4714cb314c7daafdd855e5a1eb8c3496771ef099ffd89"
+      "sha256": "c3efbf9c7ef0519ef330152eefc5fdc237527950bd792482b301929109239a6b"
     },
     {
       "path": "tests/unit/status-badge.test.js",

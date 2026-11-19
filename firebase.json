@@ -65,7 +65,11 @@
       "firestore.rules",
       "database.rules.json",
       "firestore.indexes.json",
-      "_redirects"
+      "_redirects",
+      "local-only/**",
+      "tools-lab/**",
+      ".serena/**",
+      ".claude/**"
     ],
     "redirects": [
       {

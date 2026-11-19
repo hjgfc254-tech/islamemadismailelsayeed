@@ -8,7 +8,7 @@
 - **Activated (2026-11-15):** `DEFAULT_MODE = 'firebase'`. All three apps use the production backend by default; `?backend=local` selects the offline demo (development and automated tests). In firebase mode the local store is only a cache marked `_source: 'firebase'`: it is never seeded with demo data, and local-mode data is kept as `hs_mp_db_backup_before_firebase` for migration. If the SDK cannot start, every request fails visibly (`UNAVAILABLE`); there is no silent local fallback.
 - **Super Admin:** the Auth account for the bootstrap email was created through Firebase Auth's official flow (temporary password never shown or stored), and the verification and password-reset emails were sent. Owner privileges are granted only after the owner verifies the email and signs in (`claimOwner`).
 - **Browser test runners** pin `local` mode and block production backend hosts (`tests/e2e/lib/cdp.js`). The emulator E2E opts in with `?backend=firebase&emulators=1`.
-- Migration: see `docs/FIREBASE_MIGRATION_PLAN.md` (not executed).
+- Migration: see `docs/archive/FIREBASE_MIGRATION_PLAN.md` (not executed).
 
 **Regions:**
 - Firestore `me-central2` (Dammam).

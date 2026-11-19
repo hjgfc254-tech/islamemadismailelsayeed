@@ -55,3 +55,6 @@ repomix-output.*
 
 # local tool health report (machine-specific paths)
 TOOL-HEALTH-REPORT.txt
+
+# local-only archive (backups, personal reports) — never committed
+local-only/

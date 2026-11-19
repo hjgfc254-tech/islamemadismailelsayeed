@@ -3,9 +3,9 @@
 ## Shared design and UI
 - `shared/design-system/design-system.css` is the live aggregate stylesheet and current token source (colors, spacing, radii, type scale, shadows, motion, z-index).
 - `shared/design-system/tokens.css`, `typography.css`, `components.css`, and `layout.css` are documented extraction placeholders; do not treat them as runtime sources.
-- Design-system source audit: `docs/DESIGN_SYSTEM_AUDIT.md`; Admin literal-count guard: `tests/unit/design-token-audit.test.js` (baseline 163).
+- Design-system source audit: `docs/archive/DESIGN_SYSTEM_AUDIT.md`; Admin literal-count guard: `tests/unit/design-token-audit.test.js` (baseline 163).
 - `shared/design-system/`: tokens, typography, components, layout, aggregate stylesheet.
-- `shared/icons/icon-registry.js`: central icon registry (188 definitions + 23 aliases as of 2026-11-10); dynamic status/section/problem mappings must be validated as well as literal calls. Audit: `docs/ICON_ASSET_AUDIT.md`; regression test: `tests/unit/icon-asset-audit.test.js`.
+- `shared/icons/icon-registry.js`: central icon registry (188 definitions + 23 aliases as of 2026-11-10); dynamic status/section/problem mappings must be validated as well as literal calls. Audit: `docs/archive/ICON_ASSET_AUDIT.md`; regression test: `tests/unit/icon-asset-audit.test.js`.
 - `shared/components/ui-kit.js`: general UI states/primitives.
 - `shared/components/data-grid.js`: in-memory search/filter/sort/pagination grid.
 - `shared/components/dialogs.js`: dialog primitive(s).
@@ -28,4 +28,4 @@
 ## Reuse rule
 Before building a UI primitive, inspect the current implementation and its API, then search for existing usage. Do not infer readiness from the filename.
 
-- `shared/components/accessible-tabs.js`: shared horizontal tab keyboard behavior (roving tabindex, arrows, Home/End, RTL); currently wired to Admin notifications/permissions/security and Customer guide carousel. Tests: `tests/unit/accessible-tabs.test.js` and `tests/unit/accessible-tabs-contract.test.js`; report: `docs/KEYBOARD_ACCESSIBILITY_AUDIT.md`.
+- `shared/components/accessible-tabs.js`: shared horizontal tab keyboard behavior (roving tabindex, arrows, Home/End, RTL); currently wired to Admin notifications/permissions/security and Customer guide carousel. Tests: `tests/unit/accessible-tabs.test.js` and `tests/unit/accessible-tabs-contract.test.js`; report: `docs/archive/KEYBOARD_ACCESSIBILITY_AUDIT.md`.

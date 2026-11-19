@@ -25,7 +25,7 @@
 const GEAR = (x,y,s=1) => `<g transform="translate(${x} ${y}) scale(${s})"><circle r="19" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="5" stroke-dasharray="5 8.35"/><circle r="14" fill="rgba(59,130,246,.25)" stroke="#fff" stroke-opacity=".9" stroke-width="4"/><circle r="6" fill="#140b18" stroke="#60a5fa" stroke-width="1.5"/></g>`;
 const SPARK = (x,y,s=1) => `<path transform="translate(${x} ${y}) scale(${s})" d="M0-6L1.5-1.5 6 0 1.5 1.5 0 6-1.5 1.5-6 0-1.5-1.5z" fill="#bfdbfe"/>`;
 const ART = {
-  /* Approved identity hero: the technician photograph from the identity board (assets/brand/hero-technician.jpg) */
+  /* Home hero photo (assets/brand/hero-tech-v2.webp — the technician in the platform uniform) */
   hero:'<img class="hero-photo" src="../../assets/brand/hero-tech-v2.webp" alt="فني من هنصلحلك بيونيفورم المنصة" width="860" height="865" decoding="async" fetchpriority="high" draggable="false">',
 
   electric:`<svg viewBox="0 0 160 150">

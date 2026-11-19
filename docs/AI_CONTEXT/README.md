@@ -21,4 +21,4 @@ The full `docs/AI_PROJECT_MAP.json`, its CSV/Markdown exports, the full file cat
 When sources disagree, report the conflict and verify it; do not guess.
 
 ### Accessibility and keyboard behavior
-For shared horizontal tablists, read `shared/components/accessible-tabs.js` and `docs/KEYBOARD_ACCESSIBILITY_AUDIT.md`. It is currently integrated into Admin notifications/permissions/security and the Customer guide carousel. This does not imply full WCAG or screen-reader verification.
+For shared horizontal tablists, read `shared/components/accessible-tabs.js` and `docs/archive/KEYBOARD_ACCESSIBILITY_AUDIT.md`. It is currently integrated into Admin notifications/permissions/security and the Customer guide carousel. This does not imply full WCAG or screen-reader verification.

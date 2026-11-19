@@ -60,7 +60,8 @@ hansalhlak/
 │   │   ├── styles/
 │   │   │   ├── admin-components.css
 │   │   │   ├── admin-responsive.css
-│   │   │   └── admin.css
+│   │   │   ├── admin.css
+│   │   │   └── overrides.css
 │   │   ├── admin-auth.js
 │   │   ├── admin-router.js
 │   │   ├── admin-session.js
@@ -89,7 +90,8 @@ hansalhlak/
 │   │   │   ├── support.page.js
 │   │   │   └── trust-features.js
 │   │   ├── styles/
-│   │   │   └── customer.css
+│   │   │   ├── customer.css
+│   │   │   └── overrides.css
 │   │   ├── app.js
 │   │   ├── customer-router.js
 │   │   ├── customer-session.js
@@ -114,6 +116,7 @@ hansalhlak/
 │       │   ├── services.page.js
 │       │   └── transactions.page.js
 │       ├── styles/
+│       │   ├── overrides.css
 │       │   └── provider.css
 │       ├── app.js
 │       ├── index.html
@@ -129,7 +132,6 @@ hansalhlak/
 ├── assets/
 │   ├── brand/
 │   │   ├── hero-tech-v2.webp
-│   │   ├── hero-technician.jpg
 │   │   ├── logo-v10-lockup-light.webp
 │   │   ├── logo-v10-lockup.webp
 │   │   ├── logo-v10-mark.webp
@@ -349,6 +351,36 @@ hansalhlak/
 │   │   ├── README.md
 │   │   ├── START_HERE.md
 │   │   └── WORKFLOW.md
+│   ├── archive/
+│   │   ├── ADMIN_BACKEND_STATUS.md
+│   │   ├── ARCHITECTURE_BLUEPRINT_V1.md
+│   │   ├── DEPENDENCY_GRAPH.md
+│   │   ├── DESIGN_SYSTEM_AUDIT.md
+│   │   ├── DEVELOPMENT_PROGRESS.md
+│   │   ├── EMPTY_PLACEHOLDERS.md
+│   │   ├── ENGINEERING_ENVIRONMENT_REPORT.md
+│   │   ├── FILE_MAP.md
+│   │   ├── FINAL_8_PERCENT_ENGINEERING_FINDINGS.md
+│   │   ├── FINAL_AUDIT.md
+│   │   ├── FIREBASE_BACKEND_BLUEPRINT.md
+│   │   ├── FIREBASE_DATA_INVENTORY.md
+│   │   ├── FIREBASE_MIGRATION_PLAN.md
+│   │   ├── HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md
+│   │   ├── HANSALHLAK_V8_PROGRESS.md
+│   │   ├── ICON_ASSET_AUDIT.md
+│   │   ├── ICON_SYSTEM_REPORT.md
+│   │   ├── IMPLEMENTATION_STATUS.md
+│   │   ├── INTRO_V2_REPORT.md
+│   │   ├── KEYBOARD_ACCESSIBILITY_AUDIT.md
+│   │   ├── MIGRATION_REPORT.md
+│   │   ├── NEW_FILES_REPORT.md
+│   │   ├── P1_PROVIDER_AUDIT.md
+│   │   ├── PROJECT_CONTROL_CENTER_GUIDE.md
+│   │   ├── PROMPT_LOG_V8.md
+│   │   ├── PROVIDER_LEGACY_PARITY_AUDIT.md
+│   │   ├── REMOVED_FILES_REPORT.md
+│   │   ├── RESPONSIVE_AUDIT.md
+│   │   └── TEST_RESULTS.md
 │   ├── DECISIONS/
 │   │   ├── 2026-11-09-audit-log-demo-assumptions.md
 │   │   ├── 2026-11-09-quotes-demo-assumptions.md
@@ -357,7 +389,6 @@ hansalhlak/
 │   │   ├── 2026-11-09-settlements-demo-assumptions.md
 │   │   ├── 2026-11-09-system-settings-demo-assumptions.md
 │   │   └── 2026-11-10-super-dashboard-demo-assumptions.md
-│   ├── ADMIN_BACKEND_STATUS.md
 │   ├── ADMIN_MODULES.md
 │   ├── AI_AGENT_CONTINUATION_PROTOCOL.md
 │   ├── AI_NEXT_IMPLEMENTATION_ORDER.md
@@ -365,24 +396,12 @@ hansalhlak/
 │   ├── AI_PROJECT_MAP.json
 │   ├── AI_PROJECT_MAP.md
 │   ├── API_CONTRACTS.md
-│   ├── ARCHITECTURE_BLUEPRINT_V1.md
 │   ├── ARCHITECTURE.md
 │   ├── AUTHENTICATION.md
 │   ├── DATA_MODEL.md
-│   ├── DEPENDENCY_GRAPH.md
 │   ├── DESIGN_MAP.md
-│   ├── DESIGN_SYSTEM_AUDIT.md
 │   ├── DESIGN_SYSTEM_V9.md
-│   ├── DEVELOPMENT_PROGRESS.md
-│   ├── EMPTY_PLACEHOLDERS.md
-│   ├── ENGINEERING_ENVIRONMENT_REPORT.md
-│   ├── FILE_MAP.md
-│   ├── FINAL_8_PERCENT_ENGINEERING_FINDINGS.md
-│   ├── FINAL_AUDIT.md
-│   ├── FIREBASE_BACKEND_BLUEPRINT.md
 │   ├── FIREBASE_BACKEND.md
-│   ├── FIREBASE_DATA_INVENTORY.md
-│   ├── FIREBASE_MIGRATION_PLAN.md
 │   ├── FIREBASE_SCHEMA.md
 │   ├── FRONTEND_ARCHITECTURE.md
 │   ├── FRONTEND_COMPONENT_CATALOG.md
@@ -394,28 +413,15 @@ hansalhlak/
 │   ├── FRONTEND_TEAM_AI_PROTOCOL.md
 │   ├── HANDOFF_NEXT_AI.md
 │   ├── HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md
-│   ├── HANSALHLAK_V8_PROGRESS.md
-│   ├── ICON_ASSET_AUDIT.md
-│   ├── ICON_SYSTEM_REPORT.md
-│   ├── IMPLEMENTATION_STATUS.md
-│   ├── INTRO_V2_REPORT.md
-│   ├── KEYBOARD_ACCESSIBILITY_AUDIT.md
 │   ├── MIGRATION_PLAN.md
-│   ├── MIGRATION_REPORT.md
-│   ├── NEW_FILES_REPORT.md
-│   ├── P1_PROVIDER_AUDIT.md
 │   ├── PERMISSIONS.md
 │   ├── PLAYBOOKS.md
-│   ├── PROJECT_CONTROL_CENTER_GUIDE.md
 │   ├── PROJECT_REFERENCE.md
 │   ├── PROJECT_TREE.md
-│   ├── PROMPT_LOG_V8.md
-│   ├── PROVIDER_LEGACY_PARITY_AUDIT.md
-│   ├── REMOVED_FILES_REPORT.md
-│   ├── RESPONSIVE_AUDIT.md
+│   ├── README.md
 │   ├── SECURITY_MODEL.md
-│   ├── TEST_RESULTS.md
-│   └── TESTING_STRATEGY.md
+│   ├── TESTING_STRATEGY.md
+│   └── UI_EDIT_GUIDE_AR.md
 ├── functions/
 │   ├── domain/
 │   │   ├── apps/
@@ -658,7 +664,6 @@ hansalhlak/
 ├── firebase.json
 ├── firestore.indexes.json
 ├── firestore.rules
-├── HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md
 ├── index.html
 ├── manifest.json
 ├── package.json
