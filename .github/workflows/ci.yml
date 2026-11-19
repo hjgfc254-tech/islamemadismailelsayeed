@@ -1,0 +1,27 @@
+﻿name: HANSALEHLAK CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Unit Tests and Inventory Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run unit tests
+        run: npm test
+      - name: Verify project inventory
+        run: npm run audit:inventory

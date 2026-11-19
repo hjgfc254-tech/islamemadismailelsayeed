@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 579,
+  "file_count": 581,
   "files": [
     {
       "path": "_redirects",
@@ -50,6 +50,13 @@
       "status": "IMPLEMENTED",
       "bytes": 525,
       "sha256": "004af0bd7cb29957378a49891c1878a91144353c798124624ee754e40a08518a"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "area": ".github",
+      "status": "NEEDS_REVIEW",
+      "bytes": 571,
+      "sha256": "22cbe07d6d42fcf9ebdcd7994a96f660200d2d5bb6cab570fbc0904bd72d868a"
     },
     {
       "path": ".gitignore",
@@ -2071,8 +2078,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 276542,
-      "sha256": "9e3078e2057e246321926e5e06035e56bacca4602e862d77186bd73633d3e117"
+      "bytes": 276992,
+      "sha256": "5f76c7219cca0faee2dd7ad5cf20c575a1ffaba65bdec6bb6a07072e23032c1a"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2085,8 +2092,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 148150,
-      "sha256": "95d439bcf087196bc35723a4d36097910558e03e772835650edcc06d1e67526e"
+      "bytes": 148555,
+      "sha256": "68a06b877b7ecf3f89318d7f2906b6a445c449a5f8e45aaba26803ec29780647"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2498,8 +2505,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 27792,
-      "sha256": "94989622224edee081a733a9363fbebc9c2647d4d0991f7aa923868d4a170e55"
+      "bytes": 27893,
+      "sha256": "b0aebbffe7e7421e51007ffca1f7a53780810b21c7f0bfd966505b2bd9a06257"
     },
     {
       "path": "docs/README.md",
@@ -2815,6 +2822,13 @@
       "status": "CONFIGURATION",
       "bytes": 423,
       "sha256": "7d4cb612fd79a08aa038232dba96229c2c3514bd4e0a957065306c99cf62465e"
+    },
+    {
+      "path": "install-tools.ps1",
+      "area": "install-tools.ps1",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2899,
+      "sha256": "e4c25031d35604e1f6c0d66d810ba10629b9e4ae7c8093468629eafee2fef17b"
     },
     {
       "path": "legal/privacy.html",

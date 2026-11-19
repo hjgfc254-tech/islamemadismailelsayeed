@@ -11,6 +11,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | .editorconfig | CONFIGURATION | Current inventory entry; inspect file for exact behavior. | Read when relevant; do not duplicate behavior. |
 | .firebaserc | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | .gitattributes | IMPLEMENTED | Pins LF line endings for text files (CSV inventory stored byte-for-byte) so every checkout matches the index and the SHA-256 inventory reproduces from a clean clone on any OS/core.autocrlf. | Done. |
+| .github/workflows/ci.yml | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | .gitignore | CONFIGURATION | Current inventory entry; inspect file for exact behavior. | Read when relevant; do not duplicate behavior. |
 | .graphifyignore | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | .repomixignore | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
@@ -406,6 +407,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | functions/src/store.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/workforce.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | index.html | CONFIGURATION | Root route redirect to the Customer application entry. | Verify root redirect behavior on the selected host and preserve query/hash forwarding. |
+| install-tools.ps1 | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | legal/privacy.html | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | manifest.json | CONFIGURATION | PWA metadata, launch path and icon declaration. | Update only when related implementation changes. |
 | package.json | CONFIGURATION | Configuration or metadata for package | Update only when related implementation changes. |

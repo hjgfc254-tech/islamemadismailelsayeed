@@ -12,6 +12,9 @@ hansalhlak/
 │       │   └── SKILL.md
 │       └── vm-script-test/
 │           └── SKILL.md
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 ├── apps/
 │   ├── admin/
 │   │   ├── modules/
@@ -680,6 +683,7 @@ hansalhlak/
 ├── firestore.indexes.json
 ├── firestore.rules
 ├── index.html
+├── install-tools.ps1
 ├── manifest.json
 ├── package.json
 ├── README.md
