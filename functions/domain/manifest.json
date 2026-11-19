@@ -3,7 +3,7 @@
   "files": {
     "shared/config/legacy-data.js": "39f50b5456f3d685c3f1c06f477e7d90f835d58d850cfee151d1a9fa673dbfff",
     "services/local-catalog.js": "de3fcd80ef8de84667bada846d511897d05e285048cad59b10d9d6fdb69e8151",
-    "services/local-market-store.js": "98d953312dd22fdcc9d5749a8ff359e9947fe721e8f4c4ceeb77c828ed69de60",
+    "services/local-market-store.js": "45eca1152aedcd859a317ab1528a395b9752d5acccd3a2cd42a87f9bf36e0f4c",
     "services/api-client.js": "ccfe35d113d01ea2561196c47ada1e10f3791bda09a5ce186d25146a8a12ac9a",
     "services/auth-api.js": "7221c02eb6559ce21c465fc5f1987ca47ce43ecefdf963fc901a8e2b3bfd587b",
     "services/orders-api.js": "b7df2077fbf2c2f8c4efc87a0208d521ccb7786c599a35d9b1f618cb701548a4",
@@ -14,7 +14,7 @@
     "services/notifications-api.js": "3db9b04eb3396796eb1a84bc37e87e4d7ba417140251ff5b43024e1af79e41a9",
     "services/support-api.js": "a206923cc18bdadd7310b1932eacff6b3fa2ae81bc621f56b47dc59a2e20a40f",
     "services/finance-api.js": "3787368a257195a10c7b651b870ddb5dad7aed4934c2b352a064b2967722359c",
-    "services/admin-api.js": "287ee261f4b776503d006b5417dd7cbd976b553afece2214fa364df1afddaa27",
+    "services/admin-api.js": "4b772b4f3758d3b73207d757a99c6394c391f5ef65c7b8155da130829d866be3",
     "apps/admin/rbac-store.js": "ccc0e6ee029a3a6ba6fb5e41e747695fa1811e7d8ea2ed80747cafb4134d90eb",
     "apps/admin/permission-guard.js": "155783b0aa24a1e02d3e8045ae243f4c31f02155a8a3b25072c59f743ebace71",
     "apps/admin/modules/workforce/employee-status.js": "f61a20957671b072818ee6704346fa087f7f3dace03537b6c6bfdac420437472",

@@ -23,7 +23,9 @@
       bidding: !!res.data.bidding, bidWindowMin: +res.data.bidWindowMin || 15,
       cancelFee: res.data.cancelFee != null ? +res.data.cancelFee : 50, visitFee: +res.data.visitFee || 0, inspectionRate: +res.data.inspectionRate || 0,
       inspectionCap: { default: 0, ...(res.data.inspectionCap || {}) }, priceCaps: { cats: {}, items: {}, problems: {}, ...(res.data.priceCaps || {}) },
-      inspection: { cats: {}, items: {}, problems: {}, ...(res.data.inspection || {}) } };
+      inspection: { cats: {}, items: {}, problems: {}, ...(res.data.inspection || {}) },
+      bonus: JSON.parse(JSON.stringify(res.data.bonus || { on: false, windowDays: 30, tiers: [], weekly: { on: false, target: 0, amount: 0 } })) };
+    work.bonus.weekly = { on: false, target: 0, amount: 0, ...(work.bonus.weekly || {}) }; work.bonus.tiers = work.bonus.tiers || [];
     work.inspectionCap.cats = { ...(work.inspectionCap.cats || {}) }; work.priceCaps.cats = { ...(work.priceCaps.cats || {}) }; work.inspection.cats = { ...(work.inspection.cats || {}) };
     work.warranty.cats = { ...(work.warranty.cats || {}) }; work.warranty.items = { ...(work.warranty.items || {}) };
     const items = (cat) => { const c = catalog(); return c && c.items ? c.items(cat) : []; };
@@ -54,6 +56,23 @@
             <label class="hs-grid-field"><span>معاينة الأول</span><input type="checkbox" data-mk-insp-cat="${esc(c.id)}" ${work.inspection.cats[c.id] ? 'checked' : ''}></label>
             <label class="hs-grid-field"><span>أقصى معاينة</span><input type="number" min="0" placeholder="الافتراضي" data-mk-icap-cat="${esc(c.id)}" value="${wVal(work.inspectionCap.cats[c.id])}"></label>
             <label class="hs-grid-field"><span>أقصى سعر إصلاح</span><input type="number" min="0" placeholder="بدون حد" data-mk-pcap-cat="${esc(c.id)}" value="${wVal(work.priceCaps.cats[c.id])}"></label></div>`).join('')}</div>
+        </fieldset>
+        <fieldset class="ord-dlg-in"><legend>بونص الفنيين</legend>
+          <label class="hs-grid-field"><span>تشغيل برنامج البونص</span><input type="checkbox" data-mk-bonus="on" ${work.bonus.on ? 'checked' : ''}></label>
+          <label class="hs-grid-field"><span>المستويات بتتحسب على آخر (يوم)</span><input type="number" min="7" max="90" data-mk-bonus="windowDays" value="${esc(work.bonus.windowDays || 30)}"></label>
+          <p class="ord-muted">الخدمة بتتحسب لما العميل يأكد إنه دفع، ولعملاء مختلفين — وأي خلاف على الدفع بيتحسب «إنذار». المستوى الأعلى بياخد الطلبات الأول في جولة العروض، ونسبة المنصة على عروضه بتقل بالتخفيض اللي تحدده (العميل بيدفع أقل، ومبلغ الفني زي ما هو).</p>
+          ${work.bonus.tiers.map((tr, i) => `<div class="mk-row" data-i="${i}">
+            <label class="hs-grid-field"><span>اسم المستوى</span><input data-mk-tier="name" maxlength="20" value="${esc(tr.name)}" required></label>
+            <label class="hs-grid-field"><span>عملاء على الأقل</span><input type="number" min="0" data-mk-tier="minJobs" value="${esc(tr.minJobs)}"></label>
+            <label class="hs-grid-field"><span>أقل تقييم</span><input type="number" min="0" max="5" step="0.1" data-mk-tier="minRating" value="${esc(tr.minRating || '')}"></label>
+            <label class="hs-grid-field"><span>أقصى إنذارات</span><input type="number" min="0" data-mk-tier="maxStrikes" value="${tr.maxStrikes === 99 || tr.maxStrikes == null ? '' : esc(tr.maxStrikes)}" placeholder="بدون حد"></label>
+            <label class="hs-grid-field"><span>تخفيض نسبة المنصة (٪)</span><input type="number" min="0" max="50" data-mk-tier="rateOff" value="${esc(tr.rateOff || 0)}"></label>
+            <button type="button" class="adm-btn adm-btn-d" data-mk-del-tier="${i}">حذف</button></div>`).join('')}
+          ${work.bonus.tiers.length < 4 ? '<p><button type="button" class="adm-btn" data-mk-add-tier>+ مستوى</button></p>' : ''}
+          <label class="hs-grid-field"><span>بونص أسبوعي نقدي</span><input type="checkbox" data-mk-weekly="on" ${work.bonus.weekly.on ? 'checked' : ''}></label>
+          <label class="hs-grid-field"><span>عدد العملاء في الأسبوع</span><input type="number" min="0" data-mk-weekly="target" value="${esc(work.bonus.weekly.target || '')}"></label>
+          <label class="hs-grid-field"><span>مبلغ البونص (ج.م)</span><input type="number" min="0" data-mk-weekly="amount" value="${esc(work.bonus.weekly.amount || '')}"></label>
+          <p class="ord-muted">الأسبوع بيبدأ السبت. البونص بيتسجّل مستحق للفني مرة واحدة في الأسبوع، وبيظهر في التسويات.</p>
         </fieldset>
         <fieldset class="ord-dlg-in"><legend>كود الوصول</legend>
           <label class="hs-grid-field"><span>الفني لازم يكتب كود من العميل عشان يسجّل «وصلت»</span><input type="checkbox" data-mk-pin ${work.arrivalPin ? 'checked' : ''}></label>
@@ -105,6 +124,9 @@
       if (t.hasAttribute && t.hasAttribute('data-mk-pin')) work.arrivalPin = t.checked;
       if (t.hasAttribute && t.hasAttribute('data-mk-bid')) work.bidding = t.checked;
       if (t.dataset && t.dataset.mkNum) work[t.dataset.mkNum] = +t.value || 0;
+      if (t.dataset && t.dataset.mkBonus) work.bonus[t.dataset.mkBonus] = t.dataset.mkBonus === 'on' ? t.checked : (+t.value || 0);
+      if (t.dataset && t.dataset.mkWeekly) work.bonus.weekly[t.dataset.mkWeekly] = t.dataset.mkWeekly === 'on' ? t.checked : (+t.value || 0);
+      if (t.dataset && t.dataset.mkTier) { const tr = work.bonus.tiers[row(t)]; const k = t.dataset.mkTier; tr[k] = k === 'name' ? t.value : (t.value === '' ? (k === 'maxStrikes' ? '' : 0) : +t.value); }
       if (t.hasAttribute && t.hasAttribute('data-mk-bidwin')) work.bidWindowMin = +t.value || 15;
       if (t.hasAttribute && t.hasAttribute('data-mk-icap-default')) work.inspectionCap.default = +t.value || 0;
       if (t.dataset && t.dataset.mkInspCat) { if (t.checked) work.inspection.cats[t.dataset.mkInspCat] = true; else delete work.inspection.cats[t.dataset.mkInspCat]; }
@@ -120,12 +142,14 @@
       else if (d.mkDelPromo !== undefined) { work.promos.splice(+d.mkDelPromo, 1); render(); }
       else if (d.mkAddPkg !== undefined) { work.packages.push({ id: 'pk' + Date.now().toString(36).slice(-6), name: '', cat: '', visits: 2, price: 0, desc: '', active: true }); render(); }
       else if (d.mkDelPkg !== undefined) { work.packages.splice(+d.mkDelPkg, 1); render(); }
+      else if (d.mkAddTier !== undefined) { work.bonus.tiers.push({ id: 't' + Date.now().toString(36).slice(-5), name: '', minJobs: 0, minRating: 0, maxStrikes: '', rateOff: 0 }); render(); }
+      else if (d.mkDelTier !== undefined) { work.bonus.tiers.splice(+d.mkDelTier, 1); render(); }
       else if (d.mkSave !== undefined) {
         b.disabled = true; status('جارٍ الحفظ…');
         const r = await C().request('PATCH', '/admin/marketing', { body: { promos: work.promos, referral: work.referral, packages: work.packages, warranty: work.warranty, arrivalPin: work.arrivalPin,
-        bidding: work.bidding, bidWindowMin: work.bidWindowMin, cancelFee: work.cancelFee, visitFee: work.visitFee, inspectionRate: work.inspectionRate, inspectionCap: work.inspectionCap, priceCaps: work.priceCaps, inspection: work.inspection } });
+        bidding: work.bidding, bidWindowMin: work.bidWindowMin, cancelFee: work.cancelFee, visitFee: work.visitFee, inspectionRate: work.inspectionRate, inspectionCap: work.inspectionCap, priceCaps: work.priceCaps, inspection: work.inspection, bonus: work.bonus } });
         b.disabled = false;
-        if (r.ok) { work.promos = r.data.promos.map((p) => ({ ...p })); work.packages = r.data.packages.map((p) => ({ ...p })); work.warranty = { ...r.data.warranty, cats: { ...r.data.warranty.cats }, items: { ...r.data.warranty.items } }; work.arrivalPin = !!r.data.arrivalPin; render(); status('تم الحفظ — التغييرات ظاهرة للعملاء.'); }
+        if (r.ok) { work.promos = r.data.promos.map((p) => ({ ...p })); work.packages = r.data.packages.map((p) => ({ ...p })); work.warranty = { ...r.data.warranty, cats: { ...r.data.warranty.cats }, items: { ...r.data.warranty.items } }; work.arrivalPin = !!r.data.arrivalPin; if (r.data.bonus) work.bonus = JSON.parse(JSON.stringify(r.data.bonus)); render(); status('تم الحفظ — التغييرات ظاهرة للعملاء.'); }
         else status(errText(r));
       }
     });

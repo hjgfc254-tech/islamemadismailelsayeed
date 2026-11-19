@@ -574,6 +574,7 @@ hansalhlak/
 │   ├── helpers/
 │   │   ├── customer-app-harness.js
 │   │   ├── design-token-audit.js
+│   │   ├── domain-harness.js
 │   │   └── provider-app-harness.js
 │   ├── integration/
 │   │   └── README.md
@@ -628,6 +629,7 @@ hansalhlak/
 │       ├── provider-app-actions.test.js
 │       ├── provider-app-register.test.js
 │       ├── provider-app-routing.test.js
+│       ├── provider-bonus.test.js
 │       ├── provider-customer-location.test.js
 │       ├── provider-domain.test.js
 │       ├── provider-pages.test.js
@@ -656,6 +658,7 @@ hansalhlak/
 │       ├── super-dashboard.test.js
 │       ├── system-settings.test.js
 │       ├── tree.test.js
+│       ├── trust-ui.test.js
 │       ├── ui-adapter-integration.test.js
 │       ├── ui-kit.test.js
 │       ├── ui-round3.test.js

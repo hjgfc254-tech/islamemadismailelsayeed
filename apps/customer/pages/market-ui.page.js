@@ -17,7 +17,7 @@
    ═══════════════════════════════════════════════════════════════ */
 'use strict';
 
-const DEMO_NOTE = 'وضع العرض التجريبي — لا تُرسل الطلبات لفنيين حقيقيين، والإسناد محاكاة داخل هذا الجهاز فقط.';
+const DEMO_NOTE = 'وضع تجريبي — الطلبات مش بتوصل لفنيين حقيقيين.';   /* one line: the page content leads */
 /* the demo notice describes the offline demo only; with the Firebase backend requests are real */
 const demoBanner = () => (typeof HSFirebaseConfig !== 'undefined' && HSFirebaseConfig.mode === 'firebase') ? '' : `<div class="demo-banner">${ic('info')}<span>${DEMO_NOTE}</span></div>`;
 const fmtDT = s => { try{ if(!s) return ''; const d = new Date(s); if(Number.isNaN(d.getTime())) return ''; return d.toLocaleString('ar-EG',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}); }catch{ return ''; } };

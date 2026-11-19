@@ -83,7 +83,8 @@ async function plan(ld, { method, path, query, body, actor }) {
     if (r.warrantyOf && (act === 'respond' || act === 'free')) await requestBundle(ld, r.warrantyOf);   // warranty payer / substitute payout
     if (r.bidding) await ld.docsIn('providers', [...ld.maps.assignments.values()].filter(a => a.reqId === r.id && a.bidding).map(a => a.providerId));   // offer cards: name / rating / jobs
     if ((act === 'complete' || act === 'inspection-only') && r.promo && r.promo.ref) await ld.doc('customers', r.promo.ref);   // invite reward goes to the friend
-    if (act === 'review' || act === 'close' || act === 'complete' || act === 'inspection-only') {
+    if (act === 'bid' && actor && actor.role === 'provider') await ld.where('reviews', [['providerId', '==', actor.id]]);   // tier share on the offer
+    if (act === 'review' || act === 'close' || act === 'complete' || act === 'inspection-only' || act === 'cash') {   // rating → bonus tier
       const accepted = [...ld.maps.assignments.values()].find(a => a.reqId === r.id && a.status === 'accepted');
       if (accepted) await ld.where('reviews', [['providerId', '==', accepted.providerId]]);
     }

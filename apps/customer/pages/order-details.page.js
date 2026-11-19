@@ -58,7 +58,7 @@
       ? `<div class="prov-inline prov-card glass neon">
           <div class="prov-avatar" aria-hidden="true" style="background:${p.avatar||'#FF3D8F'}">${esc((p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>
           <div class="prov-head"><b>${esc(p.name)}${p.status==='approved'?` <span class="verified">${ic('shield')} موثّق</span>`:''}</b><small>${p.cats.map(c=>MP.catName(c)).join('، ')}${p.demo?' • محاكاة':''}</small>
-            ${rating || p.jobs ? `<small class="prov-stats">${rating?`${starsHtml(rating)} <b>${rating.toFixed(1)}</b>`:''}${rating && p.jobs?' • ':''}${p.jobs?`${esc(p.jobs)} خدمة منجزة`:''}</small>`:''}</div>
+            ${rating || p.jobs ? `<small class="prov-stats">${rating?`${starsHtml(rating)} <b>${(+rating).toLocaleString('ar-EG',{minimumFractionDigits:1,maximumFractionDigits:1})}</b>`:''}${rating && p.jobs?' • ':''}${p.jobs?`${(+p.jobs).toLocaleString('ar-EG')} خدمة منجزة`:''}</small>`:''}</div>
           <button class="tag" data-provider-details="${esc(p.id)}">${ic('info')} التفاصيل</button>
         </div>`
       : as
@@ -78,6 +78,7 @@
           ${quote.visitFee?`<div class="quote-row"><span>رسوم المعاينة</span><b>${money(quote.visitFee)}</b></div>`:''}
           ${quote.discount?`<div class="quote-row" style="color:#6ee7b7"><span>خصم</span><b>- ${money(quote.discount)}</b></div>`:''}`}
           <div class="quote-row total"><span>الإجمالي</span><b>${money(quote.customerTotal || quote.total)}</b></div>
+          ${globalThis.HSOffers ? HSOffers.quoteDiff(r, quote) : ''}
           ${quote.note?`<small>${esc(quote.note)}</small>`:''}
           <div class="acts">
             <button class="pri" data-act="approveQuote" data-id="${id}">${ic('check')} موافقة</button>
@@ -188,7 +189,7 @@
       ${journey}
       ${statusBar}
       ${T ? T.arrivalCard(r) : etaBlock}
-      ${T ? T.warrantyStrip(r) : ''}
+      ${T ? T.warrantyStrip(r) + (T.warrantyCert ? T.warrantyCert(r) : '') : ''}
       ${root.HSOffers ? root.HSOffers.block(r) + root.HSOffers.cashCard(r) : ''}
       ${r.warrantyOf ? `<div class="need promo-note">${ic('shield')}<span>طلب ضمان — مش هتدفع حاجة على المصنعية.</span></div>` : ''}
       <div class="need tracking-next">${ic('info')}<span><b>الخطوة التالية</b><br>${esc(nextStepCopy)}</span></div>

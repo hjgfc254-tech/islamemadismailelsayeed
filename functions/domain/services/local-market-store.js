@@ -198,7 +198,8 @@ const MP = (() => {
     const p = providerId && get('providers',providerId);
     if (p && p.specialRate!=null && p.specialRate!=='') return +p.specialRate;
     const r = db.settings.rates[cat];
-    return (r!=null && r!=='') ? +r : +db.settings.defaultRate;
+    const base = (r!=null && r!=='') ? +r : +db.settings.defaultRate;
+    return providerId && api.bonusCfg() ? Math.max(0, base - api.rateCut(providerId)) : base;   /* tier: lower platform share */
   };
   /* ═════════ Upfront pricing (Uber model) ═════════
      The admin sets a base price per service (catalog item id, or service id) = what the PROVIDER receives.
@@ -278,6 +279,7 @@ const MP = (() => {
       })
       .map(p => {
         let score = (rating(p.id) || 0) * 10 + acceptRate(p.id);
+        if (p.tier && db.settings.bonus && db.settings.bonus.on) { const ti = (db.settings.bonus.tiers || []).findIndex(t => (t.id || t.name) === p.tier); if (ti >= 0) score += 100 * (ti + 1); }   /* bonus tier: priority in offers */
         if (subs && Array.isArray(p.subs) && p.subs.some(s => subs.startsWith(s))) score += 30;
         return { p, score };
       })
@@ -674,7 +676,7 @@ const MP = (() => {
         const cap = api.priceCap(r);
         if (cap && base > cap) return { ok: false, msg: 'السعر أعلى من الحد المسموح للمشكلة دي (' + cap + ' ج.م) — لو محتاج تشوف الأول اختار «محتاج معاينة»' };
       }
-      const q = quoteFor(base, kind === 'inspection' ? api.inspectionRate() : markupRate()), k = q.customerPrice / base;
+      const q = api.customerTotalFor(base, providerId, kind), k = q.customerPrice / base;
       const note = String((b && b.note) || '').trim().slice(0, 300), eta = String((b && b.eta) || '').trim().slice(0, 40);
       const first = !a.bid;
       a.bid = { kind, labor, parts, fee, base, rate: q.rate, note, eta, at: now() };
@@ -717,6 +719,67 @@ const MP = (() => {
       r.agreedValue = r.pricing.customerPrice;
       return api.complete(reqId);
     },
+    /* ═════════ round 11: provider bonus — tiers (priority in offers + lower platform share) and a weekly cash target ═════════
+       All numbers come from the admin (settings.bonus); off until switched on. A job counts only when the CUSTOMER confirmed
+       the cash and nothing is disputed; tiers and the weekly target count DISTINCT customers (no farming with one friend).
+       The rolling record lives on the provider document (p.recent / p.strikes), so tiers cost no extra reads on the server. */
+    bonusCfg(){ const b = db.settings && db.settings.bonus; return b && b.on ? b : null; },
+    /** the provider's tier now (null = base). Tiers are ordered; the highest one whose rules pass wins. */
+    tierOf(pid){
+      const b = api.bonusCfg(), p = get('providers', pid); if (!b || !p || !Array.isArray(b.tiers)) return null;
+      const st = api.bonusStats(pid); let best = null;
+      b.tiers.forEach((t, i) => {
+        const okJobs = st.jobs >= (+t.minJobs || 0), okRating = !(+t.minRating) || (st.rating != null && st.rating >= +t.minRating), okStrikes = st.strikes <= (t.maxStrikes == null || t.maxStrikes === '' ? 99 : +t.maxStrikes);
+        if (okJobs && okRating && okStrikes) best = { ...t, rank: i + 1 };
+      });
+      return best;
+    },
+    /** rolling counters for the bonus window and the current Cairo week */
+    bonusStats(pid){
+      const b = db.settings.bonus || {}, p = get('providers', pid) || {}, since = Date.now() - (+b.windowDays || 30) * 864e5, week = api.cairoWeek();
+      const inWin = (p.recent || []).filter(x => Date.parse(x.at) >= since);
+      const inWeek = (p.recent || []).filter(x => api.cairoWeek(x.at) === week);
+      return { jobs: new Set(inWin.map(x => x.c)).size, weekJobs: new Set(inWeek.map(x => x.c)).size, rating: rating(pid),
+        strikes: (p.strikes || []).filter(x => Date.parse(x.at) >= since).length, week, paidWeek: p.bonusWeek === week };
+    },
+    /** platform share for this provider: the tier lowers it (never below zero) */
+    rateCut(pid){ const t = api.tierOf(pid); return t ? Math.max(0, +t.rateOff || 0) : 0; },
+    cairoWeek(at){   /* ISO-like week key in Cairo time: yyyy-Www (weeks start Saturday, the Egyptian work week) */
+      let d; try { d = new Date(new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo' }).format(at ? new Date(at) : new Date()) + 'T00:00:00Z'); } catch { d = new Date(at || Date.now()); }
+      const sat = new Date(d); sat.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 1) % 7));
+      return sat.toISOString().slice(0, 10);
+    },
+    /** a confirmed, undisputed job: record it, refresh the tier, pay the weekly target once */
+    bonusCount(r){
+      const p = api.providerOf(r.id); if (!p || !api.bonusCfg()) return;
+      p.recent = (p.recent || []).filter(x => x.r !== r.id && Date.parse(x.at) > Date.now() - 120 * 864e5).slice(-300);
+      p.recent.push({ r: r.id, c: r.customerId, at: now() });
+      api.bonusSettle(p);
+    },
+    bonusStrike(r){
+      const p = api.providerOf(r.id); if (!p) return;
+      p.strikes = (p.strikes || []).filter(x => Date.parse(x.at) > Date.now() - 120 * 864e5); p.strikes.push({ r: r.id, at: now() });
+      p.recent = (p.recent || []).filter(x => x.r !== r.id);   /* a disputed job never counts */
+      api.bonusSettle(p);
+    },
+    bonusSettle(p){
+      const b = api.bonusCfg(); if (!b) return;
+      const before = p.tier || '', t = api.tierOf(p.id);
+      p.tier = t ? t.id || t.name : '';
+      if (p.tier !== before && t) notify('provider:' + p.id, 'مبروك — وصلت لمستوى «' + t.name + '»' + (+t.rateOff ? ' ونسبة المنصة على عروضك بقت أقل ' + t.rateOff + '٪' : '') + ' وطلباتك هتوصلك الأول', '');
+      const w = b.weekly || {}, st = api.bonusStats(p.id);
+      if (w.on && +w.target > 0 && +w.amount > 0 && !st.paidWeek && st.weekJobs >= +w.target) {
+        p.bonusWeek = st.week;
+        db.transactions.push({ id: uid('t'), reqId: '', providerId: p.id, customerId: '', cat: '', value: 0, rate: 0, commission: 0, deductions: 0, net: +w.amount, kind: 'bonus', week: st.week, model: db.settings.collectionModel, collection: 'pending', demo: true, at: now() });
+        notify('provider:' + p.id, 'برافو! خلّصت ' + w.target + ' خدمات الأسبوع ده — ليك بونص ' + w.amount + ' ج.م', '');
+        notify('admin', 'بونص أسبوعي ' + w.amount + ' ج.م للفني ' + p.name, '');
+      }
+    },
+    /** what the customer will see for a provider's base price (used by the server and by the provider's live preview) */
+    customerTotalFor(base, pid, kind){
+      const rate = kind === 'inspection' ? api.inspectionRate() : Math.max(0, markupRate() - api.rateCut(pid));
+      return quoteFor(+base || 0, rate);
+    },
     /* ═════════ round 10: the owner's rules — wider search, visit fee, cancel fee, warranty payer, cash confirmation ═════════ */
     inspectionRate(){ const v = db.settings.inspectionRate; return v != null && v !== '' ? Math.max(0, +v) : 0; },   /* platform share on a visit fee (default none) */
     cancelFee(){ const v = db.settings.cancelFee; return v != null && v !== '' ? Math.max(0, Math.round(+v)) : 50; },
@@ -743,8 +806,9 @@ const MP = (() => {
       r.cash = r.cash || {}; r.cash[side] = !!paid; r.cash[side + 'At'] = now();
       const t = db.transactions.find(x => x.reqId === reqId);
       if (r.cash.customer === true && r.cash.provider === true && t) t.collection = 'collected';
+      if (side === 'customer' && paid && !r.cash.disputed && !r.cash.counted) { r.cash.counted = true; api.bonusCount(r); }
       if (r.cash.customer != null && r.cash.provider != null && r.cash.customer !== r.cash.provider && !r.cash.disputed) {
-        r.cash.disputed = true;
+        r.cash.disputed = true; api.bonusStrike(r);
         api.complain(reqId, 'system', 'خلاف على الدفع: العميل ' + (r.cash.customer ? 'بيقول إنه دفع' : 'بيقول إنه مدفعش') + ' والفني ' + (r.cash.provider ? 'بيقول إنه استلم' : 'بيقول إنه ما استلمش'), { kind: 'payment' });
       }
       save(); return true;

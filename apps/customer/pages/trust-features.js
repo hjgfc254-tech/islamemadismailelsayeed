@@ -196,5 +196,26 @@
     } catch (e) { /* screens stay usable without the extras */ }
   }
 
-  root.HSTrust = Object.freeze({ RV_TAGS, arrivalCard, warrantyStrip, tipCard, photosSlot, seenLabel, tagCounts, tagChips, portfolioSlot, homeReminder, myHome, hydrate, live });
+  /* round 11: warranty certificate — the «paid through the platform» promise made visible; printable / screenshot-able */
+  function warrantyCert(r) {
+    if (!r || r.warrantyOf || !r.warrantyUntil || !['completed', 'closed'].includes(r.status) || Date.parse(r.warrantyUntil) < Date.now()) return '';
+    const p = MP.providerOf(r.id) || {}, c = MP.get('customers', r.customerId) || {};
+    const done = (r.history || []).slice().reverse().find((h) => h.s === 'completed');
+    return `<details class="w-cert"><summary>${ic('shield')} شهادة الضمان</summary>
+      <div class="w-cert-card" role="group" aria-label="شهادة ضمان الطلب ${esc(r.no)}">
+        <div class="w-cert-head"><b>شهادة ضمان</b><small>هنصلحلك</small></div>
+        <dl>
+          <div><dt>رقم الطلب</dt><dd>#${esc(r.no)}</dd></div>
+          <div><dt>الخدمة</dt><dd>${esc(r.serviceName || '')}</dd></div>
+          ${c.name ? `<div><dt>العميل</dt><dd>${esc(c.name)}</dd></div>` : ''}
+          ${p.name ? `<div><dt>الفني</dt><dd>${esc(p.name)}</dd></div>` : ''}
+          ${done ? `<div><dt>تاريخ التنفيذ</dt><dd>${esc(dayFmt(done.at))}</dd></div>` : ''}
+          <div><dt>الضمان لحد</dt><dd><b>${esc(dayFmt(r.warrantyUntil))}</b></dd></div>
+        </dl>
+        <p class="w-cert-terms">الضمان على المصنعية. لو المشكلة رجعت خلال المدة، الفني بيرجع من غير تكلفة شغل — ولو ما رجعش، المنصة بتبعت فني تاني على حسابه. الضمان ساري لأن الطلب والدفع اتعملوا من خلال المنصة.</p>
+        <button type="button" class="cta ghost" data-act="printCert">${ic('save')} احفظ الشهادة</button>
+      </div></details>`;
+  }
+  document.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('[data-act="printCert"]'); if (!b) return; e.preventDefault(); try { root.print(); } catch { /* print unavailable */ } });
+  root.HSTrust = Object.freeze({ RV_TAGS, arrivalCard, warrantyStrip, warrantyCert, tipCard, photosSlot, seenLabel, tagCounts, tagChips, portfolioSlot, homeReminder, myHome, hydrate, live });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

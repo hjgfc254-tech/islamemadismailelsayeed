@@ -36,7 +36,7 @@ test('tracking: a five-stage journey with done/current states and a provider car
   assert.equal((html.match(/class="is-now"/g) || []).length, 1);
   assert.equal((html.match(/aria-current="step"/g) || []).length, 1, 'only the detailed timeline marks the current step');
   assert.match(html, /class="verified"[^>]*>.*موثّق/);
-  assert.match(html, /<b>4\.6<\/b>/); assert.match(html, /12 خدمة منجزة/);
+  assert.ok(html.includes('<b>' + (4.6).toLocaleString('ar-EG', { minimumFractionDigits: 1 }) + '</b>'), 'rating in Arabic digits like the rest of the app'); assert.ok(html.includes((12).toLocaleString('ar-EG') + ' خدمة منجزة'));
 });
 
 test('request success: animated check drawn with CSS, announced politely, reduced-motion safe', () => {

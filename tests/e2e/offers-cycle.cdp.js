@@ -48,8 +48,9 @@ async function run({ exe, wsUrl }) {
     if (!has) return;
     await evaluate(`document.querySelector('[data-pv-action="bid"][data-id="${rid}"]').click();true`);
     ok(await waitFor('!!document.querySelector("#pv-bid-form")'), `${tag}: bid form opens`);
-    ok(await evaluate(`document.querySelector('#pv-bid-form [name=fee]').closest('label').hidden===true`), `${tag}: inspection fee hidden for a quote`);
-    await evaluate(`(()=>{const f=document.querySelector('#pv-bid-form');f.labor.value='${labor}';f.parts.value='${parts}';f.note.value=${JSON.stringify(note)};f.eta.value='النهارده بعد العصر';return true;})()`);
+    ok(await evaluate(`document.querySelector('#pv-bid-form [name=fee]').closest('[data-bid]').hidden===true`), `${tag}: inspection fee hidden for a quote`);
+    await evaluate(`(()=>{const f=document.querySelector('#pv-bid-form');f.labor.value='${labor}';f.parts.value='${parts}';f.note.value=${JSON.stringify(note)};f.eta.value='النهارده بعد العصر';f.labor.dispatchEvent(new Event('input',{bubbles:true}));return true;})()`);
+    ok(await waitFor(`(x => /هتاخد/.test(x) && /هيشوف/.test(x) && !/اكتب السعر/.test(x))(document.querySelector('[data-bid-total]').textContent)`, 2000), `${tag}: live «العميل هيشوف» preview — ${await evaluate("document.querySelector('[data-bid-total]').textContent")}`);
     ok(await noOverflow(), `${tag}: bid form fits 390px`);
     if (tag === 'provider 1') await shot('1-provider-bid-form');
     await evaluate(`document.querySelector('#pv-bid-form .pv-btn-primary').click();true`);
@@ -70,12 +71,22 @@ async function run({ exe, wsUrl }) {
   ok(await evaluate(`!!document.querySelector('[data-of-choose].of-best')`), '«اختارلي الأنسب» shown');
   ok(await noOverflow(), 'offers fit 390px');
   await shot('3-customer-offers');
+  ok(await evaluate(`!!document.querySelector('.of-tag') && !!document.querySelector('.of-why') && !!document.querySelector('.of-ring')`), 'comparison tags, «why the best» and the countdown ring shown');
+  /* a mis-tap can be undone within 5 seconds */
+  await evaluate(`document.querySelector('.of-card [data-of-choose="${p2}"]').click();true`);
+  ok(await waitFor(`!document.querySelector('[data-of-undo-bar]').hidden`, 2000), 'undo bar appears after choosing');
+  await sleep(900);
+  ok(await evaluate(`(() => { const r = document.querySelector('.offers').getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; })()`), 'the offers stay in view while the undo bar is shown');
+  await shot('3b-customer-undo');
+  await evaluate(`document.querySelector('[data-of-undo]').click();true`);
+  await sleep(5600);
+  ok(await evaluate(`MP.get('serviceRequests',${JSON.stringify(rid)}).status!=='accepted' && document.querySelectorAll('.of-card').length===2`), 'undo keeps every offer open');
   await evaluate(`document.querySelector('.of-card [data-of-choose="${p1}"]').click();true`);
-  ok(await waitFor(`MP.get('serviceRequests',${JSON.stringify(rid)}).status==='accepted'`, 5000), 'customer choice accepts the request');
+  ok(await waitFor(`MP.get('serviceRequests',${JSON.stringify(rid)}).status==='accepted'`, 9000), 'customer choice accepts the request (after the undo window)');
   const after = await evaluate(`(()=>{const r=MP.get('serviceRequests',${JSON.stringify(rid)});return {price:r.pricing&&r.pricing.customerPrice,other:MP.db().assignments.find(a=>a.reqId===r.id&&a.providerId===${JSON.stringify(p2)}).status};})()`);
   ok(after.other === 'withdrawn', 'the other offer is closed');
   ok(!(await evaluate('!!document.querySelector(".of-card")')), 'offer cards disappear after choosing');
-  await sleep(300); await shot('4-customer-after-choice');
+  await sleep(300); ok(await evaluate('!!document.querySelector("#view .price-seal")'), '«السعر ثابت» seal after choosing'); await shot('4-customer-after-choice');
 
   /* ── the job runs (provider API), then both confirm cash in the UI ── */
   await go(PROV); await evaluate(`sessionStorage.setItem('hs_provider_demo_session',${JSON.stringify(p1)});true`);
@@ -98,6 +109,9 @@ async function run({ exe, wsUrl }) {
   ok(await evaluate(`!MP.db().complaints.some(k=>k.reqId===${JSON.stringify(rid)})`), 'no dispute complaint');
   const w = await evaluate(`MP.get('serviceRequests',${JSON.stringify(rid)}).warrantyUntil`);
   ok(!!w, 'warranty set: ' + w);
+  await evaluate(`show('tracking',${JSON.stringify(rid)});true`); await sleep(300);
+  ok(await evaluate('!!document.querySelector(".w-cert")'), 'warranty certificate offered');
+  await evaluate(`(()=>{const d=document.querySelector('.w-cert');d.open=true;d.scrollIntoView();return true;})()`); await sleep(200); await shot('5b-warranty-cert');
   await sleep(300); await shot('6-customer-done');
 
   /* ── inspection path: unknown problem → inspection offer via the form (radio) → chosen → repair refused → «المعاينة بس» button ── */
@@ -110,7 +124,7 @@ async function run({ exe, wsUrl }) {
   await evaluate(`location.hash='#/request/${iid}'`); await sleep(300);
   ok(await waitFor(`/ابعت سعر المعاينة/.test((document.querySelector('[data-pv-action="bid"][data-id="${iid}"]')||{}).textContent||'')`, 4000), 'provider sees «ابعت سعر المعاينة»');
   await evaluate(`document.querySelector('[data-pv-action="bid"][data-id="${iid}"]').click();true`);
-  ok(await waitFor(`!!document.querySelector('#pv-bid-form input[value=inspection]:checked') && document.querySelector('#pv-bid-form [name=labor]').closest('label').hidden`, 3000), 'form opens on «محتاج معاينة» with labor hidden');
+  ok(await waitFor(`!!document.querySelector('#pv-bid-form input[value=inspection]:checked') && document.querySelector('#pv-bid-form [name=labor]').closest('[data-bid]').hidden`, 3000), 'form opens on «محتاج معاينة» with labor hidden');
   await evaluate(`(()=>{const f=document.querySelector('#pv-bid-form');f.fee.value='150';return true;})()`);
   await shot('7-provider-inspection-form');
   await evaluate(`document.querySelector('#pv-bid-form .pv-btn-primary').click();true`);
@@ -119,7 +133,7 @@ async function run({ exe, wsUrl }) {
   ok(await waitFor('document.querySelectorAll(".of-card").length>=1 && /سعر المعاينة/.test(document.querySelector(".of-card").innerText)', 4000), 'customer sees the inspection offer');
   await shot('8-customer-inspection-offer');
   await evaluate(`document.querySelector('.of-card [data-of-choose]').click();true`);
-  ok(await waitFor(`MP.get('serviceRequests',${JSON.stringify(iid)}).status==='accepted'`, 4000), 'inspection offer chosen');
+  ok(await waitFor(`MP.get('serviceRequests',${JSON.stringify(iid)}).status==='accepted'`, 9000), 'inspection offer chosen (after the undo window)');
   await sleep(300);
   ok(await evaluate(`/بتتخصم/.test(document.querySelector('#view').innerText)`), 'customer told the visit is deducted if they continue');
   await go(PROV); await evaluate(`sessionStorage.setItem('hs_provider_demo_session',${JSON.stringify(ip)});true`);

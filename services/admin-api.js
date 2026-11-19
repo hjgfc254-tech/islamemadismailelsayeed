@@ -139,6 +139,17 @@
       const v = body.inspection || {}, bools = o => { const m = {}; for (const [k, x] of Object.entries(o && typeof o === 'object' ? o : {})) { if (typeof x !== 'boolean') continue; if (!/^[a-z0-9/-]{2,80}$/.test(k)) errors.inspection = 'مفتاح غير صالح'; else m[k] = x; } return m; };
       out.inspection = { cats: bools(v.cats), items: bools(v.items), problems: bools(v.problems) };
     }
+    if (body.bonus !== undefined) {            /* provider bonus: tiers + weekly cash target — every number from the admin */
+      const v = body.bonus || {}, int = (x, lo, hi) => { const n = Math.round(+x); return Number.isFinite(n) && n >= lo && n <= hi ? n : null; };
+      const tiers = (Array.isArray(v.tiers) ? v.tiers : []).slice(0, 4).map((t, i) => ({ id: String(t.id || 't' + (i + 1)).replace(/[^a-z0-9-]/gi, '').slice(0, 20) || 't' + (i + 1), name: String(t.name || '').trim().slice(0, 20),
+        minJobs: int(t.minJobs, 0, 1000), minRating: t.minRating === '' || t.minRating == null ? 0 : Math.round(+t.minRating * 10) / 10, maxStrikes: int(t.maxStrikes == null || t.maxStrikes === '' ? 99 : t.maxStrikes, 0, 99), rateOff: t.rateOff === '' || t.rateOff == null ? 0 : +t.rateOff }));
+      if (tiers.some(t => !t.name || t.minJobs == null || !(t.minRating >= 0 && t.minRating <= 5) || t.maxStrikes == null || !(t.rateOff >= 0 && t.rateOff <= 50))) errors.bonus = 'راجع المستويات: اسم، عدد خدمات، تقييم من 0 لـ 5، تخفيض من 0 لـ 50٪';
+      const w = v.weekly || {}, wd = int(v.windowDays == null ? 30 : v.windowDays, 7, 90);
+      if (wd == null) errors.bonus = 'مدة الحساب من 7 لـ 90 يوم';
+      const weekly = { on: !!w.on, target: int(w.target || 0, 0, 100), amount: int(w.amount || 0, 0, 100000) };
+      if (weekly.target == null || weekly.amount == null || (weekly.on && !(weekly.target > 0 && weekly.amount > 0))) errors.bonus = 'البونص الأسبوعي محتاج عدد خدمات ومبلغ';
+      out.bonus = { on: !!v.on, windowDays: wd || 30, tiers, weekly };
+    }
     for (const key of ['cancelFee', 'visitFee']) { if (body[key] === undefined) continue; const n = Math.round(+body[key]); if (!(n >= 0 && n <= 5000)) errors[key] = 'من 0 لـ 5000 ج.م'; else out[key] = n; }
     if (body.inspectionRate !== undefined) { const n = +body.inspectionRate; if (!(n >= 0 && n <= 50)) errors.inspectionRate = 'من 0 لـ 50٪'; else out.inspectionRate = n; }
     if (body.bidWindowMin !== undefined) { const n = Math.round(+body.bidWindowMin); if (!(n >= 5 && n <= 120)) errors.bidWindowMin = 'من 5 لـ 120 دقيقة'; else out.bidWindowMin = n; }
@@ -167,7 +178,8 @@
     return { out, errors };
   }
   const marketingView = s => ({ promos: Array.isArray(s.promos) ? s.promos : [], referral: s.referral || { on: false, reward: 0 }, packages: Array.isArray(s.packages) ? s.packages : [], warranty: s.warranty || { default: 30, cats: {}, items: {} }, arrivalPin: !!s.arrivalPin,
-    bidding: !!s.bidding, bidWindowMin: +s.bidWindowMin || 15, inspectionCap: s.inspectionCap || { default: 0, cats: {} }, cancelFee: s.cancelFee != null ? +s.cancelFee : 50, visitFee: +s.visitFee || 0, inspectionRate: +s.inspectionRate || 0, priceCaps: s.priceCaps || { cats: {}, items: {}, problems: {} }, inspection: s.inspection || { cats: {}, items: {}, problems: {} } });
+    bidding: !!s.bidding, bidWindowMin: +s.bidWindowMin || 15, inspectionCap: s.inspectionCap || { default: 0, cats: {} }, cancelFee: s.cancelFee != null ? +s.cancelFee : 50, visitFee: +s.visitFee || 0, inspectionRate: +s.inspectionRate || 0, priceCaps: s.priceCaps || { cats: {}, items: {}, problems: {} }, inspection: s.inspection || { cats: {}, items: {}, problems: {} },
+    bonus: s.bonus || { on: false, windowDays: 30, tiers: [], weekly: { on: false, target: 0, amount: 0 } } });
   client.define('POST', '/admin/reviews/:id/visibility', { roles: A, summary: 'Hide or re-publish a review {hidden, reason}.' }, ({ params, body, actor, store }) => {
     const denied = guard(actor, 'reviews', 'decide'); if (denied) return denied;
     if (typeof body.hidden !== 'boolean') return fail('VALIDATION', 'حدد إخفاء أو نشر', { hidden: 'boolean' });
