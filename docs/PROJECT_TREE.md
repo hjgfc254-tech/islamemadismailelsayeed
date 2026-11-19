@@ -477,6 +477,8 @@ hansalhlak/
 ├── scripts/
 │   ├── build-lucide-icons.cjs
 │   ├── build-project-reference.cjs
+│   ├── coverage-map.cjs
+│   ├── coverage-run.cjs
 │   ├── inventory-files.mjs
 │   ├── refresh-project-inventory.mjs
 │   ├── sync-functions-domain.cjs
@@ -556,6 +558,7 @@ hansalhlak/
 │   │   ├── firebase-emulator.cdp.js
 │   │   ├── guest.cdp.js
 │   │   ├── interaction.cdp.js
+│   │   ├── offers-cycle.cdp.js
 │   │   ├── provider-standalone.cdp.js
 │   │   ├── quotes-management.browser.js
 │   │   ├── README.md
@@ -581,10 +584,12 @@ hansalhlak/
 │       ├── accessible-tabs-contract.test.js
 │       ├── accessible-tabs.test.js
 │       ├── admin-dashboard.test.js
+│       ├── admin-live-editors.test.js
 │       ├── admin-modules.test.js
 │       ├── admin-runtime.test.js
 │       ├── admin-shell.test.js
 │       ├── api-adapters.test.js
+│       ├── api-gaps.test.js
 │       ├── audit-log.test.js
 │       ├── catalog-wizard.test.js
 │       ├── categories-management.test.js
@@ -596,6 +601,7 @@ hansalhlak/
 │       ├── customer-request-create.test.js
 │       ├── customer-routing-session.test.js
 │       ├── customer-screen-focus.test.js
+│       ├── customer-screen-sweep.test.js
 │       ├── customer-workflow.test.js
 │       ├── customers-management.test.js
 │       ├── data-grid.test.js
@@ -613,6 +619,7 @@ hansalhlak/
 │       ├── icon-asset-audit.test.js
 │       ├── inventory-reproducibility.test.js
 │       ├── legacy-migration.test.js
+│       ├── local-attachments.test.js
 │       ├── marketplace-rules.test.js
 │       ├── notifications-management.test.js
 │       ├── order-lifecycle.test.js
@@ -625,6 +632,7 @@ hansalhlak/
 │       ├── provider-domain.test.js
 │       ├── provider-pages.test.js
 │       ├── provider-request-domain.test.js
+│       ├── provider-screen-sweep.test.js
 │       ├── providers-management.test.js
 │       ├── quotes-management.test.js
 │       ├── rbac-pages.test.js

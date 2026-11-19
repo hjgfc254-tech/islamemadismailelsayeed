@@ -839,7 +839,9 @@ const screens = {
       : `<div class="screen">${head('حسابي')}<div class="empty">${ic('user')}<p>تعذّر تحميل الحساب. أعد المحاولة.</p></div></div>`;
   },
 
-  details(k){ const d = DEVICES[k]; return `<div class="screen">${head('تفاصيل المشكلة',true)}
+  details(k){ const d = DEVICES[k];
+    if (!d) return `<div class="screen">${head('تفاصيل المشكلة',true)}<div class="empty">${ic('search')}<p>الخدمة دي مش موجودة أو اتشالت.</p><button class="cta" data-go="sections">تصفّح الخدمات</button></div></div>`;   /* stale / wrong link */
+    return `<div class="screen">${head('تفاصيل المشكلة',true)}
   <section class="dcard neon">
     <div class="info"><span class="badge">${ic(icSec(d.icon))} ${d.cat}</span><h3>${d.name}</h3><p>اختر نوع المشكلة لمعرفة الحل</p></div>
     <div class="art">${ART[d.art]}</div>

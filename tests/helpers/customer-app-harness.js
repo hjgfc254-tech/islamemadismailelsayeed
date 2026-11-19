@@ -25,7 +25,7 @@ function boot({ hash = '', local = {}, session = {}, override = {} } = {}) {
   let doc; // focus recorders behave like a browser: the focused element becomes document.activeElement
   const record = (what, el) => { focus.current = what; focus.history.push(what); if (el && doc) { connected.add(el); doc.activeElement = el; } };
   const mkEl = (extra = {}) => Object.assign({ innerHTML: '', value: '', hidden: false, dataset: {}, style: {}, scrollTop: 0, inert: false, children: [],
-    classList: { add() {}, remove() {}, toggle() {}, contains: () => false }, addEventListener() {}, removeEventListener() {}, setAttribute() {},
+    classList: { add() {}, remove() {}, toggle() {}, contains: () => false }, addEventListener() {}, removeEventListener() {}, dispatchEvent() { return true; }, setAttribute() {},
     removeAttribute() {}, getAttribute: () => null, hasAttribute: () => false, appendChild() {}, remove() {}, focus() {}, click() {}, scrollIntoView() {},
     querySelector: () => null, querySelectorAll: () => [], closest: () => null, contains: () => false,
     getBoundingClientRect: () => ({ width: 300, height: 300, top: 0, left: 0, right: 300, bottom: 300 }) }, extra);
@@ -61,7 +61,7 @@ function boot({ hash = '', local = {}, session = {}, override = {} } = {}) {
   /* the app defaults to the production Firebase backend; the harness runs the offline demo, like ?backend=local */
   const local$ = storage({ hs_backend: 'local', ...local }), session$ = storage({ hs_intro_v1: '1', ...session });
   const win = { addEventListener: (t, f) => (winListeners[t] = winListeners[t] || []).push(f), removeEventListener() {} };
-  const ctx = { console, setTimeout: () => 0, clearTimeout() {}, setInterval: () => 0, clearInterval() {},
+  const ctx = { console, Event: function Event(type) { this.type = type; }, setTimeout: () => 0, clearTimeout() {}, setInterval: () => 0, clearInterval() {},
     localStorage: local$, sessionStorage: session$, document: doc, window: win, history, navigator: {}, location,
     matchMedia: () => ({ matches: false, addEventListener() {} }), innerWidth: 390, innerHeight: 800, Image: function () {}, URL, File: function () {},
     Blob: function () {}, requestAnimationFrame: () => 0, indexedDB: undefined, Event: function () {}, CustomEvent: function () {},

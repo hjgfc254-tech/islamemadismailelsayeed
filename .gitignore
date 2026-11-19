@@ -58,3 +58,5 @@ TOOL-HEALTH-REPORT.txt
 
 # local-only archive (backups, personal reports) — never committed
 local-only/
+
+coverage-map.txt

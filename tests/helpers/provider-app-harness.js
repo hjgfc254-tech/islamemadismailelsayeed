@@ -28,7 +28,7 @@ function storage(seed = {}) {
 function element(extra = {}) {
   return Object.assign({ innerHTML: '', textContent: '', hidden: false, dataset: {},
     classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
-    addEventListener() {}, removeEventListener() {}, setAttribute() {}, focus() {}, scrollIntoView() {},
+    addEventListener() {}, removeEventListener() {}, setAttribute() {}, focus() {}, scrollIntoView() {}, click() {}, remove() {},
     insertAdjacentHTML(pos, html) { this.innerHTML = pos === 'afterbegin' ? html + this.innerHTML : this.innerHTML + html; },
     querySelector: () => null, querySelectorAll: () => [] }, extra);
 }

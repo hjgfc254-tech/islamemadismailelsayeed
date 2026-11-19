@@ -69,6 +69,13 @@
 - **التالي:** استكمال فحص Customer (addresses/orders/tracking/support/details)، ثم Provider عبر legacy bridge، ثم Admin page/dialog keyboard traversal. قارئات الشاشة وFirefox/WebKit/Safari والأجهزة الفعلية لم تُختبر. Phase 5 item 4 ما زال جزئيًا؛ لا يوجد ادعاء WCAG.
 
 
+## 2026-11-19 — Test sweep: coverage map, screen/state sweeps, gaps (463 tests)
+- **Measure:** `npm run coverage:map` → `coverage-map.txt` (git-ignored). Function-level V8 coverage of our own code (vm-loaded classic scripts included; `functions/domain` merged into `services`). Now **71 %** of named functions (was 65 %); 7 files never loaded by a unit test (was 10). Under Node 26 `static-audit` throws an internal `WeakRef: invalid target` only while coverage is on — the map is still written.
+- **New tests:** `customer-screen-sweep` (every screen, guest + customer, missing / stale ids, tracking in 13 marketplace states), `provider-screen-sweep` (every route, request page per state, **clicks every action button in every state** — reproduces the TDZ class of bug), `local-attachments` (fake IndexedDB + memory fallback), `api-gaps` (customer self-service, admin marketing / candidates / customer status, provider choice, photos, attachment ids, failure path, commission collection / rates, drafts, searches), `admin-live-editors` (marketing editor on the real API, AI settings vs a recording fake server, mini charts).
+- **Bugs found and fixed:** `details` screen crashed on a missing / stale device id; **marketing editor showed no per-category rows** (warranty / inspection / caps) because `root.CAT` is undefined — `CAT` is a top-level `const`, not a window property.
+- **Browser:** `tests/e2e/offers-cycle.cdp.js` (direct price + inspection cycles, 390 px).
+- **Harness additions:** customer `dispatchEvent`/`Event`; provider element `click()`/`remove()`.
+- **Still not unit-loaded:** `services/firebase-backend.js`, `apps/admin/{admin-auth,admin-session,app}.js`, `admin-live-panels`, `command-palette`, `site-content-editor` (browser / emulator territory). Dead-code candidates (no runtime caller): `functions/src/store.js` `readAll`/`commit`/`firestoreAdapter`, `functions/src/identity.js` `resolveActor`/`providerStatus` — prove before removing.
 ## 2026-11-19 — Owner rules on top of the offers round (round 10)
 - **No built-in price numbers:** inspection / price caps exist only when the admin sets them (`inspectionCap.default` 0 = no cap).
 - **Window over, no offers:** customer button «دوّر على فنيين في مناطق تانية» → `POST /requests/:id/widen` (once): up to 3 same-specialty providers from other governorates + admin notice. Offers ready after the window → a «choose one» banner; after 60 min «اختارلي الأنسب» pulses. No server-side timer/push yet.

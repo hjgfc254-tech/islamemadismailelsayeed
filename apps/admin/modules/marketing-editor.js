@@ -10,7 +10,9 @@
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const C = () => root.HSApiClient;
   const errText = (r) => (r && r.error && (r.error.details ? Object.values(r.error.details)[0] : r.error.message)) || 'تعذّر الحفظ';
-  const cats = () => (root.CAT && root.CAT.categories ? root.CAT.categories() : []);
+  /* CAT is a top-level const of local-catalog.js: a global binding, NOT a property of window — read it by name */
+  const catalog = () => root.CAT || (typeof CAT !== 'undefined' ? CAT : null);
+  const cats = () => { const c = catalog(); return c && c.categories ? c.categories() : []; };
 
   async function mount(host) {
     if (!host || !C()) return;
@@ -24,7 +26,7 @@
       inspection: { cats: {}, items: {}, problems: {}, ...(res.data.inspection || {}) } };
     work.inspectionCap.cats = { ...(work.inspectionCap.cats || {}) }; work.priceCaps.cats = { ...(work.priceCaps.cats || {}) }; work.inspection.cats = { ...(work.inspection.cats || {}) };
     work.warranty.cats = { ...(work.warranty.cats || {}) }; work.warranty.items = { ...(work.warranty.items || {}) };
-    const items = (cat) => (root.CAT && root.CAT.items ? root.CAT.items(cat) : []);
+    const items = (cat) => { const c = catalog(); return c && c.items ? c.items(cat) : []; };
     const wVal = (v) => (v === undefined || v === null ? '' : esc(v));
     const status = (msg) => { const s = host.querySelector('[data-mk-status]'); if (s) s.textContent = msg || ''; };
     const catOpts = (v) => `<option value="">كل الأقسام</option>${cats().map((c) => `<option value="${esc(c.id)}" ${c.id === v ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}`;

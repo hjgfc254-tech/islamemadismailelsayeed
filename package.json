@@ -8,6 +8,7 @@
                     "test":  "node --test tests/unit/*.test.js",
                     "test:unit":  "node --test tests/unit/*.test.js",
                     "test:coverage":  "node --experimental-test-coverage --test tests/unit/*.test.js",
+                    "coverage:map":  "node scripts/coverage-run.cjs",
                     "audit:inventory":  "node scripts/verify-project-inventory.mjs",
                     "audit:refresh":  "node scripts/refresh-project-inventory.mjs",
                     "functions:sync":  "node scripts/sync-functions-domain.cjs",
