@@ -82,6 +82,11 @@
         "source": "/admin{,/**}",
         "destination": "/apps/admin/index.html",
         "type": 302
+      },
+      {
+        "source": "/privacy",
+        "destination": "/legal/privacy.html",
+        "type": 301
       }
     ],
     "headers": [

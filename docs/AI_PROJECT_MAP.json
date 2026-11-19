@@ -2,8 +2,8 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 559,
-    "total_files": 559,
+    "file_count": 560,
+    "total_files": 560,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 50,
@@ -22,7 +22,7 @@
       "IMPLEMENTED (SHELL PARTS)": 1,
       "IMPLEMENTED (SHELL, DEMO)": 1,
       "IMPLEMENTED (SHELL)": 2,
-      "NEEDS_REVIEW": 184,
+      "NEEDS_REVIEW": 185,
       "PARTIALLY IMPLEMENTED": 1,
       "PLACEHOLDER": 64,
       "TEST": 78
@@ -9403,7 +9403,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "ec527e7b3b2b20b565ca7f8a67c101e901c69b3d384fcd06c95d5af6b4d9bfff",
+      "sha256": "d73fe7fd53b6433971fc03753d0670b277a0a9e850e9964aa87804b759d8f29e",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -9439,7 +9439,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 278975
+      "bytes": 279191
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -9499,7 +9499,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "0d544649ec4d721be60881965bddef9d0cd03a897e808fb8c12a154b4eb844de",
+      "sha256": "5ffed79161dcf1cc7515e090c043894d4274dae9469b37ac7ffff0d1e13c0eea",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -9535,7 +9535,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 143145
+      "bytes": 143345
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -11095,7 +11095,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "10a8b73f7555b4734b10c43a7e98355c132a925f9d5130f2682b5938626cb851",
+      "sha256": "b5e721cbd1723da34f4c55d7ddbeb8bf82ca859e6a9657251d7c3fed31ceeafd",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11132,7 +11132,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 26789
+      "bytes": 26835
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -11402,8 +11402,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "2ecfc669e889df6a31a2b13aad3555a501c3ef0d843775e4ed7ce203ce84b40b",
-      "bytes": 2602
+      "sha256": "c48a00ba263156a41cf978ec87bf5383c6e222fff4857c781dd05db7f8c64fbf",
+      "bytes": 2715
     },
     {
       "path": "firestore.indexes.json",
@@ -11925,6 +11925,18 @@
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
       "bytes": 423
+    },
+    {
+      "path": "legal/privacy.html",
+      "area": "legal",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "privacy.html",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "fc911a2d68223c23062d9eafc608254d4b4880ddc0d03086e4001307b5947776",
+      "bytes": 8459
     },
     {
       "path": "manifest.json",

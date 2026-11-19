@@ -462,6 +462,8 @@ hansalhlak/
 │   ├── index.js
 │   ├── package-lock.json
 │   └── package.json
+├── legal/
+│   └── privacy.html
 ├── scripts/
 │   ├── build-lucide-icons.cjs
 │   ├── build-project-reference.cjs

@@ -398,6 +398,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | functions/src/workforce.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | HANSALEHLAK_FRONTEND_MASTER_REPORT_AR.md | DOCUMENTATION | Arabic master frontend handover report (state, classification, tests, continuation guide) as of b719d9a. | Update at the next documentation checkpoint. |
 | index.html | CONFIGURATION | Root route redirect to the Customer application entry. | Verify root redirect behavior on the selected host and preserve query/hash forwarding. |
+| legal/privacy.html | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | manifest.json | CONFIGURATION | PWA metadata, launch path and icon declaration. | Update only when related implementation changes. |
 | package.json | CONFIGURATION | Configuration or metadata for package | Update only when related implementation changes. |
 | README.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |

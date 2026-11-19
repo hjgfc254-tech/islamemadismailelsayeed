@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 559,
+  "file_count": 560,
   "files": [
     {
       "path": "_redirects",
@@ -2043,8 +2043,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 278975,
-      "sha256": "ec527e7b3b2b20b565ca7f8a67c101e901c69b3d384fcd06c95d5af6b4d9bfff"
+      "bytes": 279191,
+      "sha256": "d73fe7fd53b6433971fc03753d0670b277a0a9e850e9964aa87804b759d8f29e"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2057,8 +2057,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 143145,
-      "sha256": "0d544649ec4d721be60881965bddef9d0cd03a897e808fb8c12a154b4eb844de"
+      "bytes": 143345,
+      "sha256": "5ffed79161dcf1cc7515e090c043894d4274dae9469b37ac7ffff0d1e13c0eea"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2421,8 +2421,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 26789,
-      "sha256": "10a8b73f7555b4734b10c43a7e98355c132a925f9d5130f2682b5938626cb851"
+      "bytes": 26835,
+      "sha256": "b5e721cbd1723da34f4c55d7ddbeb8bf82ca859e6a9657251d7c3fed31ceeafd"
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -2477,8 +2477,8 @@
       "path": "firebase.json",
       "area": "firebase.json",
       "status": "NEEDS_REVIEW",
-      "bytes": 2602,
-      "sha256": "2ecfc669e889df6a31a2b13aad3555a501c3ef0d843775e4ed7ce203ce84b40b"
+      "bytes": 2715,
+      "sha256": "c48a00ba263156a41cf978ec87bf5383c6e222fff4857c781dd05db7f8c64fbf"
     },
     {
       "path": "firestore.indexes.json",
@@ -2759,6 +2759,13 @@
       "status": "CONFIGURATION",
       "bytes": 423,
       "sha256": "7d4cb612fd79a08aa038232dba96229c2c3514bd4e0a957065306c99cf62465e"
+    },
+    {
+      "path": "legal/privacy.html",
+      "area": "legal",
+      "status": "NEEDS_REVIEW",
+      "bytes": 8459,
+      "sha256": "fc911a2d68223c23062d9eafc608254d4b4880ddc0d03086e4001307b5947776"
     },
     {
       "path": "manifest.json",
