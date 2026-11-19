@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { projectFiles } from './inventory-files.mjs';
+import { projectFiles, contentHash } from './inventory-files.mjs';
 
 const root = process.cwd();
 const mapPath = path.join(root, 'docs', 'AI_PROJECT_MAP.json');
@@ -16,7 +16,7 @@ const hashMismatches = [];
 for (const [relative, entry] of tracked) {
   if (!actual.has(relative) || ignored.has(relative) || !entry.sha256) continue;
   const bytes = await readFile(path.join(root, relative));
-  const hash = createHash('sha256').update(bytes).digest('hex');
+  const hash = contentHash(bytes);   // line-ending agnostic
   if (hash !== entry.sha256) hashMismatches.push(relative);
 }
 

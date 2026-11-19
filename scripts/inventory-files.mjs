@@ -39,3 +39,12 @@ export async function projectFiles(root) {
   }
   return { files: await walk(root), source: 'walk' };
 }
+
+/* Content hash that is stable across checkouts: text files are hashed with CRLF normalised to LF (Windows working copies
+   may hold CRLF while git stores LF), binary files (any NUL byte) are hashed as-is. Used by refresh and verify. */
+import { createHash as _createHash } from 'node:crypto';
+export function contentHash(bytes) {
+  const isBinary = bytes.includes(0);
+  const data = isBinary ? bytes : Buffer.from(bytes.toString('latin1').replace(/\r\n/g, '\n'), 'latin1');
+  return _createHash('sha256').update(data).digest('hex');
+}

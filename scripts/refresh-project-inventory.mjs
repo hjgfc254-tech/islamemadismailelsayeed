@@ -1,13 +1,13 @@
 import { createHash } from 'node:crypto';
 import { readFile, writeFile, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { projectFiles } from './inventory-files.mjs';
+import { projectFiles, contentHash } from './inventory-files.mjs';
 
 const root = process.cwd();
 const mapPath = 'docs/AI_PROJECT_MAP.json';
 const indexPath = 'docs/AI_CONTEXT/FILE_INDEX.json';
 const selfHashPaths = new Set([mapPath, indexPath]);
-const sha = (bytes) => createHash('sha256').update(bytes).digest('hex');
+const sha = (bytes) => contentHash(bytes);   // line-ending agnostic (see inventory-files.mjs)
 const areaOf = (file) => file.split('/')[0] === 'apps' ? file.split('/').slice(0, 2).join('/') : (file.split('/')[0] || 'root');
 
 
