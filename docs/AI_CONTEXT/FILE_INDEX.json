@@ -517,8 +517,8 @@
       "path": "apps/customer/pages/home.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 9439,
-      "sha256": "75d8d50d2ff62c41edb8804f9cabb2d943d64eda921d501a3e0d9ad814afb636"
+      "bytes": 9445,
+      "sha256": "a778b91f85542d64cb1ce4c44e659522318fcf1cf1e589246e871d6f126a7d5f"
     },
     {
       "path": "apps/customer/pages/market-ui.page.js",
@@ -608,8 +608,8 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 132455,
-      "sha256": "d5f343d9c6e37e8e90d5705f96a754eeda2d56cb606889f4d78be09e5e2af924"
+      "bytes": 133419,
+      "sha256": "01ec7ba6f6c27b5a5d95ae43e901a33c3dc9665b71b4438818874c92d8461277"
     },
     {
       "path": "apps/customer/styles/overrides.css",

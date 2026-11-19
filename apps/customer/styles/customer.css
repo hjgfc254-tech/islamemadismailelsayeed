@@ -1359,3 +1359,15 @@ html.ob-open,html.ob-open body{overflow:hidden}
 .site-foot .foot-bottom .foot-copy{margin:0}
 @media (min-width:768px){#view .site-foot{grid-template-columns:minmax(220px,1fr) 2.2fr;align-items:start;gap:22px 32px;padding:28px 28px 18px;margin-bottom:32px}
   .site-foot .foot-cols{padding-top:0;border-top:0}.site-foot .foot-bottom{grid-column:1/-1}}
+/* footer v2 — dark: black card, white text (the light logo lockup is made for dark backgrounds) */
+#view .site-foot{background:#14110f;border-color:#14110f;color:rgba(255,255,255,.72);box-shadow:0 18px 40px -28px rgba(0,0,0,.6)}
+#view .site-foot .foot-brand p{color:#fff}
+#view .site-foot .foot-trust li{background:rgba(255,255,255,.1);color:#fff}
+#view .site-foot .foot-trust svg{color:var(--accent)}
+#view .site-foot .foot-cols{border-top-color:rgba(255,255,255,.16)}
+#view .site-foot .foot-cols b{color:rgba(255,255,255,.6)}
+#view .site-foot .foot-cols nav button,#view .site-foot .foot-cols nav a{color:#fff}
+#view .site-foot .foot-cols nav button:hover,#view .site-foot .foot-cols nav a:hover{color:var(--accent)}
+#view .site-foot .foot-cols nav button:focus-visible,#view .site-foot .foot-cols nav a:focus-visible{outline-color:#fff}
+#view .site-foot .foot-bottom{border-top-color:rgba(255,255,255,.12)}
+#view .site-foot small{color:rgba(255,255,255,.6)}

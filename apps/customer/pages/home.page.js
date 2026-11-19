@@ -80,7 +80,7 @@
   <div class="join glass neon">${ic('user')}<div><b>عايز تقدم خدماتك؟</b><small>انضم كمقدم خدمة — التسجيل يُراجَع من الإدارة قبل استقبال الطلبات</small></div><a class="tag" href="../provider/index.html#/join">انضم كمقدم خدمة</a></div>
   <footer class="site-foot" aria-label="عن هنصلحلك">
     <div class="foot-brand">
-      <img class="wordmark" src="../../assets/brand/logo-v10-lockup.webp" alt="هنصلحلك HANSALEHLAK" width="615" height="160" loading="lazy" decoding="async">
+      <img class="wordmark" src="../../assets/brand/logo-v10-lockup-light.webp" alt="هنصلحلك HANSALEHLAK" width="615" height="160" loading="lazy" decoding="async">
       <p>منصة واحدة، خدمات أسهل.</p>
       <ul class="foot-trust" aria-label="ليه هنصلحلك">
         <li>${ic('shield')}<span>فنيين بتراجعهم الإدارة</span></li>
