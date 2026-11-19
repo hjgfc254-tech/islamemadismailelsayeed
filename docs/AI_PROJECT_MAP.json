@@ -11634,7 +11634,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "dfbf981bddf76eeb36b7644b0927c3ce9d678b76601c5d7906833771e529162b",
+      "sha256": "d41cb5aee57fd71e308b9c5b9bad1e45df9a97436e68956bc296af991798bbfa",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -14637,7 +14637,7 @@
       "functional_title": "Accessible tabs integration contracts",
       "current_responsibility": "Verifies Customer/Admin loading order, Service Worker precache, and feature wiring.",
       "next_action": "Run with npm test.",
-      "sha256": "7f0aeb46c98245288bc2e1908bc797613e045558349f8191bf8cb02685f0cec2",
+      "sha256": "c6db4421e53c8c86ff34f37aff8c44a90db517f08eff97724754c2fc281a9cef",
       "bytes": 1368
     },
     {
@@ -15093,7 +15093,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "fc91bb4828b04442103ef8c62f532ae5dd52fd78e5d5fffccd080d78ef94329c",
+      "sha256": "0e95b80baf1f16298d67350a876302ca56c540bf16bf04e5e3484c2bb5d11aaf",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -15584,7 +15584,7 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "e5108d4306b5c47aa9865620f43ba06de41f93b694203501191312c9db36b26e",
+      "sha256": "6640836b277140615115f548073f50bef6153ccd61dcd139fdcd9b7dd1d41b14",
       "bytes": 7023
     },
     {
@@ -16004,7 +16004,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "c3e310a8a6bddbeb5cf5abb0851f9417ae64a5cb901149b496d608c41218790b",
+      "sha256": "6cfbffa8bfaa9cffb5540213e906d140a77e62d112c6b3e44890fa35ca6b3b02",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
