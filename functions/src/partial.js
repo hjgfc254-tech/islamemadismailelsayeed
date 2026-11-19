@@ -76,7 +76,7 @@ class PartialDb {
     const [providers, serviceAreas, reviews] = await Promise.all([
       q('providers', { where: [['status', '==', 'approved']], limit: 200 }),
       q('serviceAreas', { where: [] }),
-      q('reviews', { where: [], orderBy: ['at', 'desc'], limit: 12 })
+      q('reviews', { where: [], orderBy: ['at', 'desc'], limit: 20 })   // a few extra so hidden ones (filtered in scope) still leave ~12
     ]);
     return { atMs: Date.now(), providers, serviceAreas, reviews };
   }

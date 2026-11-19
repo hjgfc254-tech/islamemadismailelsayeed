@@ -208,6 +208,7 @@
   };
 
   const renderRoute = (id, opts) => {
+    if (id === 'super-dashboard' && firebaseMode()) id = 'dashboard';   /* the owner dashboard is built on demo data; live mode shows the real dashboard */
     const token = ++renderToken;
     if (current && current.ac) current.ac.abort();
     const ac = typeof root.AbortController === 'function' ? new root.AbortController() : { signal: {}, abort() {} };

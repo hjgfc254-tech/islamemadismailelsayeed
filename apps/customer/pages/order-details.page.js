@@ -22,7 +22,7 @@
     const rev = MP.db().reviews.find(v => v.reqId === id);
     const quote = MP.currentQuote(id);
     const inProgress = ['accepted','scheduled','enroute','arrived','started'].includes(r.status);
-    const canCancel = !cancelled && !failed && !closed && !inProgress;
+    const canCancel = ['received', 'searching', 'sent'].includes(r.status);   /* free cancellation until a provider accepts (the store refuses later anyway) */
     const canComplain = !cancelled && !failed;
 
     /* عنوان الحالة */
@@ -127,6 +127,7 @@
       ${r.photos && r.photos.some(src=>typeof src==='string' && /^data:image\/(?:png|jpeg|webp|gif);base64,/.test(src)) ? `<div><small>صور مرفقة</small><div class="thumbs">${r.photos.filter(src=>typeof src==='string' && /^data:image\/(?:png|jpeg|webp|gif);base64,/.test(src)).slice(0,4).map(src=>`<span class="th"><img src="${src}" alt="صورة مرفقة بالطلب" loading="lazy"></span>`).join('')}</div></div>` : ''}
     </div>`;
 
+    const T = root.HSTrust || null;   /* round 8 trust blocks (arrival code, warranty, tip, photos, read receipts) */
     /* ── round 5: arrival estimate, chat, discount / package notes ── */
     const etaBlock = r.status === 'enroute' && r.etaAt ? (() => {
       const at = new Date(r.etaAt); if (Number.isNaN(at.getTime())) return '';
@@ -138,7 +139,8 @@
     const chatOpen = !!p && !['cancelled', 'failed', 'closed'].includes(r.status);
     const chatBlock = p && (chatOpen || chat.length) ? `<section class="chat-box glass neon" aria-labelledby="chat-h">
       <h2 class="sec-title" id="chat-h">${ic('chat')}رسائل مع ${esc(String(p.name || '').split(' ')[0])}</h2>
-      <ol class="chat-list">${chat.length ? chat.slice(-60).map(m => `<li class="cm ${m.by === 'customer' ? 'me' : 'them'}"><p>${esc(m.text)}</p><time>${fmtDT(m.at)}</time></li>`).join('') : '<li class="cm-empty">ابعت للفني أي تفاصيل، أو اسأله عن حاجة قبل الزيارة.</li>'}</ol>
+      <ol class="chat-list">${chat.length ? chat.slice(-60).map((m, i, arr) => `<li class="cm ${m.by === 'customer' ? 'me' : 'them'}"><p>${esc(m.text)}</p><time>${fmtDT(m.at)}</time>${T && m.by === 'customer' && i === arr.length - 1 ? T.seenLabel(r, m, 'customer') : ''}</li>`).join('') : '<li class="cm-empty">ابعت للفني أي تفاصيل، أو اسأله عن حاجة قبل الزيارة.</li>'}</ol>
+      <p class="chat-typing" hidden aria-live="polite"><i></i><i></i><i></i> الفني بيكتب</p>
       ${chatOpen ? `<form class="chat-form" id="chatForm" data-id="${esc(id)}"><label class="sr-only" for="chat-text">اكتب رسالة للفني</label><input id="chat-text" name="text" maxlength="500" autocomplete="off" placeholder="اكتب رسالتك…" required><button class="cta" type="submit" aria-label="إرسال">${ic('send')}</button></form>` : ''}
     </section>` : '';
     const promoBlock = r.promo ? `<div class="need promo-note">${ic('wallet')}<span>${r.discount ? `اتخصم <b>${money(r.discount)}</b> ${r.promo.kind === 'credit' ? 'من رصيدك' : `(${esc(r.promo.code)})`}` : `عندك خصم ${r.promo.kind === 'credit' ? 'من رصيدك' : `بكود <b>${esc(r.promo.code)}</b>`} — بيتحسب على المبلغ لما الخدمة تخلص`}</span></div>` : '';
@@ -185,9 +187,11 @@
       ${uiOfflineIfNeeded()}
       ${journey}
       ${statusBar}
-      ${etaBlock}
+      ${T ? T.arrivalCard(r) : etaBlock}
+      ${T ? T.warrantyStrip(r) : ''}
       <div class="need tracking-next">${ic('info')}<span><b>الخطوة التالية</b><br>${esc(nextStepCopy)}</span></div>
       ${providerBlock}
+      ${T && p ? T.tagChips(p.id, 3) : ''}
       ${chatBlock}
       <h2 class="sec-title">${ic('clock')}مسار الطلب</h2>
       ${statusTimeline(r)}
@@ -195,8 +199,10 @@
       ${freeBlock}
       ${priceBlock}${quoteBlock}
       ${promoBlock}${pkgBlock}
+      ${T ? T.photosSlot(r) : ''}
       <h2 class="sec-title">${ic('info')}التفاصيل</h2>
       ${sum}
+      ${T ? T.tipCard(r) : ''}
       <div class="plist" style="margin-top:12px;gap:8px">${actions.join('')}</div>
       ${sim}
     </div>`;

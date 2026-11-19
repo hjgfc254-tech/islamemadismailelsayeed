@@ -54,7 +54,7 @@
     const u = me();
     const isFav = u && MP.isFavorite(u.id, 'provider', p.id);
     const rating = p.rating || MP.rating(p.id);
-    const allReviews = MP.db().reviews.filter(v => v.providerId === p.id);
+    const allReviews = MP.db().reviews.filter(v => v.providerId === p.id && !v.hidden);
     const reviews = allReviews.slice(0, 5);
     const ratingCount = allReviews.length;
     /* rating distribution (5 → 1) from the reviews this device can see */
@@ -90,8 +90,10 @@
         ${p.available?`<button class="cta" style="margin:0" data-choose-provider="${esc(p.id)}">${ic('check')} اختيار مقدم الخدمة</button>`:`<button class="cta ghost" style="margin:0" disabled>${ic('clock')} غير متاح حاليًا</button>`}
         <button class="cta ghost" style="margin:0" data-provider-service-request="${esc(p.cats[0])}">${ic('wrench')} طلب خدمة</button>
       </div>
+      ${root.HSTrust ? root.HSTrust.portfolioSlot(p.id) : ''}
       <h2 class="sec-title">${ic('medal')}التقييمات (${ratingCount})</h2>
       ${breakdown}
+      ${root.HSTrust && ratingCount ? `<p class="praise-h">العملاء بيقولوا عنه</p>${root.HSTrust.tagChips(p.id)}` : ''}
       ${reviews.length?reviews.map(v=>`<div class="card2 glass neon">
         <div class="top"><b>${starsHtml(v.stars)}</b><span class="tag">${esc(v.quality||'')}</span></div>
         ${v.comment?`<small>${esc(v.comment)}</small>`:''}

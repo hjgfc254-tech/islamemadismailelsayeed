@@ -122,6 +122,13 @@
       if (reward == null) errors.referral = 'المكافأة من 0 لـ 1000';
       out.referral = { on: b.on === true, reward: reward || 0 };
     }
+    if (body.warranty !== undefined) {           /* warranty days: default + per category + per service item (0 = no warranty) */
+      const w = body.warranty || {}, days = v => { const n = Math.round(+v); return Number.isFinite(n) && n >= 0 && n <= 365 ? n : null; };
+      const map = o => { const out = {}; for (const [k, v] of Object.entries(o && typeof o === 'object' ? o : {})) { if (v === '' || v == null) continue; const d = days(v); if (d == null || !/^[a-z0-9/-]{2,60}$/.test(k)) errors.warranty = 'أيام الضمان من 0 لـ 365'; else out[k] = d; } return out; };
+      const def = days(w.default == null ? 0 : w.default); if (def == null) errors.warranty = 'أيام الضمان من 0 لـ 365';
+      out.warranty = { default: def || 0, cats: map(w.cats), items: map(w.items) };
+    }
+    if (body.arrivalPin !== undefined) { if (typeof body.arrivalPin !== 'boolean') errors.arrivalPin = 'قيمة غير صالحة'; else out.arrivalPin = body.arrivalPin; }
     if (body.packages !== undefined) {
       if (!Array.isArray(body.packages) || body.packages.length > 12) errors.packages = 'حتى 12 باقة';
       else {
@@ -139,7 +146,13 @@
     }
     return { out, errors };
   }
-  const marketingView = s => ({ promos: Array.isArray(s.promos) ? s.promos : [], referral: s.referral || { on: false, reward: 0 }, packages: Array.isArray(s.packages) ? s.packages : [] });
+  const marketingView = s => ({ promos: Array.isArray(s.promos) ? s.promos : [], referral: s.referral || { on: false, reward: 0 }, packages: Array.isArray(s.packages) ? s.packages : [], warranty: s.warranty || { default: 0, cats: {}, items: {} }, arrivalPin: !!s.arrivalPin });
+  client.define('POST', '/admin/reviews/:id/visibility', { roles: A, summary: 'Hide or re-publish a review {hidden, reason}.' }, ({ params, body, actor, store }) => {
+    const denied = guard(actor, 'reviews', 'decide'); if (denied) return denied;
+    if (typeof body.hidden !== 'boolean') return fail('VALIDATION', 'حدد إخفاء أو نشر', { hidden: 'boolean' });
+    if (body.hidden && String(body.reason || '').trim().length < 3) return fail('VALIDATION', 'اكتب سبب الإخفاء', { reason: 'مطلوب' });
+    return store.setReviewHidden(params.id, body.hidden, body.reason) ? store.get('reviews', params.id) : fail('NOT_FOUND', 'التقييم غير موجود');
+  });
   client.define('GET', '/admin/marketing', { roles: A, summary: 'Promo codes, invite reward and packages.' }, ({ actor, store }) =>
     guard(actor, 'services', 'view') || marketingView(store.db().settings || {}));
   client.define('PATCH', '/admin/marketing', { roles: A, summary: 'Replace promo codes / invite reward / packages {promos?, referral?, packages?}.' }, ({ body, actor, store }) => {
@@ -155,6 +168,7 @@
   return {
     summary: () => client.get('/admin/summary'),
     marketing: () => client.get('/admin/marketing'),
+    setReviewHidden: (rid, hidden, reason) => client.post('/admin/reviews/' + id(rid) + '/visibility', { hidden, reason }),
     saveMarketing: patch => client.patch('/admin/marketing', patch),
     providers: status => client.get('/admin/providers' + (status ? '?status=' + id(status) : '')),
     setProviderStatus: (pid, status) => client.post('/admin/providers/' + id(pid) + '/status', { status }),

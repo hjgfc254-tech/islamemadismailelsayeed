@@ -240,8 +240,22 @@ async function start() {
     }
   }
 
+  /* «بيكتب…» in the request chat: a tiny Realtime Database flag per request and user (typing/{reqId}/{uid} = {r, at});
+     no Firestore reads or writes. Request ids are random and unguessable; the flag carries no message content. */
+  let typingAt = 0;
+  function setTyping(reqId, role) {
+    const u = auth.currentUser; if (!u || !reqId || Date.now() - typingAt < 2500) return;
+    typingAt = Date.now();
+    try { D.set(D.ref(rtdb, `typing/${reqId}/${u.uid}`), { r: role, at: D.serverTimestamp() }); } catch (e) {}
+  }
+  function onTyping(reqId, role, cb) {
+    const u = auth.currentUser; if (!u || !reqId) return () => {};
+    try { return D.onValue(D.ref(rtdb, `typing/${reqId}`), snap => { const v = snap.val() || {}; const other = Object.entries(v).find(([uid, x]) => uid !== u.uid && x && x.r !== role && Date.now() - (+x.at || 0) < 6000); cb(!!other); }); } catch (e) { return () => {}; }
+  }
+
   const HSBackend = {
     mode: 'firebase',
+    setTyping, onTyping,
     get actor() { return actor; },
     get lastSync() { return last; },
     sync,

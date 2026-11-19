@@ -113,7 +113,7 @@
     },
     reviews: () => (db().reviews || []).map((v) => {
       const req = (db().serviceRequests || []).find((r) => r.id === v.reqId);
-      return { id: v.id, customer: nameOf('customers', v.customerId) || '—', provider: nameOf('providers', v.providerId) || '—', orderNo: req ? req.no : '', rating: +v.stars || 0, text: v.comment || '', created: v.at, status: 'published', report: null, log: [] };
+      return { id: v.id, customer: nameOf('customers', v.customerId) || '—', provider: nameOf('providers', v.providerId) || '—', orderNo: req ? req.no : '', rating: +v.stars || 0, text: v.comment || '', created: v.at, status: v.hidden ? 'hidden' : 'published', report: null, log: v.moderation ? [{ at: v.moderation.at, text: (v.moderation.hidden ? 'إخفاء' : 'إعادة نشر') + (v.moderation.reason ? ' — ' + v.moderation.reason : '') }] : [] };
     })
   };
 
@@ -181,12 +181,54 @@
       return pend.reduce((p, t) => p.then((prev) => (prev && !prev.ok ? prev : call('POST', '/admin/transactions/' + encodeURIComponent(t.id) + '/collection', { status: 'collected' }))), Promise.resolve(null))
         .then((res) => res || { ok: false, status: 409, error: { code: 'CONFLICT', message: 'لا يوجد رصيد غير محصّل لهذا المقدم.' } });
     }
+    if (entity === 'reviews' && (next === 'hidden' || next === 'published')) return call('POST', '/admin/reviews/' + enc + '/visibility', { hidden: next === 'hidden', reason: (extra && extra.reason) || '' });
     if (entity === 'complaints' && next === 'resolved') return call('POST', '/complaints/' + enc + '/resolve', { resolution: (extra && extra.resolution) || 'تم الحل من الإدارة' });
     return Promise.resolve({ ok: false, status: 501, error: { code: 'UNSUPPORTED', message: UNSUPPORTED } });
   }
   const errorText = (res) => (res && res.error && res.error.message) || 'تعذّر تنفيذ الإجراء.';
 
-  const api = Object.freeze({ enabled, rows, status, errorText, financeRows, dashboardKpis, UNSUPPORTED, ENTITIES: Object.keys(MAP) });
+  /* actions the server can really perform (everything else is hidden in live mode instead of failing on click) */
+  const SUPPORTED = { orders: ['cancelled'], customers: ['active', 'suspended'], providers: ['approved', 'rejected', 'suspended'], complaints: ['resolved'], reviews: ['hidden', 'published'], settlements: ['completed'], quotes: [] };
+  const supports = (entity, next) => (SUPPORTED[entity] || []).includes(next);
+  /* page route → entity; prunes unsupported status buttons / options as dialogs render (one observer for all pages) */
+  const ROUTE_ENTITY = { orders: 'orders', customers: 'customers', providers: 'providers', complaints: 'complaints', reviews: 'reviews', settlements: 'settlements', quotes: 'quotes' };
+  function prune(rootEl, entity) {
+    if (!rootEl || !entity || !rootEl.querySelectorAll) return;
+    rootEl.querySelectorAll('[data-ord-status],[data-stl-act],[data-qt-act]').forEach((b) => { const to = b.dataset.ordStatus || b.dataset.stlAct || b.dataset.qtAct; if (!supports(entity, to)) b.remove(); });
+    rootEl.querySelectorAll('#ord-next option').forEach((o) => { if (o.value && !supports(entity, o.value)) o.remove(); });
+    rootEl.querySelectorAll('[data-ord-note]').forEach((b) => b.remove());          // internal notes are not stored on the server
+    rootEl.querySelectorAll('#ord-note').forEach((t) => (t.closest('label') || t).remove());
+    if (entity === 'settlements') rootEl.querySelectorAll('[data-stl-act="completed"]').forEach((b) => { if (b.textContent !== 'تسجيل تحصيل حصة المنصة') b.textContent = 'تسجيل تحصيل حصة المنصة'; });
+    cleanCopy(rootEl, entity);
+  }
+  /* Live mode: the shared page templates were written for the local demo — replace demo notes with what really happens
+     and drop «(محاكاة)» / «محليًا» from controls, so nothing on a real-data page claims to be a simulation. */
+  const LIVE_NOTE = {
+    orders: 'بيانات حقيقية من الخادم — الإلغاء من هنا بيتنفذ فعلًا وبيوصل للعميل والفني.',
+    customers: 'بيانات حقيقية من الخادم — الإيقاف وإعادة التفعيل بيتنفذوا فعلًا.',
+    providers: 'بيانات حقيقية من الخادم — الاعتماد والرفض والإيقاف بيتنفذوا فعلًا.',
+    complaints: 'بيانات حقيقية من الخادم — «تم الحل» بيتسجّل وبيوصل لصاحب الشكوى كإشعار.',
+    reviews: 'بيانات حقيقية من الخادم — الإخفاء بيشيل التقييم من الصفحات العامة ومن متوسط تقييم الفني.',
+    settlements: 'مستحقات حقيقية من معاملات الخادم — «تسجيل التحصيل» معناه إن الفني دفع حصة المنصة. مفيش تحويل فلوس من هنا.',
+    quotes: 'عروض أسعار حقيقية — للعرض فقط؛ العميل هو اللي بيوافق أو يرفض من التطبيق.'
+  };
+  const DEMO_RE = /بيانات تجريبية|محاكاة محلية|محاكاة فقط/;
+  function cleanCopy(rootEl, entity) {
+    rootEl.querySelectorAll('.dash-note,.fin-banner span,.ord-sim span').forEach((el) => { if (DEMO_RE.test(el.textContent) && LIVE_NOTE[entity] && el.textContent !== LIVE_NOTE[entity]) el.textContent = LIVE_NOTE[entity]; });
+    rootEl.querySelectorAll('button,h3,option,.ord-muted,.hs-grid-empty').forEach((el) => {
+      if (el.children.length && !/^(BUTTON|OPTION)$/.test(el.tagName)) return;
+      const nodes = [...el.childNodes].filter((n) => n.nodeType === 3);
+      nodes.forEach((n) => { const v = n.nodeValue.replace(/\s*\((?:محاكاة(?: محلية)?|تجريبي|بيانات تجريبية)\)/g, '').replace(/\s+(?:محليًا|محاكاة(?: محلية)?)(?=\s|$)/g, '').replace(/في البيانات التجريبية/g, ''); if (v !== n.nodeValue) n.nodeValue = v; });
+    });
+  }
+  function watch() {
+    if (!enabled() || !root.MutationObserver || !root.document || root.__hsLivePrune) return;
+    root.__hsLivePrune = new root.MutationObserver(() => { const route = String(root.location.hash || '').replace(/^#\/?/, '').split(/[/?]/)[0]; const e = ROUTE_ENTITY[route]; if (e) prune(root.document.body, e); });
+    root.__hsLivePrune.observe(root.document.body, { childList: true, subtree: true });
+  }
+  try { if (root.document && root.document.readyState !== 'loading') watch(); else if (root.document) root.document.addEventListener('DOMContentLoaded', watch); } catch (e) { /* no DOM (tests) */ }
+
+  const api = Object.freeze({ enabled, rows, status, errorText, financeRows, dashboardKpis, UNSUPPORTED, supports, prune, SUPPORTED, ENTITIES: Object.keys(MAP) });
   root.HSAdminLive = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

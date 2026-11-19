@@ -16,7 +16,7 @@ const RENAME = { serviceRequests: 'requests' };
 const DEVICE_LOCAL = ['drafts', 'searchHistory', 'services'];
 const SYSTEM_KEYS = ['meta', 'settings'];
 const KNOWN_ARRAYS = ['customers', 'providers', 'serviceRequests', 'assignments', 'transactions', 'reviews', 'complaints',
-  'notifications', 'addresses', 'quotes', 'favorites', 'serviceAreas'];
+  'notifications', 'addresses', 'quotes', 'favorites', 'serviceAreas', 'jobPhotos'];   // jobPhotos: loaded on demand only (never in a sync)
 
 const colName = key => RENAME[key] || key;
 const safeId = s => String(s).replace(/\//g, '%2F').slice(0, 700);

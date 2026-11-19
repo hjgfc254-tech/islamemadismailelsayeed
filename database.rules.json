@@ -8,6 +8,15 @@
         ".write": false
       }
     },
+    "typing": {
+      "$reqId": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid",
+          ".validate": "newData.hasChildren(['r', 'at']) && (newData.child('r').val() === 'customer' || newData.child('r').val() === 'provider') && newData.child('at').isNumber()"
+        }
+      }
+    },
     "public": {
       "content": {
         ".read": true,

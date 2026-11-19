@@ -16,15 +16,29 @@
     if (!host || !C()) return;
     const res = await C().request('GET', '/admin/marketing');
     if (!res.ok) { host.innerHTML = `<p>${esc(errText(res))}</p>`; return; }
-    const work = { promos: (res.data.promos || []).map((p) => ({ ...p })), referral: { on: false, reward: 0, ...(res.data.referral || {}) }, packages: (res.data.packages || []).map((p) => ({ ...p })) };
+    const work = { promos: (res.data.promos || []).map((p) => ({ ...p })), referral: { on: false, reward: 0, ...(res.data.referral || {}) }, packages: (res.data.packages || []).map((p) => ({ ...p })),
+      warranty: { default: 0, cats: {}, items: {}, ...(res.data.warranty || {}) }, arrivalPin: !!res.data.arrivalPin };
+    work.warranty.cats = { ...(work.warranty.cats || {}) }; work.warranty.items = { ...(work.warranty.items || {}) };
+    const items = (cat) => (root.CAT && root.CAT.items ? root.CAT.items(cat) : []);
+    const wVal = (v) => (v === undefined || v === null ? '' : esc(v));
     const status = (msg) => { const s = host.querySelector('[data-mk-status]'); if (s) s.textContent = msg || ''; };
     const catOpts = (v) => `<option value="">كل الأقسام</option>${cats().map((c) => `<option value="${esc(c.id)}" ${c.id === v ? 'selected' : ''}>${esc(c.name)}</option>`).join('')}`;
 
     function render() {
       host.innerHTML = `<section class="adm-live-panel mk" aria-label="العروض والخصومات">
-        <h3>العروض والخصومات والباقات</h3>
+        <h3>الضمان والعروض والباقات</h3>
         <p class="ord-muted">الخصم بيتحسب لما الخدمة تخلص، وبيتخصم من عمولة المنصة وبحد أقصى قيمتها — مبلغ الفني ما بيتغيرش.</p>
         <p data-mk-status role="status" aria-live="polite" class="ord-muted"></p>
+        <fieldset class="ord-dlg-in"><legend>الضمان على الخدمات</legend>
+          <p class="ord-muted">عدد أيام الضمان بعد ما الخدمة تخلص. الخدمة بتاخد رقمها هي، ولو فاضي بتاخد رقم القسم، ولو فاضي بتاخد الافتراضي. صفر يعني مفيش ضمان.</p>
+          <label class="hs-grid-field"><span>الضمان الافتراضي (يوم)</span><input type="number" min="0" max="365" data-mk-w-default value="${esc(work.warranty.default || 0)}"></label>
+          <div class="mk-warranty">${cats().map((c) => `<details class="mk-wcat"><summary><span>${esc(c.name)}</span><input type="number" min="0" max="365" placeholder="الافتراضي" aria-label="أيام ضمان ${esc(c.name)}" data-mk-w-cat="${esc(c.id)}" value="${wVal(work.warranty.cats[c.id])}"></summary>
+            <div class="mk-witems">${items(c.id).map((it) => `<label><span>${esc(it.name)}</span><input type="number" min="0" max="365" placeholder="زي القسم" data-mk-w-item="${esc(it.id)}" value="${wVal(work.warranty.items[it.id])}"></label>`).join('')}</div></details>`).join('')}</div>
+        </fieldset>
+        <fieldset class="ord-dlg-in"><legend>كود الوصول</legend>
+          <label class="hs-grid-field"><span>الفني لازم يكتب كود من العميل عشان يسجّل «وصلت»</span><input type="checkbox" data-mk-pin ${work.arrivalPin ? 'checked' : ''}></label>
+          <p class="ord-muted">العميل بيشوف كود من 4 أرقام في صفحة طلبه بعد القبول. بيأكد إن اللي على الباب هو الفني الصح، وإن الفني وصل فعلًا.</p>
+        </fieldset>
         <fieldset class="ord-dlg-in"><legend>أكواد الخصم</legend>
           ${work.promos.length ? work.promos.map((p, i) => `<div class="mk-row" data-i="${i}">
             <label class="hs-grid-field"><span>الكود</span><input data-mk-promo="code" value="${esc(p.code)}" maxlength="16" dir="ltr" required></label>
@@ -65,6 +79,10 @@
       if (t.dataset.mkPromo) work.promos[row(t)][t.dataset.mkPromo] = t.dataset.mkPromo === 'code' ? String(t.value).toUpperCase() : val(t);
       if (t.dataset.mkPkg) work.packages[row(t)][t.dataset.mkPkg] = val(t);
       if (t.dataset.mkRef) work.referral[t.dataset.mkRef] = val(t);
+      if (t.hasAttribute && t.hasAttribute('data-mk-w-default')) work.warranty.default = Number(t.value) || 0;
+      if (t.dataset.mkWCat) { if (t.value === '') delete work.warranty.cats[t.dataset.mkWCat]; else work.warranty.cats[t.dataset.mkWCat] = Number(t.value); }
+      if (t.dataset.mkWItem) { if (t.value === '') delete work.warranty.items[t.dataset.mkWItem]; else work.warranty.items[t.dataset.mkWItem] = Number(t.value); }
+      if (t.hasAttribute && t.hasAttribute('data-mk-pin')) work.arrivalPin = t.checked;
     };
     host.addEventListener('input', onEdit);
     host.addEventListener('change', onEdit);
@@ -77,9 +95,9 @@
       else if (d.mkDelPkg !== undefined) { work.packages.splice(+d.mkDelPkg, 1); render(); }
       else if (d.mkSave !== undefined) {
         b.disabled = true; status('جارٍ الحفظ…');
-        const r = await C().request('PATCH', '/admin/marketing', { promos: work.promos, referral: work.referral, packages: work.packages });
+        const r = await C().request('PATCH', '/admin/marketing', { promos: work.promos, referral: work.referral, packages: work.packages, warranty: work.warranty, arrivalPin: work.arrivalPin });
         b.disabled = false;
-        if (r.ok) { work.promos = r.data.promos.map((p) => ({ ...p })); work.packages = r.data.packages.map((p) => ({ ...p })); render(); status('تم الحفظ — التغييرات ظاهرة للعملاء.'); }
+        if (r.ok) { work.promos = r.data.promos.map((p) => ({ ...p })); work.packages = r.data.packages.map((p) => ({ ...p })); work.warranty = { ...r.data.warranty, cats: { ...r.data.warranty.cats }, items: { ...r.data.warranty.items } }; work.arrivalPin = !!r.data.arrivalPin; render(); status('تم الحفظ — التغييرات ظاهرة للعملاء.'); }
         else status(errText(r));
       }
     });

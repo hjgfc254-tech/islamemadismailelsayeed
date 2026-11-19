@@ -26,7 +26,7 @@ const GEAR = (x,y,s=1) => `<g transform="translate(${x} ${y}) scale(${s})"><circ
 const SPARK = (x,y,s=1) => `<path transform="translate(${x} ${y}) scale(${s})" d="M0-6L1.5-1.5 6 0 1.5 1.5 0 6-1.5 1.5-6 0-1.5-1.5z" fill="#bfdbfe"/>`;
 const ART = {
   /* Approved identity hero: the technician photograph from the identity board (assets/brand/hero-technician.jpg) */
-  hero:'<img class="hero-photo" src="../../assets/brand/hero-technician.jpg" alt="فني من هنصلحلك يركّب إضاءة" width="820" height="934" decoding="async" fetchpriority="high" draggable="false">',
+  hero:'<img class="hero-photo" src="../../assets/brand/hero-tech-v2.webp" alt="فني من هنصلحلك بيونيفورم المنصة" width="860" height="865" decoding="async" fetchpriority="high" draggable="false">',
 
   electric:`<svg viewBox="0 0 160 150">
     <ellipse cx="80" cy="142" rx="56" ry="6" fill="#3b82f6" opacity=".5" filter="url(#gb6)"/>
@@ -407,7 +407,7 @@ const homeMe = () => { try { return me(); } catch { return null; } };
 function homeLatestReviews(){
   try {
     const reqs = MP.reqs();
-    return (MP.db().reviews || []).slice().sort((a, b) => String(b.at || '') < String(a.at || '') ? -1 : 1).slice(0, 12)
+    return (MP.db().reviews || []).filter(v => !v.hidden).sort((a, b) => String(b.at || '') < String(a.at || '') ? -1 : 1).slice(0, 12)
       .map(v => { const r = reqs.find(x => x.id === v.reqId); return { stars: +v.stars || 0, comment: v.comment || '', service: r ? r.serviceName : '' }; });
   } catch { return []; }
 }
@@ -806,7 +806,7 @@ const screens = {
       demo: !(globalThis.HSFirebaseConfig && HSFirebaseConfig.mode === 'firebase'),
       firstVisit: !(homeMe() && MP.reqs().some(r => r.customerId === homeMe().id)),
       latestReviews: homeLatestReviews(),
-      addressBar: homeAddressBar(), when: homeWhen(), trending: homeTrending(), packages: homePackages(), invite: homeInvite()
+      addressBar: homeAddressBar(), care: globalThis.HSTrust ? HSTrust.homeReminder() : '', when: homeWhen(), trending: homeTrending(), packages: homePackages(), invite: homeInvite()
     });
   },
 
@@ -917,6 +917,7 @@ function show(name, arg){
   try { const sc = view.firstElementChild; if (sc) { sc.classList.add('screen-in'); sc.addEventListener('animationend', () => sc.classList.remove('screen-in'), { once: true }); } } catch {}
   fadeImages(view);
   if (name === 'wizard' || name === 'sections') fillTilePrices();
+  if (globalThis.HSTrust) HSTrust.hydrate(name, arg);   /* photos, read receipts, typing, portfolio — fetched on demand */
   restoreScreenFocus(name);
   if (typeof HSCustomerRouter !== 'undefined') HSCustomerRouter.sync(name, arg);   /* الرابط يعكس الشاشة الحالية (#/orders، #/track/<id>…) */
   if (name === 'wizard') {

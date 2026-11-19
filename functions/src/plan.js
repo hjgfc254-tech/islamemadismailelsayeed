@@ -76,7 +76,9 @@ async function plan(ld, { method, path, query, body, actor }) {
     if (!r) return;
     const act = seg[2];
     if ((act === 'provider' || act === 'repeat') && body.providerId) await ld.doc('providers', body.providerId);
-    if ((act === 'respond' && !body.accept && autoAssign) || act === 'cancel' || (act === 'repeat' && autoAssign)) await candidates(ld, r.cat);
+    if (act === 'photos') await ld.doc('jobPhotos', r.id);                       // before / after photos of this job
+    if (act === 'warranty' && r.warrantyClaimId) await ld.doc('serviceRequests', r.warrantyClaimId);
+    if ((act === 'respond' && !body.accept && autoAssign) || act === 'cancel' || ((act === 'repeat' || act === 'warranty') && autoAssign)) await candidates(ld, r.cat);
     if (act === 'complete' && r.promo && r.promo.ref) await ld.doc('customers', r.promo.ref);   // invite reward goes to the friend
     if (act === 'review' || act === 'close' || act === 'complete') {
       const accepted = [...ld.maps.assignments.values()].find(a => a.reqId === r.id && a.status === 'accepted');
@@ -91,6 +93,7 @@ async function plan(ld, { method, path, query, body, actor }) {
     if (seg[1] === 'providers' && seg.length === 2) { await ld.where('providers', query.status ? [['status', '==', String(query.status)]] : [], pageOpts(query, 'providers', ['createdAt', 'desc'])); return; }
     if (seg[1] === 'providers') { await ld.doc('providers', seg[2]); return; }
     if (seg[1] === 'customers') { await ld.doc('customers', seg[2]); return; }
+    if (seg[1] === 'reviews' && seg[2]) { await ld.doc('reviews', seg[2]); return; }
     if (seg[1] === 'transactions' && seg.length === 2) { await ld.where('transactions', query.collection ? [['collection', '==', String(query.collection)]] : [], pageOpts(query, 'transactions', ['at', 'desc'])); return; }
     if (seg[1] === 'transactions') { await ld.doc('transactions', seg[2]); return; }
     return;                                   // commission → settings (already loaded); summary → aggregation (service)
@@ -107,6 +110,7 @@ async function plan(ld, { method, path, query, body, actor }) {
       return;
     }
     await ld.doc('providers', seg[1]);
+    if (seg[2] === 'portfolio') { await ld.where('jobPhotos', [['providerId', '==', String(seg[1])], ['share', '==', true]], { limit: 12 }); return; }
     await ld.where('reviews', [['providerId', '==', String(seg[1])]], { orderBy: ['at', 'desc'], limit: 50 });
     return;
   }

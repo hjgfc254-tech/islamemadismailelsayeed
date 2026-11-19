@@ -330,3 +330,9 @@ a.adm-link:hover{background:var(--nav-dark-hover);color:var(--on-brand)}
 .cp-hint{margin:0;padding:var(--sp-2) var(--sp-4);border-top:1px solid var(--border-subtle);font-size:var(--fs-xs);color:var(--text-muted)}
 @media (prefers-reduced-motion:reduce){.mc-bar::after{transition:none}}.mc-plot{padding-top:var(--sp-5)}
 .mk-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr));gap:var(--sp-3);align-items:end;padding:var(--sp-3);margin-bottom:var(--sp-3);border:1px solid var(--border-subtle);border-radius:var(--r-md)}
+.mk-warranty{display:grid;gap:var(--sp-2);margin-top:var(--sp-2)}
+.mk-wcat{border:1px solid var(--border-subtle);border-radius:var(--r-md);background:var(--surface-primary)}
+.mk-wcat summary{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-2) var(--sp-3);cursor:pointer;font-weight:700}
+.mk-wcat summary input,.mk-witems input{width:9ch}
+.mk-witems{display:grid;gap:var(--sp-2);padding:0 var(--sp-3) var(--sp-3)}
+.mk-witems label{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);font-size:var(--fs-sm);color:var(--text-secondary)}

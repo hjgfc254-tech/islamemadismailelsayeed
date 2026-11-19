@@ -183,7 +183,7 @@ test('round 5 screens: tracking shows chat + share, closed orders offer receipt 
   app.run(`show('tracking', ${JSON.stringify(id)})`);
   let html = app.html();
   assert.match(html, /<form class="chat-form" id="chatForm"/); assert.match(html, /data-act="shareReq"/);
-  assert.match(html, /class="eta-card" role="status"/); assert.match(html, /تقدير الفني/);
+  assert.match(html, /class="arrive-card"/); assert.match(html, /تقدير الفني/);
   app.run(`(() => { const id = ${JSON.stringify(id)}; MP.advance(id, 'arrived'); MP.advance(id, 'started'); MP.complete(id, 300); MP.close(id); })()`);
   app.run(`show('tracking', ${JSON.stringify(id)})`);
   html = app.html();
@@ -231,4 +231,98 @@ test('round 7: request in 5 screens, price bar, contact shown only when missing;
   app.run("globalThis.HTMLElement = globalThis.HTMLElement || function(){}; openCatPeek('electric')");   /* the vm harness has no DOM classes */
   assert.match(app.run("document.getElementById('sheet').innerHTML"), /كل خدمات/);
   assert.match(fs.readFileSync(path.join(ROOT, 'apps/customer/app.js'), 'utf8'), /function mountTilePeek\(\)/);
+});
+test('admin on the real server: review moderation, complaint resolution notifies, only real actions offered, live copy', async () => {
+  const t = boot();
+  const id = (await create(t, SARA)).data.id;
+  await toStarted(t, id); await t.O.complete(id, 400);
+  t.as('customer', SARA); await t.O.close(id); await t.O.review(id, 1, 'كلام مسيء');
+  const rv = t.run(`MP.db().reviews.find(v => v.reqId === ${JSON.stringify(id)})`);
+  const before = t.run(`MP.rating('p_demo1')`);
+  t.as('admin', 'e_owner');
+  assert.equal((await t.g.HSAdminApi.setReviewHidden(rv.id, true, '')).status, 422, 'a reason is required to hide');
+  assert.equal((await t.g.HSAdminApi.setReviewHidden(rv.id, true, 'محتوى مسيء')).ok, true);
+  assert.equal(t.run(`MP.db().reviews.find(v => v.id === ${JSON.stringify(rv.id)}).hidden`), true);
+  const after = t.run(`MP.rating('p_demo1')`);
+  assert.ok(after === null || after >= before, 'a hidden 1-star review no longer lowers the provider rating');
+  assert.equal((await t.g.HSAdminApi.setReviewHidden(rv.id, false)).ok, true, 're-publish needs no reason');
+  t.run(`MP.complain(${JSON.stringify(id)}, 'customer:' + MP.db().customers.find(c => c.phone === '${SARA.phone}').id, 'الفني اتأخر')`);
+  const k = t.run('MP.db().complaints[0]');
+  t.run(`MP.resolveComplaint(${JSON.stringify(k.id)}, 'اتكلمنا مع الفني واعتذر')`);
+  assert.ok(t.run(`MP.notesFor(${JSON.stringify(k.by)}).some(n => /تم الرد على شكوتك: اتكلمنا/.test(n.text))`), 'the complainant is notified');
+  const { scopeFor } = require('../../functions/src/scope.js');
+  const scoped = scopeFor({ reviews: [{ id: 'a', stars: 5 }, { id: 'b', stars: 1, hidden: true }], settings: {}, providers: [] }, null);
+  assert.deepEqual(scoped.reviews.map(r => r.id), ['a'], 'hidden reviews never leave the server for customers / guests');
+  const live = fs.readFileSync(path.join(ROOT, 'apps/admin/modules/admin-live.js'), 'utf8');
+  assert.match(live, /reviews: \['hidden', 'published'\]/); assert.match(live, /quotes: \[\]/);
+  assert.match(live, /function cleanCopy\(rootEl, entity\)/);
+  assert.match(fs.readFileSync(path.join(ROOT, 'apps/admin/admin-shell.js'), 'utf8'), /id === 'super-dashboard' && firebaseMode\(\)\) id = 'dashboard'/);
+});
+test('round 8: arrival code (when enabled), warranty set by the admin, warranty claim, tip, read receipt, «بيتي», before/after photos', async () => {
+  const t = boot();
+  /* admin: warranty per item > per category > default, and the arrival code switch */
+  assert.equal((await marketing(t, { warranty: { default: 7, cats: { electric: 30 }, items: { 'appliances/ac': 90 } }, arrivalPin: true })).ok, true);
+  assert.equal((await marketing(t, { warranty: { default: 999 } })).status, 422, 'days 0–365');
+  assert.equal(t.run(`MP.warrantyDays({ cat: 'electric', itemId: 'x' })`), 30);
+  assert.equal(t.run(`MP.warrantyDays({ cat: 'appliances', itemId: 'appliances/ac' })`), 90);
+  assert.equal(t.run(`MP.warrantyDays({ cat: 'painting', itemId: 'y' })`), 7);
+  const id = (await create(t, SARA)).data.id;
+  t.as('admin', 'e_owner'); await t.g.HSAdminApi.assign(id, 'p_demo1');
+  t.as('provider', 'p_demo1'); await t.O.respond(id, true); await t.O.schedule(id); await t.O.advance(id, 'enroute');
+  assert.equal((await t.O.get(id)).data.pin, undefined, 'the provider never receives the code');
+  t.as('customer', SARA); const pin = (await t.O.get(id)).data.pin; assert.match(pin, /^\d{4}$/, 'the customer sees it');
+  t.as('provider', 'p_demo1');
+  assert.equal((await t.O.advance(id, 'arrived', undefined, '0000' === pin ? '1111' : '0000')).status, 422, 'wrong code refused');
+  assert.equal((await t.O.advance(id, 'arrived', undefined, pin)).ok, true, 'right code → arrived');
+  /* photos */
+  const img = 'data:image/webp;base64,' + 'A'.repeat(200);
+  assert.equal((await t.O.uploadPhoto(id, 'before', img)).status, 201);
+  assert.equal((await t.O.uploadPhoto(id, 'after', 'data:text/html;base64,AAAA')).status, 422);
+  await t.O.advance(id, 'started'); assert.equal((await t.O.uploadPhoto(id, 'after', img)).status, 201);
+  assert.deepEqual(Object.keys(t.run(`MP.get('serviceRequests', ${JSON.stringify(id)}).hasPhotos`)).sort(), ['after', 'at', 'before']);
+  /* chat + read receipt */
+  await t.O.message(id, 'وصلت تحت البيت');
+  t.as('customer', SARA); assert.equal((await t.O.chatSeen(id)).ok, true);
+  assert.ok(t.run(`MP.get('serviceRequests', ${JSON.stringify(id)}).chatSeen.customer`));
+  /* completion → warranty end + «بيتي» device for an item with periodic maintenance */
+  t.as('provider', 'p_demo1'); await t.O.complete(id, 500);
+  const r = t.run(`MP.get('serviceRequests', ${JSON.stringify(id)})`);
+  const days = Math.round((Date.parse(r.warrantyUntil) - Date.now()) / 864e5); assert.ok(days >= 29 && days <= 30, 'electric → 30 days');
+  /* tip, once */
+  t.as('customer', SARA);
+  assert.equal((await t.O.tip(id, 2)).status, 422); assert.equal((await t.O.tip(id, 20)).status, 201); assert.equal((await t.O.tip(id, 20)).status, 409);
+  assert.equal(t.run(`MP.db().transactions.find(x => x.reqId === ${JSON.stringify(id)}).tip`), 20);
+  /* photos in the portfolio only with the customer's consent */
+  assert.equal(t.run(`MP.portfolio('p_demo1').length`), 0);
+  assert.equal((await t.O.sharePhotos(id, true)).ok, true); assert.equal(t.run(`MP.portfolio('p_demo1').length`), 1);
+  assert.equal((await t.g.HSCatalogApi.portfolio('p_demo1')).data.items.length, 1);
+  /* warranty claim → linked request to the same provider */
+  await t.O.close(id);
+  const claim = await t.O.warranty(id, 'رجعت تفصل تاني');
+  assert.equal(claim.status, 201); assert.equal(claim.data.warrantyOf, id); assert.match(claim.data.serviceName, /^ضمان: /);
+  assert.equal(t.run(`MP.activeAssignment(${JSON.stringify(claim.data.id)}).providerId`), 'p_demo1');
+  assert.equal((await t.O.warranty(id, 'تاني')).status, 409, 'one open claim at a time');
+  /* «بيتي» */
+  const dv = await t.g.HSCustomerApi.addDevice({ item: 'appliances/ac', brand: 'شارب', year: '2021' });
+  assert.equal(dv.status, 201); assert.equal((await t.g.HSCustomerApi.devices()).data.length >= 1, true);
+  assert.equal((await t.g.HSCustomerApi.removeDevice(dv.data.id)).ok, true);
+});
+
+test('round 8: an air-conditioner job adds the device to «بيتي» with a maintenance reminder date', async () => {
+  const t = boot();
+  const id = (await create(t, SARA, { cat: 'appliances', itemId: 'appliances/ac', serviceId: 'appliances/ac', serviceName: 'صيانة تكييف' })).data.id;
+  await toStarted(t, id); await t.O.complete(id, 300);
+  const c = t.run(`MP.db().customers.find(c => c.phone === '${SARA.phone}')`);
+  const d = (c.devices || []).find(x => x.item === 'appliances/ac');
+  assert.ok(d && d.lastAt && d.nextAt, 'device recorded with last / next service');
+  const days = Math.round((Date.parse(d.nextAt) - Date.now()) / 864e5); assert.ok(days >= 119 && days <= 120);
+});
+test('first-visit onboarding: three photos, once per device, skipped for returning customers and deep links; new hero photo', () => {
+  const src = fs.readFileSync(path.join(ROOT, 'apps/customer/pages/onboarding.js'), 'utf8');
+  assert.match(src, /const KEY = 'hs_onboard_v1'/);
+  assert.equal((src.match(/img: 'onboard-\d\.webp'/g) || []).length, 3);
+  assert.match(src, /track\|provider\|orders/); assert.match(src, /u && u\.phone\) return false/);
+  for (const f of ['onboard-1.webp', 'onboard-2.webp', 'onboard-3.webp', 'hero-tech-v2.webp']) assert.ok(fs.statSync(path.join(ROOT, 'assets/brand', f)).size < 150000, f + ' is light');
+  assert.match(fs.readFileSync(path.join(ROOT, 'apps/customer/index.html'), 'utf8'), /pages\/onboarding\.js/);
+  assert.match(fs.readFileSync(path.join(ROOT, 'apps/customer/app.js'), 'utf8'), /hero-tech-v2\.webp/);
 });

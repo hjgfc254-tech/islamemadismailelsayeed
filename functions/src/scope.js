@@ -7,11 +7,11 @@
 const PROVIDER_PUBLIC = ['id', 'name', 'type', 'cats', 'subs', 'govs', 'areas', 'years', 'bio', 'rating', 'jobs', 'avatar', 'status', 'available', 'demo', 'createdAt'];
 const pick = (o, keys) => Object.fromEntries(keys.filter(k => o[k] !== undefined).map(k => [k, o[k]]));
 const publicProvider = p => pick(p, PROVIDER_PUBLIC);
-const PUBLIC_SETTINGS = ['customerFee', 'autoAssign', 'collectionModel', 'contentV', 'trend', 'packages', 'referral'];   // promo codes stay admin-only
+const PUBLIC_SETTINGS = ['customerFee', 'autoAssign', 'collectionModel', 'contentV', 'trend', 'packages', 'referral', 'arrivalPin'];   // promo codes stay admin-only
 
 function base(db) {
   return { v: db.v || 2, meta: {}, serviceAreas: db.serviceAreas || [], customers: [], providers: [], serviceRequests: [],
-    assignments: [], transactions: [], reviews: db.reviews || [], complaints: [], notifications: [], addresses: [], quotes: [],
+    assignments: [], transactions: [], reviews: (db.reviews || []).filter(r => !r.hidden), complaints: [], notifications: [], addresses: [], quotes: [],
     favorites: [], settings: pick(db.settings || {}, PUBLIC_SETTINGS) };
 }
 
@@ -60,7 +60,8 @@ function scopeFor(db, actor) {
     /* the customer's phone/address/location are released only once this provider accepted the job */
     out.serviceRequests = reqs.map(r => {
       const chat = Array.isArray(r.chat) ? r.chat.filter(m => m.pid === actor.id) : [];   // only this provider's own conversation
-      return accepted.has(r.id) ? { ...r, chat } : { ...r, phone: '', addr: '', geo: null, chat: [] };
+      const { pin, ...rest } = r;            // the arrival code is shown to the customer only
+      return accepted.has(r.id) ? { ...rest, chat } : { ...rest, phone: '', addr: '', geo: null, chat: [] };
     });
     const custIds = new Set(reqs.filter(r => accepted.has(r.id)).map(r => r.customerId));
     out.customers = (db.customers || []).filter(c => custIds.has(c.id)).map(c => pick(c, ['id', 'name', 'phone', 'status', 'rating', 'ratingCount']));

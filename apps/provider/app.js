@@ -98,6 +98,11 @@
     let li=0; LEVELS.forEach((L,i)=>{ if(jobs>=L[1]&&(i===0||rating>=L[2])) li=i; });
     const nextL=LEVELS[li+1], prog=nextL?Math.min(100,Math.round(jobs/nextL[1]*100)):100;
     const levelCard=`<section class="pv-level" aria-label="مستواك على المنصة"><div><small>مستواك</small><b>${LEVELS[li][0]}</b></div><div class="pv-goal">${nextL?`<small>عشان توصل «${nextL[0]}»: ${Math.max(0,nextL[1]-jobs)} خدمة كمان${rating<nextL[2]?` وتقييم ${nextL[2]} أو أعلى`:''}</small><i style="--p:${prog}%" role="progressbar" aria-valuenow="${prog}" aria-valuemin="0" aria-valuemax="100" aria-label="التقدّم للمستوى التالي"></i>`:'<small>وصلت لأعلى مستوى — كمّل كده</small>'}</div></section>`;
+    /* what customers praise most (quick tags stored with their reviews) */
+    const RVT=['ملتزم بالموعد','شغله نضيف','أسعاره مناسبة','محترم في التعامل','سريع'];
+    const myRv=(MP.db().reviews||[]).filter(v=>v.providerId===p.id&&!v.hidden);
+    const praise=RVT.map(t=>[t,myRv.filter(v=>String(v.comment||'').includes(t)).length]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,3);
+    const praiseCard=praise.length?`<section class="pv-praise" aria-label="العملاء بيقولوا عنك"><small>العملاء بيقولوا عنك</small><ul>${praise.map(([t,n])=>`<li>${esc(t)}<b>${n}</b></li>`).join('')}</ul></section>`:'';
     const dayMs=864e5, nowMs=Date.now(), inDays=(at,from,to)=>{const t=new Date(at).getTime();return Number.isFinite(t)&&t>nowMs-to*dayMs&&t<=nowMs-from*dayMs;};
     const wk=transactions.filter(x=>inDays(x.at,0,7)), pw=transactions.filter(x=>inDays(x.at,7,14));
     const wn=domain.totals(wk).net, pn=domain.totals(pw).net, delta=pn>0?Math.round((wn-pn)/pn*100):null;
@@ -118,7 +123,7 @@
     /* today's earnings: completed services recorded today (provider amount, net of the platform share) */
     const day=new Date().toDateString(), todayTx=transactions.filter(x=>{const d=new Date(x.at);return !Number.isNaN(d.getTime())&&d.toDateString()===day;}), tt=domain.totals(todayTx);
     const todayCard=`<section class="pv-today" aria-label="مكسبك النهارده"><div><small>مكسبك النهارده</small><b>${money(tt.net)}</b></div><div><small>خدمات خلصتها النهارده</small><b>${todayTx.length}</b></div><div><small>طلبات جديدة مستنياك</small><b>${groups.new.length}</b></div></section>`;
-    return `<section class="pv-hero"><div><span class="pv-eyebrow">مساحة مقدم الخدمة</span><h1>أهلًا، ${esc((p.name||'').split(' ')[0])}</h1><p>تابع الطلبات والمواعيد ومستحقاتك${live?'':' التجريبية'} من مكان واحد.</p></div><button class="pv-availability ${p.available?'is-on':''}" type="button" data-pv-action="availability" aria-pressed="${!!p.available}">${icon('power')} ${p.available?'متاح لاستقبال الطلبات':'متوقف عن استقبال الطلبات'}</button></section>${todayCard}${levelCard}${weekCard}${demandCard}<section class="pv-kpis"><article><small>إجراءات معلقة</small><b>${active}</b></article><article><small>طلبات جديدة</small><b>${groups.new.length}</b></article><article><small>قيد التنفيذ</small><b>${groups.progress.length+groups.accepted.length}</b></article><article><small>مكتملة</small><b>${groups.done.length}</b></article><article><small>إجمالي الخدمات</small><b>${money(t.value)}</b></article><article><small>صافي مستحقاتك${live?'':' (تجريبي)'}</small><b>${money(t.net)}</b></article></section>`;
+    return `<section class="pv-hero"><div><span class="pv-eyebrow">مساحة مقدم الخدمة</span><h1>أهلًا، ${esc((p.name||'').split(' ')[0])}</h1><p>تابع الطلبات والمواعيد ومستحقاتك${live?'':' التجريبية'} من مكان واحد.</p></div><button class="pv-availability ${p.available?'is-on':''}" type="button" data-pv-action="availability" aria-pressed="${!!p.available}">${icon('power')} ${p.available?'متاح لاستقبال الطلبات':'متوقف عن استقبال الطلبات'}</button></section>${todayCard}${levelCard}${praiseCard}${weekCard}${demandCard}<section class="pv-kpis"><article><small>إجراءات معلقة</small><b>${active}</b></article><article><small>طلبات جديدة</small><b>${groups.new.length}</b></article><article><small>قيد التنفيذ</small><b>${groups.progress.length+groups.accepted.length}</b></article><article><small>مكتملة</small><b>${groups.done.length}</b></article><article><small>إجمالي الخدمات</small><b>${money(t.value)}</b></article><article><small>صافي مستحقاتك${live?'':' (تجريبي)'}</small><b>${money(t.net)}</b></article></section>`;
   }
 
   function requestCard(item,p) {
@@ -128,7 +133,8 @@
     if(a.status==='accepted') {
       if(r.status==='accepted'&&!r.proposal) actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="confirm" data-id="${esc(r.id)}">تأكيد الموعد</button>`,`<button class="pv-btn" data-pv-action="propose" data-id="${esc(r.id)}">اقتراح موعد</button>`);
       if(r.status==='scheduled') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="enroute" data-id="${esc(r.id)}">أنا في الطريق</button>`,`<span class="pv-eta-pick" role="group" aria-label="أنا في الطريق وهوصل خلال"><small>أو هوصل خلال:</small>${[15,30,45,60].map(m=>`<button class="pv-chip" type="button" data-pv-action="advance" data-next="enroute" data-eta="${m}" data-id="${esc(r.id)}" aria-label="أنا في الطريق وهوصل خلال ${m} دقيقة">${m} د</button>`).join('')}</span>`);
-      if(r.status==='enroute') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="arrived" data-id="${esc(r.id)}">وصلت</button>`);
+      if(r.status==='enroute') actions.push(pinOn()?`<button class="pv-btn pv-btn-primary" data-pv-action="pin" data-id="${esc(r.id)}">وصلت — اكتب كود العميل</button>`:`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="arrived" data-id="${esc(r.id)}">وصلت</button>`);
+      if(['arrived','started','quote','completed'].includes(r.status)){ const hp=r.hasPhotos||{}; actions.push(`<span class="pv-photos" role="group" aria-label="صور الشغل"><button class="pv-chip ${hp.before?'is-done':''}" type="button" data-pv-action="photo" data-kind="before" data-id="${esc(r.id)}">${icon('camera')} ${hp.before?'قبل ✓':'صورة قبل'}</button><button class="pv-chip ${hp.after?'is-done':''}" type="button" data-pv-action="photo" data-kind="after" data-id="${esc(r.id)}">${icon('camera')} ${hp.after?'بعد ✓':'صورة بعد'}</button></span>`); }
       if(r.status==='arrived') actions.push(`<button class="pv-btn pv-btn-primary" data-pv-action="advance" data-next="started" data-id="${esc(r.id)}">بدأت الخدمة</button>`);
       if(['completed','closed'].includes(r.status)&&!r.customerReview) actions.push(`<button class="pv-btn" data-pv-action="rate-customer" data-id="${esc(r.id)}">قيّم العميل</button>`);
       if(loc&&loc.available(r,a)) actions.push(`<button class="pv-btn" data-pv-action="customer-location" data-id="${esc(r.id)}">${icon('pin')} موقع العميل</button>`);
@@ -153,10 +159,12 @@
     const ptx=(MP.db().transactions||[]).find(t=>t.reqId===r.id);
     const promoNote=r.promo?`<p class="pv-note">${r.discount&&ptx?`حصّل من العميل <b>${money(ptx.value)}</b> بعد خصم ${money(r.discount)} — الخصم من حصة المنصة، ومبلغك ما اتأثرش`:'العميل عنده خصم بتتحمّله المنصة من عمولتها — مبلغك مش بيتأثر، والمبلغ اللي هتحصّله بيظهر بعد تسجيل الإكمال'}</p>`:'';
     const rateNote=r.customerReview?`<p class="pv-note">قيّمت العميل ${esc(r.customerReview.stars)} من 5</p>`:'';
+    const warrantyNote=r.warrantyOf?`<p class="pv-note pv-note-warranty">${icon('shield')} طلب ضمان على شغلك في الطلب #${esc((MP.get('serviceRequests',r.warrantyOf)||{}).no||'')} — نفّذه كـ«خدمة مجانية» بسبب «ضمان على خدمة سابقة»</p>`:'';
+    const tipNote=r.tip?`<p class="pv-note pv-note-tip">${icon('star')} العميل هيديك بقشيش <b>${money(r.tip.amount)}</b> مع الحساب</p>`:'';
     const pkgNote=r.packageName?`<p class="pv-note">الطلب ضمن باقة: <b>${esc(r.packageName)}</b> — اتفق مع العميل على مواعيد الزيارات.</p>`:'';
     const chatCount=a.status==='accepted'&&Array.isArray(r.chat)?r.chat.filter(m=>m.pid===p.id).length:0;
     const swipeHint=a.status==='offered'?'<p class="pv-swipe-hint" aria-hidden="true">اسحب الكارت يمين للقبول أو شمال للرفض</p>':'';
-    return `<article class="pv-request"${a.status==='offered'?` data-swipe-id="${esc(r.id)}"`:''}><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header>${journey}<p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.pricing&&r.pricing.providerAmount!=null?`<p class="pv-note">مبلغك المحدد عند الحجز: <b>${money(r.pricing.providerAmount)}</b> — يدفع العميل ${money(r.pricing.customerPrice)} شاملًا رسوم المنصة</p>`:''}${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${pkgNote}${custNote}${promoNote}${rateNote}${swipeHint}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}<div class="pv-actions"><button class="pv-btn" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">عرض التفاصيل${chatCount?` · ${chatCount} رسالة`:''}</button>${actions.join('')}</div>${locPanel(r,a)}</article>`;
+    return `<article class="pv-request"${a.status==='offered'?` data-swipe-id="${esc(r.id)}"`:''}><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header>${journey}<p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.pricing&&r.pricing.providerAmount!=null?`<p class="pv-note">مبلغك المحدد عند الحجز: <b>${money(r.pricing.providerAmount)}</b> — يدفع العميل ${money(r.pricing.customerPrice)} شاملًا رسوم المنصة</p>`:''}${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${warrantyNote}${tipNote}${pkgNote}${custNote}${promoNote}${rateNote}${swipeHint}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}<div class="pv-actions"><button class="pv-btn" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">عرض التفاصيل${chatCount?` · ${chatCount} رسالة`:''}</button>${actions.join('')}</div>${locPanel(r,a)}</article>`;
   }
 
   function sectionFor(page,p,groups,transactions) {
@@ -183,12 +191,49 @@
      restores focus to the first matching selector so keyboard users are not dropped to <body>. */
   /* New request alert: when a request appears in «طلبات جديدة» after the first render — a short tone (if the browser
      allows audio), a vibration on phones, a polite toast and the tab title, until the provider looks at the app. */
+  /* ── round 8: arrival code, before/after photos, read receipts + typing ── */
+  const pinOn=()=>!!((MP.db().settings||{}).arrivalPin);
+  /* photo → compressed webp/jpeg data URL (≤ ~170 KB of text) */
+  function compressPhoto(file){
+    return new Promise((resolve,reject)=>{
+      const url=URL.createObjectURL(file), img=new Image();
+      img.onload=()=>{
+        URL.revokeObjectURL(url);
+        let w=img.naturalWidth,h=img.naturalHeight; const max=1100; if(Math.max(w,h)>max){const k=max/Math.max(w,h);w=Math.round(w*k);h=Math.round(h*k);}
+        const c=document.createElement('canvas'); c.width=w; c.height=h; c.getContext('2d').drawImage(img,0,0,w,h);
+        let q=.78, type=c.toDataURL('image/webp').startsWith('data:image/webp')?'image/webp':'image/jpeg', out=c.toDataURL(type,q);
+        while(out.length>170000&&q>.35){q-=.1;out=c.toDataURL(type,q);}
+        if(out.length>170000){const k=.75;c.width=Math.round(w*k);c.height=Math.round(h*k);c.getContext('2d').drawImage(img,0,0,c.width,c.height);out=c.toDataURL(type,.6);}
+        out.length>170000?reject(new Error('الصورة كبيرة جدًا')):resolve(out);
+      };
+      img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error('تعذّر قراءة الصورة'));};
+      img.src=url;
+    });
+  }
+  function pickPhoto(id,kind,button){
+    const i=document.createElement('input'); i.type='file'; i.accept='image/*'; i.setAttribute('capture','environment');
+    i.onchange=async()=>{ const f=i.files&&i.files[0]; if(!f)return; setBusy(button,true);
+      try{ const data=await compressPhoto(f); const res=await api.orders.uploadPhoto(id,kind,data); if(res&&res.ok){render([detailsSel(id)]);toast(kind==='before'?'اترفعت صورة قبل الشغل':'اترفعت صورة بعد الشغل — العميل هيشوفها');} else toast(errorText(res)); }
+      catch(e){ toast(e.message||'تعذّر رفع الصورة'); } finally{ setBusy(button,false); } };
+    i.click();
+  }
+  let pvOffTyping=null, pvTypingFor='';
+  function hydrateProviderChat(){
+    const f=$('#pv-chat-form',dom.view); const id=f&&f.dataset.id;
+    if(!id){ if(pvOffTyping){pvOffTyping();pvOffTyping=null;pvTypingFor='';} return; }
+    const r=MP.get('serviceRequests',id); if(!r)return;
+    const lastCust=(r.chat||[]).filter(m=>m.by==='customer').pop(), mine=r.chatSeen&&r.chatSeen.provider;
+    if(lastCust&&(!mine||mine<lastCust.at)) { try{ api.orders.chatSeen(id); }catch(e){} }
+    if(pvTypingFor!==id){ if(pvOffTyping){pvOffTyping();pvOffTyping=null;} pvTypingFor=id;
+      if(root.HSBackend&&typeof root.HSBackend.onTyping==='function') pvOffTyping=root.HSBackend.onTyping(id,'provider',on=>{const el=$('.pv-typing',dom.view); if(el) el.hidden=!on;}); }
+  }
+  document.addEventListener('input',e=>{ if(e.target&&e.target.id==='pvxchat-text'){ const f=e.target.closest('#pv-chat-form'); if(f&&root.HSBackend&&root.HSBackend.setTyping) root.HSBackend.setTyping(f.dataset.id,'provider'); } });
   /* ── round 5: chat panel on the request page, swipe to accept/decline offers ── */
   function chatPanel(item){
     const r=item.request,a=item.assignment,p=currentProvider(); if(!p||a.status!=='accepted') return '';
     const msgs=(Array.isArray(r.chat)?r.chat:[]).filter(m=>m.pid===p.id), open=!['cancelled','failed','closed'].includes(r.status);
     if(!open&&!msgs.length) return '';
-    return `<section class="pv-chat" aria-labelledby="pvxchat-h"><h2 id="pvxchat-h">رسائل مع العميل</h2><ol class="pv-chat-list">${msgs.length?msgs.slice(-60).map(m=>`<li class="${m.by==='provider'?'me':'them'}"><p>${esc(m.text)}</p><time>${date(m.at)}</time></li>`).join(''):'<li class="pv-chat-empty">ابعت للعميل أي سؤال عن المشكلة أو الموعد.</li>'}</ol>${open?`<form id="pv-chat-form" class="pv-chat-form" data-id="${esc(r.id)}"><label class="pv-sr" for="pvxchat-text">رسالة للعميل</label><input id="pvxchat-text" name="text" maxlength="500" required autocomplete="off" placeholder="اكتب رسالتك للعميل…"><button class="pv-btn pv-btn-primary">إرسال</button></form>`:''}</section>`;
+    return `<section class="pv-chat" aria-labelledby="pvxchat-h"><h2 id="pvxchat-h">رسائل مع العميل</h2><ol class="pv-chat-list">${msgs.length?msgs.slice(-60).map((m,i,arr)=>`<li class="${m.by==='provider'?'me':'them'}"><p>${esc(m.text)}</p><time>${date(m.at)}</time>${m.by==='provider'&&i===arr.length-1&&r.chatSeen&&r.chatSeen.customer>=m.at?'<span class="pv-seen">اتقرت</span>':''}</li>`).join(''):'<li class="pv-chat-empty">ابعت للعميل أي سؤال عن المشكلة أو الموعد.</li>'}</ol><p class="pv-typing" hidden aria-live="polite"><i></i><i></i><i></i> العميل بيكتب</p>${open?`<form id="pv-chat-form" class="pv-chat-form" data-id="${esc(r.id)}"><label class="pv-sr" for="pvxchat-text">رسالة للعميل</label><input id="pvxchat-text" name="text" maxlength="500" required autocomplete="off" placeholder="اكتب رسالتك للعميل…"><button class="pv-btn pv-btn-primary">إرسال</button></form>`:''}</section>`;
   }
   function mountSwipe(){
     if(!dom.view||dom.view.dataset.swipe) return; dom.view.dataset.swipe='1';
@@ -226,6 +271,7 @@
     const {page,id}=router.parse(location.hash), groups=providerGroups(p), tx=MP.db().transactions.filter(t=>t.providerId===p.id);
     noticeNewOffers(groups);
     mountSwipe();
+    setTimeout(hydrateProviderChat,0);   /* read receipt + typing for the open request chat */
     renderNav(page);
     dom.view.innerHTML=sectionFor(page,p,groups,tx);
     settle(page+'/'+(page==='request'?id:''),titleFor(page),focusTargets);
@@ -256,8 +302,9 @@
     if(kind==='quote') { const q=MP.currentQuote(id); dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-quote-form" data-id="${esc(id)}" ${named('عرض سعر للطلب')}><label>المصنعية<input name="labor" type="number" min="0" step="0.01" required value="${q?.labor??''}"></label><label>قطع الغيار<input name="parts" type="number" min="0" step="0.01" value="${q?.parts??0}"></label><label>رسوم المعاينة<input name="visitFee" type="number" min="0" step="0.01" value="${q?.visitFee??0}"></label><label>الخصم<input name="discount" type="number" min="0" step="0.01" value="${q?.discount??0}"></label><label>ملاحظة<textarea name="note" maxlength="300">${esc(q?.note||'')}</textarea></label><button class="pv-btn pv-btn-primary">إرسال عرض السعر</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`); }
     if(kind==='complete') { const q=MP.currentQuote(id); const suggested=q?.status==='approved'?q.total:''; const p=currentProvider(); const rate=p?Number(MP.rateFor(request.cat,p.id))||0:0; dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-complete-form" data-id="${esc(id)}" data-rate="${rate}" ${named('تسجيل إكمال الطلب')}><label>القيمة النهائية (ج.م)<input name="value" type="number" min="1" step="0.01" required value="${suggested}"${suggested!==''?' readonly aria-describedby="agreed-price-note"':''}></label>${suggested!==''?'<p class="pv-note" id="agreed-price-note">السعر المتفق عليه مع العميل؛ لا يمكن تغييره عند الإكمال.</p>':''}<label>خصومات معلنة<input name="deductions" type="number" min="0" step="0.01" value="0"></label><p class="pv-calc" id="pv-complete-preview" aria-live="polite">${completionPreview(rate,suggested,0)}</p><button class="pv-btn pv-btn-primary">تأكيد اكتمال الخدمة</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`); }
     if(kind==='free') dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-free-form" data-id="${esc(id)}" ${named('خدمة مجانية للطلب')}><label>سبب تنفيذ الخدمة مجانًا<select name="reason" required><option value="">اختر السبب</option>${Object.entries(MP.FREE_REASONS||{}).map(([k,l])=>`<option value="${esc(k)}">${esc(l)}</option>`).join('')}</select></label><p class="pv-hint pv-wide">لا يُسجَّل أي مبلغ ولا عمولة؛ يتطلب موافقة العميل قبل التنفيذ. الخدمة المجانية ليست عرض سعر بقيمة صفر.</p><button class="pv-btn pv-btn-primary">إرسال الاقتراح للعميل</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
+    if(kind==='pin') dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-pin-form" data-id="${esc(id)}" ${named('كود الوصول للطلب')}><label>كود الوصول (4 أرقام من العميل)<input class="pv-pin-input" name="pin" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="one-time-code" dir="ltr" required></label><p class="pv-hint pv-wide">العميل بيلاقي الكود في صفحة طلبه. ده بيأكد له إنك الفني الصح.</p><button class="pv-btn pv-btn-primary">تأكيد الوصول</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
     if(kind==='rate-customer') dom.view.insertAdjacentHTML('afterbegin',`<form class="pv-inline-form" id="pv-ratec-form" data-id="${esc(id)}" ${named('تقييم العميل للطلب')}><label>تقييمك للعميل<select name="stars" required><option value="">اختر</option><option value="5">5 — ممتاز</option><option value="4">4 — كويس جدًا</option><option value="3">3 — مقبول</option><option value="2">2 — ضعيف</option><option value="1">1 — سيئ</option></select></label><label>ملاحظة (اختياري)<input name="comment" maxlength="300"></label><p class="pv-hint pv-wide">التقييم بيوصل للإدارة ولباقي الفنيين كمتوسط، والعميل مش بيشوف تقييمك ليه بالتفصيل.</p><button class="pv-btn pv-btn-primary">حفظ التقييم</button><button type="button" class="pv-btn" data-pv-action="cancel-form">إلغاء</button></form>`);
-    const form=$('#'+({reject:'pv-reject-form',propose:'pv-propose-form',quote:'pv-quote-form',complete:'pv-complete-form',free:'pv-free-form','rate-customer':'pv-ratec-form'}[kind]),dom.view);
+    const form=$('#'+({reject:'pv-reject-form',propose:'pv-propose-form',quote:'pv-quote-form',complete:'pv-complete-form',free:'pv-free-form','rate-customer':'pv-ratec-form',pin:'pv-pin-form'}[kind]),dom.view);
     if(form) { form.scrollIntoView({behavior:reduceMotion()?'auto':'smooth',block:'center'}); form.querySelector('input,select')?.focus({preventScroll:true}); }
   }
 
@@ -306,7 +353,8 @@
     const nearRequest=[actionSel('advance',id),detailsSel(id)];
     if(action==='customer-location'){showCustomerLocation(id);return;}
     if(action==='customer-location-close'){delete locState[id];render([actionSel('customer-location',id)]);return;}
-    if(action==='reject'||action==='propose'||action==='quote'||action==='complete'||action==='free'||action==='rate-customer'){openForm(action,id);return;}
+    if(action==='reject'||action==='propose'||action==='quote'||action==='complete'||action==='free'||action==='rate-customer'||action==='pin'){openForm(action,id);return;}
+    if(action==='photo'){pickPhoto(id,button.dataset.kind,button);return;}
     if(action==='edit-profile'){openProfileForm(p);return;}
     /* Mutations go through the API adapters (services/*-api.js); MP stays the local read model. */
     const failedButton=res=>{render([detailsSel(id)]);toast(isStale(res)?STALE:errorText(res));};
@@ -351,6 +399,7 @@
         toast('تم إرسال طلب التسجيل — بانتظار اعتماد الإدارة');
       },res=>invalid(form,errorText(res)));
     }
+    if(form.id==='pv-pin-form'){const pin=String(data.get('pin')||'').trim();if(!/^\d{4}$/.test(pin))return invalid(form,'الكود 4 أرقام');const p=currentProvider();return perform('advance:'+id,submitter,()=>api.orders.advance(id,'arrived',undefined,pin),()=>{formTrigger=null;followToGroup(id,p);render([detailsSel(id)]);toast('تم تسجيل وصولك');},res=>invalid(form,errorText(res)));}
     if(form.id==='pv-ratec-form'){const stars=+data.get('stars');if(!(stars>=1&&stars<=5))return invalid(form,'اختر التقييم');return perform('ratec:'+id,submitter,()=>api.orders.rateCustomer(id,stars,String(data.get('comment')||'')),()=>{toast('تم حفظ تقييمك للعميل');done([detailsSel(id)]);},stale);}
     if(form.id==='pv-reject-form'){const reason=String(data.get('reason')||'').trim();if(!reason)return invalid(form,'اختر سبب الرفض');return perform('reject:'+id,submitter,()=>api.orders.respond(id,false,reason),()=>{router.navigate('cancelled');toast('تم رفض الطلب');done();},stale);}
     if(form.id==='pv-propose-form'){const value=data.get('at'),at=value?new Date(value):null;if(!at||Number.isNaN(at.getTime()))return invalid(form,'أدخل موعدًا صحيحًا');if(at.getTime()<=Date.now())return invalid(form,'اختر موعدًا مستقبليًا');return perform('propose:'+id,submitter,()=>api.orders.schedule(id,at.toISOString()),()=>{toast('تم إرسال اقتراح الموعد');done([detailsSel(id)]);},stale);}

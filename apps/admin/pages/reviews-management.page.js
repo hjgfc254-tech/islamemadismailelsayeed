@@ -135,7 +135,13 @@
       onClose: () => { openId = null; st = {}; }
     });
     d.onClick((b) => {
-      if (L && (b.dataset.ordStatus || b.hasAttribute('data-ord-note'))) { showErr(L.UNSUPPORTED); return; }   /* no review moderation route on the server */
+      if (L && b.dataset.ordStatus) {   /* live: hide / re-publish through the server (reason required to hide) */
+        const reason = (dlgEl.querySelector('#rv-reason') || {}).value || '';
+        if (b.dataset.ordStatus === 'hidden' && reason.trim().length < 3) { showErr('اكتب سبب الإخفاء لتوثيقه.'); return; }
+        L.status('reviews', openId, b.dataset.ordStatus, { reason }).then((res) => { if (res.ok) { items = L.rows('reviews'); st = {}; sync(); paintDlg('[data-ord-close]'); } else showErr(L.errorText(res)); });
+        return;
+      }
+      if (L && b.hasAttribute('data-ord-note')) { showErr(L.UNSUPPORTED); return; }
       try {
         if (b.dataset.ordStatus) {
           const reason = dlgEl.querySelector('#rv-reason').value;

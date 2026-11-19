@@ -127,7 +127,8 @@ const MP = (() => {
       quotes:[],              /* عروض أسعار: {id, reqId, providerId, labor, parts, visitFee, discount, total, status, at} */
       favorites:[],           /* مفضلة: {customerId, kind:'provider'|'service', refId, at} */
       drafts:[],              /* مسودات النموذج: {id, customerId, step, data, updatedAt} */
-      searchHistory:[],       /* عمليات بحث حديثة: {customerId, q, at} */
+      searchHistory:[],
+      jobPhotos:[],           /* صور قبل/بعد الشغل: {id=reqId, reqId, providerId, customerId, before, after, share, at} */       /* عمليات بحث حديثة: {customerId, q, at} */
       serviceAreas:Object.keys(AREA_HINTS).map(g=>({gov:g,areas:AREA_HINTS[g],demo:true})),
       settings:{ defaultRate:15, rates:{}, collectionModel:'platform', autoAssign:true, customerFee:false }
     };
@@ -138,7 +139,7 @@ const MP = (() => {
 
   /* ترحيل آمن من V1 إلى V2 (إن وُجدت بيانات قديمة) */
   const migrate = () => {
-    if (!db.meta) db.meta = { lastReqNo:1000, created:now() };
+    if (!db.meta) db.meta = { lastReqNo:1000, created:now() }; if (!Array.isArray(db.jobPhotos)) db.jobPhotos = [];
     if (db.v === 1) {
       db.addresses = db.addresses || [];
       db.quotes = db.quotes || [];
@@ -250,6 +251,20 @@ const MP = (() => {
   const CHAT_MAX = 150;
   const REF_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
 
+  /* round 8: maintenance reminder intervals (days) for devices that need periodic service; others get no reminder */
+  const MAINTENANCE_DAYS = { 'appliances/ac': 120, 'appliances/heater-electric': 365, 'appliances/heater-gas': 365, 'appliances/washer-auto': 365, 'appliances/fridge': 365, 'appliances/dishwasher': 365, 'cars/oil-change': 90, 'plumbing/water-tanks': 180 };
+  /* after a completed job: warranty end date (admin-set days) and the customer's «بيتي» device / next maintenance date */
+  const afterCompletion = r => {
+    const wd = api.warrantyDays(r);
+    if (wd > 0 && !r.warrantyOf) r.warrantyUntil = new Date(Date.now() + wd * 864e5).toISOString();
+    const days = MAINTENANCE_DAYS[r.itemId]; if (!days) return;
+    const c = get('customers', r.customerId); if (!c) return;
+    c.devices = Array.isArray(c.devices) ? c.devices : [];
+    let d = c.devices.find(x => x.item === r.itemId);
+    if (!d && c.devices.length < 20) { d = { id: uid('dv'), item: r.itemId, cat: r.cat, name: r.itemName || r.serviceName, brand: '', year: '', at: now(), auto: true }; c.devices.push(d); }
+    if (d) { d.lastAt = now(); d.nextAt = new Date(Date.now() + days * 864e5).toISOString(); d.lastReq = r.no; }
+  };
+
   /* ═════════ الإسناد ═════════ */
   const candidates = r => {
     /* التوافق: 1) التخصص (cats)  2) تخصص الجهاز إن أمكن (subs)  3) المحافظة  4) التوفر */
@@ -270,7 +285,7 @@ const MP = (() => {
       .sort((a,b) => b.score - a.score)
       .map(x => x.p);
   };
-  const rating = pid => { const rs = db.reviews.filter(x=>x.providerId===pid); return rs.length ? Math.round(rs.reduce((s,x)=>s+x.stars,0)/rs.length*10)/10 : null; };
+  const rating = pid => { const rs = db.reviews.filter(x=>x.providerId===pid && !x.hidden);   /* hidden (moderated) reviews do not count */ return rs.length ? Math.round(rs.reduce((s,x)=>s+x.stars,0)/rs.length*10)/10 : null; };
   const acceptRate = pid => { const as = db.assignments.filter(a=>a.providerId===pid && a.status!=='offered' && a.status!=='withdrawn'); return as.length ? Math.round(as.filter(a=>a.status!=='rejected').length/as.length*100) : 100; };
 
   const api = {
@@ -352,6 +367,7 @@ const MP = (() => {
       if(!r||!a||a.status!=='offered') return false;
       if(accept){
         a.status='accepted';
+        r.pin = String(1000 + Math.floor(Math.random() * 9000));   /* arrival code: the customer shows it, the provider enters it at the door */
         log(r,'accepted','قبل '+get('providers',a.providerId).name);
         notify('customer:'+r.customerId,'تم قبول طلبك '+r.no,r.id);
       }
@@ -510,6 +526,7 @@ const MP = (() => {
         r.finalValue = x.value;
         log(r,'completed','السعر المحدد مسبقًا '+x.value);
         if (!db.transactions.some(t => t.reqId===reqId)) db.transactions.push({id:uid('t'),reqId,providerId:p.id,customerId:r.customerId,cat:r.cat,...x,model:db.settings.collectionModel,collection:'pending',demo:true,at:now()});
+        afterCompletion(r);
         notify('customer:'+r.customerId,'اكتملت الخدمة — أكّد الإتمام وقيّم الفني (الطلب '+r.no+')',r.id);
         save(); return true;
       }
@@ -525,6 +542,7 @@ const MP = (() => {
       if (!db.transactions.some(t => t.reqId===reqId)) {
         db.transactions.push({id:uid('t'),reqId,providerId:p.id,customerId:r.customerId,cat:r.cat,...x,model:db.settings.collectionModel,collection:'pending',demo:true,at:now()});
       }
+      afterCompletion(r);
       notify('customer:'+r.customerId,'اكتملت الخدمة — أكّد الإتمام وقيّم الفني (الطلب '+r.no+')',r.id);
       save(); return true;
     },
@@ -595,6 +613,71 @@ const MP = (() => {
       return c.refCode;
     },
     cairoDay,
+    /* ═════════ round 8: trust features — arrival code, warranty, tips, read receipts, «بيتي», before/after photos ═════════ */
+    /** Warranty days for a request: per item, then per category, then the default — all set by the admin (settings.warranty). */
+    warrantyDays(r){
+      const w = (db.settings && db.settings.warranty) || {};
+      const pick = [w.items && w.items[r.itemId], w.cats && w.cats[r.cat], w.default].find(x => x != null && x !== '');
+      return Math.max(0, Math.min(365, Math.round(+pick || 0)));
+    },
+    /** «المشكلة رجعت» within the warranty: a linked request sent straight to the same provider (free-service path «ضمان»). */
+    warrantyClaim(oldId, desc){
+      const old = get('serviceRequests', oldId), p = api.providerOf(oldId);
+      if (!old || !p || !['completed', 'closed'].includes(old.status)) return { ok: false, msg: 'الضمان متاح بعد ما الخدمة تخلص' };
+      if (!old.warrantyUntil || Date.parse(old.warrantyUntil) < Date.now()) return { ok: false, msg: 'فترة الضمان انتهت' };
+      const open = old.warrantyClaimId && get('serviceRequests', old.warrantyClaimId);
+      if (open && !FINAL_STATUSES.has(open.status)) return { ok: false, msg: 'فيه طلب ضمان مفتوح بالفعل' };
+      const r = api.repeatRequest(oldId, p.id);
+      if (!r) return { ok: false, msg: 'تعذّر فتح طلب الضمان' };
+      r.warrantyOf = oldId; r.serviceName = 'ضمان: ' + old.serviceName;
+      r.desc = String(desc || '').trim().slice(0, 1000) || 'المشكلة رجعت بعد الخدمة';
+      old.warrantyClaimId = r.id;
+      notify('admin', 'طلب ضمان ' + r.no + ' على الطلب ' + old.no, r.id);
+      save(); return { ok: true, request: r };
+    },
+    /** Tip recorded at completion (paid in cash with the bill); goes entirely to the provider. */
+    tip(reqId, amount){
+      const r = get('serviceRequests', reqId), p = api.providerOf(reqId), a = Math.round(+amount);
+      if (!r || !p || r.tip || !['completed', 'closed'].includes(r.status) || !(a >= 5 && a <= 1000)) return false;
+      r.tip = { amount: a, at: now() };
+      const t = db.transactions.find(x => x.reqId === reqId); if (t) t.tip = a;
+      notify('provider:' + p.id, 'العميل هيديك بقشيش ' + a + ' ج.م مع الحساب — شكرًا على شغلك (الطلب ' + r.no + ')', r.id);
+      save(); return true;
+    },
+    /** Read receipt: the side that opened the conversation saw everything until now. */
+    chatSeen(reqId, role){
+      const r = get('serviceRequests', reqId); if (!r || !['customer', 'provider'].includes(role)) return false;
+      r.chatSeen = Object.assign({}, r.chatSeen, { [role]: now() }); save(); return true;
+    },
+    /* «بيتي»: the customer's appliances; a maintenance reminder date is set after each service of a device that needs one */
+    devicesFor(cid){ const c = get('customers', cid); return (c && Array.isArray(c.devices)) ? c.devices : []; },
+    addDevice(cid, d){
+      const c = get('customers', cid); if (!c) return null;
+      c.devices = Array.isArray(c.devices) ? c.devices : [];
+      if (c.devices.length >= 20) return null;
+      const it = typeof CAT !== 'undefined' && CAT.item ? CAT.item(d.item) : null;
+      const x = { id: uid('dv'), item: String(d.item || ''), cat: it ? it.cat : String(d.cat || ''), name: it ? it.name : String(d.name || '').slice(0, 40), brand: String(d.brand || '').trim().slice(0, 40), year: /^\d{4}$/.test(String(d.year || '')) ? String(d.year) : '', lastAt: null, nextAt: null, at: now() };
+      c.devices.push(x); save(); return x;
+    },
+    removeDevice(cid, id){ const c = get('customers', cid); if (!c || !Array.isArray(c.devices)) return false; const n = c.devices.length; c.devices = c.devices.filter(d => d.id !== id); save(); return c.devices.length !== n; },
+    MAINTENANCE_DAYS,
+    notifyAdmin(text, reqId){ notify('admin', text, reqId); },
+    /** Before / after photos of a job (compressed data URLs, one document per request; the customer decides if they are shown in the provider's portfolio). */
+    jobPhotosOf(reqId){ return (db.jobPhotos || []).find(x => x.reqId === reqId) || null; },
+    setJobPhoto(reqId, kind, data){
+      const r = get('serviceRequests', reqId), p = api.providerOf(reqId);
+      if (!r || !p || !['before', 'after'].includes(kind) || !/^data:image\/(webp|jpeg);base64,[A-Za-z0-9+/=]+$/.test(String(data || '')) || String(data).length > 180000) return false;
+      db.jobPhotos = Array.isArray(db.jobPhotos) ? db.jobPhotos : [];
+      let x = db.jobPhotos.find(j => j.reqId === reqId);
+      if (!x) { x = { id: reqId, reqId, providerId: p.id, customerId: r.customerId, before: '', after: '', share: false, at: now() }; db.jobPhotos.unshift(x); }
+      x[kind] = data; x.at = now();
+      r.hasPhotos = { before: !!x.before, after: !!x.after, at: x.at };   /* tells the screens to fetch the photos (they are not in the sync) */
+      if (db.jobPhotos.length > 40 && !firebaseMode()) db.jobPhotos.length = 40;      /* device storage guard in the local demo */
+      if (kind === 'after') notify('customer:' + r.customerId, 'الفني رفع صور الشغل بعد ما خلص (الطلب ' + r.no + ')', r.id);
+      save(); return true;
+    },
+    shareJobPhotos(reqId, on){ const x = api.jobPhotosOf(reqId); if (!x) return false; x.share = !!on; save(); return true; },
+    portfolio(providerId){ return (db.jobPhotos || []).filter(x => x.providerId === providerId && x.share && x.before && x.after).slice(0, 6); },
     review(reqId, d){
       const r = get('serviceRequests',reqId), p = api.providerOf(reqId);
       if(!r||!p||db.reviews.some(x=>x.reqId===reqId)) return false;
@@ -615,7 +698,9 @@ const MP = (() => {
       save();
       return db.complaints[0];
     },
-    resolveComplaint(id,res){ const k = get('complaints',id); if(k){ k.status='resolved'; k.resolution=res||''; save(); } },
+    resolveComplaint(id,res){ const k = get('complaints',id); if(k){ k.status='resolved'; k.resolution=res||''; if (/^(customer|provider):/.test(String(k.by||''))) notify(k.by,'تم الرد على شكوتك'+(res?': '+String(res).slice(0,140):''),k.reqId||null); save(); } },
+    /** Admin moderation: hide or re-publish a review (hidden reviews are kept for the record, excluded from ratings and public lists). */
+    setReviewHidden(id, hidden, reason){ const v = get('reviews', id); if(!v) return false; v.hidden = !!hidden; v.moderation = { hidden: !!hidden, reason: String(reason||'').slice(0,200), at: now() }; save(); return true; },
     setCollection(txId, st){ const t = get('transactions',txId); if(t){ t.collection=st; save(); } },
 
     /* ═════════ مقدمو الخدمة ═════════ */

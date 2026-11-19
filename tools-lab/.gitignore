@@ -1,0 +1,5 @@
+﻿# Generated audit outputs are intentionally excluded from source control.
+reports/
+cache/
+*.har
+*.trace.zip

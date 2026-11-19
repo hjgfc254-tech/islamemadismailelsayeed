@@ -94,6 +94,12 @@
     store.toggleFavorite(actor.id, body.kind, String(body.refId));
     return { kind: body.kind, refId: String(body.refId), favorite: !!store.isFavorite(actor.id, body.kind, String(body.refId)) };
   });
+  client.define('GET', '/customers/me/devices', { roles: C, summary: '«بيتي»: own appliances with the next maintenance date.' }, ({ actor, store }) => store.devicesFor(actor.id));
+  client.define('POST', '/customers/me/devices', { roles: C, summary: 'Add an appliance {item, brand, year}.' }, ({ body, actor, store }) => {
+    if (!String(body.item || '').trim()) return fail('VALIDATION', 'اختار الجهاز', { item: 'مطلوب' });
+    const d = store.addDevice(actor.id, body); return d ? ok(d, 201) : fail('CONFLICT', 'وصلت للحد الأقصى (20 جهاز)');
+  });
+  client.define('DELETE', '/customers/me/devices/:id', { roles: C, summary: 'Remove an appliance.' }, ({ params, actor, store }) => store.removeDevice(actor.id, params.id) ? { removed: true } : fail('NOT_FOUND', 'الجهاز غير موجود'));
   client.define('POST', '/customers/me/ref-code', { roles: C, summary: 'Own invite code (created on first use) + current credit and the invite reward.' }, ({ actor, store }) => {
     const c = store.get('customers', actor.id); if (!c) return fail('UNAUTHENTICATED');
     const ref = (store.db().settings || {}).referral || {};
@@ -113,6 +119,9 @@
     removeAddress: aid => client.del('/customers/me/addresses/' + id(aid)),
     favorites: () => client.get('/customers/me/favorites'),
     toggleFavorite: (kind, refId) => client.post('/customers/me/favorites/toggle', { kind, refId }),
-    refCode: () => client.post('/customers/me/ref-code', {})
+    refCode: () => client.post('/customers/me/ref-code', {}),
+    devices: () => client.get('/customers/me/devices'),
+    addDevice: d => client.post('/customers/me/devices', d),
+    removeDevice: did => client.del('/customers/me/devices/' + id(did))
   };
 });

@@ -119,6 +119,16 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /requests/:id/review` | customer | orders-api.js | Rate the provider once {stars 1–5, comment}. |
 | `POST /requests/:id/messages` | customer, provider | orders-api.js | Message the other side of an accepted job {text ≤ 500}. |
 | `POST /requests/:id/rate-customer` | provider | orders-api.js | Provider rates the customer once after the job {stars 1–5, comment}. |
+| `POST /requests/:id/warranty` | customer | orders-api.js | «المشكلة رجعت» within the warranty: a linked request to the same provider {desc}. |
+| `POST /requests/:id/tip` | customer | orders-api.js | Tip for the provider, paid in cash with the bill {amount 5–1000}. |
+| `POST /requests/:id/chat-seen` | customer, provider | orders-api.js | Read receipt: the caller saw the conversation. |
+| `GET /requests/:id/photos` | customer, provider, admin | orders-api.js | Before / after photos of the job. |
+| `POST /requests/:id/photos` | provider | orders-api.js | Provider uploads the before / after photo {kind, data (compressed data URL)}. |
+| `POST /requests/:id/photos/share` | customer | orders-api.js | Customer allows (or not) the photos in the provider portfolio {share}. |
+| `GET /customers/me/devices` | customer | customer-api.js | «بيتي»: own appliances with the next maintenance date. |
+| `POST /customers/me/devices` | customer | customer-api.js | Add an appliance {item, brand, year}. |
+| `DELETE /customers/me/devices/:id` | customer | customer-api.js | Remove an appliance. |
+| `GET /providers/:id/portfolio` | public | catalog-api.js | Before / after photos the customers allowed the provider to show. |
 | `POST /requests/:id/quotes` | provider | quotes-api.js | Submit a quote (total > 0). |
 | `POST /requests/:id/quote/approve` | customer | quotes-api.js | Approve the current quote (refused when total is 0). |
 | `POST /requests/:id/quote/reject` | customer | quotes-api.js | Reject the current quote {reason}. |
@@ -164,6 +174,7 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `GET /admin/requests/:id/candidates` | admin | admin-api.js | Providers matching a request. |
 | `POST /admin/requests/:id/assign` | admin | admin-api.js | Assign manually {providerId} or auto-match. |
 | `POST /admin/customers/:id/status` | admin | admin-api.js | Suspend / reactivate a customer. |
+| `POST /admin/reviews/:id/visibility` | admin | admin-api.js | Hide or re-publish a review {hidden, reason}. |
 | `GET /admin/marketing` | admin | admin-api.js | Promo codes, invite reward and packages. |
 | `PATCH /admin/marketing` | admin | admin-api.js | Replace promo codes / invite reward / packages {promos?, referral?, packages?}. |
 

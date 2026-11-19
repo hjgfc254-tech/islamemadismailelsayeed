@@ -79,13 +79,15 @@ hansalhlak/
 │   │   │   ├── discover.page.js
 │   │   │   ├── home.page.js
 │   │   │   ├── market-ui.page.js
+│   │   │   ├── onboarding.js
 │   │   │   ├── order-details.page.js
 │   │   │   ├── orders.page.js
 │   │   │   ├── providers.page.js
 │   │   │   ├── request-create.page.js
 │   │   │   ├── request-wizard.page.js
 │   │   │   ├── search.page.js
-│   │   │   └── support.page.js
+│   │   │   ├── support.page.js
+│   │   │   └── trust-features.js
 │   │   ├── styles/
 │   │   │   └── customer.css
 │   │   ├── app.js
@@ -126,11 +128,15 @@ hansalhlak/
 │       └── README.md
 ├── assets/
 │   ├── brand/
+│   │   ├── hero-tech-v2.webp
 │   │   ├── hero-technician.jpg
 │   │   ├── logo-v10-lockup-light.webp
 │   │   ├── logo-v10-lockup.webp
 │   │   ├── logo-v10-mark.webp
 │   │   ├── logo-v10-word.webp
+│   │   ├── onboard-1.webp
+│   │   ├── onboard-2.webp
+│   │   ├── onboard-3.webp
 │   │   ├── README.md
 │   │   └── trust-handshake.jpg
 │   ├── icons/
@@ -635,6 +641,8 @@ hansalhlak/
 │       ├── ui-round3.test.js
 │       ├── upfront-pricing.test.js
 │       └── workforce.test.js
+├── tools-lab/
+│   └── .gitignore
 ├── _redirects
 ├── .editorconfig
 ├── .firebaserc

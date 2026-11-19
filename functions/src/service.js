@@ -43,7 +43,7 @@ function validateApi(data) {
   const query = d.query && typeof d.query === 'object' ? d.query : {};
   const body = d.body && typeof d.body === 'object' ? d.body : {};
   /* image uploads (Admin site content) carry one compressed image; everything else stays small */
-  const maxBody = app === 'admin' && method === 'POST' && p === '/admin/media' ? 410000 : 100000;
+  const maxBody = app === 'admin' && method === 'POST' && p === '/admin/media' ? 410000 : (app === 'provider' && method === 'POST' && /^\/requests\/[^/]+\/photos$/.test(p) ? 200000 : 100000);   // one compressed job photo
   if (JSON.stringify(body).length > maxBody) fail('invalid-argument', 'request body too large');
   const idem = d.idempotencyKey == null ? null : (/^[\w-]{8,80}$/.test(String(d.idempotencyKey)) ? String(d.idempotencyKey) : fail('invalid-argument', 'invalid idempotencyKey'));
   return { app, method, path: p, query, body, idem };
@@ -165,7 +165,7 @@ async function linkUser(backend, uid, actor, app) {
 function redactForProvider(data, actor, db) {
   if (!actor || actor.role !== 'provider' || data == null) return data;
   const accepted = new Set((db.assignments || []).filter(a => a.providerId === actor.id && a.status === 'accepted').map(a => a.reqId));
-  const fix = r => (r && typeof r === 'object' && r.no && r.customerId && !accepted.has(r.id) ? { ...r, phone: '', addr: '', geo: null, chat: [] } : r);
+  const fix = r => (r && typeof r === 'object' && r.no && r.customerId && !accepted.has(r.id) ? { ...r, phone: '', addr: '', geo: null, chat: [], pin: undefined } : (r && r.pin ? { ...r, pin: undefined } : r));
   if (Array.isArray(data)) return data.map(fix);
   if (data && Array.isArray(data.items)) return { ...data, items: data.items.map(fix) };
   return fix(data);

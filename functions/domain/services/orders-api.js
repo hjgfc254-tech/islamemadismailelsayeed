@@ -50,7 +50,7 @@
   const notFound = () => fail('NOT_FOUND', 'الطلب غير موجود');
   const view = (store, r, actor) => {
     const out = { ...r, currentQuote: store.currentQuote(r.id) || null, statusLabel: (store.STATUS_LABEL && store.STATUS_LABEL[r.status]) || r.status };
-    if (actor && actor.role === 'provider') out.chat = typeof store.chatFor === 'function' ? store.chatFor(r.id, actor.id) : [];
+    if (actor && actor.role === 'provider') { out.chat = typeof store.chatFor === 'function' ? store.chatFor(r.id, actor.id) : []; delete out.pin; }   // the provider gets the arrival code from the customer
     if (actor && actor.role === 'customer') delete out.customerReview;     // the provider's rating of the customer stays private
     return out;
   };
@@ -150,6 +150,14 @@
   client.define('POST', '/requests/:id/advance', { roles: ['provider'], summary: 'Move to the next FLOW status {to}.' }, ({ params, body, actor, store }) => {
     const r = load(store, actor, params.id); if (!r) return notFound();
     if (!store.providerOf(r.id)) return fail('FORBIDDEN', 'اقبل الطلب أولًا');
+    /* arrival code: «وصلت» needs the 4 digits the customer sees in the app (5 wrong tries → the admin is told) */
+    const pinOn = !!((store.db().settings || {}).arrivalPin);            // switched on by the admin (العروض والضمان)
+    if (pinOn && body.to === 'arrived' && r.pin && r.status === 'enroute' && String(body.pin || '').trim() !== r.pin) {
+      r.pinTries = (+r.pinTries || 0) + 1;
+      if (r.pinTries === 5 && typeof store.notifyAdmin === 'function') store.notifyAdmin('محاولات كود وصول غلط على الطلب ' + r.no, r.id);
+      store.save();
+      return fail('VALIDATION', 'كود الوصول غلط — اطلبه من العميل', { pin: 'wrong' });
+    }
     if (!store.advance(r.id, String(body.to || ''))) return fail('CONFLICT', 'انتقال غير مسموح من الحالة الحالية');
     if (body.to === 'enroute' && body.eta != null && typeof store.setEta === 'function') store.setEta(r.id, body.eta);   // optional arrival estimate (minutes)
     return view(store, r, actor);
@@ -191,6 +199,38 @@
     return store.review(r.id, { stars, comment: String(body.comment || '').slice(0, 1000), ...extra }) ? ok(view(store, r, actor), 201) : fail('CONFLICT', 'تم تقييم هذا الطلب من قبل');
   });
 
+  /* ── round 8: warranty claim, tip, read receipts, before/after photos ── */
+  client.define('POST', '/requests/:id/warranty', { roles: ['customer'], summary: '«المشكلة رجعت» within the warranty: a linked request to the same provider {desc}.' }, ({ params, body, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    const res = store.warrantyClaim(r.id, body.desc);
+    return res.ok ? ok(view(store, res.request, actor), 201) : fail('CONFLICT', res.msg);
+  });
+  client.define('POST', '/requests/:id/tip', { roles: ['customer'], summary: 'Tip for the provider, paid in cash with the bill {amount 5–1000}.' }, ({ params, body, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    const a = Math.round(+body.amount);
+    if (!(a >= 5 && a <= 1000)) return fail('VALIDATION', 'البقشيش من 5 لـ 1000 ج.م', { amount: '5–1000' });
+    return store.tip(r.id, a) ? ok(view(store, r, actor), 201) : fail('CONFLICT', 'البقشيش بيتسجّل مرة واحدة بعد ما الخدمة تخلص');
+  });
+  client.define('POST', '/requests/:id/chat-seen', { roles: ['customer', 'provider'], summary: 'Read receipt: the caller saw the conversation.' }, ({ params, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    const p = store.providerOf(r.id); if (actor.role === 'provider' && (!p || p.id !== actor.id)) return fail('FORBIDDEN');
+    return store.chatSeen(r.id, actor.role) ? view(store, r, actor) : fail('CONFLICT');
+  });
+  client.define('GET', '/requests/:id/photos', { roles: ['customer', 'provider', 'admin'], summary: 'Before / after photos of the job.' }, ({ params, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    const x = store.jobPhotosOf(r.id);
+    return { before: (x && x.before) || '', after: (x && x.after) || '', share: !!(x && x.share) };
+  });
+  client.define('POST', '/requests/:id/photos', { roles: ['provider'], summary: 'Provider uploads the before / after photo {kind, data (compressed data URL)}.' }, ({ params, body, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    const p = store.providerOf(r.id); if (!p || p.id !== actor.id) return fail('FORBIDDEN', 'اقبل الطلب أولًا');
+    if (!['arrived', 'started', 'quote', 'completed'].includes(r.status)) return fail('CONFLICT', 'الصور بتترفع وانت في مكان الشغل');
+    return store.setJobPhoto(r.id, String(body.kind || ''), String(body.data || '')) ? ok({ kind: body.kind }, 201) : fail('VALIDATION', 'الصورة غير صالحة أو أكبر من المسموح', { data: 'webp/jpeg ≤ 130 KB' });
+  });
+  client.define('POST', '/requests/:id/photos/share', { roles: ['customer'], summary: 'Customer allows (or not) the photos in the provider portfolio {share}.' }, ({ params, body, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    return store.shareJobPhotos(r.id, body.share === true) ? { share: body.share === true } : fail('NOT_FOUND', 'مفيش صور للطلب ده');
+  });
   /* ── round 5: chat, customer rating ── */
   client.define('POST', '/requests/:id/messages', { roles: ['customer', 'provider'], summary: 'Message the other side of an accepted job {text ≤ 500}.' }, ({ params, body, actor, store }) => {
     const r = load(store, actor, params.id); if (!r) return notFound();
@@ -218,7 +258,13 @@
     chooseProvider: (reqId, providerId) => client.post('/requests/' + id(reqId) + '/provider', { providerId }),
     respond: (reqId, accept, reason) => client.post('/requests/' + id(reqId) + '/respond', { accept, reason }),
     schedule: (reqId, at) => client.post('/requests/' + id(reqId) + '/schedule', at ? { at } : {}),
-    advance: (reqId, to, eta) => client.post('/requests/' + id(reqId) + '/advance', eta ? { to, eta } : { to }),
+    advance: (reqId, to, eta, pin) => client.post('/requests/' + id(reqId) + '/advance', Object.assign({ to }, eta ? { eta } : {}, pin ? { pin } : {})),
+    warranty: (reqId, desc) => client.post('/requests/' + id(reqId) + '/warranty', { desc }),
+    tip: (reqId, amount) => client.post('/requests/' + id(reqId) + '/tip', { amount }),
+    chatSeen: reqId => client.post('/requests/' + id(reqId) + '/chat-seen', {}),
+    photos: reqId => client.get('/requests/' + id(reqId) + '/photos'),
+    uploadPhoto: (reqId, kind, data) => client.post('/requests/' + id(reqId) + '/photos', { kind, data }),
+    sharePhotos: (reqId, share) => client.post('/requests/' + id(reqId) + '/photos/share', { share }),
     message: (reqId, text) => client.post('/requests/' + id(reqId) + '/messages', { text }),
     rateCustomer: (reqId, stars, comment) => client.post('/requests/' + id(reqId) + '/rate-customer', { stars, comment }),
     complete: (reqId, value, deductions) => client.post('/requests/' + id(reqId) + '/complete', { value, deductions }),

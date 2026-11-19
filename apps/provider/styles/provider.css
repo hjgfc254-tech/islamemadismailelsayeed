@@ -156,3 +156,21 @@
 /* fluid type (follows the screen size) */
 .pv-main,.pv-view,main{font-size:clamp(14px,.82rem + .3vw,16px)}
 .pv-hero h1,.pv-section-head h1{font-size:clamp(20px,1.1rem + 1.4vw,30px)}
+/* ── round 8: arrival code, job photos, warranty / tip notes, read receipt, typing, praise ── */
+@keyframes pvDots{0%,80%,100%{transform:translateY(0);opacity:.45}40%{transform:translateY(-4px);opacity:1}}
+.pv-pin-input{width:9ch;font-size:26px;font-weight:800;letter-spacing:.5em;text-align:center;font-variant-numeric:tabular-nums}
+.pv-photos{display:inline-flex;flex-wrap:wrap;gap:6px}
+.pv-photos .pv-chip{display:inline-flex;align-items:center;gap:6px}
+.pv-chip.is-done{border-color:var(--success);color:var(--success)}
+.pv-note-warranty,.pv-note-tip{display:flex;align-items:center;gap:8px}
+.pv-note-warranty{color:var(--accent-ink)}.pv-note-tip b{font-variant-numeric:tabular-nums}
+.pv-seen{display:block;margin-top:2px;font-size:11px;opacity:.8}
+.pv-typing{display:flex;align-items:center;gap:4px;margin:0 0 8px;color:var(--text-muted);font-size:12.5px}
+.pv-typing i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pvDots 1.2s infinite}
+.pv-typing i:nth-child(2){animation-delay:.15s}.pv-typing i:nth-child(3){animation-delay:.3s;margin-inline-end:4px}
+.pv-praise{margin:12px 0;padding:12px 16px;border:1px solid var(--border-subtle);border-radius:var(--r-lg);background:var(--surface-primary)}
+.pv-praise small{color:var(--text-muted);font-size:12.5px}
+.pv-praise ul{list-style:none;display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 0;padding:0}
+.pv-praise li{display:inline-flex;align-items:center;gap:8px;padding:5px 5px 5px 12px;border-radius:999px;background:var(--surface-sunken);font-size:13px}
+.pv-praise b{display:grid;place-items:center;min-width:24px;height:24px;padding:0 6px;border-radius:999px;background:var(--accent);color:var(--on-accent);font-size:12px}
+@media (prefers-reduced-motion:reduce){.pv-typing i{animation:none;opacity:.8}}

@@ -27,6 +27,7 @@
     return `<div class="screen">${topbar()}${bannerHtml}
   ${renderGreeting()}
   ${ctx.addressBar||''}
+  ${ctx.care||''}
   ${renderDraftResume()}
   ${renderActiveRequests()}
   <section class="hero" aria-labelledby="heroT">

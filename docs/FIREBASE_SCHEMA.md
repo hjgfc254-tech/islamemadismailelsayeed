@@ -55,6 +55,10 @@ written by `functions/src/store.js`.
 
 ## Backend-only collections
 
+- `jobPhotos/{reqId}` — before / after photos of a job as compressed data URLs (each ≤ 180k chars), `share` = the customer's consent to show them in the provider portfolio. Read only by `GET /requests/:id/photos` and `GET /providers/:id/portfolio` (`providerId == x AND share == true`), never in a sync.
+- RTDB `typing/{reqId}/{uid}` — «بيكتب…» flag `{r: customer|provider, at}`, written by the user only.
+
+
 - `system/public` — server-only public summary `{atMs, providers[{id,data}], serviceAreas[{id,data}], reviews[{id,data}]}` (approved providers ≤ 200, all areas, latest 12 reviews). Read by every sync (1 read instead of one per document); deleted in the same transaction by any commit that changes providers / serviceAreas / reviews, rebuilt by the next sync, and rebuilt anyway after 10 minutes. Never used by write paths.
 
 

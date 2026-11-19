@@ -28,7 +28,11 @@ test('security rules: no direct client access to Firestore; RTDB exposes only th
   assert.equal(db.signals.$uid['.read'], 'auth != null && auth.uid === $uid');
   assert.equal(db.signals.$uid['.write'], false);
   /* the only public node: the site-content version (a number + timestamp, written by Functions only) */
-  assert.deepEqual(Object.keys(db).filter(k => !k.startsWith('.')).sort(), ['public', 'signals']);
+  assert.deepEqual(Object.keys(db).filter(k => !k.startsWith('.')).sort(), ['public', 'signals', 'typing']);
+  /* «بيكتب…» flags: signed-in users write only their own flag, with a role and a server timestamp (no message content) */
+  assert.equal(db.typing.$reqId['.read'], 'auth != null');
+  assert.equal(db.typing.$reqId.$uid['.write'], 'auth != null && auth.uid === $uid');
+  assert.match(db.typing.$reqId.$uid['.validate'], /hasChildren\(\['r', 'at'\]\)/);
   assert.deepEqual(Object.keys(db.public), ['content']);
   assert.equal(db.public.content['.read'], true); assert.equal(db.public.content['.write'], false);
 });

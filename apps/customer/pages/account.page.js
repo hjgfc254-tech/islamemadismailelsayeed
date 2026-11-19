@@ -170,6 +170,7 @@ const Account = (() => {
         ${stat('المكتملة', completed)}
       </div>
       <button class="cta ghost" data-go="addresses">${safeIc('pin')} إدارة العناوين (${MP.addressesFor(u.id).length})</button>
+      ${globalThis.HSTrust ? HSTrust.myHome() : ''}
     `;
   };
 

@@ -136,7 +136,8 @@ test('HSAdminLive: Admin pages read the server read model and act only through r
   const un = await L.status('orders', 'r1', 'enroute');
   assert.equal(un.ok, false); assert.equal(un.status, 501, 'admin cannot fake a provider transition');
   assert.equal((await L.status('complaints', 'k1', 'dismissed')).status, 501);
-  assert.equal((await L.status('reviews', 'v1', 'hidden')).status, 501, 'no review moderation route');
+  assert.equal((await L.status('reviews', 'v1', 'flagged')).status, 501, 'only hide / publish are real review actions');
+  assert.equal(L.supports('reviews', 'hidden'), true); assert.equal(L.supports('quotes', 'approved'), false, 'quotes stay read-only for the admin');
   assert.equal(calls.length, before, 'unsupported actions never reach the network or the local store');
 });
 test('HSAdminLivePanels: every remaining Admin page renders server data from real routes (no fixtures)', async () => {

@@ -55,9 +55,9 @@ stored as **`requests`**; `meta`/`settings` live in `system/meta`, `system/setti
 
 | Collection | Key fields |
 |---|---|
-| `customers` | id, name, phone (01xxxxxxxxx), email?, status (active/suspended), uid link via `users`; **credit** (invite reward balance), **refCode** (HS + 6), **referredBy**, **promosUsed[]**, **rating / ratingSum / ratingCount** (from providers) |
+| `customers` | id, name, phone (01xxxxxxxxx), email?, status (active/suspended), uid link via `users`; **credit** (invite reward balance), **refCode** (HS + 6), **referredBy**, **promosUsed[]**, **rating / ratingSum / ratingCount** (from providers), **devices[{id,item,cat,name,brand,year,lastAt,nextAt}]** («بيتي») |
 | `providers` | id, name, phone, type, cats[], subs[], govs[], areas[], years, bio, rating, jobs, avatar, status (pending/approved/rejected/suspended), available, specialRate?, createdAt |
-| `requests` | id, no (HS-YYYY-NNNN), customerId, cat, catName, serviceId, serviceName, itemId, itemName, problemId, problemName, unknownProblem, answers{}, specialty, desc, note, notes, photos[], attachments[] (ids), gov, area, addr, geo{lat,lng}?, addressId, when, preferredPeriod, flexible, whenNote, phone, contactMethod, status, history[{s,at,note}], proposal{at}?, agreedAt?, pricing{customerPrice, providerAmount, platformFee, rate}?, agreedValue?, finalValue?, freeService{status,reason}?, cancelReason?, **chat[{id,by,pid,text,at}]**, **etaMin/etaAt**, **customerReview{stars,comment,by,at}**, **promo{code,kind,value,maxOff?,ref?,refReward?}**, **discount**, **packageId/packageName**, createdAt |
+| `requests` | id, no (HS-YYYY-NNNN), customerId, cat, catName, serviceId, serviceName, itemId, itemName, problemId, problemName, unknownProblem, answers{}, specialty, desc, note, notes, photos[], attachments[] (ids), gov, area, addr, geo{lat,lng}?, addressId, when, preferredPeriod, flexible, whenNote, phone, contactMethod, status, history[{s,at,note}], proposal{at}?, agreedAt?, pricing{customerPrice, providerAmount, platformFee, rate}?, agreedValue?, finalValue?, freeService{status,reason}?, cancelReason?, **chat[{id,by,pid,text,at}]**, **etaMin/etaAt**, **customerReview{stars,comment,by,at}**, **promo{code,kind,value,maxOff?,ref?,refReward?}**, **discount**, **packageId/packageName**, **pin** (arrival code; customer only), **pinTries**, **warrantyUntil**, **warrantyOf / warrantyClaimId**, **tip{amount,at}**, **chatSeen{customer,provider}**, **hasPhotos{before,after,at}**, createdAt |
 | `assignments` | id, reqId, providerId, status (offered/accepted/declined/withdrawn), reason?, at |
 | `quotes` | id, reqId, providerId, labor, parts, total, customerTotal, status (pending/approved/rejected), note, at, approvedAt |
 | `transactions` | id, reqId, providerId, customerId, cat, value (customer pays), rate, commission (platform), deductions, net (provider), **discount**, **promo**, pricing ('upfront'?), free?, model, collection (pending/collected/…), at |
@@ -68,7 +68,7 @@ stored as **`requests`**; `meta`/`settings` live in `system/meta`, `system/setti
 | `favorites` | customerId, kind (provider/service), refId (doc id `customer__kind__ref`) |
 | `serviceAreas` | gov (doc id), areas[] |
 | `system/meta` | v, lastReqNo |
-| `system/settings` | defaultRate, rates{cat:%}, prices{itemKey: base}, markupRate, customerFee, autoAssign, collectionModel, contentV, **trend{day,cats{},areas{"gov|area":n}}**, **packages[{id,name,cat,visits,price,desc,active}]**, **referral{on,reward}**, **promos[{code,kind,value,maxOff,uses,used,firstOnly,until,active}]** (admin-only) |
+| `system/settings` | defaultRate, rates{cat:%}, prices{itemKey: base}, markupRate, customerFee, autoAssign, collectionModel, contentV, **trend{day,cats{},areas{"gov|area":n}}**, **packages[{id,name,cat,visits,price,desc,active}]**, **referral{on,reward}**, **warranty{default,cats{},items{}}** (days), **arrivalPin** (bool), **promos[{code,kind,value,maxOff,uses,used,firstOnly,until,active}]** (admin-only) |
 | `system/content` | v, hero{eyebrow,title,accent,sub,cta,media}, slides[], icons{name:mediaId}, banner{on,text,action}, updatedAt, by |
 | `system/rbac` | roles, overrides (employee permission catalogue) |
 | `media` | kind (hero/slide/icon), data (data:image/webp;base64…), bytes, w, h, at |
@@ -177,6 +177,10 @@ written by `functions/src/store.js`.
 **Device-local, never stored server-side:** `drafts` and `searchHistory`; `services` is derived from the catalogue.
 
 ## Backend-only collections
+
+- `jobPhotos/{reqId}` — before / after photos of a job as compressed data URLs (each ≤ 180k chars), `share` = the customer's consent to show them in the provider portfolio. Read only by `GET /requests/:id/photos` and `GET /providers/:id/portfolio` (`providerId == x AND share == true`), never in a sync.
+- RTDB `typing/{reqId}/{uid}` — «بيكتب…» flag `{r: customer|provider, at}`, written by the user only.
+
 
 - `system/public` — server-only public summary `{atMs, providers[{id,data}], serviceAreas[{id,data}], reviews[{id,data}]}` (approved providers ≤ 200, all areas, latest 12 reviews). Read by every sync (1 read instead of one per document); deleted in the same transaction by any commit that changes providers / serviceAreas / reviews, rebuilt by the next sync, and rebuilt anyway after 10 minutes. Never used by write paths.
 
@@ -328,6 +332,16 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /requests/:id/review` | customer | orders-api.js | Rate the provider once {stars 1–5, comment}. |
 | `POST /requests/:id/messages` | customer, provider | orders-api.js | Message the other side of an accepted job {text ≤ 500}. |
 | `POST /requests/:id/rate-customer` | provider | orders-api.js | Provider rates the customer once after the job {stars 1–5, comment}. |
+| `POST /requests/:id/warranty` | customer | orders-api.js | «المشكلة رجعت» within the warranty: a linked request to the same provider {desc}. |
+| `POST /requests/:id/tip` | customer | orders-api.js | Tip for the provider, paid in cash with the bill {amount 5–1000}. |
+| `POST /requests/:id/chat-seen` | customer, provider | orders-api.js | Read receipt: the caller saw the conversation. |
+| `GET /requests/:id/photos` | customer, provider, admin | orders-api.js | Before / after photos of the job. |
+| `POST /requests/:id/photos` | provider | orders-api.js | Provider uploads the before / after photo {kind, data (compressed data URL)}. |
+| `POST /requests/:id/photos/share` | customer | orders-api.js | Customer allows (or not) the photos in the provider portfolio {share}. |
+| `GET /customers/me/devices` | customer | customer-api.js | «بيتي»: own appliances with the next maintenance date. |
+| `POST /customers/me/devices` | customer | customer-api.js | Add an appliance {item, brand, year}. |
+| `DELETE /customers/me/devices/:id` | customer | customer-api.js | Remove an appliance. |
+| `GET /providers/:id/portfolio` | public | catalog-api.js | Before / after photos the customers allowed the provider to show. |
 | `POST /requests/:id/quotes` | provider | quotes-api.js | Submit a quote (total > 0). |
 | `POST /requests/:id/quote/approve` | customer | quotes-api.js | Approve the current quote (refused when total is 0). |
 | `POST /requests/:id/quote/reject` | customer | quotes-api.js | Reject the current quote {reason}. |
@@ -373,6 +387,7 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `GET /admin/requests/:id/candidates` | admin | admin-api.js | Providers matching a request. |
 | `POST /admin/requests/:id/assign` | admin | admin-api.js | Assign manually {providerId} or auto-match. |
 | `POST /admin/customers/:id/status` | admin | admin-api.js | Suspend / reactivate a customer. |
+| `POST /admin/reviews/:id/visibility` | admin | admin-api.js | Hide or re-publish a review {hidden, reason}. |
 | `GET /admin/marketing` | admin | admin-api.js | Promo codes, invite reward and packages. |
 | `PATCH /admin/marketing` | admin | admin-api.js | Replace promo codes / invite reward / packages {promos?, referral?, packages?}. |
 
@@ -394,7 +409,7 @@ mutating routes, pagination for list routes, rate limits, versioning, and the mi
 
 
 ## Appendix C — Settings keys referenced by the code
-`autoAssign`, `collectionModel`, `defaultRate`, `markupRate`, `prices`, `rates`, `trend`
+`autoAssign`, `collectionModel`, `defaultRate`, `markupRate`, `prices`, `rates`, `trend`, `warranty`
 
 ## Appendix D — Security rules and Firebase config
 ### firestore.rules
@@ -427,6 +442,15 @@ service cloud.firestore {
       "$uid": {
         ".read": "auth != null && auth.uid === $uid",
         ".write": false
+      }
+    },
+    "typing": {
+      "$reqId": {
+        ".read": "auth != null",
+        "$uid": {
+          ".write": "auth != null && auth.uid === $uid",
+          ".validate": "newData.hasChildren(['r', 'at']) && (newData.child('r').val() === 'customer' || newData.child('r').val() === 'provider') && newData.child('at').isNumber()"
+        }
       }
     },
     "public": {
@@ -871,7 +895,7 @@ service cloud.firestore {
 | `apps/admin/admin-auth.js` | IMPLEMENTED (FRONTEND DEMO) | 1434 |
 | `apps/admin/admin-router.js` | IMPLEMENTED (FRONTEND DEMO) | 1998 |
 | `apps/admin/admin-session.js` | IMPLEMENTED (FRONTEND DEMO) | 1857 |
-| `apps/admin/admin-shell.js` | IMPLEMENTED (SHELL, DEMO) | 25322 |
+| `apps/admin/admin-shell.js` | IMPLEMENTED (SHELL, DEMO) | 25478 |
 | `apps/admin/app.js` | IMPLEMENTED (FRONTEND DEMO) | 5163 |
 | `apps/admin/index.html` | IMPLEMENTED (SHELL HOST) | 4929 |
 | `apps/admin/login.html` | IMPLEMENTED (FRONTEND DEMO) | 812 |
@@ -879,7 +903,7 @@ service cloud.firestore {
 | `apps/admin/modules/access-control/permission-presets.js` | IMPLEMENTED (FRONTEND DEMO) | 2066 |
 | `apps/admin/modules/access-control/role-editor.js` | IMPLEMENTED (FRONTEND DEMO) | 7597 |
 | `apps/admin/modules/admin-live-panels.js` | NEEDS_REVIEW | 15368 |
-| `apps/admin/modules/admin-live.js` | NEEDS_REVIEW | 15168 |
+| `apps/admin/modules/admin-live.js` | NEEDS_REVIEW | 20217 |
 | `apps/admin/modules/audit/audit-details.js` | IMPLEMENTED (FRONTEND DEMO) | 2422 |
 | `apps/admin/modules/audit/audit-filters.js` | IMPLEMENTED (FRONTEND DEMO) | 1382 |
 | `apps/admin/modules/command-palette.js` | NEEDS_REVIEW | 5202 |
@@ -906,7 +930,7 @@ service cloud.firestore {
 | `apps/admin/pages/providers-management.page.js` | IMPLEMENTED (DEMO) | 12733 |
 | `apps/admin/pages/quotes-management.page.js` | IMPLEMENTED (DEMO) | 17905 |
 | `apps/admin/pages/reports.page.js` | IMPLEMENTED (DEMO) | 26229 |
-| `apps/admin/pages/reviews-management.page.js` | IMPLEMENTED (DEMO) | 14492 |
+| `apps/admin/pages/reviews-management.page.js` | IMPLEMENTED (DEMO) | 14991 |
 | `apps/admin/pages/roles.page.js` | IMPLEMENTED (DEMO) | 10696 |
 | `apps/admin/pages/security.page.js` | IMPLEMENTED (DEMO) | 28800 |
 | `apps/admin/pages/services-management.page.js` | IMPLEMENTED (DEMO) | 15608 |
@@ -924,24 +948,24 @@ service cloud.firestore {
 
 | File | Status | Bytes |
 |---|---|---|
-| `apps/customer/app.js` | PARTIALLY IMPLEMENTED | 96366 |
+| `apps/customer/app.js` | PARTIALLY IMPLEMENTED | 100727 |
 | `apps/customer/customer-router.js` | IMPLEMENTED (FRONTEND DEMO) | 3508 |
 | `apps/customer/customer-session.js` | IMPLEMENTED (FRONTEND DEMO) | 4646 |
 | `apps/customer/index.html` | IMPLEMENTED | 7014 |
 | `apps/customer/pages/account.page.js` | IMPLEMENTED | 27323 |
 | `apps/customer/pages/addresses.page.js` | IMPLEMENTED | 10307 |
 | `apps/customer/pages/discover.page.js` | IMPLEMENTED | 15067 |
-| `apps/customer/pages/home.page.js` | IMPLEMENTED (DEMO) | 8882 |
+| `apps/customer/pages/home.page.js` | IMPLEMENTED (DEMO) | 8998 |
 | `apps/customer/pages/market-ui.page.js` | IMPLEMENTED | 33026 |
 | `apps/customer/pages/order-details.page.js` | IMPLEMENTED (DEMO) | 17848 |
 | `apps/customer/pages/orders.page.js` | IMPLEMENTED (DEMO) | 3051 |
-| `apps/customer/pages/providers.page.js` | IMPLEMENTED | 10885 |
+| `apps/customer/pages/providers.page.js` | IMPLEMENTED | 10898 |
 | `apps/customer/pages/request-create.page.js` | IMPLEMENTED (FRONTEND DEMO) | 2370 |
-| `apps/customer/pages/request-wizard.page.js` | IMPLEMENTED | 63551 |
+| `apps/customer/pages/request-wizard.page.js` | IMPLEMENTED | 67896 |
 | `apps/customer/pages/search.page.js` | IMPLEMENTED | 35413 |
 | `apps/customer/pages/support.page.js` | IMPLEMENTED | 21736 |
 | `apps/customer/README.md` | CONFIGURATION | 323 |
-| `apps/customer/styles/customer.css` | IMPLEMENTED | 107963 |
+| `apps/customer/styles/customer.css` | IMPLEMENTED | 109725 |
 
 ### apps/guest (3)
 
@@ -1177,13 +1201,13 @@ service cloud.firestore {
 | `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md` | DOCUMENTATION | 7594 |
 | `docs/AI_CONTEXT/FILE_INDEX.json` | DOCUMENTATION |  |
 | `docs/AI_CONTEXT/README.md` | DOCUMENTATION | 1240 |
-| `docs/AI_CONTEXT/START_HERE.md` | DOCUMENTATION | 6081 |
+| `docs/AI_CONTEXT/START_HERE.md` | DOCUMENTATION | 6003 |
 | `docs/AI_CONTEXT/WORKFLOW.md` | DOCUMENTATION | 1652 |
 | `docs/AI_NEXT_IMPLEMENTATION_ORDER.md` | CONFIGURATION | 14359 |
-| `docs/AI_PROJECT_MAP.csv` | CONFIGURATION | 278144 |
+| `docs/AI_PROJECT_MAP.csv` | CONFIGURATION | 277569 |
 | `docs/AI_PROJECT_MAP.json` | CONFIGURATION |  |
-| `docs/AI_PROJECT_MAP.md` | CONFIGURATION | 141986 |
-| `docs/API_CONTRACTS.md` | CONFIGURATION | 16970 |
+| `docs/AI_PROJECT_MAP.md` | CONFIGURATION | 141872 |
+| `docs/API_CONTRACTS.md` | CONFIGURATION | 17082 |
 | `docs/ARCHITECTURE_BLUEPRINT_V1.md` | CONFIGURATION | 54657 |
 | `docs/ARCHITECTURE.md` | CONFIGURATION | 1980 |
 | `docs/AUTHENTICATION.md` | CONFIGURATION | 948 |
@@ -1209,7 +1233,7 @@ service cloud.firestore {
 | `docs/FIREBASE_BACKEND.md` | NEEDS_REVIEW | 17906 |
 | `docs/FIREBASE_DATA_INVENTORY.md` | NEEDS_REVIEW | 6346 |
 | `docs/FIREBASE_MIGRATION_PLAN.md` | NEEDS_REVIEW | 3491 |
-| `docs/FIREBASE_SCHEMA.md` | NEEDS_REVIEW | 7075 |
+| `docs/FIREBASE_SCHEMA.md` | NEEDS_REVIEW | 7504 |
 | `docs/FRONTEND_ARCHITECTURE.md` | DOCUMENTATION | 4873 |
 | `docs/FRONTEND_COMPONENT_CATALOG.md` | DOCUMENTATION | 5262 |
 | `docs/FRONTEND_DESIGN_SYSTEM.md` | DOCUMENTATION | 4953 |
@@ -1233,8 +1257,8 @@ service cloud.firestore {
 | `docs/PERMISSIONS.md` | CONFIGURATION | 824 |
 | `docs/PLAYBOOKS.md` | NEEDS_REVIEW | 13769 |
 | `docs/PROJECT_CONTROL_CENTER_GUIDE.md` | CONFIGURATION | 2381 |
-| `docs/PROJECT_REFERENCE.md` | NEEDS_REVIEW | 87265 |
-| `docs/PROJECT_TREE.md` | CONFIGURATION | 26540 |
+| `docs/PROJECT_REFERENCE.md` | NEEDS_REVIEW | 88706 |
+| `docs/PROJECT_TREE.md` | CONFIGURATION | 26550 |
 | `docs/PROMPT_LOG_V8.md` | CONFIGURATION | 30100 |
 | `docs/PROVIDER_LEGACY_PARITY_AUDIT.md` | DOCUMENTATION | 6575 |
 | `docs/REMOVED_FILES_REPORT.md` | CONFIGURATION | 299 |
@@ -1273,14 +1297,14 @@ service cloud.firestore {
 | `functions/domain/apps/admin/permission-guard.js` | NEEDS_REVIEW | 2507 |
 | `functions/domain/apps/admin/rbac-store.js` | NEEDS_REVIEW | 15489 |
 | `functions/domain/manifest.json` | NEEDS_REVIEW | 2051 |
-| `functions/domain/services/admin-api.js` | NEEDS_REVIEW | 11626 |
+| `functions/domain/services/admin-api.js` | NEEDS_REVIEW | 12445 |
 | `functions/domain/services/api-client.js` | NEEDS_REVIEW | 9021 |
 | `functions/domain/services/auth-api.js` | NEEDS_REVIEW | 4274 |
 | `functions/domain/services/catalog-api.js` | NEEDS_REVIEW | 3962 |
 | `functions/domain/services/customer-api.js` | NEEDS_REVIEW | 7853 |
 | `functions/domain/services/finance-api.js` | NEEDS_REVIEW | 7175 |
 | `functions/domain/services/local-catalog.js` | NEEDS_REVIEW | 51241 |
-| `functions/domain/services/local-market-store.js` | NEEDS_REVIEW | 50926 |
+| `functions/domain/services/local-market-store.js` | NEEDS_REVIEW | 51507 |
 | `functions/domain/services/notifications-api.js` | NEEDS_REVIEW | 1769 |
 | `functions/domain/services/orders-api.js` | NEEDS_REVIEW | 18573 |
 | `functions/domain/services/provider-api.js` | NEEDS_REVIEW | 5961 |
@@ -1294,29 +1318,28 @@ service cloud.firestore {
 | `functions/src/content.js` | NEEDS_REVIEW | 9646 |
 | `functions/src/identity.js` | NEEDS_REVIEW | 2012 |
 | `functions/src/limits.js` | NEEDS_REVIEW | 2572 |
-| `functions/src/partial.js` | NEEDS_REVIEW | 10389 |
-| `functions/src/plan.js` | NEEDS_REVIEW | 11277 |
+| `functions/src/partial.js` | NEEDS_REVIEW | 12796 |
+| `functions/src/plan.js` | NEEDS_REVIEW | 11134 |
 | `functions/src/runtime.js` | NEEDS_REVIEW | 4332 |
-| `functions/src/scope.js` | NEEDS_REVIEW | 5429 |
-| `functions/src/service.js` | NEEDS_REVIEW | 29213 |
+| `functions/src/scope.js` | NEEDS_REVIEW | 5454 |
+| `functions/src/service.js` | NEEDS_REVIEW | 29606 |
 | `functions/src/store.js` | NEEDS_REVIEW | 5293 |
 | `functions/src/workforce.js` | NEEDS_REVIEW | 9869 |
 
-### root (11)
+### root (10)
 
 | File | Status | Bytes |
 |---|---|---|
 | `_redirects` | CONFIGURATION | 244 |
 | `.editorconfig` | CONFIGURATION | 232 |
-| `.gitignore` | CONFIGURATION | 806 |
+| `.gitignore` | CONFIGURATION | 883 |
 | `AGENTS.md` | DOCUMENTATION | 289 |
 | `CLAUDE.md` | DOCUMENTATION | 4030 |
 | `index.html` | CONFIGURATION | 423 |
 | `manifest.json` | CONFIGURATION | 629 |
 | `package.json` | CONFIGURATION | 1200 |
-| `PROJECT_CONTROL_CENTER.html` | LEGACY | 170431 |
 | `README.md` | CONFIGURATION | 4086 |
-| `service-worker.js` | CONFIGURATION | 10596 |
+| `service-worker.js` | CONFIGURATION | 10597 |
 
 ### scripts (6)
 
@@ -1333,7 +1356,7 @@ service cloud.firestore {
 
 | File | Status | Bytes |
 |---|---|---|
-| `services/admin-api.js` | IMPLEMENTED (MOCK ADAPTER) | 11626 |
+| `services/admin-api.js` | IMPLEMENTED (MOCK ADAPTER) | 12445 |
 | `services/api-client.js` | IMPLEMENTED (MOCK ADAPTER) | 9021 |
 | `services/auth-api.js` | IMPLEMENTED (MOCK ADAPTER) | 4274 |
 | `services/catalog-api.js` | IMPLEMENTED (MOCK ADAPTER) | 3962 |
@@ -1343,7 +1366,7 @@ service cloud.firestore {
 | `services/firebase-config.js` | NEEDS_REVIEW | 2507 |
 | `services/local-attachments.js` | IMPLEMENTED | 14813 |
 | `services/local-catalog.js` | IMPLEMENTED | 51241 |
-| `services/local-market-store.js` | IMPLEMENTED | 50926 |
+| `services/local-market-store.js` | IMPLEMENTED | 51507 |
 | `services/notifications-api.js` | IMPLEMENTED (MOCK ADAPTER) | 1769 |
 | `services/orders-api.js` | IMPLEMENTED (MOCK ADAPTER) | 18573 |
 | `services/provider-api.js` | IMPLEMENTED (MOCK ADAPTER) | 5961 |
@@ -1422,7 +1445,7 @@ service cloud.firestore {
 | `tests/integration/README.md` | PLACEHOLDER | 115 |
 | `tests/security/README.md` | PLACEHOLDER | 154 |
 | `tests/unit/a11y-markup.test.js` | TEST | 3839 |
-| `tests/unit/accessible-tabs-contract.test.js` | TEST | 1367 |
+| `tests/unit/accessible-tabs-contract.test.js` | TEST | 1368 |
 | `tests/unit/accessible-tabs.test.js` | TEST | 3788 |
 | `tests/unit/admin-dashboard.test.js` | TEST | 1708 |
 | `tests/unit/admin-modules.test.js` | TEST | 9308 |
@@ -1430,7 +1453,7 @@ service cloud.firestore {
 | `tests/unit/admin-shell.test.js` | TEST | 2973 |
 | `tests/unit/api-adapters.test.js` | TEST | 20167 |
 | `tests/unit/audit-log.test.js` | TEST | 3133 |
-| `tests/unit/catalog-wizard.test.js` | IMPLEMENTED | 11086 |
+| `tests/unit/catalog-wizard.test.js` | IMPLEMENTED | 11553 |
 | `tests/unit/categories-management.test.js` | TEST | 6128 |
 | `tests/unit/commissions.test.js` | TEST | 7146 |
 | `tests/unit/complaints-management.test.js` | TEST | 5017 |
@@ -1444,14 +1467,14 @@ service cloud.firestore {
 | `tests/unit/customers-management.test.js` | TEST | 2712 |
 | `tests/unit/data-grid.test.js` | TEST | 5285 |
 | `tests/unit/departments.test.js` | TEST | 7452 |
-| `tests/unit/design-system.test.js` | IMPLEMENTED | 2304 |
+| `tests/unit/design-system.test.js` | IMPLEMENTED | 2305 |
 | `tests/unit/design-token-audit.test.js` | TEST | 2526 |
 | `tests/unit/dialogs.test.js` | TEST | 3204 |
 | `tests/unit/discover.test.js` | IMPLEMENTED | 12452 |
 | `tests/unit/finance-dashboard.test.js` | TEST | 4333 |
-| `tests/unit/firebase-backend.test.js` | NEEDS_REVIEW | 52241 |
+| `tests/unit/firebase-backend.test.js` | NEEDS_REVIEW | 55000 |
 | `tests/unit/firebase-integration-contract.test.js` | NEEDS_REVIEW | 7794 |
-| `tests/unit/firebase-mode-data.test.js` | NEEDS_REVIEW | 15984 |
+| `tests/unit/firebase-mode-data.test.js` | NEEDS_REVIEW | 16151 |
 | `tests/unit/frontend-contracts.test.js` | TEST | 8944 |
 | `tests/unit/home.test.js` | IMPLEMENTED | 10214 |
 | `tests/unit/icon-asset-audit.test.js` | TEST | 4660 |
@@ -1467,7 +1490,7 @@ service cloud.firestore {
 | `tests/unit/provider-app-routing.test.js` | TEST | 5579 |
 | `tests/unit/provider-customer-location.test.js` | NEEDS_REVIEW | 7450 |
 | `tests/unit/provider-domain.test.js` | TEST | 8366 |
-| `tests/unit/provider-pages.test.js` | TEST | 6979 |
+| `tests/unit/provider-pages.test.js` | TEST | 6980 |
 | `tests/unit/provider-request-domain.test.js` | TEST | 18661 |
 | `tests/unit/providers-management.test.js` | TEST | 3336 |
 | `tests/unit/quotes-management.test.js` | TEST | 6130 |
@@ -1478,7 +1501,7 @@ service cloud.firestore {
 | `tests/unit/responsive-audit.test.js` | IMPLEMENTED | 4495 |
 | `tests/unit/responsive-sweep-regression.test.js` | TEST | 2480 |
 | `tests/unit/reviews-management.test.js` | TEST | 4794 |
-| `tests/unit/round5-features.test.js` | NEEDS_REVIEW | 14977 |
+| `tests/unit/round5-features.test.js` | NEEDS_REVIEW | 19311 |
 | `tests/unit/security.test.js` | TEST | 6317 |
 | `tests/unit/service-worker-precache.test.js` | TEST | 2791 |
 | `tests/unit/services-management.test.js` | TEST | 4892 |
@@ -1487,7 +1510,7 @@ service cloud.firestore {
 | `tests/unit/shared-components.test.js` | TEST | 1802 |
 | `tests/unit/shared-foundations.test.js` | TEST | 4567 |
 | `tests/unit/site-content.test.js` | NEEDS_REVIEW | 5609 |
-| `tests/unit/static-audit.test.js` | IMPLEMENTED | 2195 |
+| `tests/unit/static-audit.test.js` | IMPLEMENTED | 2196 |
 | `tests/unit/status-badge.test.js` | TEST | 4978 |
 | `tests/unit/super-dashboard.test.js` | TEST | 9818 |
 | `tests/unit/system-settings.test.js` | TEST | 5040 |
@@ -1497,3 +1520,9 @@ service cloud.firestore {
 | `tests/unit/ui-round3.test.js` | NEEDS_REVIEW | 5565 |
 | `tests/unit/upfront-pricing.test.js` | NEEDS_REVIEW | 7330 |
 | `tests/unit/workforce.test.js` | TEST | 6422 |
+
+### tools-lab (1)
+
+| File | Status | Bytes |
+|---|---|---|
+| `tools-lab/.gitignore` | NEEDS_REVIEW | 112 |

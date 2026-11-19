@@ -52,8 +52,14 @@
   client.define('GET', '/providers/:id', { roles: ['public'], summary: 'Public provider profile + recent reviews.' }, ({ params, store }) => {
     const p = store.get('providers', params.id);
     if (!listed(p)) return fail('NOT_FOUND', 'مقدم الخدمة غير موجود');
-    const reviews = store.db().reviews.filter(v => v.providerId === p.id).slice(0, 10).map(v => ({ stars: v.stars, comment: v.comment || '', at: v.at }));
+    const reviews = store.db().reviews.filter(v => v.providerId === p.id && !v.hidden).slice(0, 10).map(v => ({ stars: v.stars, comment: v.comment || '', at: v.at }));
     return { ...publicProvider(store, p), reviews };
+  });
+
+  client.define('GET', '/providers/:id/portfolio', { roles: ['public'], summary: 'Before / after photos the customers allowed the provider to show.' }, ({ params, store }) => {
+    const p = store.get('providers', params.id);
+    if (!listed(p)) return fail('NOT_FOUND', 'مقدم الخدمة غير موجود');
+    return { items: (typeof store.portfolio === 'function' ? store.portfolio(p.id) : []).map(x => ({ before: x.before, after: x.after, at: x.at })) };
   });
 
   const qs = o => { const s = Object.entries(o).filter(([, v]) => v).map(([k, v]) => k + '=' + encodeURIComponent(v)).join('&'); return s ? '?' + s : ''; };
@@ -62,6 +68,7 @@
     categories: () => client.get('/categories'),
     services: cat => client.get('/services' + qs({ cat })),
     providers: (filters = {}) => client.get('/providers' + qs({ cat: filters.cat, gov: filters.gov, q: filters.q })),
-    provider: id => client.get('/providers/' + encodeURIComponent(id))
+    provider: id => client.get('/providers/' + encodeURIComponent(id)),
+    portfolio: id => client.get('/providers/' + encodeURIComponent(id) + '/portfolio')
   };
 });
