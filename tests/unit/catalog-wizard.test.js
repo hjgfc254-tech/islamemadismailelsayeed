@@ -49,14 +49,16 @@ for(const [c,i,p] of journeys){
   click({wzProb:p}); ok(wz().step===3&&wz().problem===p,'problem '+p);
   const qs=run(`CAT.questionsFor('${i}','${p}')`);
   if(c==='cars') { click({act:'wzNext'}); ok(wz().step===3&&String(toasts.pop()).startsWith('أجب عن'),'car make required'); }
-  setq(c==='cars'?{make:'تويوتا كورولا 2018'}:{}); click({act:'wzNext'}); ok(wz().step===4,'to description '+c);
-  setf({'wz-desc':'وصف المشكلة بالتفصيل','wz-note':''}); click({act:'wzNext'}); ok(wz().step===5,'to attachments '+c);
-  click({act:'wzNext'}); ok(wz().step===6,'to location '+c);
+  /* 5 screens: questions + description + photos are one screen («التفاصيل») */
+  ok(run('screens.wizard()').includes('الخطوة 2 من 5'),'details is screen 2 of 5 '+c);
+  setq(c==='cars'?{make:'تويوتا كورولا 2018'}:{}); setf({'wz-desc':''}); click({act:'wzNext'}); ok(wz().step===3&&String(toasts.pop()).startsWith('اكتب وصفًا'),'description still required on the merged screen '+c);
+  setf({'wz-desc':'وصف المشكلة بالتفصيل','wz-note':''}); click({act:'wzNext'}); ok(wz().step===6,'details → location '+c);
   run("WZ.address=Object.assign({},WZ.address,{id:'',gov:'',area:'',addr:''})");   /* the default saved address is pre-filled; clear it to exercise validation */
   click({act:'wzNext'}); ok(wz().step===6&&toasts.pop()==='اختر المحافظة','gov required');
-  setf({'wz-gov':'القاهرة','wz-area':'مدينة نصر','wz-addr':'شارع عباس العقاد 12'}); click({act:'wzNext'}); ok(wz().step===7,'to schedule');
-  run("WZ.schedule.flexible=true"); click({act:'wzNext'}); ok(wz().step===8,'to contact');
+  setf({'wz-gov':'القاهرة','wz-area':'مدينة نصر','wz-addr':'شارع عباس العقاد 12'}); click({act:'wzNext'}); ok(wz().step===7,'to schedule + contact');
+  run("WZ.schedule.flexible=true;WZ.contact.name='';WZ.contact.phone=''"); setf({'wz-name':'','wz-phone':''}); click({act:'wzNext'}); ok(wz().step===7,'missing contact keeps screen 4');
   setf({'wz-name':'عميل تجريبي','wz-phone':'01012345678'}); run("WZ.contact.name='عميل تجريبي';WZ.contact.phone='01012345678'"); click({act:'wzNext'}); ok(wz().step===9,'to review');
+  ok(run('screens.wizard()').includes('الخطوة 5 من 5'),'review is screen 5 of 5');
   ok(run('screens.wizard()').includes('تأكيد وإرسال'),'review screen');
   click({act:'wzSubmit'}); await settle(); ok(wz().step===10&&wz().done,'submitted '+p);
   const r=run('MP.reqs()[0]'); ok(r&&r.itemId===i&&r.problemId===p&&r.cat===c&&r.catName&&r.itemName&&r.problemName,'request stores cat/item/problem '+p);
@@ -77,7 +79,7 @@ run('startRequest()'); click({wzCat:'electric'}); click({wzItem:'electric/lighti
 ok(wz().item==='electric/lighting'&&wz().problem==='electric/lighting/flicker','same category keeps selections');
 /* 4) غير معروف */
 run('startRequest("appliances","appliances/ac")'); ok(wz().step===2,'start at problems from item'); click({wzUnknown:''}); ok(wz().unknown&&wz().step===3,'unknown path');
-setf({'wz-desc':''}); click({act:'wzNext'}); ok(wz().step===4,'unknown does not need description');
+setf({'wz-desc':''}); click({act:'wzNext'}); ok(wz().step===6,'unknown does not need description (details screen → location)');
 /* 5) الأسئلة الديناميكية */
 const qA=run("CAT.questionsFor('cleaning/apartments','').map(q=>q.id)"), qW=run("CAT.questionsFor('appliances/washer-auto','').map(q=>q.id)");
 ok(qA.includes('area')&&!qA.includes('pattern'),'cleaning questions no fault questions'); ok(qW.includes('pattern')&&qW.includes('brand'),'washer fault+appliance questions');

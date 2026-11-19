@@ -53,6 +53,7 @@
   ${howItWorks}
   ${ctx.trending||''}
   <h2 class="sec-title" id="tilesT">${ic('grid')}تصفّح الفئات</h2>
+  <p class="sec-hint">اضغط مطوّلًا على أي قسم تشوف أشهر مشاكله وأسعاره</p>
   ${tiles()}
   ${renderCommonProblems()}
   ${renderRecentUsed()}

@@ -27,6 +27,8 @@ const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
    ~200 per call to ~0 while warm. */
 const SHARED_TTL_MS = 30000;
 const SHARED_KEYS = new Set(['providers', 'serviceAreas', 'meta', 'settings', 'reviews']);
+const PUBLIC_KEYS = ['providers', 'serviceAreas', 'reviews'];   // summarised in system/public
+const PUBLIC_TTL_MS = 10 * 60 * 1000;
 const shared = new WeakMap();
 const sharedFor = adapter => { let m = shared.get(adapter); if (!m) { m = new Map(); shared.set(adapter, m); } return m; };
 function invalidateShared(adapter) { shared.delete(adapter); }
@@ -50,6 +52,33 @@ class PartialDb {
     this.system = { meta, settings };
     if (cache) cache.set('system', { at: Date.now(), value: JSON.parse(JSON.stringify(this.system)) });
     return this.system;
+  }
+  /* Public summary snapshot (system/public): approved providers, service areas and the latest reviews in ONE document,
+     so a sync costs 1 read instead of one read per provider / area / review. It is server-only (rules deny clients;
+     scope.js still filters what each actor receives). Freshness: any commit touching these collections deletes it in
+     the same transaction (rebuilt by the next sync), and it is rebuilt anyway after PUBLIC_TTL_MS. Write paths never use
+     it — business rules keep reading the real documents inside their transaction. */
+  async loadPublic() {
+    if (this.tx) { await this._publicFromCollections(); return; }
+    const cache = sharedFor(this.adapter), hit = cache.get('public');
+    let snap = hit && Date.now() - hit.at < SHARED_TTL_MS ? hit.value : null;
+    if (!snap) {
+      const d = await this.adapter.get(null, 'system/public');
+      this.reads++;
+      if (d && Array.isArray(d.providers) && Date.now() - (Number(d.atMs) || 0) < PUBLIC_TTL_MS) snap = d;
+      else { snap = await this._publicFromCollections(); if (PUBLIC_KEYS.some(k => snap[k].length)) this.publicToSave = snap; }   // nothing to summarise yet → write nothing
+      cache.set('public', { at: Date.now(), value: JSON.parse(JSON.stringify(snap)) });
+    }
+    for (const k of PUBLIC_KEYS) for (const r of snap[k] || []) this._put(k, r.id, JSON.parse(JSON.stringify(r.data)));
+  }
+  async _publicFromCollections() {
+    const q = async (key, query) => { const rows = await this.adapter.query(this.tx, colName(key), query); this.reads += Math.max(1, rows.length); for (const r of rows) this._put(key, r.id, r.data); return rows; };
+    const [providers, serviceAreas, reviews] = await Promise.all([
+      q('providers', { where: [['status', '==', 'approved']], limit: 200 }),
+      q('serviceAreas', { where: [] }),
+      q('reviews', { where: [], orderBy: ['at', 'desc'], limit: 12 })
+    ]);
+    return { atMs: Date.now(), providers, serviceAreas, reviews };
   }
   /** where() through the shared instance cache (public data only; never inside a transaction). */
   async whereShared(key, filters, opts = {}) {
@@ -132,7 +161,8 @@ class PartialDb {
   /** Writes only changed/new documents and deletions among the loaded ones. Returns {changes, writes}. */
   commit(next) {
     const changes = {}; let writes = 0;
-    const note = (k, t, id) => { (changes[k] = changes[k] || { set: [], del: [] })[t].push(id); writes++; if (SHARED_KEYS.has(k)) invalidateShared(this.adapter); };
+    let publicStale = false;
+    const note = (k, t, id) => { (changes[k] = changes[k] || { set: [], del: [] })[t].push(id); writes++; if (SHARED_KEYS.has(k)) invalidateShared(this.adapter); if (PUBLIC_KEYS.includes(k)) publicStale = true; };
     const tx = this.tx, a = this.adapter;
     const prevMeta = this.system && this.system.meta;
     const nextMeta = { ...(next.meta || {}), v: next.v || 2 };
@@ -157,6 +187,7 @@ class PartialDb {
       }
       for (const id of prev.keys()) if (!seen.has(id)) { a.del(tx, `${colName(k)}/${id}`); note(k, 'del', id); }
     }
+    if (publicStale) { a.del(tx, 'system/public'); writes++; }   // public summary is rebuilt by the next sync
     return { changes, writes };
   }
 }

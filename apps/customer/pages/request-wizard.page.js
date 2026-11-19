@@ -42,6 +42,28 @@ const WZ_STEPS11 = [
   'المراجعة',
   'التأكيد'
 ];
+/* 5 screens over the 10 internal steps (each step keeps its own validation in wzCheckStep):
+   1 «إيه المشكلة؟» = 0 القسم → 1 الجهاز → 2 المشكلة (one tap each, same screen title)
+   2 «التفاصيل» = 3 أسئلة (if any) + 4 الوصف + 5 الصور      3 «المكان» = 6
+   4 «الموعد والتواصل» = 7 الموعد + 8 التواصل (shown only when missing/invalid)   5 «المراجعة والتأكيد» = 9 */
+const WZ_STAGES = [[0, 1, 2], [3, 4, 5], [6], [7, 8], [9]];
+const WZ_STAGE_NAMES = ['إيه المشكلة؟', 'التفاصيل', 'المكان', 'الموعد والتواصل', 'المراجعة والتأكيد'];
+const WZ_PART_TITLES = { 3: 'أسئلة سريعة', 4: 'وصف المشكلة', 5: 'صور أو فيديو (اختياري)', 7: 'الموعد', 8: 'بيانات التواصل' };
+const wzStageOf = step => step >= 10 ? 5 : Math.max(0, WZ_STAGES.findIndex(g => g.includes(step)));
+/* steps drawn on the current screen: stage 1 advances by taps (one step at a time); other stages show all their steps,
+   minus questions when the problem has none and contact details when the saved ones are valid (unless asked to edit) */
+function wzShownSteps(step){
+  if (step >= 10) return [10];
+  const st = wzStageOf(step);
+  if (st === 0) return [step];
+  return WZ_STAGES[st].filter(n => !((n === 3 && !CAT.questionsFor(WZ.item, WZ.unknown ? '' : WZ.problem).length) || (n === 8 && !WZ.showContact && !wzCheckStep(8))));
+}
+/* where «التالي» goes: inside stage 1 one step at a time, otherwise the first step of the next stage */
+function wzNextStep(step){
+  const st = wzStageOf(step);
+  if (st === 0 && step < 2) return step + 1;
+  return st + 1 < WZ_STAGES.length ? WZ_STAGES[st + 1][0] : 9;
+}
 /* Steps with nothing to ask are skipped forward (Back still returns through the history): the specialist questions
    when the chosen problem has none, and contact details when the signed-in customer's are already valid. The review
    step shows both with an «edit» link. */
@@ -348,10 +370,9 @@ function qField(q, v){
 
 /* ═════════ شريط التقدم ═════════ */
 function wzProgressBar(step){
-  /* نعرض 10 شرائح لأن التأكيد شاشة نجاح وليست خطوة */
-  const shown = Math.min(step, 9);
-  return `<div class="wz-bar" role="progressbar" aria-valuemin="0" aria-valuemax="10" aria-valuenow="${shown+1}">${Array.from({length:10}).map((_,i)=>`<i class="${i<shown?'done':i===shown?'on':''}"></i>`).join('')}</div>
-    <div class="wz-cap">${step<10?`<b>${WZ_STEPS11[step]}</b><span>الخطوة ${step+1} من 10 — ${wzLeft(9-step)}</span>`:'تم إرسال الطلب'}</div>`;
+  const st = Math.min(wzStageOf(step), 4);
+  return `<div class="wz-bar wz-bar5" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="${st + 1}" aria-valuetext="${WZ_STAGE_NAMES[st]}">${WZ_STAGE_NAMES.map((n, i) => `<i class="${i < st ? 'done' : i === st ? 'on' : ''}" title="${n}"></i>`).join('')}</div>
+    <div class="wz-cap">${step < 10 ? `<b>${WZ_STAGE_NAMES[st]}</b><span>الخطوة ${st + 1} من 5 — ${wzLeft(4 - st)}</span>` : 'تم إرسال الطلب'}</div>`;
 }
 
 /* ═════════ مسار crumb ═════════ */
@@ -414,6 +435,25 @@ async function renderAttachmentsBlock(w){
 }
 
 /* ═════════ شاشة النموذج (تُستدعى من screens.wizard) ═════════ */
+/* Price of the chosen service, visible on every screen of the request (fixed price, or «after inspection»). Prices come
+   from GET /pricing once per session; nothing is shown if they cannot be loaded (no guessed number). */
+let wzPriceCache = null, wzPriceLoading = false;
+function wzPriceBar(w){
+  if (wzPriceCache === null && !wzPriceLoading && typeof HSApiClient !== 'undefined' && typeof setTimeout === 'function') {
+    wzPriceLoading = true;
+    setTimeout(() => {
+      HSApiClient.request('GET', '/pricing').then(res => {
+        wzPriceCache = res && res.ok && res.data && res.data.prices ? res.data.prices : false;
+        const el = typeof document !== 'undefined' && document.querySelector && document.querySelector('[data-wz-pricebar]');
+        if (el && WZ) el.outerHTML = wzPriceBar(WZ);
+      }).catch(() => { wzPriceCache = false; }).then(() => { wzPriceLoading = false; });
+    }, 0);
+  }
+  if (!wzPriceCache) return wzPriceCache === null ? '<div class="wz-pricebar is-loading" data-wz-pricebar aria-hidden="true"></div>' : '';
+  const price = wzPriceCache[w.item];
+  return `<div class="wz-pricebar" data-wz-pricebar role="status">${safeIc('wallet')}<span>${price ? `سعر الخدمة: <b>${Number(price).toLocaleString('ar-EG')} ج.م</b> — ثابت وشامل رسوم المنصة` : 'السعر بيتحدد بعد ما الفني يعاين — وبتوافق عليه قبل التنفيذ'}</span></div>`;
+}
+
 Object.assign(screens, {
   wizard(){
     if (!WZ) {
@@ -429,10 +469,11 @@ Object.assign(screens, {
     const w = WZ;
     const c = CAT.category(w.cat), it = CAT.item(w.item), pr = w.problem ? CAT.problem(w.problem) : null;
 
-    let body = '';
+    const bodyFor = cur => {
+      let body = '';
 
     /* 0 — اختيار القسم */
-    if (w.step === 0) {
+    if (cur === 0) {
       body = `<div class="cgrid" role="group" aria-label="اختيار القسم">${CAT.categories().map(x => `
         <button type="button" class="icard glass neon ${x.id===w.cat?'sel':''}" data-wz-cat="${x.id}" aria-pressed="${x.id===w.cat}">
           ${safeIcp(safeIcSec(x.icon), 'dev')}<span>${_esc(x.name)}</span>
@@ -440,7 +481,7 @@ Object.assign(screens, {
     }
 
     /* 1 — الجهاز/نوع العمل */
-    if (w.step === 1) {
+    if (cur === 1) {
       const nItems = CAT.items(w.cat).length;
       body = crumbHtml(w) + `<div class="cat-hero">${safeIcp(safeIcSec(c.icon), 'dev')}<div><b>${_esc(c.name)}</b><small>${nItems} ${nItems > 10 ? 'خدمة' : 'خدمات'} متاحة<span class="tfrom" data-from-cat="${_esc(c.id)}" hidden></span></small></div></div>` + `<div class="cgrid" role="group" aria-label="اختيار الجهاز أو نوع العمل">${CAT.items(w.cat).map(i => `
         <button type="button" class="icard glass neon ${i.id===w.item?'sel':''}" data-wz-item="${i.id}" aria-pressed="${i.id===w.item}">
@@ -449,7 +490,7 @@ Object.assign(screens, {
     }
 
     /* 2 — المشكلة */
-    if (w.step === 2) {
+    if (cur === 2) {
       const ps = CAT.problems(w.item);
       body = crumbHtml(w) + `<h2 class="sec-title">${safeIc('wrench')}إيه المشكلة في ${_esc(it.name)}؟</h2>
         <div class="plist" role="group" aria-label="اختيار المشكلة">${ps.map(p => `
@@ -460,7 +501,7 @@ Object.assign(screens, {
     }
 
     /* 3 — الأسئلة التخصصية */
-    if (w.step === 3) {
+    if (cur === 3) {
       const qs = CAT.questionsFor(w.item, w.unknown ? '' : w.problem);
       const sf = CAT.safetyFor(w.item, w.unknown ? '' : w.problem);
       body = crumbHtml(w) +
@@ -469,7 +510,7 @@ Object.assign(screens, {
     }
 
     /* 4 — وصف المشكلة */
-    if (w.step === 4) {
+    if (cur === 4) {
       const sugg = w.unknown ? `${it ? it.name : ''}: مش عارف سبب المشكلة بالظبط` : (pr ? `${it ? it.name : ''} — ${pr.name}` : '');
       body = crumbHtml(w) + `<div class="form">
         <div>
@@ -482,7 +523,7 @@ Object.assign(screens, {
     }
 
     /* 5 — المرفقات */
-    if (w.step === 5) {
+    if (cur === 5) {
       body = `<div id="wz-attach-block">${renderAttachmentsBlockSync(w)}</div>`;
       /* نحدّث المحتوى لاحقاً عند الرسم بعد استرجاع المرفقات */
       setTimeout(async () => {
@@ -495,7 +536,7 @@ Object.assign(screens, {
     }
 
     /* 6 — الموقع والعنوان */
-    if (w.step === 6) {
+    if (cur === 6) {
       const u = (typeof me === 'function') ? me() : null;
       let savedAddrs = [];
       try { if (u && MP) savedAddrs = MP.addressesFor(u.id); } catch {}
@@ -522,7 +563,7 @@ Object.assign(screens, {
     }
 
     /* 7 — الموعد */
-    if (w.step === 7) {
+    if (cur === 7) {
       const s = w.schedule;
       const isoIn = n => { const d = new Date(); d.setDate(d.getDate() + n); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
       const QUICK = [new Date().getHours() < 17 ? ['النهارده بالليل', isoIn(0) + '|evening'] : null, ['بكرة الصبح', isoIn(1) + '|morning'], ['بكرة الضهر', isoIn(1) + '|noon'], ['بكرة بالليل', isoIn(1) + '|evening'], ['أقرب وقت (مرن)', 'flex']].filter(Boolean);
@@ -550,7 +591,7 @@ Object.assign(screens, {
     }
 
     /* 8 — بيانات التواصل */
-    if (w.step === 8) {
+    if (cur === 8) {
       body = `<div class="form">
         <div><label for="wz-name">الاسم *</label><input id="wz-name" required aria-required="true" value="${_esc(w.contact.name)}" placeholder="اسمك" autocomplete="name"></div>
         <div><label for="wz-phone">رقم الهاتف *</label><input id="wz-phone" required aria-required="true" type="tel" inputmode="tel" value="${_esc(w.contact.phone)}" placeholder="01xxxxxxxxx" pattern="[0-9+ ]{8,16}" autocomplete="tel"></div>
@@ -566,7 +607,7 @@ Object.assign(screens, {
     }
 
     /* 9 — مراجعة الطلب */
-    if (w.step === 9) {
+    if (cur === 9) {
       const qs = CAT.questionsFor(w.item, w.unknown ? '' : w.problem).filter(q => w.answers[q.id]);
       const sec = (t, s, x) => `<div class="rsec">
         <div class="rh"><small>${_esc(t)}</small><button type="button" data-wz-edit="${s}">تعديل</button></div>${x}
@@ -593,7 +634,7 @@ Object.assign(screens, {
       ${(typeof HSFirebaseConfig !== 'undefined' && HSFirebaseConfig.mode === 'firebase') ? '' : `<div class="demo-banner">${safeIc('info')}<span>وضع العرض التجريبي — الطلب يُحفظ محليًا ولا يُرسل لفنيين حقيقيين.</span></div>`}`;
     }
 
-    if (w.step === 9 && typeof HSApiClient !== 'undefined' && typeof setTimeout === 'function') setTimeout(() => {
+    if (cur === 9 && typeof HSApiClient !== 'undefined' && typeof setTimeout === 'function') setTimeout(() => {
       HSApiClient.request('GET', '/pricing').then((res) => {
         const el = typeof document !== 'undefined' && document.getElementById && document.getElementById('wz-price'); if (!el) return;
         const key = el.getAttribute('data-wz-price-key'), price = res.ok && res.data && res.data.prices ? res.data.prices[key] : null;
@@ -605,7 +646,7 @@ Object.assign(screens, {
     }, 0);
 
     /* 10 — التأكيد */
-    if (w.step === 10 && w.done) {
+    if (cur === 10 && w.done) {
       const r = MP.get('serviceRequests', w.done.id);
       body = `<div class="done glass neon success-pop" role="status" aria-live="polite">
         <svg class="success-check" viewBox="0 0 52 52" aria-hidden="true" focusable="false"><circle cx="26" cy="26" r="23"/><path d="M15.5 27.5l7 7 14-15"/></svg>
@@ -618,6 +659,18 @@ Object.assign(screens, {
         <button type="button" class="cta ghost" data-go="home">${safeIc('home')} الرئيسية</button>
       </div>`;
     }
+
+      return body;
+    };
+    const shown = wzShownSteps(w.step);
+    let body = shown.map(n => {
+      const part = bodyFor(n);
+      return part && shown.length > 1 && WZ_PART_TITLES[n] ? `<section class="wz-part" aria-label="${WZ_PART_TITLES[n]}"><h2 class="wz-part-h">${WZ_PART_TITLES[n]}</h2>${part}</section>` : part;
+    }).join('');
+    /* contact details hidden because the saved ones are valid → one line with «تعديل» */
+    if (wzStageOf(w.step) === 3 && !shown.includes(8)) body += `<div class="wz-contact-mini">${safeIc('call')}<span>هنتواصل معاك على <b>${_esc(w.contact.name)} • ${_esc(w.contact.phone)}</b></span><button type="button" data-act="wzShowContact">تعديل</button></div>`;
+    /* the price of the chosen service stays visible on every screen until the review (which has the full card) */
+    if (w.item && w.step > 1 && w.step < 9) body = wzPriceBar(w) + body;
 
     /* شريط الأزرار */
     let nav = '';
@@ -638,7 +691,7 @@ Object.assign(screens, {
 
     /* حفظ أي حالة عرض */
     const wzHead = hasUI() ? (typeof head === 'function' ? head(w.step === 10 ? 'تأكيد الطلب' : 'طلب خدمة', w.step < 10) : '') : '';
-    const stepHeading = w.step < 10 ? `<h1 class="wz-a11y-heading" tabindex="-1" data-wz-heading>${_esc(WZ_STEPS11[w.step])}</h1>` : `<h1 class="wz-a11y-heading" tabindex="-1" data-wz-heading>تم إرسال الطلب بنجاح</h1>`;
+    const stepHeading = w.step < 10 ? `<h1 class="wz-a11y-heading" tabindex="-1" data-wz-heading>${_esc(WZ_STAGE_NAMES[wzStageOf(w.step)])}</h1>` : `<h1 class="wz-a11y-heading" tabindex="-1" data-wz-heading>تم إرسال الطلب بنجاح</h1>`;
     /* desktop: a live summary of the choices so far beside the step (hidden on phones) */
     const it2 = w.item && CAT.item(w.item), c2 = w.cat && CAT.category(w.cat), pr2 = !w.unknown && w.problem && CAT.problem ? CAT.problem(w.problem) : null;
     const sumRows = [['القسم', c2 && c2.name], ['الجهاز / العمل', it2 && it2.name], ['المشكلة', w.unknown ? 'تحتاج فحص' : pr2 && pr2.name], ['العنوان', [w.address.gov, w.address.area].filter(Boolean).join(' — ')], ['الموعد', w.schedule.date ? (w.schedule.date + (w.schedule.period ? ' • ' + ({ morning: 'صباحًا', noon: 'ظهرًا', evening: 'مساءً' })[w.schedule.period] : '')) : (w.schedule.flexible ? 'مرن' : '')]].filter(r => r[1]);
@@ -673,14 +726,14 @@ function wzSaveFields(){
   if (!WZ) return;
   const w = WZ;
   const g = id => { const e = document.getElementById(id); return e ? e.value : null; };
-  if (w.step === 4) {
+  {
     const v = g('wz-desc'); if (v !== null) w.desc = v;
     const n = g('wz-note'); if (n !== null) w.note = n;
   }
-  if (w.step === 3) {
+  {
     document.querySelectorAll('[data-q]').forEach(e => { w.answers[e.dataset.q] = e.value; });
   }
-  if (w.step === 6) {
+  {
     ['wz-gov','wz-area','wz-addr','wz-detail','wz-addr-type','wz-label'].forEach(id => {
       const v = g(id); if (v !== null) {
         const key = { 'wz-gov':'gov', 'wz-area':'area', 'wz-addr':'addr', 'wz-detail':'detail', 'wz-addr-type':'type', 'wz-label':'label' }[id];
@@ -690,12 +743,12 @@ function wzSaveFields(){
     const sv = document.getElementById('wz-save-addr'); if (sv) w.address.save = sv.checked;
     const df = document.getElementById('wz-default-addr'); if (df) w.address.default = df.checked;
   }
-  if (w.step === 7) {
+  {
     const fx = document.getElementById('wz-flexible'); if (fx) w.schedule.flexible = fx.checked;
     const d = g('wz-date-input'); if (d !== null) w.schedule.date = d;
     const n = g('wz-when-note'); if (n !== null) w.schedule.whenNote = n;
   }
-  if (w.step === 8) {
+  {
     const nm = g('wz-name'); if (nm !== null) w.contact.name = nm;
     const ph = g('wz-phone'); if (ph !== null) w.contact.phone = ph;
     const me_ = g('wz-method'); if (me_ !== null) w.contact.method = me_;
@@ -906,10 +959,14 @@ document.addEventListener('click', e => {
       break;
     }
     case 'wzNext': {
-      const m = wzCheckStep(WZ.step);
-      if (m) return wzReportValidationError(m);
+      for (const st of wzShownSteps(WZ.step)) { const m = wzCheckStep(st); if (m) return wzReportValidationError(m); }
+      if (wzStageOf(WZ.step) === 3) { const m = wzCheckStep(8); if (m) { WZ.showContact = true; show('wizard'); return wzReportValidationError(m); } }
       wzSaveDraft();
-      wzGo(wzSkip(WZ.step + 1));
+      wzGo(wzNextStep(WZ.step));
+      break;
+    }
+    case 'wzShowContact': {
+      WZ.showContact = true; if (hasUI()) show('wizard');
       break;
     }
     case 'wzPrev': {

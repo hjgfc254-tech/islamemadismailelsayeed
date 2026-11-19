@@ -33,7 +33,6 @@
 | `apps/customer/index.html` | Customer app; **Guest** is its restricted mode (`apps/guest/guest-policy.js`, `guest-entry.js`) |
 | `apps/provider/index.html` (+ `login.html` hand-off) | Standalone Provider app (the only Provider UI) |
 | `apps/admin/index.html` (+ `login.html` hand-off) | Isolated Admin Center (demo account picker → shell → RBAC-filtered nav) |
-| `PROJECT_CONTROL_CENTER.html` | Project documentation viewer (not an app) |
 
 - **Data:** `services/local-market-store.js` (`MP`, localStorage `hs_mp_db`) is shared by all apps.
   - **Writes** go through the mock API adapters `services/api-client.js` + `*-api.js`: one envelope, role and

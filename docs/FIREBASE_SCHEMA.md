@@ -55,6 +55,9 @@ written by `functions/src/store.js`.
 
 ## Backend-only collections
 
+- `system/public` — server-only public summary `{atMs, providers[{id,data}], serviceAreas[{id,data}], reviews[{id,data}]}` (approved providers ≤ 200, all areas, latest 12 reviews). Read by every sync (1 read instead of one per document); deleted in the same transaction by any commit that changes providers / serviceAreas / reviews, rebuilt by the next sync, and rebuilt anyway after 10 minutes. Never used by write paths.
+
+
 | Collection | Doc id | Fields | Written by |
 |---|---|---|---|
 | `users` | Auth uid | tag (`customer:<id>`\|`provider:<id>`\|`admin:<uid>`), role, refId, app, updatedAt | `session.sync` / `registerCustomer`: the identity link used to route change signals |

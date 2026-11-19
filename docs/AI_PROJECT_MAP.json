@@ -2,8 +2,8 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 553,
-    "total_files": 553,
+    "file_count": 552,
+    "total_files": 552,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 50,
@@ -22,7 +22,6 @@
       "IMPLEMENTED (SHELL PARTS)": 1,
       "IMPLEMENTED (SHELL, DEMO)": 1,
       "IMPLEMENTED (SHELL)": 2,
-      "LEGACY": 1,
       "NEEDS_REVIEW": 177,
       "PARTIALLY IMPLEMENTED": 1,
       "PLACEHOLDER": 64,
@@ -184,8 +183,8 @@
       "functional_title": ".gitignore",
       "current_responsibility": "Current inventory entry; inspect file for exact behavior.",
       "next_action": "Read when relevant; do not duplicate behavior.",
-      "sha256": "ecf055ea77cb32a87b232ec7f337bb29d5e7a0a03a7e00710b9b489af4c0e914",
-      "bytes": 806
+      "sha256": "a6f3e353ac65916a69ac4c672936c88cf1d69936a129bfb3be7ead0c7dac20bc",
+      "bytes": 883
     },
     {
       "path": ".graphifyignore",
@@ -2622,7 +2621,7 @@
         "tests/e2e/customer-sheet-focus.browser.py"
       ],
       "notes": "2026-11-13 TASK 04: Bottom Sheet initial focus, Tab/Shift+Tab containment, Escape, focus restoration/fallback, and background inert/aria-hidden isolation implemented and browser-tested. origin remains the legacy problem-list return context; route-style close focuses the destination #view.",
-      "sha256": "1f9efe8b2f4daf4ddba5b3a278cc76e8884df04fd9041b01fc5916c766ffd72f",
+      "sha256": "33ba2a0f3b347d7916a1dff4c46619b69bf0170a7c41f7d4ec0e5f74ce2a4eea",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2661,7 +2660,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 96366
+      "bytes": 100712
     },
     {
       "path": "apps/customer/customer-router.js",
@@ -3003,7 +3002,7 @@
       "next_action": "Keep this module presentation-only; extract individual sections only when tests establish stable contracts.",
       "explicit_references": [],
       "notes": "Extracted from screens.home on 2026-11-13. Script loaded before app.js. Tests: customer-page-renderers.test.js and home.test.js.",
-      "sha256": "34d9cafe519bf40ead9f7a19ddc4d500ec570b51f755de66272a0756d99e015e",
+      "sha256": "fca269ba893860a65043bb24620827967385ee31350925d264331d133d0163fa",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3040,7 +3039,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 8882
+      "bytes": 8998
     },
     {
       "path": "apps/customer/pages/market-ui.page.js",
@@ -3299,7 +3298,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "ad2e36b9a3461e28f1469b14270fdbc2ee083ca09e71cd47cc015f6060118d8d",
+      "sha256": "7424de1d0144e722fe6a6cb54219ec4674f96f1f17a6539eaa4163e16975c5c3",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3338,7 +3337,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 63551
+      "bytes": 67896
     },
     {
       "path": "apps/customer/pages/search.page.js",
@@ -3501,7 +3500,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "4061ebb7dcf2b3be7cea3e00cbbe1b19ebf9a3b05647d5588112ecab8294d1c9",
+      "sha256": "c9253d2392abc5f7465f29f550675716417efaf898c70246a6c60a2ae41836c4",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3540,7 +3539,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 107963
+      "bytes": 109725
     },
     {
       "path": "apps/guest/guest-entry.js",
@@ -9242,7 +9241,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "135a18ed5d74c8a6035336f14af7b6b76b7d7232f6fc2d56da870a96fc15827a",
+      "sha256": "ce353e11e2f47e3ec3a2cb5dc3e9d8ea1eadb71669b2ea5099b5746b593fb0d6",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "START_HERE.md",
@@ -9251,7 +9250,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 6081
+      "bytes": 6003
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -9332,7 +9331,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "7135a4151295b34cefffc3a6343e259b000e92591ee506da48a2cf94575a0730",
+      "sha256": "dcdec23819518214ee05081070fb5878c2c61ae2fb6f6445d693d2f823ee6bee",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -9368,7 +9367,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 278144
+      "bytes": 277349
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -9428,7 +9427,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "2856796da32620a3160612cd7815e4408c26652cff54cf367910355b67c969db",
+      "sha256": "860033189c22ab11444a6693e450dd1a4a5396234eed19690cd057a1688bc216",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -9464,7 +9463,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 141986
+      "bytes": 141670
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -10249,8 +10248,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "1b9c310836a97f2de200e22a68ab81d24b8682abe479f279ee55982e2cc5cf11",
-      "bytes": 7075
+      "sha256": "9db8ca536bfa00d3f5f9282304bd8d325a6524d52304dd7bd2ffac3a81377c1d",
+      "bytes": 7504
     },
     {
       "path": "docs/FRONTEND_ARCHITECTURE.md",
@@ -11011,8 +11010,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "e96075642854c381ba7d5030dfdfc09d8c27a50246ed3b2e14737e0f18c5b378",
-      "bytes": 87265
+      "sha256": "1bb2155970519ab52fa65f0546fac4afe58af2e17ceffb5ed0e0615f4eedaa16",
+      "bytes": 88645
     },
     {
       "path": "docs/PROJECT_TREE.md",
@@ -11024,7 +11023,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "b42929c7909a7d5bf89c32e8256384199908189025e8a6f77b4930a691585921",
+      "sha256": "3cdf2868af1823303b60c26577bf76bc4f36258f5e02a13a14fec41b64eab866",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11061,7 +11060,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 26540
+      "bytes": 26502
     },
     {
       "path": "docs/PROMPT_LOG_V8.md",
@@ -11715,8 +11714,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "675dded0212544808364937c21bda3d7cbd4e6333bdb91a5c37cf2cdc3d7e80e",
-      "bytes": 10389
+      "sha256": "7e4b591d4ee04c392bbe3543d20b629c0881a3aa1d516cf8745970885c9030e2",
+      "bytes": 12727
     },
     {
       "path": "functions/src/plan.js",
@@ -11727,8 +11726,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "2745c56a65565ac97289f268b7ee18c5ef23ae2ddd3411d1383f259c33d9bd8a",
-      "bytes": 11277
+      "sha256": "0df0247f3d7fc72dc5703471b0b25e00a2698581f2eccb82ab292463d70b35c4",
+      "bytes": 11048
     },
     {
       "path": "functions/src/runtime.js",
@@ -11763,8 +11762,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "06ad86c5004a302c4b2ee1c97f9321755576f1deb019f88533a3437726c4b2d4",
-      "bytes": 29213
+      "sha256": "3c65732149bebc24a98235fb5ecf6015d5c69d94673af02c31d84be74c968443",
+      "bytes": 29606
     },
     {
       "path": "functions/src/store.js",
@@ -11956,54 +11955,6 @@
       "bytes": 1200
     },
     {
-      "path": "PROJECT_CONTROL_CENTER.html",
-      "area": "root",
-      "status": "LEGACY",
-      "has_real_logic": true,
-      "current_responsibility": "دفتر متابعة سابق مستقل محليًا، لا يتصل بمجلد المشروع ولا يفحص الملفات.",
-      "planned_responsibility": "دفتر متابعة سابق مستقل محليًا، لا يتصل بمجلد المشروع ولا يفحص الملفات.",
-      "next_action": "استبدله لوحة PROJECT_ENGINEER.html الجديدة؛ احتفظ به كمرجع ولا تعتمد عليه كلوحة رئيسية.",
-      "explicit_references": [],
-      "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "fb4a78fbde8d3833b9a684cf414cd25a424ca215819dd206dea27260db26a40f",
-      "resolved_dependencies": [],
-      "acceptance_criteria": [
-        "تم فتح الملف ومراجعة دوره.",
-        "تم التأكد من عدم وجود تعارض أو نسخة مكررة.",
-        "تم تحديث المرجع عند الحاجة."
-      ],
-      "work_instruction": "استبدله لوحة PROJECT_ENGINEER.html الجديدة؛ احتفظ به كمرجع ولا تعتمد عليه كلوحة رئيسية.",
-      "dependents": [],
-      "functional_title": "ملف المشروع: PROJECT_CONTROL_CENTER.html",
-      "user_role": "داخلي: تشغيل المشروع",
-      "user_visible_behavior": "لا يظهر مباشرة للمستخدم إلا إذا كان ملف صفحة أو أصلًا مستخدمًا في الواجهة.",
-      "file_behavior": "دفتر متابعة سابق مستقل محليًا، لا يتصل بمجلد المشروع ولا يفحص الملفات.",
-      "completion_definition": "مطابقة الوظيفة للوثائق، سلامة المراجع، واختبار ما ينطبق على نوع الملف.",
-      "actual_status_ar": "قديم للتوافق — لا يُحذف قبل الترحيل",
-      "detailed_contract": {
-        "why_file_exists": "يفصل مسؤولية محددة داخل النطاق `root` حتى لا تتجمع المسؤوليات في ملف واحد. يجب إبقاء نطاقه محدودًا بما يصفه اسمه والعقد المعماري.",
-        "current_observed_responsibility": "دفتر متابعة سابق مستقل محليًا، لا يتصل بمجلد المشروع ولا يفحص الملفات.",
-        "target_responsibility": "دفتر متابعة سابق مستقل محليًا، لا يتصل بمجلد المشروع ولا يفحص الملفات.",
-        "primary_actor": "داخلي: تشغيل المشروع",
-        "what_user_sees": "لا يظهر مباشرة للمستخدم إلا إذا كان ملف صفحة أو أصلًا مستخدمًا في الواجهة.",
-        "inputs": "المتصفح، عنوان الصفحة/المسار، ملفات CSS وJavaScript والأصول المشار إليها داخل HTML.",
-        "outputs": "هيكل DOM ونقاط تركيب الواجهة وعناصر التنقل والنماذج ومناطق عرض المحتوى.",
-        "error_and_edge_cases": "مسار أصل مكسور، ملف script غير محمّل، عنصر DOM مفقود، خطأ في ترتيب تحميل السكربتات.",
-        "security_and_data_rules": "لا تثق في بيانات الواجهة. تحقق من المدخلات على حدود النظام. أي عملية حساسة أو قراءة بيانات خاصة يجب أن تتحقق من الهوية والصلاحية والنطاق في Backend، لا بإخفاء عناصر الواجهة.",
-        "acceptance_checks": [
-          "المسؤولية مطابقة للمسار ولا تتكرر مع وحدة أخرى.",
-          "المدخلات والمخرجات موثقة بعقد واضح وثابت.",
-          "الحالات الطبيعية والفارغة والتحميل والخطأ وعدم الصلاحية مغطاة حيث تنطبق.",
-          "الاعتماديات المباشرة موثقة ولا توجد دورة اعتماد غير مبررة.",
-          "الاختبار المناسب يثبت السلوك، أو يوثق سبب تعذر الاختبار.",
-          "التوثيق وحالة التنفيذ محدثان بعد التغيير."
-        ],
-        "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
-        "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
-      },
-      "bytes": 170431
-    },
-    {
       "path": "README.md",
       "area": "root",
       "status": "CONFIGURATION",
@@ -12145,7 +12096,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "42b2e23927f627720b8509c698d2d9862c8e55c4b3f20f0ec9c1d1a6fa0925ce",
+      "sha256": "197e2ed116585014b10d4813c8f4e716ce024258a303e73bb982dbb781ef4d4e",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12182,7 +12133,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 10596
+      "bytes": 10597
     },
     {
       "path": "services/admin-api.js",
@@ -15124,8 +15075,8 @@
       "functional_title": "Accessible tabs integration contracts",
       "current_responsibility": "Verifies Customer/Admin loading order, Service Worker precache, and feature wiring.",
       "next_action": "Run with npm test.",
-      "sha256": "f2b5e8b01dd5cbae2dd5a9b07bc90642901788116ef546b596614fa341c90429",
-      "bytes": 1367
+      "sha256": "4d256ca6ce1d97e94736f40cc43c149775160926d899b4f1ab5e610d089688e4",
+      "bytes": 1368
     },
     {
       "path": "tests/unit/accessible-tabs.test.js",
@@ -15248,7 +15199,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "5bd3104a5253ada3b3d523013115eeb510e6d986ee9a04e8217753e9ddd7b3a3",
+      "sha256": "ad5d216659e1ba9b5bc24afa61234327ca88e71511711c39eae55e49ef7ae25e",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -15285,7 +15236,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 11086
+      "bytes": 11553
     },
     {
       "path": "tests/unit/categories-management.test.js",
@@ -15544,7 +15495,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "abcfab404b5f4d5ed19d2b430aa93645cdd9a1873d482a4b2e559f12b0be045c",
+      "sha256": "624952cc7afd0541029d63037fb9949a03cf88667e7b9c188df98554ef3d3ce0",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -15581,7 +15532,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 2304
+      "bytes": 2305
     },
     {
       "path": "tests/unit/design-token-audit.test.js",
@@ -15709,8 +15660,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "9d14a9c1320be6694b72fe4f043d8b40ad2b902e1e0486e12b939ea500e2adfd",
-      "bytes": 52241
+      "sha256": "6aa427de8229174f603c1dea1a15f3ae312e563e2583f3b57647063e97b9e256",
+      "bytes": 53849
     },
     {
       "path": "tests/unit/firebase-integration-contract.test.js",
@@ -16011,8 +15962,8 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "fea65b05423262599845fb0e1cd6075279fdebc9e9842894b1cdc5d5ddfdbfaf",
-      "bytes": 6979
+      "sha256": "23ba479a63e9089c16527bf37caf26affc2662f7ee996c7933cb968db194069c",
+      "bytes": 6980
     },
     {
       "path": "tests/unit/provider-request-domain.test.js",
@@ -16274,8 +16225,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "3c00f3602c550b7a03be03e227703e0af981b5eb03360d4e3f29d0ba824baf53",
-      "bytes": 14977
+      "sha256": "7082b3d3c1e4fc6efe1d6f6b4a3457e0201c73b026904b805f3949aa9a8f892f",
+      "bytes": 17025
     },
     {
       "path": "tests/unit/security.test.js",
@@ -16419,7 +16370,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "80b53262aa4c1e6ed3dff502436ea35d4844a20535ed9f260e9e1ced5dc12123",
+      "sha256": "594a175376be56ab5f3813d77cb721f9ca42070d7165cd7aee60598032fb4a19",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -16456,7 +16407,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 2195
+      "bytes": 2196
     },
     {
       "path": "tests/unit/status-badge.test.js",

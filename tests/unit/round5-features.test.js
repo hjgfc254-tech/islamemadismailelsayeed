@@ -211,3 +211,24 @@ test('round 6: home footer links, «امتى محتاج الفني؟» pre-fills
   assert.doesNotMatch(css, /#view \.hero \.art\{position:absolute/, 'nothing is drawn over the hero picture');
   assert.match(css, /#view \.hero \.txt>p:not\(\.hero-eyebrow\)\{display:none\}/, 'the text block is compacted instead');
 });
+test('round 7: request in 5 screens, price bar, contact shown only when missing; active card quick actions; category peek', () => {
+  const { boot: bootCustomer } = require('../helpers/customer-app-harness.js');
+  const app = bootCustomer({});
+  app.signIn();
+  app.run("startRequest('appliances','appliances/ac'); WZ.problem='appliances/ac/no-cooling'; WZ.step=3; show('wizard')");
+  let html = app.html();
+  assert.match(html, /الخطوة 2 من 5/); assert.match(html, /class="wz-part-h">وصف المشكلة/); assert.match(html, /class="wz-part-h">صور أو فيديو/);
+  app.run("WZ.step=7; WZ.contact.name='سارة'; WZ.contact.phone='01011112222'; show('wizard')");
+  html = app.html();
+  assert.match(html, /الخطوة 4 من 5/); assert.match(html, /class="wz-contact-mini"/); assert.doesNotMatch(html, /id="wz-phone"/, 'valid contact is folded into one line');
+  app.run("WZ.contact.phone=''; show('wizard')");
+  assert.match(app.html(), /id="wz-phone"/, 'missing contact is asked on the same screen');
+  assert.equal(app.run('wzNextStep(0)'), 1); assert.equal(app.run('wzNextStep(2)'), 3); assert.equal(app.run('wzNextStep(4)'), 6); assert.equal(app.run('wzNextStep(6)'), 7); assert.equal(app.run('wzNextStep(8)'), 9);
+  const id = app.newRequest();
+  app.run(`(() => { const id = ${JSON.stringify(id)}; MP.db().settings.autoAssign = false; if (!MP.activeAssignment(id)) MP.assign(id, 'p_demo1'); MP.respond(id, true); MP.confirmTime(id, 'provider'); MP.advance(id, 'enroute'); MP.setEta(id, 20); show('home'); })()`);
+  html = app.html();
+  assert.match(html, /class="ac-quick"/); assert.match(html, /data-act="openChat"/); assert.match(html, /هيوصل خلال \d+ د/);
+  app.run("globalThis.HTMLElement = globalThis.HTMLElement || function(){}; openCatPeek('electric')");   /* the vm harness has no DOM classes */
+  assert.match(app.run("document.getElementById('sheet').innerHTML"), /كل خدمات/);
+  assert.match(fs.readFileSync(path.join(ROOT, 'apps/customer/app.js'), 'utf8'), /function mountTilePeek\(\)/);
+});

@@ -291,6 +291,10 @@ async function session(backend, { auth, data }) {
       const ld = new PartialDb(backend.adapter, null);
       const actor = await loadActor(ld, token, app, admin);
       await syncPlan(ld, actor);
+      if (ld.publicToSave) {     // (re)build of the public summary — one small write, then every sync reads 1 doc
+        const snap = ld.publicToSave; ld.publicToSave = null;
+        try { await backend.runTransaction(async tx => { backend.adapter.set(tx, 'system/public', snap); }); } catch (e) { if (backend.log) backend.log('public summary write failed', e && e.message); }
+      }
       const db = ld.toDb() || runtime.emptyDb();
       if (token) await linkUser(backend, token.uid, actor, app);
       let adminData = null;

@@ -178,6 +178,9 @@ written by `functions/src/store.js`.
 
 ## Backend-only collections
 
+- `system/public` — server-only public summary `{atMs, providers[{id,data}], serviceAreas[{id,data}], reviews[{id,data}]}` (approved providers ≤ 200, all areas, latest 12 reviews). Read by every sync (1 read instead of one per document); deleted in the same transaction by any commit that changes providers / serviceAreas / reviews, rebuilt by the next sync, and rebuilt anyway after 10 minutes. Never used by write paths.
+
+
 | Collection | Doc id | Fields | Written by |
 |---|---|---|---|
 | `users` | Auth uid | tag (`customer:<id>`\|`provider:<id>`\|`admin:<uid>`), role, refId, app, updatedAt | `session.sync` / `registerCustomer`: the identity link used to route change signals |
@@ -671,47 +674,134 @@ service cloud.firestore {
 ### firebase.json
 ```json
 {
-    "functions":  [
-                      {
-                          "source":  "functions",
-                          "codebase":  "default",
-                          "ignore":  [
-                                         "node_modules",
-                                         ".git",
-                                         "firebase-debug.log",
-                                         "firebase-debug.*.log"
-                                     ]
-                      }
-                  ],
-    "firestore":  {
-                      "rules":  "firestore.rules",
-                      "indexes":  "firestore.indexes.json"
-                  },
-    "database":  {
-                     "rules":  "database.rules.json"
-                 },
-    "emulators":  {
-                      "auth":  {
-                                   "host":  "127.0.0.1",
-                                   "port":  9099
-                               },
-                      "functions":  {
-                                        "host":  "127.0.0.1",
-                                        "port":  5001
-                                    },
-                      "firestore":  {
-                                        "host":  "127.0.0.1",
-                                        "port":  8080
-                                    },
-                      "database":  {
-                                       "host":  "127.0.0.1",
-                                       "port":  9000
-                                   },
-                      "ui":  {
-                                 "enabled":  false
-                             },
-                      "singleProjectMode":  true
-                  }
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ]
+    }
+  ],
+  "firestore": {
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "emulators": {
+    "auth": {
+      "host": "127.0.0.1",
+      "port": 9099
+    },
+    "functions": {
+      "host": "127.0.0.1",
+      "port": 5001
+    },
+    "firestore": {
+      "host": "127.0.0.1",
+      "port": 8080
+    },
+    "database": {
+      "host": "127.0.0.1",
+      "port": 9000
+    },
+    "ui": {
+      "enabled": false
+    },
+    "singleProjectMode": true
+  },
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**",
+      "functions/**",
+      "tests/**",
+      "docs/**",
+      "scripts/**",
+      "backend/**",
+      "database/**",
+      "graphify-out/**",
+      "ai-workforce/**",
+      "design-reference/**",
+      "firebase-*-backup-*/**",
+      "**/*.md",
+      "**/*.bak",
+      "**/*.zip",
+      "**/*.log",
+      "package.json",
+      "package-lock.json",
+      "firestore.rules",
+      "database.rules.json",
+      "firestore.indexes.json",
+      "_redirects"
+    ],
+    "redirects": [
+      {
+        "source": "/",
+        "destination": "/apps/customer/index.html",
+        "type": 302
+      },
+      {
+        "source": "/provider{,/**}",
+        "destination": "/apps/provider/index.html",
+        "type": 302
+      },
+      {
+        "source": "/admin{,/**}",
+        "destination": "/apps/admin/index.html",
+        "type": 302
+      }
+    ],
+    "headers": [
+      {
+        "source": "/service-worker.js",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(js|css|html|json)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache"
+          }
+        ]
+      },
+      {
+        "source": "**/*.@(webp|png|jpg|jpeg|svg|woff2)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "public, max-age=604800"
+          }
+        ]
+      },
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "Referrer-Policy",
+            "value": "strict-origin-when-cross-origin"
+          }
+        ]
+      }
+    ]
+  }
 }
 ```
 
@@ -834,24 +924,24 @@ service cloud.firestore {
 
 | File | Status | Bytes |
 |---|---|---|
-| `apps/customer/app.js` | PARTIALLY IMPLEMENTED | 90112 |
+| `apps/customer/app.js` | PARTIALLY IMPLEMENTED | 96366 |
 | `apps/customer/customer-router.js` | IMPLEMENTED (FRONTEND DEMO) | 3508 |
 | `apps/customer/customer-session.js` | IMPLEMENTED (FRONTEND DEMO) | 4646 |
 | `apps/customer/index.html` | IMPLEMENTED | 7014 |
 | `apps/customer/pages/account.page.js` | IMPLEMENTED | 27323 |
 | `apps/customer/pages/addresses.page.js` | IMPLEMENTED | 10307 |
 | `apps/customer/pages/discover.page.js` | IMPLEMENTED | 15067 |
-| `apps/customer/pages/home.page.js` | IMPLEMENTED (DEMO) | 7988 |
+| `apps/customer/pages/home.page.js` | IMPLEMENTED (DEMO) | 8882 |
 | `apps/customer/pages/market-ui.page.js` | IMPLEMENTED | 33026 |
 | `apps/customer/pages/order-details.page.js` | IMPLEMENTED (DEMO) | 17848 |
 | `apps/customer/pages/orders.page.js` | IMPLEMENTED (DEMO) | 3051 |
 | `apps/customer/pages/providers.page.js` | IMPLEMENTED | 10885 |
 | `apps/customer/pages/request-create.page.js` | IMPLEMENTED (FRONTEND DEMO) | 2370 |
-| `apps/customer/pages/request-wizard.page.js` | IMPLEMENTED | 63433 |
+| `apps/customer/pages/request-wizard.page.js` | IMPLEMENTED | 63551 |
 | `apps/customer/pages/search.page.js` | IMPLEMENTED | 35413 |
 | `apps/customer/pages/support.page.js` | IMPLEMENTED | 21736 |
 | `apps/customer/README.md` | CONFIGURATION | 323 |
-| `apps/customer/styles/customer.css` | IMPLEMENTED | 105389 |
+| `apps/customer/styles/customer.css` | IMPLEMENTED | 107963 |
 
 ### apps/guest (3)
 
@@ -1070,7 +1160,7 @@ service cloud.firestore {
 |---|---|---|
 | `database.rules.json` | NEEDS_REVIEW | 283 |
 
-### docs (77)
+### docs (78)
 
 | File | Status | Bytes |
 |---|---|---|
@@ -1090,9 +1180,9 @@ service cloud.firestore {
 | `docs/AI_CONTEXT/START_HERE.md` | DOCUMENTATION | 6081 |
 | `docs/AI_CONTEXT/WORKFLOW.md` | DOCUMENTATION | 1652 |
 | `docs/AI_NEXT_IMPLEMENTATION_ORDER.md` | CONFIGURATION | 14359 |
-| `docs/AI_PROJECT_MAP.csv` | CONFIGURATION | 277930 |
+| `docs/AI_PROJECT_MAP.csv` | CONFIGURATION | 278144 |
 | `docs/AI_PROJECT_MAP.json` | CONFIGURATION |  |
-| `docs/AI_PROJECT_MAP.md` | CONFIGURATION | 141787 |
+| `docs/AI_PROJECT_MAP.md` | CONFIGURATION | 141986 |
 | `docs/API_CONTRACTS.md` | CONFIGURATION | 16970 |
 | `docs/ARCHITECTURE_BLUEPRINT_V1.md` | CONFIGURATION | 54657 |
 | `docs/ARCHITECTURE.md` | CONFIGURATION | 1980 |
@@ -1141,9 +1231,10 @@ service cloud.firestore {
 | `docs/NEW_FILES_REPORT.md` | CONFIGURATION | 7786 |
 | `docs/P1_PROVIDER_AUDIT.md` | CONFIGURATION | 4676 |
 | `docs/PERMISSIONS.md` | CONFIGURATION | 824 |
+| `docs/PLAYBOOKS.md` | NEEDS_REVIEW | 13769 |
 | `docs/PROJECT_CONTROL_CENTER_GUIDE.md` | CONFIGURATION | 2381 |
-| `docs/PROJECT_REFERENCE.md` | NEEDS_REVIEW | 87099 |
-| `docs/PROJECT_TREE.md` | CONFIGURATION | 26511 |
+| `docs/PROJECT_REFERENCE.md` | NEEDS_REVIEW | 87265 |
+| `docs/PROJECT_TREE.md` | CONFIGURATION | 26540 |
 | `docs/PROMPT_LOG_V8.md` | CONFIGURATION | 30100 |
 | `docs/PROVIDER_LEGACY_PARITY_AUDIT.md` | DOCUMENTATION | 6575 |
 | `docs/REMOVED_FILES_REPORT.md` | CONFIGURATION | 299 |
@@ -1156,7 +1247,7 @@ service cloud.firestore {
 
 | File | Status | Bytes |
 |---|---|---|
-| `firebase.json` | NEEDS_REVIEW | 1739 |
+| `firebase.json` | NEEDS_REVIEW | 2602 |
 
 ### firestore.indexes.json (1)
 
@@ -1387,7 +1478,7 @@ service cloud.firestore {
 | `tests/unit/responsive-audit.test.js` | IMPLEMENTED | 4495 |
 | `tests/unit/responsive-sweep-regression.test.js` | TEST | 2480 |
 | `tests/unit/reviews-management.test.js` | TEST | 4794 |
-| `tests/unit/round5-features.test.js` | NEEDS_REVIEW | 13465 |
+| `tests/unit/round5-features.test.js` | NEEDS_REVIEW | 14977 |
 | `tests/unit/security.test.js` | TEST | 6317 |
 | `tests/unit/service-worker-precache.test.js` | TEST | 2791 |
 | `tests/unit/services-management.test.js` | TEST | 4892 |

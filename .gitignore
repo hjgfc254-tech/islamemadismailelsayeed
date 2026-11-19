@@ -52,3 +52,6 @@ functions/.env*
 .serena/
 graphify-out/
 repomix-output.*
+
+# local tool health report (machine-specific paths)
+TOOL-HEALTH-REPORT.txt

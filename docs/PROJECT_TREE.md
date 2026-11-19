@@ -652,7 +652,6 @@ hansalhlak/
 ├── index.html
 ├── manifest.json
 ├── package.json
-├── PROJECT_CONTROL_CENTER.html
 ├── README.md
 └── service-worker.js
 ```

@@ -394,7 +394,6 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | index.html | CONFIGURATION | Root route redirect to the Customer application entry. | Verify root redirect behavior on the selected host and preserve query/hash forwarding. |
 | manifest.json | CONFIGURATION | PWA metadata, launch path and icon declaration. | Update only when related implementation changes. |
 | package.json | CONFIGURATION | Configuration or metadata for package | Update only when related implementation changes. |
-| PROJECT_CONTROL_CENTER.html | LEGACY | دفتر متابعة سابق مستقل محليًا، لا يتصل بمجلد المشروع ولا يفحص الملفات. | استبدله لوحة PROJECT_ENGINEER.html الجديدة؛ احتفظ به كمرجع ولا تعتمد عليه كلوحة رئيسية. |
 | README.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
 | scripts/build-lucide-icons.cjs | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | scripts/build-project-reference.cjs | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |

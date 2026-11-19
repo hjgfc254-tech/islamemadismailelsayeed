@@ -577,6 +577,42 @@ document.addEventListener('click', e => {
   view.scrollTo({ top: 0, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   setTimeout(() => { const q = document.getElementById('q'); if (q) try { q.focus({ preventScroll: true }); } catch {} }, 350);
 });
+/* ═════════ round 7: category peek (long-press / right-click) + quick actions on the active-request card ═════════ */
+function openCatPeek(k){
+  const c = CAT.category(k); if (!c) return;
+  const items = CAT.items(k) || [];
+  const probs = items.flatMap(i => (CAT.problems(i.id) || []).slice(0, 2).map(p => ({ p, i }))).slice(0, 6);
+  const from = _priceFrom && _priceFrom[k];
+  const avail = (MP.db().providers || []).filter(p => p.status === 'approved' && p.available !== false && (p.cats || []).includes(k)).length;
+  sheet(`<h4>${esc(c.name)}</h4>
+    <div class="sub">${items.length} ${items.length > 10 ? 'خدمة' : 'خدمات'}${from ? ` • يبدأ من ${Number(from).toLocaleString('ar-EG')} ج.م` : ''}${avail ? ` • ${avail} فني متاح` : ''}</div>
+    ${probs.length ? `<p class="peek-h">أشهر المشاكل — اضغط وابدأ الطلب على طول</p><div class="plist peek-list">${probs.map(({ p, i }) => `<button type="button" class="prow glass neon" data-wz-hit="problem|${esc(p.id)}">${ic('wrench')}<span class="tx">${esc(p.name)}<small>${esc(i.name)}</small></span>${ic('chev', 'chev')}</button>`).join('')}</div>` : ''}
+    <button type="button" class="cta" data-wz-hit="cat|${esc(k)}">${ic('grid')} كل خدمات ${esc(c.name)}</button>`);
+  if (!_priceFrom) fillTilePrices();
+}
+function mountTilePeek(){
+  if (!view || view.dataset.peek) return; view.dataset.peek = '1';
+  const tileOf = e => e.target && e.target.closest && e.target.closest('.tile[data-wz-hit^="cat|"]');
+  let timer = null, fired = false, x0 = 0, y0 = 0;
+  view.addEventListener('touchstart', e => {
+    const t = tileOf(e); if (!t || e.touches.length !== 1) return;
+    fired = false; x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; clearTimeout(timer);
+    timer = setTimeout(() => { timer = null; fired = true; try { if (navigator.vibrate) navigator.vibrate(15); } catch {} openCatPeek(t.dataset.wzHit.split('|')[1]); }, 450);
+  }, { passive: true });
+  view.addEventListener('touchmove', e => { if (timer && Math.hypot(e.touches[0].clientX - x0, e.touches[0].clientY - y0) > 10) { clearTimeout(timer); timer = null; } }, { passive: true });
+  view.addEventListener('touchend', () => { clearTimeout(timer); timer = null; }, { passive: true });
+  /* desktop: right-click opens the same peek; on phones it stops the system menu after a long press */
+  view.addEventListener('contextmenu', e => { const t = tileOf(e); if (!t) return; e.preventDefault(); if (!fired) openCatPeek(t.dataset.wzHit.split('|')[1]); });
+  /* the tap that ends a long press must not also open the request */
+  view.addEventListener('click', e => { if (fired && tileOf(e)) { e.preventDefault(); e.stopPropagation(); fired = false; } }, true);
+}
+/* «رسالة» on the active-request card: open tracking straight on the chat */
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act="openChat"]'); if (!t || t.dataset.act !== 'openChat') return;
+  e.preventDefault(); e.stopPropagation();
+  state.stack.push('track:' + t.dataset.id); history.pushState({ t: 1 }, ''); show('tracking', t.dataset.id);
+  setTimeout(() => { const h = document.getElementById('chat-h'); if (h) h.scrollIntoView({ block: 'start' }); const i = document.getElementById('chat-text'); if (i) try { i.focus({ preventScroll: true }); } catch {} }, 60);
+}, true);
 function homeActiveRequests(){
   try {
     const c = homeMe(); if (!c) return [];
@@ -605,13 +641,17 @@ function renderActiveRequests(){
     const n = nextStepOf(r);
     const stg = ({ received:0, searching:0, sent:0, accepted:1, scheduled:1, enroute:2, arrived:3, started:3, quote:3, completed:4 })[r.status];
     const mini = stg === undefined ? '' : `<span class="mj" aria-hidden="true">${[0,1,2,3,4].map(i => `<i class="${i < stg ? 'd' : i === stg ? 'n' : ''}"></i>`).join('')}</span>`;
-    return `<button class="act-card glass neon ${n.need?'need':''}" data-track="${esc(r.id)}">
+    /* quick actions once a provider accepted: arrival estimate, message, share (siblings of the card button) */
+    const prov = MP.providerOf(r.id);
+    const eta = r.status === 'enroute' && r.etaAt ? Math.round((new Date(r.etaAt).getTime() - Date.now()) / 60000) : null;
+    const quick = prov && !['completed'].includes(r.status) ? `<div class="ac-quick" role="group" aria-label="إجراءات سريعة للطلب ${esc(r.no)}">${eta != null ? `<span class="ac-eta">${ic('clock')} ${eta > 1 ? `هيوصل خلال ${eta} د` : 'وصل تقريبًا'}</span>` : ''}<button type="button" class="chip" data-act="openChat" data-id="${esc(r.id)}">${ic('chat')} رسالة لـ${esc(String(prov.name || '').split(' ')[0])}</button><button type="button" class="chip" data-act="shareReq" data-id="${esc(r.id)}">${ic('share')} شارك</button></div>` : '';
+    return `<div class="act-wrap"><button class="act-card glass neon ${n.need?'need':''}" data-track="${esc(r.id)}">
       <span class="ac-top">${icp(icStatus(r.status),'st')}
         <span class="tx">${esc(r.serviceName)}<small>#${esc(r.no)} • ${esc(STATUS_LABEL[r.status]||'')}</small></span>
         ${ic('chev','chev')}</span>
       ${mini}
       ${n.text?`<span class="ac-next">${ic(n.need?'warn':'info')}<span>${esc(n.text)}</span></span>`:''}
-    </button>`;
+    </button>${quick}</div>`;
   };
   const shown = list.slice(0, 3);
   return `<h2 class="sec-title">${ic('clock')}طلباتك النشطة${list.length>3?`<button class="sec-more" data-go="orders">عرض الكل (${list.length})</button>`:''}</h2>
@@ -1343,7 +1383,7 @@ function boot(){
   if (typeof HSAuthApi !== 'undefined') HSAuthApi.useApp('customer');
   try { mountHelpAndNet(); } catch {}
   try { mountSheetSwipe(); } catch {}
-  try { mountPullRefresh(); mountStickySearch(); } catch {}   /* API actor = the signed-in demo customer */
+  try { mountPullRefresh(); mountStickySearch(); mountTilePeek(); } catch {}   /* API actor = the signed-in demo customer */
   /* live screens follow changes from another tab (storage) and from the server (Firebase sync / RTDB signal) */
   if (typeof HSRealtimeClient !== 'undefined') HSRealtimeClient.subscribe('market:changed', e => { if (e.source === 'storage' || e.source === 'firebase') liveRefresh(e.source === 'storage'); });
   /* site content published from the Admin Center: refresh Home in place (keeps scroll; never interrupts a sheet) */

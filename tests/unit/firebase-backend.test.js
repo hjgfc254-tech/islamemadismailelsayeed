@@ -629,3 +629,23 @@ test('round 5 on the server: promo codes stay private, invite-code lookup, chat,
   const omarView = await call(b, OMAR, 'customer', 'GET', `/requests/${id}`);
   assert.equal(omarView.data.customerReview, undefined, 'the customer does not see how the provider rated them');
 });
+
+test('public summary: a guest sync reads 3 documents (meta, settings, system/public) however many providers there are; changes rebuild it', async () => {
+  const b = await setup();
+  const { invalidateShared } = require(path.join(FN, 'partial.js'));
+  const reg = await call(b, KARIM, 'provider', 'POST', '/providers/register', PROVIDER_FORM);
+  await call(b, OWNER, 'admin', 'POST', `/admin/providers/${reg.data.id}/status`, { status: 'approved' });
+  assert.equal(b.docs.has('system/public'), false, 'a provider change removes the old summary');
+  const first = await service.session(b, { auth: null, data: { op: 'sync', app: 'customer' } });
+  assert.ok(first.db.providers.some(p => p.id === reg.data.id), 'rebuilt from the real collections');
+  assert.ok(b.docs.has('system/public'), 'summary written once');
+  invalidateShared(b.adapter);                        // a cold server instance
+  const cold = await service.session(b, { auth: null, data: { op: 'sync', app: 'customer' } });
+  assert.equal(cold.reads, 3, 'meta + settings + system/public');
+  assert.ok(cold.db.providers.some(p => p.id === reg.data.id));
+  assert.equal(cold.db.providers.find(p => p.id === reg.data.id).phone, undefined, 'still scoped: no private provider fields');
+  await call(b, OWNER, 'admin', 'POST', `/admin/providers/${reg.data.id}/status`, { status: 'suspended' });
+  invalidateShared(b.adapter);
+  const after = await service.session(b, { auth: null, data: { op: 'sync', app: 'customer' } });
+  assert.equal(after.db.providers.some(p => p.id === reg.data.id), false, 'a suspended provider disappears right away');
+});
