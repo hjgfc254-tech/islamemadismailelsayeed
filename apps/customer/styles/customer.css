@@ -1029,7 +1029,8 @@ html[data-fs="xl"] #app,html[data-fs="xl"] #sheet{zoom:1.25}
 .cat-hero .icp{flex:none;width:64px;height:64px}
 .cat-hero b{display:block;font-size:18px}.cat-hero small{display:block;color:var(--text-muted);font-size:12.5px}.cat-hero .tfrom{margin-top:2px}
 /* sticky Next/Back on phones */
-@media (max-width:899px){.wz-nav{position:sticky;bottom:calc(var(--tab-h) + env(safe-area-inset-bottom) + 6px);z-index:6;margin-inline:-6px;padding:10px 6px;border-radius:var(--r-lg);background:var(--bg-primary);box-shadow:0 -8px 18px -12px rgba(31,27,23,.35)}}
+/* the bottom margin equals the sticky offset: at the end of the scroll the bar rests in place instead of covering the last row */
+@media (max-width:899px){.wz-nav{position:sticky;bottom:calc(var(--tab-h) + env(safe-area-inset-bottom) + 6px);margin-bottom:calc(var(--tab-h) + env(safe-area-inset-bottom) + 6px);z-index:6;margin-inline:-6px;padding:10px 6px;border-radius:var(--r-lg);background:var(--bg-primary);box-shadow:0 -8px 18px -12px rgba(31,27,23,.35)}}
 /* screen enter */
 @keyframes screenIn{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:none}}
 #view>.screen.screen-in{animation:screenIn .26s cubic-bezier(.2,.8,.2,1)}

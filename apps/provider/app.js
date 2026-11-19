@@ -4,6 +4,7 @@
   const $ = (selector, scope=document) => scope.querySelector(selector);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const money = value => (Number(value)||0).toLocaleString('ar-EG',{maximumFractionDigits:2})+' ج.م';
+const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{minimumFractionDigits:digits,maximumFractionDigits:digits});   /* Arabic digits like money() */
   const date = value => { if(!value) return 'لم يحدد'; const d=new Date(value); return Number.isNaN(d.getTime())?esc(value):d.toLocaleString('ar-EG',{weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}); };
   const icon = name => typeof ic==='function' ? ic(name) : '';
   let dom, toastTimer;
@@ -111,12 +112,12 @@
     const RVT=['ملتزم بالموعد','شغله نضيف','أسعاره مناسبة','محترم في التعامل','سريع'];
     const myRv=(MP.db().reviews||[]).filter(v=>v.providerId===p.id&&!v.hidden);
     const praise=RVT.map(t=>[t,myRv.filter(v=>String(v.comment||'').includes(t)).length]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,3);
-    const praiseCard=praise.length?`<section class="pv-praise" aria-label="العملاء بيقولوا عنك"><small>العملاء بيقولوا عنك</small><ul>${praise.map(([t,n])=>`<li>${esc(t)}<b>${n}</b></li>`).join('')}</ul></section>`:'';
+    const praiseCard=praise.length?`<section class="pv-praise" aria-label="العملاء بيقولوا عنك"><small>العملاء بيقولوا عنك</small><ul>${praise.map(([t,n])=>`<li>${esc(t)}<b>${num(n)}</b></li>`).join('')}</ul></section>`:'';
     const dayMs=864e5, nowMs=Date.now(), inDays=(at,from,to)=>{const t=new Date(at).getTime();return Number.isFinite(t)&&t>nowMs-to*dayMs&&t<=nowMs-from*dayMs;};
     const wk=transactions.filter(x=>inDays(x.at,0,7)), pw=transactions.filter(x=>inDays(x.at,7,14));
     const wn=domain.totals(wk).net, pn=domain.totals(pw).net, delta=pn>0?Math.round((wn-pn)/pn*100):null;
-    const wr=(MP.db().reviews||[]).filter(v=>v.providerId===p.id&&inDays(v.at,0,7)), ravg=wr.length?(wr.reduce((s,v)=>s+(+v.stars||0),0)/wr.length).toFixed(1):'—';
-    const weekCard=`<section class="pv-week" aria-labelledby="pvxweek-h"><h2 id="pvxweek-h">آخر 7 أيام</h2><dl><div><dt>مكسبك</dt><dd>${money(wn)}</dd>${delta!=null?`<small class="${delta>=0?'up':'down'}">${delta>=0?'أعلى':'أقل'} ${Math.abs(delta)}% من الأسبوع اللي قبله</small>`:''}</div><div><dt>خدمات</dt><dd>${wk.length}</dd></div><div><dt>تقييمك</dt><dd>${ravg}</dd></div></dl></section>`;
+    const wr=(MP.db().reviews||[]).filter(v=>v.providerId===p.id&&inDays(v.at,0,7)), ravg=wr.length?num(wr.reduce((s,v)=>s+(+v.stars||0),0)/wr.length,1):'—';
+    const weekCard=`<section class="pv-week" aria-labelledby="pvxweek-h"><h2 id="pvxweek-h">آخر ٧ أيام</h2><dl><div><dt>مكسبك</dt><dd>${money(wn)}</dd>${delta!=null?`<small class="${delta>=0?'up':'down'}">${delta>=0?'أعلى':'أقل'} ${num(Math.abs(delta))}٪ من الأسبوع اللي قبله</small>`:''}</div><div><dt>خدمات</dt><dd>${num(wk.length)}</dd></div><div><dt>تقييمك</dt><dd>${ravg}</dd></div></dl></section>`;
     let demandCard='';
     const tr=(MP.db().settings||{}).trend;
     if(tr&&tr.areas&&typeof MP.cairoDay==='function'&&tr.day===MP.cairoDay()){
@@ -131,8 +132,8 @@
     const live=!!(root.HSFirebaseConfig&&root.HSFirebaseConfig.mode==='firebase');
     /* today's earnings: completed services recorded today (provider amount, net of the platform share) */
     const day=new Date().toDateString(), todayTx=transactions.filter(x=>{const d=new Date(x.at);return !Number.isNaN(d.getTime())&&d.toDateString()===day;}), tt=domain.totals(todayTx);
-    const todayCard=`<section class="pv-today" aria-label="مكسبك النهارده"><div><small>مكسبك النهارده</small><b>${money(tt.net)}</b></div><div><small>خدمات خلصتها النهارده</small><b>${todayTx.length}</b></div><div><small>طلبات جديدة مستنياك</small><b>${groups.new.length}</b></div></section>`;
-    return `<section class="pv-hero"><div><span class="pv-eyebrow">مساحة مقدم الخدمة</span><h1>أهلًا، ${esc((p.name||'').split(' ')[0])}</h1><p>تابع الطلبات والمواعيد ومستحقاتك${live?'':' التجريبية'} من مكان واحد.</p></div><button class="pv-availability ${p.available?'is-on':''}" type="button" data-pv-action="availability" aria-pressed="${!!p.available}">${icon('power')} ${p.available?'متاح لاستقبال الطلبات':'متوقف عن استقبال الطلبات'}</button></section>${todayCard}${bonusCard||levelCard}${praiseCard}${weekCard}${demandCard}<section class="pv-kpis pv-kpis-slim" aria-label="ملخص شغلك"><article><small>إجراءات معلقة</small><b>${active}</b></article><article><small>مكتملة</small><b>${groups.done.length}</b></article><article><small>صافي مستحقاتك${live?'':' (تجريبي)'}</small><b>${money(t.net)}</b></article></section>`;
+    const todayCard=`<section class="pv-today" aria-label="مكسبك النهارده"><div><small>مكسبك النهارده</small><b>${money(tt.net)}</b></div><div><small>خدمات خلصتها النهارده</small><b>${num(todayTx.length)}</b></div><div><small>طلبات جديدة مستنياك</small><b>${num(groups.new.length)}</b></div></section>`;
+    return `<section class="pv-hero"><div><span class="pv-eyebrow">مساحة مقدم الخدمة</span><h1>أهلًا، ${esc((p.name||'').split(' ')[0])}</h1><p>تابع الطلبات والمواعيد ومستحقاتك${live?'':' التجريبية'} من مكان واحد.</p></div><button class="pv-availability ${p.available?'is-on':''}" type="button" data-pv-action="availability" aria-pressed="${!!p.available}">${icon('power')} ${p.available?'متاح لاستقبال الطلبات':'متوقف عن استقبال الطلبات'}</button></section>${todayCard}${bonusCard||levelCard}${praiseCard}${weekCard}${demandCard}<section class="pv-kpis pv-kpis-slim" aria-label="ملخص شغلك"><article><small>إجراءات معلقة</small><b>${num(active)}</b></article><article><small>مكتملة</small><b>${num(groups.done.length)}</b></article><article><small>صافي مستحقاتك${live?'':' (تجريبي)'}</small><b>${money(t.net)}</b></article></section>`;
   }
 
   function requestCard(item,p) {

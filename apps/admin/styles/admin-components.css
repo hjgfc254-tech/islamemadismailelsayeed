@@ -310,8 +310,12 @@ a.adm-link:hover{background:var(--nav-dark-hover);color:var(--on-brand)}
 .mc-bar.is-zero{height:0}
 .mc-bar:hover,.mc-bar:focus-visible{background:var(--accent-hover)}
 .mc-bar:focus-visible{box-shadow:var(--focus-ring)}
-.mc-bar::after{content:attr(data-tip);position:absolute;bottom:calc(100% + var(--sp-2));left:50%;transform:translateX(-50%);padding:var(--sp-1) var(--sp-2);border-radius:var(--r-sm);background:var(--charcoal);color:var(--on-brand);font-size:var(--fs-xs);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity var(--motion-fast);z-index:3}
-.mc-bar:hover::after,.mc-bar:focus-visible::after{opacity:1}
+/* the tooltip exists only while hovered / focused: a hidden-but-laid-out nowrap tip widened the page on phones */
+.mc-bar::after{content:attr(data-tip);position:absolute;bottom:calc(100% + var(--sp-2));left:50%;transform:translateX(-50%);padding:var(--sp-1) var(--sp-2);border-radius:var(--r-sm);background:var(--charcoal);color:var(--on-brand);font-size:var(--fs-xs);white-space:nowrap;pointer-events:none;z-index:3;display:none}
+.mc-bar:hover::after,.mc-bar:focus-visible::after{display:block}
+/* edge bars: keep the tip inside the chart (RTL: the first columns are on the right) */
+.mc-col:nth-child(-n+3) .mc-bar::after{left:auto;right:0;transform:none}
+.mc-col:nth-last-child(-n+3) .mc-bar::after{left:0;transform:none}
 .mc-peak{position:absolute;bottom:calc(100% + var(--sp-1));left:50%;transform:translateX(-50%);font-style:normal;font-size:var(--fs-xs);font-weight:700;color:var(--text-secondary);white-space:nowrap}
 .mc-bar:hover .mc-peak,.mc-bar:focus-visible .mc-peak{visibility:hidden}
 .mc-axis{display:flex;justify-content:space-between;margin-top:var(--sp-2);font-size:var(--fs-xs);color:var(--text-muted)}

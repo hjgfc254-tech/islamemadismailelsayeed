@@ -440,8 +440,8 @@
       "path": "apps/admin/styles/admin-components.css",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL PARTS)",
-      "bytes": 34436,
-      "sha256": "198de84a6e497246afaffde3fcc48f7cfdbcc66afac3b3ab26ee4d06eb3e0f89"
+      "bytes": 34749,
+      "sha256": "66d9f2c09d3e0d10931438bec6abb8030c2a3eb40b3d50df17ec8dc622a43c27"
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -615,8 +615,8 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 133419,
-      "sha256": "01ec7ba6f6c27b5a5d95ae43e901a33c3dc9665b71b4438818874c92d8461277"
+      "bytes": 133619,
+      "sha256": "f41b178daec2f3d71170b3f3cff08c7d60547b5323e580aa6ca5b433e8cee39d"
     },
     {
       "path": "apps/customer/styles/overrides.css",
@@ -650,8 +650,8 @@
       "path": "apps/provider/app.js",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 66598,
-      "sha256": "01d21e7ce3ca3d1ec67a156d4d171938948c33f7e248cb4a40220faeb569fba9"
+      "bytes": 66804,
+      "sha256": "f9b0fb319cf2799cd66ba0d700a8230c162b294a4a20013823432db26e2e8550"
     },
     {
       "path": "apps/provider/index.html",
