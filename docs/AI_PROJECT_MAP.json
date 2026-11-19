@@ -11634,7 +11634,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "d41cb5aee57fd71e308b9c5b9bad1e45df9a97436e68956bc296af991798bbfa",
+      "sha256": "35cae652af158618f207c8055816b7f4a4754f52e4be35c17d72d616f78eb117",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -13218,7 +13218,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "779c6ce57eaf46425f7c95a1f0ccccd66bd665e1c2d73edf6dae171b396221f5",
+      "sha256": "bcf20d1680ad8b5398fa4eacc798909c4091a443d75eb8828e1e0cf78cdc17a1",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -13257,7 +13257,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 46626
+      "bytes": 50016
     },
     {
       "path": "shared/design-system/layout.css",
@@ -14637,7 +14637,7 @@
       "functional_title": "Accessible tabs integration contracts",
       "current_responsibility": "Verifies Customer/Admin loading order, Service Worker precache, and feature wiring.",
       "next_action": "Run with npm test.",
-      "sha256": "c6db4421e53c8c86ff34f37aff8c44a90db517f08eff97724754c2fc281a9cef",
+      "sha256": "0b653946629113e640afd496beff523e8af7edcb49adc0224c11afc57376a239",
       "bytes": 1368
     },
     {
@@ -15093,7 +15093,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "0e95b80baf1f16298d67350a876302ca56c540bf16bf04e5e3484c2bb5d11aaf",
+      "sha256": "13b7367eb03c04c0c6b258a4e5c76e14bd1f89e39c5066f4615e5faac9156557",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -15584,7 +15584,7 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "6640836b277140615115f548073f50bef6153ccd61dcd139fdcd9b7dd1d41b14",
+      "sha256": "9ef9ca5b3067cb40adf7495ba15f50412b83bbbca83acbc3b915c857d6838a03",
       "bytes": 7023
     },
     {
@@ -16004,7 +16004,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "6cfbffa8bfaa9cffb5540213e906d140a77e62d112c6b3e44890fa35ca6b3b02",
+      "sha256": "bc5e2f039206dfa77f1cf0b7696123cbf50c66899d2bd7cdfe942dab318c5e3c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",

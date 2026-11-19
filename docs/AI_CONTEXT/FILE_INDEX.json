@@ -2919,7 +2919,7 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 10863,
-      "sha256": "d41cb5aee57fd71e308b9c5b9bad1e45df9a97436e68956bc296af991798bbfa"
+      "sha256": "35cae652af158618f207c8055816b7f4a4754f52e4be35c17d72d616f78eb117"
     },
     {
       "path": "services/admin-api.js",
@@ -3163,8 +3163,8 @@
       "path": "shared/design-system/design-system.css",
       "area": "shared",
       "status": "IMPLEMENTED",
-      "bytes": 46626,
-      "sha256": "779c6ce57eaf46425f7c95a1f0ccccd66bd665e1c2d73edf6dae171b396221f5"
+      "bytes": 50016,
+      "sha256": "bcf20d1680ad8b5398fa4eacc798909c4091a443d75eb8828e1e0cf78cdc17a1"
     },
     {
       "path": "shared/design-system/layout.css",
@@ -3493,7 +3493,7 @@
       "area": "tests",
       "status": "TEST",
       "bytes": 1368,
-      "sha256": "c6db4421e53c8c86ff34f37aff8c44a90db517f08eff97724754c2fc281a9cef"
+      "sha256": "0b653946629113e640afd496beff523e8af7edcb49adc0224c11afc57376a239"
     },
     {
       "path": "tests/unit/accessible-tabs.test.js",
@@ -3668,7 +3668,7 @@
       "area": "tests",
       "status": "IMPLEMENTED",
       "bytes": 2305,
-      "sha256": "0e95b80baf1f16298d67350a876302ca56c540bf16bf04e5e3484c2bb5d11aaf"
+      "sha256": "13b7367eb03c04c0c6b258a4e5c76e14bd1f89e39c5066f4615e5faac9156557"
     },
     {
       "path": "tests/unit/design-token-audit.test.js",
@@ -3843,7 +3843,7 @@
       "area": "tests",
       "status": "TEST",
       "bytes": 7023,
-      "sha256": "6640836b277140615115f548073f50bef6153ccd61dcd139fdcd9b7dd1d41b14"
+      "sha256": "9ef9ca5b3067cb40adf7495ba15f50412b83bbbca83acbc3b915c857d6838a03"
     },
     {
       "path": "tests/unit/provider-request-domain.test.js",
@@ -3990,7 +3990,7 @@
       "area": "tests",
       "status": "IMPLEMENTED",
       "bytes": 2196,
-      "sha256": "6cfbffa8bfaa9cffb5540213e906d140a77e62d112c6b3e44890fa35ca6b3b02"
+      "sha256": "bc5e2f039206dfa77f1cf0b7696123cbf50c66899d2bd7cdfe942dab318c5e3c"
     },
     {
       "path": "tests/unit/status-badge.test.js",
