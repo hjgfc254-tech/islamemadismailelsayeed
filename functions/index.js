@@ -10,14 +10,18 @@
 const { setGlobalOptions } = require('firebase-functions/v2');
 const { onCall, HttpsError } = require('firebase-functions/v2/https');
 const logger = require('firebase-functions/logger');
-const admin = require('firebase-admin');
-const { FieldPath } = require('firebase-admin/firestore');
+/* firebase-admin 14: modular entry points only (the namespaced admin.firestore() / admin.auth() API was removed) */
+const { initializeApp } = require('firebase-admin/app');
+const { getFirestore, FieldPath } = require('firebase-admin/firestore');
+const { getAuth } = require('firebase-admin/auth');
+const { getDatabase } = require('firebase-admin/database');
+const { getMessaging } = require('firebase-admin/messaging');
 const { createLimiter, clientIp, isReadCall } = require('./src/limits');
 const service = require('./src/service');
 const { firestoreAdapter } = require('./src/partial');
 
-admin.initializeApp();
-const fs = admin.firestore();
+initializeApp();
+const fs = getFirestore();
 fs.settings({ ignoreUndefinedProperties: true });
 
 setGlobalOptions({ region: 'me-central1', maxInstances: 10 });
@@ -31,23 +35,23 @@ const backend = {
   async queryDocs(col, field, op, value) { const s = await fs.collection(col).where(field, op, value).get(); return s.docs.map(d => ({ id: d.id, data: d.data() })); },
   async signal(uids) {
     const at = Date.now();
-    await admin.database().ref('signals').update(Object.fromEntries(uids.map(u => [u, { at }])));
+    await getDatabase().ref('signals').update(Object.fromEntries(uids.map(u => [u, { at }])));
   },
   async authUsers(uids) {
     const out = {}; if (!uids.length) return out;
-    const res = await admin.auth().getUsers(uids.slice(0, 100).map(uid => ({ uid })));
+    const res = await getAuth().getUsers(uids.slice(0, 100).map(uid => ({ uid })));
     for (const u of res.users) out[u.uid] = { lastSignIn: u.metadata.lastSignInTime || null, created: u.metadata.creationTime || null };
     return out;
   },
-  async revokeSessions(uid) { await admin.auth().revokeRefreshTokens(uid); },
+  async revokeSessions(uid) { await getAuth().revokeRefreshTokens(uid); },
   async deleteDoc(p) { await fs.doc(p).delete(); },
   /** Public RTDB value (rules: read-only to clients), e.g. public/content {v, at} for live site-content updates. */
-  async setPublic(p, value) { await admin.database().ref(p).set(value); },
+  async setPublic(p, value) { await getDatabase().ref(p).set(value); },
   log: (msg, detail) => logger.warn(msg, { detail }),
   /** FCM web push, data-only (the service worker renders it). Returns tokens FCM reports as dead, for cleanup. */
   async sendPush(tokens, msg) {
     if (!tokens.length) return [];
-    const res = await admin.messaging().sendEachForMulticast({
+    const res = await getMessaging().sendEachForMulticast({
       tokens: tokens.slice(0, 500),
       data: { title: msg.title, body: msg.body, link: msg.link, tag: msg.tag || 'hs' },
       webpush: { headers: { Urgency: 'high', TTL: '86400' } }

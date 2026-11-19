@@ -11120,8 +11120,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "b0126dc06523447d96d479a5f54e17ce5fe2a1425e934c2081c87dae690cf268",
-      "bytes": 4318
+      "sha256": "c5fb7d7b1fdf3671dbfc761556a46b1c0d8bf2cce4fcb01fb77365ed67fb5887",
+      "bytes": 4615
     },
     {
       "path": "functions/package-lock.json",
@@ -11132,8 +11132,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "bbe59051d55df3772755b0aef12f3b98abaa1cc6fece464bfb46a73ff1775a79",
-      "bytes": 317684
+      "sha256": "6d63d6db3ff5658a95b4884c0776e0657e709d5a5825b20439893dd89964cc07",
+      "bytes": 300290
     },
     {
       "path": "functions/package.json",
@@ -11144,8 +11144,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "b78dc422e9e41e0b91ae666f8ffd1a21ccfbe4906aed0c0b7a4b319ac66f9a9a",
-      "bytes": 835
+      "sha256": "68d14f686f6b441a64b54caf062df0634db5b5bb1fe827487f4fc3568a0df2d7",
+      "bytes": 632
     },
     {
       "path": "functions/src/admin-extra.js",
