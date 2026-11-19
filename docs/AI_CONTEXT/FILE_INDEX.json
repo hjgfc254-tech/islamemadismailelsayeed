@@ -644,7 +644,7 @@
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
       "bytes": 63446,
-      "sha256": "2cf4c67ebd1e819b073c4b9925be18e5c998eb56861150cc2c6a6a6f67183d14"
+      "sha256": "c85d9ba601a7cc381daa985dd0e799154e2271c9a3d3cf118832276a1c95fdcd"
     },
     {
       "path": "apps/provider/index.html",
@@ -811,8 +811,8 @@
       "path": "apps/provider/styles/provider.css",
       "area": "apps/provider",
       "status": "IMPLEMENTED (RESPONSIVE FRONTEND)",
-      "bytes": 29875,
-      "sha256": "4b69048a4652b0db358cb1a53e9a320142331e8893fa197778152a152bf20a11"
+      "bytes": 30567,
+      "sha256": "c10eadc493abd73d13d836df5eb7c013e2fd53ec9a98b8ef53c0675c72c9fa2c"
     },
     {
       "path": "assets/app-icon-192.png",

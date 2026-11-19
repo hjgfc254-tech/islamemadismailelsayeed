@@ -364,12 +364,12 @@
     if(action==='customer-location'){showCustomerLocation(id);return;}
     if(action==='customer-location-close'){delete locState[id];render([actionSel('customer-location',id)]);return;}
     if(action==='reject'||action==='propose'||action==='quote'||action==='complete'||action==='free'||action==='rate-customer'||action==='pin'||action==='bid'){openForm(action,id);return;}
-    if(action==='cash-yes'||action==='cash-no') return perform('cash:'+id,button,()=>api.orders.cash(id,action==='cash-yes'),()=>{render();toast('اتسجّل');},failedButton);
-    if(action==='inspection-only') return perform('insp:'+id,button,()=>api.orders.inspectionOnly(id),()=>{router.navigate('done');render();toast('اتسجلت المعاينة');},failedButton);
     if(action==='photo'){pickPhoto(id,button.dataset.kind,button);return;}
     if(action==='edit-profile'){openProfileForm(p);return;}
     /* Mutations go through the API adapters (services/*-api.js); MP stays the local read model. */
     const failedButton=res=>{render([detailsSel(id)]);toast(isStale(res)?STALE:errorText(res));};
+    if(action==='cash-yes'||action==='cash-no') return perform('cash:'+id,button,()=>api.orders.cash(id,action==='cash-yes'),()=>{render();toast('اتسجّل');},failedButton);
+    if(action==='inspection-only') return perform('insp:'+id,button,()=>api.orders.inspectionOnly(id),()=>{router.navigate('done');render();toast('اتسجلت المعاينة');},failedButton);
     if(action==='availability') return perform('availability',button,()=>api.provider.setAvailability(!p.available),()=>render(['[data-pv-action="availability"]']),res=>toast(errorText(res)));
     if(action==='accept') return perform('accept:'+id,button,()=>api.orders.respond(id,true),()=>{router.navigate('accepted');render();toast('تم قبول الطلب');},failedButton);
     if(action==='complete-free') return perform('complete-free:'+id,button,()=>api.quotes.completeFree(id),()=>{router.navigate('done');render();toast('تم تسجيل إكمال الخدمة المجانية (بلا مقابل)');},failedButton);
