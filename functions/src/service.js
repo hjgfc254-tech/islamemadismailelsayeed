@@ -299,6 +299,30 @@ async function api(backend, { auth, data }) {
   return out.envelope;
 }
 
+/** Scheduled every 5 minutes (index.js offersClock): the offers-round clock (MP.tickBidding) over the open bidding
+    requests — notify the customer to choose, widen the search, or close the round. Pushes go out like any change. */
+async function tickOffers(backend) {
+  const out = await backend.runTransaction(async tx => {
+    const ld = new PartialDb(backend.adapter, tx);
+    await ld.loadSystem();
+    const open = (await ld.where('serviceRequests', [['status', 'in', ['received', 'searching', 'sent']]], { limit: 100 })).filter(r => r.bidding && !r.bidding.closed);
+    if (!open.length) return { changes: {}, db: null, ids: [] };
+    const ids = open.map(r => r.id);
+    for (let i = 0; i < ids.length; i += 30) await ld.where('assignments', [['reqId', 'in', ids.slice(i, i + 30)]], { limit: 300 });
+    await ld.where('providers', [['status', '==', 'approved']], { limit: 300 });
+    await ld.where('reviews', [], { limit: 200 });
+    const res = runtime.operation({ db: ld.toDb(), roster: [] }, env => env.mp.tickBidding());
+    if (!res.result || !res.result.length) return { changes: {}, db: null, ids: [] };
+    const { changes } = ld.commit(res.db);
+    return { changes, db: res.db, ids: res.result };
+  });
+  if (Object.keys(out.changes).length) {
+    await backend.addDoc('audit', { at: new Date().toISOString(), uid: null, actor: null, app: 'system', action: 'offersClock', status: 200, changes: Object.fromEntries(Object.entries(out.changes).map(([k, c]) => [k, { set: c.set.length, del: c.del.length }])) });
+    await notifyChanges(backend, out.changes, out.db, null);
+  }
+  return { changed: out.ids.length };
+}
+
 /** Callable `session`: sync (scoped read model), registerCustomer, claimOwner, importLocal. */
 async function session(backend, { auth, data }) {
   const d = data || {};
@@ -479,4 +503,4 @@ async function importLocal(backend, token, d) {
   return { report, totals: result };
 }
 
-module.exports = { api, session, importLocal, validateApi, affectedTags, ServiceError, WRITE_LIMIT_PER_MIN };
+module.exports = { tickOffers, api, session, importLocal, validateApi, affectedTags, ServiceError, WRITE_LIMIT_PER_MIN };

@@ -94,3 +94,10 @@ function wrap(name, fn) {
 
 exports.api = wrap('api', service.api);
 exports.session = wrap('session', service.session);
+
+/* offers-round clock: every 5 minutes (Cloud Scheduler); see service.tickOffers */
+const { onSchedule } = require('firebase-functions/v2/scheduler');
+exports.offersClock = onSchedule({ schedule: 'every 5 minutes', region: OPTS.region || 'me-central1', timeoutSeconds: 120 }, async () => {
+  try { const r = await service.tickOffers(backend); if (r.changed) logger.info('offersClock', r); }
+  catch (e) { logger.error('offersClock failed', { error: e && e.message }); }
+});

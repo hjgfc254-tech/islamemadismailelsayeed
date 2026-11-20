@@ -50,6 +50,10 @@
     doc.addEventListener('hs:backend-sync', () => setTimeout(paint, 0));
     if (typeof root.addEventListener === 'function') root.addEventListener('storage', () => setTimeout(paint, 0));
     if (typeof setInterval === 'function') setInterval(paint, 30000);
+    /* demo / local mode: run the offers-round clock here (on the server a scheduled function does it every 5 min) */
+    const local = !(root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase');
+    const tick = () => { try { if (local && typeof MP !== 'undefined' && MP.tickBidding && MP.tickBidding().length && typeof HSRealtimeClient !== 'undefined' && HSRealtimeClient.notify) HSRealtimeClient.notify({ source: 'storage' }); } catch (e) {} };
+    tick(); if (typeof setInterval === 'function') setInterval(tick, 60000);
   };
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', start); else setTimeout(start, 0);
   root.HSPlatformStatus = Object.freeze({ paint, controls, _reset: () => { last = ''; } });

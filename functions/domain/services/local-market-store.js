@@ -799,6 +799,34 @@ const MP = (() => {
       notify('admin', 'مفيش عروض على الطلب ' + r.no + ' — البحث اتوسّع لـ ' + pick.length + ' فني من مناطق تانية', r.id);
       save(); return true;
     },
+    /** Offers-round clock (run on load, on a timer and by the server every 5 minutes): when a window ends —
+        offers waiting → the customer is told once to choose (the round stays open until they do);
+        no offers, not widened yet → widen the search (widenBidding);
+        no offers after the widened window → the round closes, the request goes back to the normal search and the admin
+        sees it in «مهام اليوم». Returns the ids that changed. */
+    tickBidding(at){
+      const nowMs = at || Date.now(), changed = [];
+      for (const r of db.serviceRequests) {
+        const b = r.bidding;
+        if (!b || b.closed || api.providerOf(r.id) || !['received', 'searching', 'sent'].includes(r.status)) continue;
+        if (!(Date.parse(b.until) <= nowMs)) continue;
+        const offers = api.offersFor(r.id).filter(a => a.status === 'offered' && a.offer).length;
+        if (offers) {
+          if (!b.readyNotified) { b.readyNotified = true; notify('customer:' + r.customerId, 'وقت العروض خلص — عندك ' + offers + ' عرض على طلبك ' + r.no + '، اختار الأنسب', r.id); changed.push(r.id); }
+        } else if (!b.widened) {
+          if (api.widenBidding(r.id)) changed.push(r.id);
+        } else {
+          b.closed = true; b.closedAt = new Date(nowMs).toISOString();
+          db.assignments.forEach(a => { if (a.reqId === r.id && a.status === 'offered' && a.bidding) a.status = 'withdrawn'; });
+          r.status = 'searching';
+          notify('customer:' + r.customerId, 'مفيش فنيين قدروا يردّوا على طلبك ' + r.no + ' — فريقنا هيدوّرلك على فني بنفسه', r.id);
+          notify('admin', 'جولة العروض على الطلب ' + r.no + ' خلصت من غير عروض — محتاج إسناد يدوي', r.id);
+          changed.push(r.id);
+        }
+      }
+      if (changed.length) save();
+      return changed;
+    },
     /** cash after completion: each side says whether the money changed hands; a mismatch opens a complaint for the admin */
     cashConfirm(reqId, side, paid){
       const r = get('serviceRequests', reqId);
