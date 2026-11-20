@@ -462,7 +462,7 @@
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL PARTS)",
       "bytes": 39793,
-      "sha256": "70139fc5087720916dfea779f4bfeca530d2c3c4cccd02c606ffa76013435a67"
+      "sha256": "8e42a541970a03c1f7f068b1155cc57e50bd79eb0a0b19ceae9d159e77edde2c"
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -476,7 +476,7 @@
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL)",
       "bytes": 5444,
-      "sha256": "5dde144c1798a553d12b9a403f28386a352f052e7a2aea998f0b1c20ebfd0a8c"
+      "sha256": "fddad7836c7844a55c101ae0f764ffb73add5e74c775c837a332c57be4da173f"
     },
     {
       "path": "apps/admin/styles/overrides.css",
@@ -644,7 +644,7 @@
       "area": "apps/customer",
       "status": "IMPLEMENTED",
       "bytes": 139772,
-      "sha256": "dfc341c7a2ef484b0aa5e76d4d6f656c0410bc3dd5446a7470e65e96c2cb2f18"
+      "sha256": "15fa11464079ff98d0d173ef113afe39c40a7598fc24b44b009bb21bc1f9294b"
     },
     {
       "path": "apps/customer/styles/overrides.css",
@@ -846,8 +846,8 @@
       "path": "apps/provider/styles/provider.css",
       "area": "apps/provider",
       "status": "IMPLEMENTED (RESPONSIVE FRONTEND)",
-      "bytes": 36302,
-      "sha256": "a95fc87ca745857827ddc403e09fbd9ae03ac149dcba9272be49bfbf1b1788c7"
+      "bytes": 36303,
+      "sha256": "bd5e8ccc535041f92f178e8a11af3c318851be7d18d057ec6dcf1bfdc51a8f7e"
     },
     {
       "path": "assets/app-icon-192.png",
@@ -3010,14 +3010,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 10907,
-      "sha256": "c7294ede779eb0c30d6bcc691d989ed3382a184b47510415d0fe82d8a8a416dc"
+      "sha256": "b1efcd3a9504e027859cced4eb8390a112b60285aa3766aba849dc9b85c24179"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "6ce8348e33cd24f7cc0839aea1b57b8652ed4720f86fd8f3da6d107db3e2f398"
+      "sha256": "c23690780c80d06bea7309997b416064d7e32fa8f9b3bdac6cd4cea361259a8d"
     },
     {
       "path": "services/admin-api.js",
@@ -3275,8 +3275,8 @@
       "path": "shared/design-system/design-system.css",
       "area": "shared",
       "status": "IMPLEMENTED",
-      "bytes": 51442,
-      "sha256": "83f43b01e5e84d0b112984cb7f00aaa897c464e02439f21f493129b6e93f8d36"
+      "bytes": 51854,
+      "sha256": "a6c7f0b281bfa78be293d32dad3b6f151a039de373d7d8f92172189210877a9c"
     },
     {
       "path": "shared/design-system/layout.css",

@@ -87,7 +87,7 @@ svg.i.star{fill:var(--border-default);stroke:none}svg.i.star.on{fill:var(--champ
 /* V10 logo lockup (assets/brand/logo-v10-lockup.webp: owner logo, mark + bilingual wordmark) */
 .logo .wordmark{display:block;height:38px;width:auto;max-width:none}
 .logo .mark{width:40px;height:40px;border-radius:12px;background:var(--brand-primary);border:0;box-shadow:inset 0 -3px 0 rgba(0,0,0,.14);color:var(--on-brand)}
-.logo .t b{font-family:var(--font-display);font-weight:800;color:var(--text-primary);text-shadow:none;letter-spacing:-.2px}.logo .t small{color:var(--text-muted)}
+.logo .t b{font-family:var(--font-display);font-weight:700;color:var(--text-primary);text-shadow:none;letter-spacing:-.2px}.logo .t small{color:var(--text-muted)}
 .ic-btn{width:44px;height:44px;border:1px solid var(--border-subtle);border-radius:12px;background:var(--surface-primary);color:var(--text-primary);box-shadow:var(--shadow-1);transition:background var(--motion-fast),border-color var(--motion-fast),transform var(--motion-fast)}
 .ic-btn:hover{background:var(--surface-sunken);border-color:var(--border-default)}.ic-btn:active{transform:scale(.96)}
 .ic-btn.dot::after{box-shadow:0 0 0 2px var(--surface-primary);background:var(--accent)}
@@ -102,7 +102,7 @@ svg.i.star{fill:var(--border-default);stroke:none}svg.i.star.on{fill:var(--champ
 .hero .txt{position:relative;z-index:3;align-self:center;padding:clamp(26px,4vw,56px);color:#fff}
 .hero .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;margin:0 0 12px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.12);color:#fff;font-size:13px;font-weight:600}
 .hero-eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
-.hero h1{font-size:clamp(30px,3.6vw,50px);line-height:1.2;letter-spacing:0;font-weight:800;color:#fff}
+.hero h1{font-size:clamp(30px,3.6vw,50px);line-height:1.2;letter-spacing:0;font-weight:700;color:#fff}
 .hero h1 span{color:var(--mint-strong);text-shadow:none;background:none;padding:0}
 .hero .txt>p:not(.hero-eyebrow){max-width:44ch;margin-top:12px;color:rgba(255,255,255,.9);font-weight:400;font-size:16px}
 .hero .art{position:relative;z-index:1;height:auto;min-height:100%;margin:0;filter:none;animation:none;overflow:hidden}
@@ -124,7 +124,7 @@ svg.i.star{fill:var(--border-default);stroke:none}svg.i.star.on{fill:var(--champ
 .cam:hover{background:var(--brand-primary-hover)}.cam:active{transform:scale(.97)}
 
 /* ── Sections, categories, tiles ──────────────────────────────────────── */
-.sec-title{gap:10px;margin:30px 0 14px;font-size:19px;font-weight:800;color:var(--text-primary);letter-spacing:-.2px}
+.sec-title{gap:10px;margin:30px 0 14px;font-size:19px;font-weight:700;color:var(--text-primary);letter-spacing:-.2px}
 .sec-title .i{color:var(--brand-primary);filter:none}.sec-title::after{background:linear-gradient(to left,var(--border-default),transparent);height:1px}
 .grid{gap:14px}
 .tile{position:relative;min-height:124px;padding:16px 10px 12px;border:1px solid var(--border-subtle);background:var(--surface-primary);border-radius:var(--r-lg);box-shadow:var(--shadow-1);font-size:14px;font-weight:600;color:var(--text-primary);transition:transform var(--motion-base) var(--ease-out),border-color var(--motion-fast),box-shadow var(--motion-base)}
@@ -296,7 +296,7 @@ img,svg,video,canvas{max-width:100%}
 /* ════════ V9 «Souq Modern» component layer (loads after app stylesheets) ════════ */
 /* Headings focused programmatically for screen-reader context must not show a keyboard ring. */
 [tabindex="-1"]:focus{outline:none}
-.dhead h2{font-family:var(--font-display);font-weight:800;color:var(--text-primary);letter-spacing:-.3px}
+.dhead h2{font-family:var(--font-display);font-weight:700;color:var(--text-primary);letter-spacing:-.3px}
 .dhead h2::after{background:var(--brand-primary);height:3px;inset-inline:38% 38%;opacity:.9}
 .back{width:44px;height:44px;border-radius:12px;border:1px solid var(--border-subtle);background:var(--surface-primary);color:var(--text-primary);box-shadow:var(--shadow-1)}
 
@@ -343,7 +343,7 @@ img,svg,video,canvas{max-width:100%}
 #sheet-backdrop{background:rgba(23,35,31,.42)!important;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
 #sheet{background:var(--surface-primary)!important;color:var(--text-primary);border-radius:24px 24px 0 0;box-shadow:var(--shadow-3);border:0}
 #sheet .grab{background:var(--border-strong)}
-#sheet h4{font-family:var(--font-display);font-weight:800}#sheet h4 .i,#sheet h5{color:var(--brand-primary)}
+#sheet h4{font-family:var(--font-display);font-weight:700}#sheet h4 .i,#sheet h5{color:var(--brand-primary)}
 #sheet .sub{color:var(--text-secondary)}
 
 /* Orders, provider cards, stat blocks */
@@ -391,7 +391,7 @@ img,svg,video,canvas{max-width:100%}
 }
 
 /* Section headings (boards: plain, bold, start-aligned; no decorative rule) */
-.sec-title{font-weight:800;color:var(--text-primary)}
+.sec-title{font-weight:700;color:var(--text-primary)}
 .sec-title::after{display:none}
 .sec-title .i{width:34px;height:34px;padding:8px;border-radius:10px;background:var(--mint);color:var(--brand-primary)}
 
@@ -426,7 +426,7 @@ img,svg,video,canvas{max-width:100%}
 .trust-photo{position:relative;min-height:300px;background:linear-gradient(180deg,#8CAEFF,#C0D3FF 55%,#F1F5FF)}
 .trust-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
 .trust-body{padding:clamp(22px,3.5vw,44px)}
-.trust-body h2{margin:0 0 16px;font-family:var(--font-brand);font-size:clamp(24px,2.6vw,34px);font-weight:800;line-height:1.25;color:var(--brand-primary)}
+.trust-body h2{margin:0 0 16px;font-family:var(--font-brand);font-size:clamp(24px,2.6vw,34px);font-weight:700;line-height:1.25;color:var(--brand-primary)}
 .trust-body ul{display:grid;gap:14px;margin:0 0 20px;padding:0;list-style:none}
 .trust-body li{display:flex;align-items:flex-start;gap:12px}
 .trust-body li>.i{flex:none;width:40px;height:40px;padding:10px;border-radius:12px;background:var(--surface-primary);color:var(--brand-primary)}
@@ -516,7 +516,7 @@ button.ghost[aria-busy="true"]::after,.cta.ghost[aria-busy="true"]::after{backgr
 #hs-maint .hs-maint-box{max-width:420px;display:grid;justify-items:center;gap:14px;text-align:center}
 #hs-maint img{width:180px;height:auto}
 #hs-maint .hs-maint-ic{font-size:44px;line-height:1}
-#hs-maint h1{margin:0;font-size:1.5rem;font-weight:800}
+#hs-maint h1{margin:0;font-size:1.5rem;font-weight:700}
 #hs-maint p{margin:0;color:var(--text-secondary,#4A433C);line-height:1.8}
 #hs-maint button{min-height:46px;padding:0 22px;border:0;border-radius:14px;background:var(--brand-ink,#1F1B17);color:#fff;font:inherit;font-weight:700;cursor:pointer}
 #hs-pause{position:sticky;top:0;z-index:9500;padding:10px 16px;background:#FFF3D6;color:#5A4300;border-bottom:1px solid #F1D48A;text-align:center;font-weight:700;font-size:14px;line-height:1.6}
@@ -529,3 +529,7 @@ button.ghost[aria-busy="true"]::after,.cta.ghost[aria-busy="true"]::after{backgr
    • chips have one height and weight (36px on Home, 42px on tracking). */
 #view .cta{min-height:48px}
 #view .chip{min-height:40px;display:inline-flex;align-items:center;gap:6px;font-weight:600}
+/* 2026-11-20 (UX audit): form field borders reach WCAG 1.4.11 non-text contrast (3:1) on the light surfaces */
+:root{--border-input:#8C7F6C}
+input:not([type=checkbox]):not([type=radio]):not([type=range]):not([type=color]),select,textarea{border-color:var(--border-input)}
+input:not([type=checkbox]):not([type=radio]):focus-visible,select:focus-visible,textarea:focus-visible{border-color:var(--brand-primary)}
