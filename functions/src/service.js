@@ -21,6 +21,9 @@ const { scopeFor, customerRequestView, customerQuote } = require('./scope');
 const workforce = require('./workforce');
 const adminExtra = require('./admin-extra');
 const telemetry = require('./telemetry');
+const adminCode = require('./admin-code');
+/* admin-code errors carry a callable error code: rethrow them as ServiceError (index.js maps those to HttpsError) */
+const viaCode = async (p) => { try { return await p; } catch (e) { if (e && e.isServiceError) fail(e.code, e.message); throw e; } };
 const content = require('./content');
 const ai = require('./ai');
 const { invalidateShared } = require('./partial');
@@ -199,11 +202,13 @@ async function api(backend, { auth, data }) {
   const isRead = req.method === 'GET';
   if (telemetry.PATH_RE.test(req.path)) {        // client error reports: rate limited in memory (limits.js), never audited
     const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
-    const actor = adm && adm.status === 'active' ? { role: 'admin', id: token.uid, adminRole: adm.role } : null;
+    const actor = adm && adm.status === 'active' && adminCode.isUnlocked(adm) ? { role: 'admin', id: token.uid, adminRole: adm.role } : null;
     return telemetry.handle({ backend, method: req.method, path: req.path, query: req.query, body: req.body, app: req.app, actor, token });
   }
   if (!isRead) await rateLimit(backend, token ? token.uid : 'anonymous');
-  const admin = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
+  /* the admin's access code must be unlocked (admin-code.js); until then the token resolves to no admin actor */
+  const adminDoc = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
+  const admin = adminDoc && adminCode.isUnlocked(adminDoc) ? adminDoc : null;
   if (req.method === 'POST' && req.path === '/providers/register' && token && token.phone_number) {
     req.body.phone = normalizePhone(token.phone_number);        // a registration is bound to the verified phone
   }
@@ -300,8 +305,9 @@ async function session(backend, { auth, data }) {
         const accepted = await backend.runTransaction(tx => workforce.acceptInvite(backend.adapter, tx, token));
         if (accepted) admin = await backend.getDoc(`admins/${token.uid}`);
       }
+      const gated = !!(app === 'admin' && admin && admin.status === 'active' && !adminCode.isUnlocked(admin));
       const ld = new PartialDb(backend.adapter, null);
-      const actor = await loadActor(ld, token, app, admin);
+      const actor = await loadActor(ld, token, app, gated ? null : admin);
       await syncPlan(ld, actor);
       if (ld.publicToSave) {     // (re)build of the public summary — one small write, then every sync reads 1 doc
         const snap = ld.publicToSave; ld.publicToSave = null;
@@ -314,6 +320,7 @@ async function session(backend, { auth, data }) {
         const wf = await workforce.loadState(backend.adapter, null);
         adminData = { employeeId: actor.employeeId, employees: wf.employees, rbac: wf.rbac };
       }
+      if (gated) return { serverTime: Date.now(), actor: null, db: scopeFor(db, null), provider: null, admin: null, adminGate: adminCode.gateOf(admin), signedIn: true, reads: ld.reads };
       return { serverTime: Date.now(), actor, db: scopeFor(db, actor), provider: app === 'provider' && token ? await providerStatusOf(ld, token) : null, admin: adminData, signedIn: !!token, reads: ld.reads };
     }
     case 'registerCustomer': {
@@ -396,6 +403,17 @@ async function session(backend, { auth, data }) {
         return { ok: true, replay: res.replay, employeeId: res.employee.id };
       });
     }
+    case 'adminCode': {   /* {action: 'set' | 'unlock' | 'lock', code?, current?} — the 8-digit access code */
+      if (!token) fail('unauthenticated', 'سجّل الدخول أولًا');
+      const admin = await backend.getDoc(`admins/${token.uid}`);
+      if (!admin || admin.status !== 'active') fail('permission-denied', 'هذا الحساب ليس له صلاحية إدارة');
+      await rateLimit(backend, token.uid);
+      if (d.action === 'set') return viaCode(adminCode.setCode(backend, token.uid, admin, d.code, d.current));
+      if (d.action === 'unlock') return viaCode(adminCode.unlock(backend, token.uid, admin, d.code));
+      if (d.action === 'lock') { await adminCode.lockNow(backend, token.uid); return { ok: true }; }
+      fail('invalid-argument', 'unknown adminCode action');
+      break;
+    }
     case 'importLocal': return importLocal(backend, token, d);
     default: fail('invalid-argument', 'unknown session op');
   }
@@ -409,7 +427,7 @@ async function session(backend, { auth, data }) {
 async function importLocal(backend, token, d) {
   if (!token) fail('unauthenticated', 'sign in required');
   const admin = await backend.getDoc(`admins/${token.uid}`);
-  if (!admin || admin.status !== 'active' || admin.role !== 'owner') fail('permission-denied', 'owner only');
+  if (!admin || admin.status !== 'active' || admin.role !== 'owner' || !adminCode.isUnlocked(admin)) fail('permission-denied', 'owner only');
   const src = d.db;
   if (!src || typeof src !== 'object' || (src.v !== 1 && src.v !== 2)) fail('invalid-argument', 'not a HANSALEHLAK local database (v1/v2)');
   /* addedIds: Firestore document ids per collection (opaque ids only, no personal data) — the rollback list */

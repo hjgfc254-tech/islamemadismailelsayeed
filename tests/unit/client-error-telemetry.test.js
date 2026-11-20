@@ -73,10 +73,10 @@ test('only an owner / admin role reads and clears the grouped errors; personal f
   assert.equal(anon.status, 401);
   const cust = await call(b, { uid: 'u9', token: {} }, 'customer', 'GET', '/admin/client-errors');
   assert.equal(cust.ok, false);
-  b.docs.set('admins/u_sup', { status: 'active', role: 'support' });
+  b.docs.set('admins/u_sup', { status: 'active', role: 'support', codeHash: 'x', unlockedUntil: 9e15 });
   const sup = await call(b, { uid: 'u_sup', token: {} }, 'admin', 'GET', '/admin/client-errors');
   assert.equal(sup.status, 403);
-  b.docs.set('admins/u_owner', { status: 'active', role: 'owner' });
+  b.docs.set('admins/u_owner', { status: 'active', role: 'owner', codeHash: 'x', unlockedUntil: 9e15 });
   const list = await call(b, OWNER, 'admin', 'GET', '/admin/client-errors');
   assert.equal(list.ok, true); assert.equal(list.data.items.length, 1);
   assert.equal(list.data.items[0].users, undefined, 'uids stay on the server');

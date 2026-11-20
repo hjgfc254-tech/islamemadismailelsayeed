@@ -45,8 +45,9 @@ const REQ = { cat: 'electric', serviceName: 'إصلاح', desc: 'الكهربا�
 test('server: only the owner flips a switch; maintenance refuses customer changes and is audited; admins keep working', async () => {
   const b = memBackend();
   await service.session(b, { auth: OWNER, data: { op: 'claimOwner', name: 'المالك' } });
+  await service.session(b, { auth: OWNER, data: { op: 'adminCode', action: 'set', code: '24681357' } });
   await service.session(b, { auth: SARA, data: { op: 'registerCustomer', name: 'سارة' } });
-  b.docs.set('admins/u_sup', { status: 'active', role: 'support', name: 'دعم' });
+  b.docs.set('admins/u_sup', { status: 'active', role: 'support', name: 'دعم', codeHash: 'x', unlockedUntil: 9e15 });
   const denied = await call(b, { uid: 'u_sup', token: { email: 's@x.com', email_verified: true } }, 'admin', 'POST', '/admin/controls', { key: 'maintenance', on: true });
   assert.equal(denied.ok, false); assert.equal(denied.status, 403);
   const on = await call(b, OWNER, 'admin', 'POST', '/admin/controls', { key: 'maintenance', on: true, message: 'صيانة ساعة' });
@@ -100,4 +101,52 @@ test('admin entry loads the new pages before the owner board and the apps load t
   assert.ok(admin.indexOf('pages/insights.page.js') < admin.indexOf('pages/super-dashboard.page.js'));
   assert.ok(admin.indexOf('pages/controls.page.js') < admin.indexOf('pages/super-dashboard.page.js'));
   for (const a of ['customer', 'provider']) assert.match(fs.readFileSync(path.join(ROOT, `apps/${a}/index.html`), 'utf8'), /shared\/components\/platform-status\.js/);
+});
+
+test('8-digit access code: required after email + password, never stored in clear, locks after 5 wrong tries, audited', async () => {
+  const code = require(path.join(ROOT, 'functions/src/admin-code.js'));
+  const b = memBackend();
+  await service.session(b, { auth: OWNER, data: { op: 'claimOwner', name: 'المالك' } });
+  let s = await service.session(b, { auth: OWNER, data: { op: 'sync', app: 'admin' } });
+  assert.equal(s.actor, null, 'no admin actor before the code');
+  assert.deepEqual({ needsCode: s.adminGate.needsCode, hasCode: s.adminGate.hasCode }, { needsCode: true, hasCode: false });
+  const before = await call(b, OWNER, 'admin', 'GET', '/admin/controls');
+  assert.equal(before.ok, false, 'admin API refused until the code is entered');
+  for (const weak of ['1234567', '12345678', '11111111', '87654321', 'abcdefgh']) {
+    await assert.rejects(service.session(b, { auth: OWNER, data: { op: 'adminCode', action: 'set', code: weak } }), /٨ أرقام|سهل/);
+  }
+  await service.session(b, { auth: OWNER, data: { op: 'adminCode', action: 'set', code: '24681357' } });
+  const doc = b.docs.get('admins/u_owner');
+  assert.ok(doc.codeHash && doc.codeSalt && !JSON.stringify(doc).includes('24681357'), 'only a salted hash is stored');
+  s = await service.session(b, { auth: OWNER, data: { op: 'sync', app: 'admin' } });
+  assert.equal(s.actor.role, 'admin'); assert.equal(s.adminGate, undefined);
+  assert.equal((await call(b, OWNER, 'admin', 'GET', '/admin/controls')).ok, true);
+  await service.session(b, { auth: OWNER, data: { op: 'adminCode', action: 'lock' } });
+  assert.equal((await call(b, OWNER, 'admin', 'GET', '/admin/controls')).ok, false, 'locking ends the unlock');
+  for (let i = 1; i <= 4; i++) await assert.rejects(service.session(b, { auth: OWNER, data: { op: 'adminCode', action: 'unlock', code: '99990000' } }), new RegExp('فاضل ' + (5 - i)));
+  await assert.rejects(service.session(b, { auth: OWNER, data: { op: 'adminCode', action: 'unlock', code: '99990000' } }), /مقفول/);
+  await assert.rejects(service.session(b, { auth: OWNER, data: { op: 'adminCode', action: 'unlock', code: '24681357' } }), /مقفول/, 'even the right code waits for the lock');
+  b.docs.set('admins/u_owner', { ...b.docs.get('admins/u_owner'), codeLockUntil: Date.now() - 1 });
+  const ok = await service.session(b, { auth: OWNER, data: { op: 'adminCode', action: 'unlock', code: '24681357' } });
+  assert.equal(ok.ok, true);
+  const audit = [...b.docs.values()].filter((d) => String(d.action || '').startsWith('admin.code'));
+  assert.ok(audit.some((d) => d.status === 'failed') && audit.some((d) => d.status === 'locked') && audit.some((d) => d.status === 'ok'), 'set, failures, lock and unlock are audited');
+  assert.ok(code.weak('01234567') && code.weak('00000000') && !code.weak('24681357'));
+});
+
+test('owner resets an employee code (never their own); the employee must set a new one', async () => {
+  const b = memBackend();
+  await service.session(b, { auth: OWNER, data: { op: 'claimOwner', name: 'المالك' } });
+  await service.session(b, { auth: OWNER, data: { op: 'adminCode', action: 'set', code: '24681357' } });
+  b.docs.set('admins/u_sup', { status: 'active', role: 'support', name: 'دعم', employeeId: 'e2' });
+  const SUP = { uid: 'u_sup', token: { email: 's@x.com', email_verified: true } };
+  await service.session(b, { auth: SUP, data: { op: 'adminCode', action: 'set', code: '86420975' } });
+  const supNo = await call(b, SUP, 'admin', 'POST', '/admin/security/reset-code/u_owner', {});
+  assert.equal(supNo.ok, false, 'staff cannot reset codes');
+  const self = await call(b, OWNER, 'admin', 'POST', '/admin/security/reset-code/u_owner', {});
+  assert.equal(self.ok, false);
+  const r = await call(b, OWNER, 'admin', 'POST', '/admin/security/reset-code/u_sup', {});
+  assert.equal(r.ok, true, JSON.stringify(r.error));
+  const s = await service.session(b, { auth: SUP, data: { op: 'sync', app: 'admin' } });
+  assert.deepEqual({ needsCode: s.adminGate.needsCode, hasCode: s.adminGate.hasCode }, { needsCode: true, hasCode: false });
 });

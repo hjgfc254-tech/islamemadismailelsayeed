@@ -69,6 +69,16 @@
 - **التالي:** استكمال فحص Customer (addresses/orders/tracking/support/details)، ثم Provider عبر legacy bridge، ثم Admin page/dialog keyboard traversal. قارئات الشاشة وFirefox/WebKit/Safari والأجهزة الفعلية لم تُختبر. Phase 5 item 4 ما زال جزئيًا؛ لا يوجد ادعاء WCAG.
 
 
+## 2026-11-20 — Admin Center reorganised: responsibilities, one statistics page, owner area, emergency switches, 8-digit code
+- **Menu by responsibility** (`apps/admin/admin-shell.js` NAV): اليوم · التشغيل · الدعم والجودة · الكتالوج والأسعار · المالية · الأرقام · إدارة المنصة. `finance`, `reports`, `super-dashboard` are HIDDEN_PAGES under `insights` (deep links work); `HSAdminShell.getPage(id)` lets «الإحصائيات» render them as tabs.
+- **«الإحصائيات والتقارير»** (`pages/insights.page.js`): نظرة عامة (KPIs + trends via `HSAdminDashboardPage.kpiView`) · حسب القسم (`areaCounts`) · الماليات · التقارير · لوحة المالك (owner). Work pages keep their `.ord-sum` markup but CSS hides it outside insights.
+- **«مهام اليوم»** (dashboard): queue of what needs a decision (`queue()`), tasks, alerts — no KPIs.
+- **Owner area**: `permission-guard.js` `OWNER_ONLY` = controls, security, audit, settings, super-dashboard. Server: `/admin/controls` POST, `/admin/audit`, `/admin/security/*` are owner-only.
+- **Emergency switches** (`pages/controls.page.js`, `GET/POST /admin/controls` in `services/admin-api.js`, gate `controlsBlock` in `services/api-client.js` → identical on the server): maintenance (typed «صيانة»), pause new requests, pause provider sign-ups. Apps explain them with `shared/components/platform-status.js`.
+- **8-digit access code** (`functions/src/admin-code.js`, session op `adminCode` set/unlock/lock; dialog in `services/firebase-backend.js`): scrypt + salt, weak codes refused, 12 h unlock, 5 wrong → 15 min lock, all audited; owner resets others from «الأمان والدخول». Until unlocked, sync returns `{adminGate}` and the token has no admin actor. Demo mode (local picker) has no code — it is not authentication.
+- **«سجل الإداريين»** (live audit panel): Arabic actions, filters (الدخول والأكواد / الطوارئ / تعديلات الإدارة / العملاء ومقدمو الخدمة) and by person, warning on wrong-code attempts, plus «أخطاء عند المستخدمين».
+- Tests: `admin-platform-controls.test.js` (8, server paths included), `tests/e2e/admin-controls.cdp.js`; emulators 3/3 and emulator E2E with the code dialog.
+
 ## 2026-11-20 — Provider app simplified (owner: «عملية أكثر من كونها مليانة اختيارات»)
 - **4 destinations** instead of 13: الطلبات (`home`) · فلوسي (`earnings`) · تقييماتي (`reviews`) · حسابي (`profile`); notifications behind a bell with an unread badge in the top bar. Every old route still works (`TAB_OF` / `FILTER_OF` in `apps/provider/app.js`): new/accepted/progress/quote/schedule/done/cancelled open الطلبات with a filter; transactions → فلوسي; services → حسابي. Push links and deep links are unchanged.
 - **الطلبات** (`ordersPage`): header «طلباتك» + today's total + the availability switch, three filters جديدة / شغالة / خلصت with counts; home opens the filter that has work. The 10-section dashboard is gone; its cards moved to فلوسي (today, bonus/level, last 7 days, totals, transactions) and تقييماتي (what customers praise). `summary(..., {parts:true})` returns the pieces; `HSProviderDashboardPage` is no longer routed.

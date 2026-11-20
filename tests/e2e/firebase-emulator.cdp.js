@@ -108,6 +108,9 @@ withBrowser(async ({ wsUrl }) => {
   await d.evaluate(`document.getElementById('hs-backend-signin').click(); true`);
   ok(await d.waitFor('!!document.querySelector("dialog input[name=email]")', 8000), 'admin sign-in dialog opens');
   await d.evaluate(`(() => { document.querySelector('dialog input[name=email]').value = ${JSON.stringify(OWNER_EMAIL)}; document.querySelector('dialog input[name=password]').value = 'emulator-only-1'; document.querySelector('dialog button[value=ok]').click(); return true; })()`);
+  /* third factor: the new owner sets the 8-digit access code in the app dialog, then the console opens */
+  ok(await d.waitFor('!!document.querySelector("dialog input[name=again]")', 20000), 'first sign-in asks the owner to create an 8-digit access code');
+  await d.evaluate(`(() => { document.querySelector('dialog input[name=code]').value = '24681357'; document.querySelector('dialog input[name=again]').value = '24681357'; document.querySelector('dialog button[value=ok]').click(); return true; })()`);
   ok(await d.waitFor('typeof HSBackend==="object" && HSBackend.actor && HSBackend.actor.role==="admin"', 25000), 'verified allow-listed email became the first owner (after reload): ' + await d.evaluate('JSON.stringify(typeof HSBackend==="object" && HSBackend.actor)'));
   ok(await d.evaluate('HSAdminRbac.state.roster.some(e => e.role==="owner" && e.uid)'), 'the Admin roster now comes from the server');
   await d.evaluate(`location.hash = '#/workforce'; true`);
@@ -174,7 +177,7 @@ withBrowser(async ({ wsUrl }) => {
   await d.evaluate(`(() => { const f = document.querySelector('[data-live-bc]'); f.audience.value = 'customers'; f.text.value = 'تحديث مهم لعملائنا'; f.requestSubmit(); return true; })()`);
   ok(await d.waitFor('document.body.textContent.includes("تحديث مهم لعملائنا")', 12000), 'an in-app broadcast is sent and listed from the server');
   await d.evaluate(`location.hash = '#/audit'; true`);
-  ok(await d.waitFor('document.body.textContent.includes("claimOwner")', 12000), 'the audit log panel shows real server audit entries');
+  ok(await d.waitFor('document.body.textContent.includes("تسجيل المالك لأول مرة")', 12000), 'the audit log panel shows real server audit entries');
   ok(await d.evaluate('!document.querySelector("[data-adm-not-connected]")'), 'no Admin page is left gated');
   /* site content: the settings panel embeds the editor; an image is compressed in the browser and stored in Firestore;
      publishing raises the version and a Customer page picks the new hero up live (RTDB public/content) */
@@ -187,7 +190,7 @@ withBrowser(async ({ wsUrl }) => {
   const published = await d.evaluate(`HSApiClient.request('PATCH', '/admin/content', { body: { hero: { eyebrow: 'جديد', title: 'عنوان من لوحة الإدارة', accent: 'مباشر', sub: 'وصف', cta: 'اطلب الآن', media: ${JSON.stringify(upload)} } } }).then(r => r.ok ? r.data.v : 'ERR')`);
   ok(Number(published) >= 1, 'content published as a new version: ' + published);
   await cdp.send('Page.navigate', { url: BASE + '/apps/customer/index.html?backend=firebase&emulators=1#/home' });
-  ok(await d.waitFor('document.body.textContent.includes("عنوان من لوحة الإدارة") && !!document.querySelector(".hero .hero-photo[src^=blob], .hero .hero-photo[src^=data]")', 25000), 'the Customer Home shows the published hero text and image');
+  ok(await d.waitFor('!!document.body && document.body.textContent.includes("عنوان من لوحة الإدارة") && !!document.querySelector(".hero .hero-photo[src^=blob], .hero .hero-photo[src^=data]")', 25000), 'the Customer Home shows the published hero text and image');
 
   const errs = d.errors.filter(e => !/favicon|ERR_FAILED/.test(e));
   ok(errs.length === 0, 'no console errors: ' + (errs.slice(0, 3).join(' | ') || 'none'));

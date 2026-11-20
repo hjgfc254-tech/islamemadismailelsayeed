@@ -23,12 +23,40 @@
 
   const PANELS = {
     async audit(host) {
-      const res = await C().request('GET', '/admin/audit');
-      if (!res.ok) { host.innerHTML = frame('سجل التدقيق', `<p>${esc(errText(res))}</p>`); return; }
-      host.innerHTML = frame('سجل التدقيق', table(['الوقت', 'المنفذ', 'العملية', 'النتيجة'], res.data.items.map((a) => [
-        esc(dt(a.at)), esc(a.actor ? (a.actor.adminRole || a.actor.role) : (a.action ? 'النظام' : '—')), esc(a.action || ((a.method || '') + ' ' + (a.path || ''))), esc(a.status || (a.action ? 'تم' : '—'))])) +
-        '<section class="cerr" data-client-errors aria-labelledby="cerr-h"></section>');
-      if (root.HSClientErrors) root.HSClientErrors.mount(host.querySelector('[data-client-errors]'));   /* modules/client-errors.js */
+      /* «سجل الإداريين»: who did what and when — sign-ins with the access code (ok / wrong / locked), code set / reset,
+         emergency switches, and every change made from the Admin Center; filters by kind and by person. */
+      const res = await C().request('GET', '/admin/audit', { query: { limit: 100 } });
+      if (!res.ok) { host.innerHTML = frame('سجل الإداريين', `<p>${esc(errText(res))}</p>`); return; }
+      const roster = ((root.HSAdminRbac || {}).state || {}).roster || [];
+      const who = (a) => { const e = roster.find((x) => (a.uid && x.uid === a.uid) || (a.actor && (x.id === a.actor.id || x.uid === a.actor.id))); return e ? e.name : a.actor ? (a.actor.role === 'admin' ? 'إداري' : a.actor.role === 'customer' ? 'عميل' : a.actor.role === 'provider' ? 'مقدم خدمة' : a.actor.role) : (a.action === 'claimOwner' ? 'المالك' : 'النظام'); };
+      const KIND = (a) => /^admin\.code|claimOwner/.test(a.action || '') ? 'login' : /\/admin\/controls/.test(a.path || '') ? 'emergency' : a.app === 'admin' ? 'admin' : 'other';
+      const LABEL = (a) => {
+        const act = a.action || '';
+        if (act === 'claimOwner') return 'تسجيل المالك لأول مرة';
+        if (act === 'admin.code.set') return 'عمل كود الدخول';
+        if (act === 'admin.code.change') return 'غيّر كود الدخول';
+        if (act === 'admin.code.unlock') return 'دخول بالكود';
+        if (act.startsWith('admin.code.reset:')) { const e = roster.find((x) => x.uid === act.split(':')[1]); return 'إعادة ضبط كود ' + (e ? e.name : 'موظف'); }
+        if (/\/admin\/controls/.test(a.path || '')) return 'مفاتيح الطوارئ';
+        return (a.method || '') + ' ' + (a.path || '');
+      };
+      const RESULT = (a) => ({ ok: 'تم', failed: 'كود غلط', locked: 'اتقفل ١٥ دقيقة' })[a.status] || (a.status >= 400 ? 'اترفض' : a.status ? 'تم' : '—');
+      const items = res.data.items;
+      let kind = 'all', person = '';
+      const people = [...new Set(items.map(who))].sort();
+      const paint = () => {
+        const rows = items.filter((a) => (kind === 'all' || KIND(a) === kind) && (!person || who(a) === person));
+        const bad = items.filter((a) => a.status === 'failed' || a.status === 'locked').length;
+        host.innerHTML = frame('سجل الإداريين', `${bad ? `<p class="fin-banner" role="note">⚠️ ${nf(bad)} محاولة دخول بكود غلط في آخر السجلات — راجع «الأمان والدخول» لو مش متوقعة.</p>` : ''}
+          <div class="aud-filters" role="group" aria-label="تصفية السجل">${[['all', 'الكل'], ['login', 'الدخول والأكواد'], ['emergency', 'الطوارئ'], ['admin', 'تعديلات الإدارة'], ['other', 'العملاء ومقدمو الخدمة']].map(([k, l]) => `<button type="button" class="adm-btn ${kind === k ? 'adm-btn-p' : ''}" aria-pressed="${kind === k}" data-aud-kind="${k}">${l}</button>`).join('')}
+          <label class="hs-grid-field"><span>الشخص</span><select data-aud-person><option value="">الكل</option>${people.map((p) => `<option ${p === person ? 'selected' : ''}>${esc(p)}</option>`).join('')}</select></label></div>` +
+          table(['الوقت', 'مين', 'العملية', 'النتيجة'], rows.map((a) => [esc(dt(a.at)), esc(who(a)), esc(LABEL(a)), esc(RESULT(a))])) +
+          '<section class="cerr" data-client-errors aria-labelledby="cerr-h"></section>');
+        if (root.HSClientErrors) root.HSClientErrors.mount(host.querySelector('[data-client-errors]'));   /* modules/client-errors.js */
+        host.querySelectorAll('[data-aud-kind]').forEach((b) => b.addEventListener('click', () => { kind = b.dataset.audKind; paint(); const n = host.querySelector(`[data-aud-kind="${kind}"]`); if (n) n.focus(); }));
+        const sel = host.querySelector('[data-aud-person]'); if (sel) sel.addEventListener('change', () => { person = sel.value; paint(); const n = host.querySelector('[data-aud-person]'); if (n) n.focus(); });
+      };
+      paint();
     },
     async settings(host) {
       const res = await C().request('GET', '/admin/settings');
@@ -76,10 +104,16 @@
     async security(host) {
       const res = await C().request('GET', '/admin/security/admins');
       if (!res.ok) { host.innerHTML = frame('الأمان', `<p>${esc(errText(res))}</p>`); return; }
-      host.innerHTML = frame('الأمان', table(['الموظف', 'البريد', 'الدور', 'آخر دخول', ''], res.data.items.map((u) => [
-        esc(u.name), esc(u.email), esc(u.role), esc(u.lastSignIn ? dt(u.lastSignIn) : '—'),
-        `<button type="button" class="adm-btn adm-btn-d" data-revoke="${esc(u.uid)}">إنهاء كل الجلسات</button>`])) +
-        '<p class="ord-muted">إنهاء الجلسات يُخرج الحساب من كل الأجهزة (للمالك فقط، ولا يشمل حسابك).</p>');
+      const codeText = (u) => (u.codeLocked ? 'مقفول (محاولات غلط)' : u.hasCode ? 'متعمل' + (u.lastUnlockAt ? ' · آخر استخدام ' + dt(u.lastUnlockAt) : '') : 'لسه ما اتعملش');
+      host.innerHTML = frame('الأمان', table(['الموظف', 'البريد', 'الدور', 'آخر دخول', 'كود الدخول (٨ أرقام)', ''], res.data.items.map((u) => [
+        esc(u.name), esc(u.email), esc(u.role), esc(u.lastSignIn ? dt(u.lastSignIn) : '—'), esc(codeText(u)),
+        `${u.role === 'owner' ? '' : `<button type="button" class="adm-btn" data-reset-code="${esc(u.uid)}">إعادة ضبط الكود</button> `}<button type="button" class="adm-btn adm-btn-d" data-revoke="${esc(u.uid)}">إنهاء كل الجلسات</button>`])) +
+        '<p class="ord-muted">الدخول للإدارة: إيميل مؤكَّد + كلمة مرور + كود شخصي من ٨ أرقام. ٥ محاولات غلط بتقفل الحساب ١٥ دقيقة. «إعادة ضبط الكود» بتخلّي الموظف يعمل كود جديد في دخوله الجاي. إنهاء الجلسات يُخرج الحساب من كل الأجهزة (للمالك فقط، ولا يشمل حسابك).</p>');
+      host.querySelectorAll('[data-reset-code]').forEach((b) => b.addEventListener('click', async () => {
+        if (root.confirm && !root.confirm('إعادة ضبط كود الدخول للموظف ده؟ هيعمل كود جديد في دخوله الجاي.')) return;
+        const r = await call('POST', '/admin/security/reset-code/' + encodeURIComponent(b.dataset.resetCode), {});
+        if (r.ok) return PANELS.security(host); status(host, errText(r));
+      }));
       host.querySelectorAll('[data-revoke]').forEach((b) => b.addEventListener('click', async () => {
         const r = await call('POST', '/admin/security/revoke/' + encodeURIComponent(b.dataset.revoke), {});
         status(host, r.ok ? 'تم إنهاء جلسات الحساب.' : errText(r));

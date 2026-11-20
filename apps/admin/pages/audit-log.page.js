@@ -113,7 +113,7 @@
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (root.HSAdminShell && typeof root.HSAdminShell.registerPage === 'function') {
     root.HSAdminShell.registerPage('audit', {
-      title: 'سجل التدقيق',
+      title: 'سجل الإداريين',
       description: 'من فعل ماذا ومتى وعلى أي سجل وما النتيجة — عرض تجريبي للقراءة فقط.',
       render
     });

@@ -83,11 +83,37 @@ async function start() {
     if (globalThis.HSAdminWorkforcePage && typeof globalThis.HSAdminWorkforcePage.setStaff === 'function') globalThis.HSAdminWorkforcePage.setStaff(a.employees || []);
   }
 
+  /* Admin access code (third factor after email + password; functions/src/admin-code.js): set it the first time,
+     enter it on every new sign-in. Wrong codes show the server message (remaining tries / 15-minute lock). */
+  let codeFlow = null;
+  function adminCodeFlow(gate) {
+    if (codeFlow) return codeFlow;
+    codeFlow = (async () => {
+      try {
+        for (let tries = 0; tries < 6; tries++) {
+          const first = !gate.hasCode;
+          const num = 'inputmode="numeric" pattern="[0-9]{8}" maxlength="8" autocomplete="one-time-code" required';
+          const v = await dialog(first ? 'اعمل كود دخول من ٨ أرقام' : 'كود الدخول',
+            first ? [{ name: 'code', label: 'كود جديد (٨ أرقام، مش متتالي ولا متكرر)', type: 'password', attrs: num }, { name: 'again', label: 'اكتبه تاني للتأكيد', type: 'password', attrs: num }]
+                  : [{ name: 'code', label: 'اكتب كود الدخول الخاص بيك (٨ أرقام)', type: 'password', attrs: num }],
+            first ? 'حفظ الكود والدخول' : 'دخول');
+          if (!v) return false;
+          if (first && v.code !== v.again) { alert('الكودين مش زي بعض — اكتبهم تاني.'); continue; }
+          try { await callSession({ op: 'adminCode', action: first ? 'set' : 'unlock', code: v.code }); location.reload(); return true; }
+          catch (e) { alert((e && e.message) || 'تعذّر التحقق من الكود'); if (/مقفول/.test(String(e && e.message))) return false; }
+        }
+        return false;
+      } finally { codeFlow = null; }
+    })();
+    return codeFlow;
+  }
+
   async function sync() {
     if (syncing) return syncing;
     syncing = (async () => {
       try {
         const r = (await callSession({ op: 'sync', app: APP })).data;
+        if (APP === 'admin' && r.adminGate && r.adminGate.needsCode) setTimeout(() => adminCodeFlow(r.adminGate), 0);   /* 8-digit access code */
         actor = r.actor; last = r; if (r.serverTime) lastServerTime = Math.max(lastServerTime, r.serverTime);
         applySnapshot(r.db);
         applyAdmin(r.admin);
@@ -304,7 +330,9 @@ async function start() {
       if (!cred.user.emailVerified) { await A.sendEmailVerification(cred.user); alert('أرسلنا رسالة تأكيد إلى بريدك — أكّد البريد ثم سجّل الدخول مرة أخرى.'); return null; }
       await cred.user.getIdToken(true);
       let r = await sync();
+      if (r.adminGate) return null;                                     // the access-code dialog takes over (adminCodeFlow)
       if (!r.actor) { try { await callSession({ op: 'claimOwner', name: cred.user.displayName || v.email }); r = await sync(); } catch (e) { /* not the bootstrap owner: the server decides */ } }
+      if (r.adminGate) return null;                                     // new owner: sets the access code now
       if (!r.actor) { alert('هذا الحساب ليس له صلاحية إدارة.'); return null; }
       location.reload(); return actor;
     },
@@ -323,7 +351,10 @@ async function start() {
       return true;
     },
     pushState() { return !('Notification' in globalThis) ? 'unsupported' : Notification.permission; },
+    /** Admin: end the code unlock on this account (also part of signing out). */
+    lockAdmin: () => callSession({ op: 'adminCode', action: 'lock' }).catch(() => {}),
     async signOut() {
+      if (APP === 'admin') { try { await callSession({ op: 'adminCode', action: 'lock' }); } catch {} }
       try { const t = localStorage.getItem('hs_push_token'); if (t) { await callSession({ op: 'unregisterPush', token: t }); localStorage.removeItem('hs_push_token'); } } catch {}
       await A.signOut(auth); actor = null; try { localStorage.removeItem('hs_user'); sessionStorage.removeItem('hs_provider_demo_session'); sessionStorage.removeItem('hs_admin_demo_session'); } catch {} await sync(); },
     claimOwner: name => callSession({ op: 'claimOwner', name }).then(r => r.data),

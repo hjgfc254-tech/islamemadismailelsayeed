@@ -14,6 +14,11 @@ deployed; the last Functions deploy was 2026-11-15 (`docs/FIREBASE_BACKEND.md`).
 | Dead code removal | `755eff5` | none at runtime |
 | firebase-admin 14.5.1 + firebase-functions 7.4.0 | `c190cb7` | modular Admin API (`getFirestore` …); production audit 0 vulnerabilities |
 | Client error reports | `9eca31b` | `POST /telemetry/errors`, `GET /admin/client-errors`, `POST /admin/client-errors/clear` |
+| Owner emergency switches | `4df9d24` | `GET/POST /admin/controls` (owner only); maintenance / paused requests / paused sign-ups refuse customer and provider changes with 503; `controls` added to the public settings |
+| Admin access code (8 digits) | this round | every admin must enter a personal 8-digit code after email + password (`session.adminCode`); 5 wrong codes lock 15 minutes; `POST /admin/security/reset-code/:uid` (owner); the audit log becomes owner-only |
+
+**Right after this deploy every admin, the owner included, is asked to create an 8-digit code at the next sign-in.**
+The owner should sign in first, create the code, then tell the staff.
 
 Until the deploy, the live site's new screens call routes the server does not have yet: the error reporter's calls fail
 quietly (by design), and offers / bonus actions return the server's «route not found» envelope.

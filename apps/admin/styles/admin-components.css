@@ -382,3 +382,6 @@ a.adm-link:hover{background:var(--nav-dark-hover);color:var(--on-brand)}
 .ctl-state{padding:var(--sp-1) var(--sp-3);border-radius:var(--r-lg);background:var(--surface-sunken);font-size:var(--fs-xs);font-weight:700}
 .ctl-card.is-on .ctl-state{background:var(--danger);color:var(--text-on-brand,#fff)}
 .ctl-card.is-danger.is-on{border-color:var(--danger)}
+
+/* «سجل الإداريين» filters (admin-live-panels audit) */
+.aud-filters{display:flex;flex-wrap:wrap;align-items:end;gap:var(--sp-2);margin-bottom:var(--sp-3)}

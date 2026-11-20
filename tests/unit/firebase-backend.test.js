@@ -15,6 +15,9 @@ function memBackend(bootstrapEmails = ['owner@example.com']) {
   let auto = 0;
   const clone = v => JSON.parse(JSON.stringify(v));
   const stats = { reads: 0, queries: [] };
+  /* These workflow tests predate the 8-digit admin access code: admins here count as having entered it (admin-code.js
+     has its own tests in admin-platform-controls.test.js). */
+  const unlocked = (p, d) => (p.startsWith('admins/') && d && d.codeHash === undefined ? { ...d, codeHash: 'test', codeSalt: '00', unlockedUntil: 9e15 } : d);
   const rows = col => [...docs].filter(([p]) => p.startsWith(col + '/') && p.split('/').length === 2).map(([p, d]) => ({ id: p.split('/')[1], data: clone(d) }));
   const match = (r, [f, op, v]) => { const x = f === 'id' ? r.id : r.data[f]; return op === '==' ? x === v : op === 'in' ? v.includes(x) : op === 'array-contains' ? Array.isArray(x) && x.includes(v) : false; };
   /* like Firestore: inside a transaction every read must come before any write */
@@ -35,14 +38,14 @@ function memBackend(bootstrapEmails = ['owner@example.com']) {
       return out;
     },
     async count(col, where) { stats.reads++; return rows(col).filter(r => (where || []).every(w => match(r, w))).length; },
-    set(tx, p, d) { if (tx) tx.wrote = true; docs.set(p, clone(d)); },
+    set(tx, p, d) { if (tx) tx.wrote = true; docs.set(p, unlocked(p, clone(d))); },
     del(tx, p) { if (tx) tx.wrote = true; docs.delete(p); }
   };
   return {
     docs, signals, adapter, stats,
     runTransaction: fn => fn({}),
     async getDoc(p) { return adapter.get(null, p); },
-    async setDoc(p, d, merge) { docs.set(p, merge && docs.has(p) ? { ...docs.get(p), ...clone(d) } : clone(d)); },
+    async setDoc(p, d, merge) { docs.set(p, unlocked(p, merge && docs.has(p) ? { ...docs.get(p), ...clone(d) } : clone(d))); },
     async addDoc(col, d) { docs.set(`${col}/auto${++auto}`, clone(d)); },
     async queryDocs(col, field, op, value) { return rows(col).filter(x => (op === 'in' ? value.includes(x.data[field]) : x.data[field] === value)); },
     async signal(uids) { signals.push(...uids); },

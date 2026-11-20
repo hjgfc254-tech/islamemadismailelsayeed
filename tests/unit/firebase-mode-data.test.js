@@ -163,7 +163,7 @@ test('HSAdminLivePanels: every remaining Admin page renders server data from rea
   const host = () => ({ innerHTML: '', querySelector: () => ({ addEventListener() {} }), querySelectorAll: () => [] });
   const out = {};
   for (const id of P.ids) { const h = host(); await P.mount(id, h); out[id] = h.innerHTML; }
-  assert.match(out.audit, /claimOwner/);
+  assert.match(out.audit, /تسجيل المالك لأول مرة/);   // «سجل الإداريين» shows actions in Arabic
   assert.match(out.settings, /name="markupRate"[^>]*value="15"/);
   assert.match(out.departments, /العمليات/);
   assert.match(out.security, /data-revoke="u1"/);

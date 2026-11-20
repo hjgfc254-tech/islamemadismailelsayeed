@@ -54,6 +54,10 @@ test('emulator: real Auth → callable Functions → Firestore → RTDB signals,
   const owner = await emailToken(OWNER_EMAIL, 'emulator-only-1', true);
   assert.equal((await callable('session', { op: 'claimOwner', name: 'Owner' }, owner.token)).ok, true);
   assert.equal((await callable('session', { op: 'claimOwner', name: 'Owner' }, owner.token)).replay, true, 'claiming twice is idempotent');
+  /* third factor: the owner sets the 8-digit access code before any admin call (functions/src/admin-code.js) */
+  const gate = await callable('session', { op: 'sync', app: 'admin' }, owner.token);
+  assert.equal(gate.actor, null); assert.equal(gate.adminGate.needsCode, true);
+  assert.equal((await callable('session', { op: 'adminCode', action: 'set', code: '24681357' }, owner.token)).ok, true);
 
   /* registration creates the customer document on first write */
   const reg = await callable('session', { op: 'registerCustomer', name: 'سارة' }, sara.token);
@@ -116,6 +120,9 @@ test('emulator: concurrent creates keep unique request numbers (transactional co
 test('emulator: browser-data migration — owner only, dry run writes nothing, re-import adds nothing, demo data skipped', async () => {
   const owner = await emailToken(OWNER_EMAIL, 'emulator-only-1', true);
   await callable('session', { op: 'claimOwner', name: 'Owner' }, owner.token);
+  /* the owner may already have a code from an earlier test in this emulator run: unlock, else set it */
+  const g3 = await callable('session', { op: 'sync', app: 'admin' }, owner.token);
+  if (g3.adminGate) await callable('session', { op: 'adminCode', action: g3.adminGate.hasCode ? 'unlock' : 'set', code: '24681357' }, owner.token);
   const local = { v: 2, meta: { lastReqNo: 1500 },
     customers: [{ id: 'c_legacy1', name: 'عميل قديم', phone: '01066667777', status: 'active', createdAt: '2026-01-01T00:00:00.000Z' }],
     providers: [{ id: 'p_demo1', name: 'تجريبي', demo: true, status: 'approved', cats: ['electric'], govs: ['القاهرة'] }],
