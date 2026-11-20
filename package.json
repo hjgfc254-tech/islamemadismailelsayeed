@@ -13,6 +13,8 @@
                     "audit:refresh":  "node scripts/refresh-project-inventory.mjs",
                     "functions:sync":  "node scripts/sync-functions-domain.cjs",
                     "functions:check":  "node scripts/sync-functions-domain.cjs --check",
+                    "sw:check":  "node scripts/sw-cache.cjs --check",
+                    "sw:bump":  "node scripts/sw-cache.cjs --bump",
                     "test:emulators":  "firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak \"node --test tests/emulator/\"",
                     "test:emulators:e2e":  "firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak \"node tests/e2e/firebase-emulator.cdp.js\""
                 }
