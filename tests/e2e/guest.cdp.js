@@ -97,7 +97,9 @@ async function run({ exe, wsUrl }) {
 
     // 6. Sign out → back to guest restrictions
     await fresh(ENTRY + '#/account');
-    if (await focusEl('[data-account-tab="settings"]', `${tag} settings tab`)) { await ENTER(); await sleep(150); }
+    /* «الإعدادات» is an inline tab from 720px; on phones it is inside the «⋮» menu */
+  if (await evaluate('[...document.querySelectorAll(\'.account-tabs > [data-account-tab="settings"]\')].some(e => e.offsetParent !== null)')) { if (await focusEl('.account-tabs > [data-account-tab="settings"]', `${tag} settings tab`)) { await ENTER(); await sleep(150); } }
+  else if (await focusEl('[data-acc-more]', `${tag} more sections`)) { await ENTER(); await sleep(150); if (await focusEl('#acc-more-menu [data-account-tab="settings"]', `${tag} settings in menu`)) { await ENTER(); await sleep(150); } }
     if (await focusEl('[data-account-logout]', `${tag} logout`)) {
       await ENTER(); await sleep(150);
       ok(await waitFor('!!document.querySelector("#askForm") && document.activeElement && document.activeElement.closest("#sheet")'), `${tag} logout asks for confirmation in the focus-managed sheet`);
