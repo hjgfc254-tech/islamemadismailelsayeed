@@ -73,7 +73,7 @@
       ${st.message ? `<p class="ord-muted" role="status">${esc(st.message)}</p>` : ''}
       <section aria-labelledby="ord-h-form"><h3 id="ord-h-form">${creating ? 'بيانات الموظف' : 'تعديل البيانات'}</h3>
         <div class="hs-grid-field"><label for="wf-name">الاسم</label><input id="wf-name" type="text" value="${esc(v.name)}" required${inv('name')}>${fErr(e, 'name')}</div>
-        <div class="hs-grid-field"><label for="wf-email">البريد الإلكتروني (تجريبي)</label><input id="wf-email" type="email" dir="ltr" value="${esc(v.email)}" required${inv('email')}>${fErr(e, 'email')}</div>
+        <div class="hs-grid-field"><label for="wf-email">البريد الإلكتروني (تجريبي)</label><input id="wf-email" type="email" dir="ltr" autocomplete="email" inputmode="email" enterkeyhint="next" value="${esc(v.email)}" required${inv('email')}>${fErr(e, 'email')}</div>
         <div class="hs-grid-field"><label for="wf-dep">الإدارة</label><select id="wf-dep"${inv('department')}>${opts(DEPARTMENTS, v.department, 'اختر الإدارة')}</select>${fErr(e, 'department')}</div>
         <div class="hs-grid-field"><label for="wf-role">الدور</label><select id="wf-role"${inv('role')}>${opts(ROLES, v.role, 'اختر الدور')}</select>${fErr(e, 'role')}</div>
         ${lastOwner ? '<p class="ord-muted">هذا آخر مالك مفعّل: لا يمكن تعطيله أو تغيير دوره (قاعدة تجريبية).</p>' : ''}

@@ -527,6 +527,7 @@ hansalhlak/
 │   │   ├── data-grid.js
 │   │   ├── dialogs.js
 │   │   ├── forms.js
+│   │   ├── hs-dialog.js
 │   │   ├── live-clean.js
 │   │   ├── notification-center.js
 │   │   ├── platform-status.js

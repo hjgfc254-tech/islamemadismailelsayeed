@@ -43,7 +43,7 @@
     host.innerHTML = html(items);
     const btn = host.querySelector('[data-cerr-clear]');
     if (btn) btn.addEventListener('click', async () => {
-      if (!(root.confirm ? root.confirm('مسح كل الأخطاء المتسجلة؟') : true)) return;
+      if (!(await (root.HSUiDialog ? root.HSUiDialog.confirm('مسح كل الأخطاء المتسجلة؟', { danger: true }) : Promise.resolve(root.confirm ? root.confirm('مسح كل الأخطاء المتسجلة؟') : true)))) return;
       if (live()) { const r = await call('POST', '/admin/client-errors/clear', {}); if (!r.ok) { const s = host.querySelector('[data-cerr-status]'); if (s) s.textContent = 'تعذّر المسح.'; return; } }
       else if (root.HSErrorReporter) root.HSErrorReporter.clearLocal();
       mount(host);

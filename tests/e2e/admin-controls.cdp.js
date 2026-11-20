@@ -47,7 +47,7 @@ withBrowser(async ({ wsUrl }) => {
   await evaluate('location.hash="#/controls"; true');
   ok(await waitFor('!!document.querySelector("[data-ctl=maintenance]")', 4000), 'emergency page shows the maintenance switch');
   await shot('controls-off');
-  await evaluate('window.confirm = () => true; document.querySelector("[data-ctl=maintenance]").click(); true'); await sleep(300);
+  await evaluate('window.confirm = () => true; setTimeout(() => { const b = document.querySelector("[data-hsd=ok]"); if (b) b.click(); }, 250); document.querySelector("[data-ctl=maintenance]").click(); true'); await sleep(300);
   ok(await evaluate('/اكتب «صيانة»/.test(document.querySelector("[data-ctl-status]").textContent)'), 'maintenance asks for the confirmation word first');
   await evaluate('document.querySelector("[data-ctl-msg=maintenance]").value = "صيانة سريعة — راجعين الساعة ٣"; document.querySelector("[data-ctl-confirm=maintenance]").value = "صيانة"; document.querySelector("[data-ctl=maintenance]").click(); true');
   ok(await waitFor('document.querySelector(".ctl-card.is-on")', 3000), 'maintenance is on');
@@ -61,7 +61,7 @@ withBrowser(async ({ wsUrl }) => {
   ok(!res.ok && res.status === 503, 'a new request is refused during maintenance');
 
   await login('owner'); await evaluate('location.hash="#/controls"; true'); await waitFor('!!document.querySelector("[data-ctl=maintenance]")', 4000);
-  await evaluate('window.confirm = () => true; document.querySelector("[data-ctl=maintenance]").click(); true');
+  await evaluate('window.confirm = () => true; setTimeout(() => { const b = document.querySelector("[data-hsd=ok]"); if (b) b.click(); }, 250); document.querySelector("[data-ctl=maintenance]").click(); true');
   ok(await waitFor('!document.querySelector(".ctl-card.is-on")', 3000), 'maintenance turned off');
   await go(BASE + '/apps/customer/index.html');
   ok(!(await evaluate('!!document.querySelector("#hs-maint")')), 'Customer app is back');

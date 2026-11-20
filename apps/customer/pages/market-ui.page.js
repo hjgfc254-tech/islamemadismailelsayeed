@@ -59,7 +59,7 @@ const reqCard = x => {
   const mini = st === undefined ? '' : `<span class="mj" aria-hidden="true">${[0,1,2,3,4].map(i => `<i class="${i < st ? 'd' : i === st ? 'n' : ''}"></i>`).join('')}</span>`;
   return `<button class="prow glass neon" data-track="${x.id}">
   ${icp(icStatus(x.status),'st')}
-  <span class="tx">${esc(x.serviceName)}<small>#${x.no} • ${fmtDT(x.createdAt)}</small>${mini}</span>
+  <span class="tx">${esc(x.serviceName)}<small><bdi class="code">#${x.no}</bdi> • ${fmtDT(x.createdAt)}</small>${mini}</span>
   ${badge ? `<span class="rb rb-${badge[1]}">${badge[0]}</span>` : `<span class="tag ${x.status==='cancelled'||x.status==='failed'?'warn':''}">${ic(icStatus(x.status))} ${STATUS_LABEL[x.status]||''}</span>`}
 </button>`;
 };

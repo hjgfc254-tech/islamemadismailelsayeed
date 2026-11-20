@@ -44,19 +44,20 @@
     </div>
     <div class="art">${art}</div>
   </section>
+  <!-- 2026-11-20 design pass: categories first (what customers tap), then a slim trust row -->
+  <h2 class="sec-title" id="tilesT">${ic('grid')}تصفّح الفئات</h2>
+  <p class="sec-hint">اضغط مطوّلًا على أي قسم تشوف أشهر مشاكله وأسعاره</p>
+  ${tiles()}
   <ul class="trust-strip" aria-label="ليه هنصلحلك">
     <li>${ic('wallet')}<span><b>سعر واضح قبل الحجز</b><small>تعرف المبلغ قبل ما تأكد</small></span></li>
     <li>${ic('shield')}<span><b>فنيين بتراجعهم الإدارة</b><small>قبل ما يبدأوا يستقبلوا طلبات</small></span></li>
     <li>${ic('clock')}<span><b>تابع طلبك خطوة بخطوة</b><small>وتوصلك إشعارات بكل تحديث</small></span></li>
   </ul>
   ${renderQuickActions()}
+  ${ctx.trending||''}
+  ${renderCommonProblems()}
   ${ctx.when||''}
   ${howItWorks}
-  ${ctx.trending||''}
-  <h2 class="sec-title" id="tilesT">${ic('grid')}تصفّح الفئات</h2>
-  <p class="sec-hint">اضغط مطوّلًا على أي قسم تشوف أشهر مشاكله وأسعاره</p>
-  ${tiles()}
-  ${renderCommonProblems()}
   ${renderRecentUsed()}
   ${renderSavedAddresses()}
   ${renderFavorites()}
@@ -82,11 +83,6 @@
     <div class="foot-brand">
       <img class="wordmark" src="../../assets/brand/logo-v10-lockup-light.webp" alt="هنصلحلك HANSALEHLAK" width="615" height="160" loading="lazy" decoding="async">
       <p>منصة واحدة، خدمات أسهل.</p>
-      <ul class="foot-trust" aria-label="ليه هنصلحلك">
-        <li>${ic('shield')}<span>فنيين بتراجعهم الإدارة</span></li>
-        <li>${ic('check')}<span>مفيش سعر من غير موافقتك</span></li>
-        <li>${ic('clock')}<span>ضمان على الشغل</span></li>
-      </ul>
     </div>
     <div class="foot-cols">
       <nav aria-label="التطبيق"><b>التطبيق</b><button type="button" data-go="sections">الخدمات</button><button type="button" data-go="orders">طلباتي</button><button type="button" data-go="account">حسابي</button></nav>

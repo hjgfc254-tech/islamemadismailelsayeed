@@ -402,3 +402,14 @@ label.hs-grid-field:has(> input[type=checkbox])>span{flex:1}
 .dash-tasks li label{display:flex;align-items:flex-start;gap:var(--sp-2);min-width:0}
 #adm-account .adm-btn{white-space:nowrap;padding-inline:var(--sp-3)}
 @media (max-width:420px){.adm-acc-name{display:none}}
+
+/* 2026-11-20 design pass: (9) live sign-in card with the logo and a solid frame, centred */
+#admin-app>[data-adm-fb-signin],#admin-app>[data-adm-fb-wait]{max-width:var(--adm-signin-w,26rem);margin:12vh auto 0;border:1px solid var(--border-subtle);border-style:solid;box-shadow:var(--shadow-2,var(--shadow-1));background:var(--surface-primary)}
+#admin-app>[data-adm-fb-signin]::before,#admin-app>[data-adm-fb-wait]::before{content:"";display:block;width:var(--sp-8);height:var(--sp-8);margin-inline:auto;background:url(../../../assets/brand/logo-v10-mark.webp) center/contain no-repeat}
+/* (10) the action queue leads «مهام اليوم» */
+.dash-queue{background:var(--surface-secondary);border-color:var(--border-default)}
+.dash-qlist li{position:relative;background:var(--surface-primary);border:1px solid var(--border-subtle)}
+.dash-qlist li::before{content:"";position:absolute;inset-block:var(--sp-2);inset-inline-start:0;width:var(--sp-1);border-radius:var(--r-sm);background:var(--info)}
+.dash-qlist li.is-danger::before{background:var(--danger)}
+.dash-qlist li.is-warning::before{background:var(--accent)}
+.dash-qlist li b{font-size:var(--fs-2xl)}

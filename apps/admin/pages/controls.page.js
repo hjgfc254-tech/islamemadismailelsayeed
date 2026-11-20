@@ -58,7 +58,7 @@
       if (next && s.confirmWord) {
         const c = wrap.querySelector(`[data-ctl-confirm="${key}"]`);
         if (!c || c.value.trim() !== s.confirmWord) { say(`اكتب «${s.confirmWord}» في خانة التأكيد الأول.`); if (c) c.focus(); return; }
-      } else if (!(root.confirm ? root.confirm(next ? `تشغيل «${s.title}»؟` : `إيقاف «${s.title}» وإرجاع المنصة طبيعي؟`) : true)) return;
+      } else { const q = next ? `تشغيل «${s.title}»؟` : `إيقاف «${s.title}» وإرجاع المنصة طبيعي؟`; if (!(await (root.HSUiDialog ? root.HSUiDialog.confirm(q, { danger: next }) : Promise.resolve(root.confirm ? root.confirm(q) : true)))) return; }
       const msgEl = wrap.querySelector(`[data-ctl-msg="${key}"]`);
       b.disabled = true;
       const r = await api().setControl(key, next, msgEl ? msgEl.value : '');

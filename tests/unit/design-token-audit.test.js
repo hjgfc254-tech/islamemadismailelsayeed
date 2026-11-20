@@ -15,7 +15,9 @@ const ROOT = path.resolve(__dirname, '../..');
    card border 1px have no token equivalent. */
 /* 176 → 177 (2026-11-20 consistency pass, explicit audit): the 420px phone-header breakpoint (media queries cannot use
    custom properties). */
-const ADMIN_HARDCODED_BASELINE = 177;
+/* 177 → 180 (2026-11-20 design pass, explicit audit): the live sign-in card offset 12vh, its max width 26rem and its
+   solid 1px frame have no token equivalent. */
+const ADMIN_HARDCODED_BASELINE = 180;
 
 test('the live shared design-system stylesheet is loaded by Admin and Customer', () => {
   const admin = fs.readFileSync(path.join(ROOT, 'apps/admin/index.html'), 'utf8');

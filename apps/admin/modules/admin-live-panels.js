@@ -89,7 +89,7 @@
       host.innerHTML = frame('الإدارات', table(['الإدارة', 'تتبع', 'المسؤول', 'الحالة', ''], items.map((d) => [
         esc(d.name), esc(d.parentId ? name(d.parentId) : 'رئيسية'), esc((emps.find((e) => e.id === d.headId) || {}).name || '—'), esc(d.status === 'active' ? 'مفعّلة' : 'متوقفة'),
         `<button type="button" class="adm-btn" data-dept-toggle="${esc(d.id)}" data-next="${d.status === 'active' ? 'inactive' : 'active'}">${d.status === 'active' ? 'إيقاف' : 'تفعيل'}</button>`])) +
-        `<form data-live-dept class="ord-dlg-in"><h3>إضافة إدارة</h3><label class="hs-grid-field"><span>الاسم</span><input name="name" required maxlength="50"></label>
+        `<form data-live-dept class="ord-dlg-in"><h3>إضافة إدارة</h3><label class="hs-grid-field"><span>الاسم</span><input name="name" required maxlength="50" autocomplete="off" enterkeyhint="done"></label>
          <label class="hs-grid-field"><span>تتبع</span><select name="parentId"><option value="">إدارة رئيسية</option>${items.map((d) => `<option value="${esc(d.id)}">${esc(d.name)}</option>`).join('')}</select></label>
          <p><button type="submit" class="adm-btn adm-btn-p">إضافة</button></p></form>`);
       host.querySelector('[data-live-dept]').addEventListener('submit', async (e) => {
@@ -110,7 +110,7 @@
         `${u.role === 'owner' ? '' : `<button type="button" class="adm-btn" data-reset-code="${esc(u.uid)}">إعادة ضبط الكود</button> `}<button type="button" class="adm-btn adm-btn-d" data-revoke="${esc(u.uid)}">إنهاء كل الجلسات</button>`])) +
         '<p class="ord-muted">الدخول للإدارة: إيميل مؤكَّد + كلمة مرور + كود شخصي من ٨ أرقام. ٥ محاولات غلط بتقفل الحساب ١٥ دقيقة. «إعادة ضبط الكود» بتخلّي الموظف يعمل كود جديد في دخوله الجاي. إنهاء الجلسات يُخرج الحساب من كل الأجهزة (للمالك فقط، ولا يشمل حسابك).</p>');
       host.querySelectorAll('[data-reset-code]').forEach((b) => b.addEventListener('click', async () => {
-        if (root.confirm && !root.confirm('إعادة ضبط كود الدخول للموظف ده؟ هيعمل كود جديد في دخوله الجاي.')) return;
+        if (!(await (root.HSUiDialog ? root.HSUiDialog.confirm('إعادة ضبط كود الدخول للموظف ده؟ هيعمل كود جديد في دخوله الجاي.', { danger: true }) : Promise.resolve(root.confirm ? root.confirm('إعادة ضبط كود الدخول للموظف ده؟ هيعمل كود جديد في دخوله الجاي.') : true)))) return;
         const r = await call('POST', '/admin/security/reset-code/' + encodeURIComponent(b.dataset.resetCode), {});
         if (r.ok) return PANELS.security(host); status(host, errText(r));
       }));

@@ -32,7 +32,7 @@ withBrowser(async (browser) => {
   const text = await evaluate('document.querySelector("[data-client-errors]").textContent');
   ok(/QA crash/.test(text) && /QA rejection/.test(text) && /مقدم الخدمة/.test(text), 'both errors listed with their app');
   ok(await evaluate('document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1'), 'no horizontal overflow');
-  await evaluate('window.confirm = () => true; document.querySelector("[data-cerr-clear]").click(); true');
+  await evaluate('window.confirm = () => true; setTimeout(() => { const b = document.querySelector("[data-hsd=ok]"); if (b) b.click(); }, 250); document.querySelector("[data-cerr-clear]").click(); true');
   ok(await waitFor('/مفيش أخطاء/.test(document.querySelector("[data-client-errors]").textContent)', 4000), '«مسح السجل» clears the list');
   console.log(failures() ? `✗ ${failures()} check(s) failed` : '✓ client-error reporting works end to end');
   process.exitCode = failures() ? 1 : 0;

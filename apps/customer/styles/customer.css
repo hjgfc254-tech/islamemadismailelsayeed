@@ -15,7 +15,7 @@
 
 /* ═════════ 2. الأساسيات ═════════ */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Cairo',system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;font-weight:400;line-height:1.5;overscroll-behavior:none;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body),system-ui,-apple-system,'Segoe UI',Tahoma,sans-serif;font-weight:400;line-height:1.5;overscroll-behavior:none;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 body{display:flex;justify-content:center}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:inherit}
 input,textarea,select{font:inherit}
@@ -308,7 +308,7 @@ svg.i{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.8;stroke
 /* ═══ V5: الكتالوج الهرمي ونموذج الطلب ═══ */
 .cgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
 @media(min-width:700px){.cgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.icard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:92px;padding:14px 8px;border-radius:18px;color:inherit;font:700 14px/1.35 Cairo,sans-serif;text-align:center;cursor:pointer;transition:transform .15s,box-shadow .2s}
+.icard{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:92px;padding:14px 8px;border-radius:18px;color:inherit;font:700 14px/1.35 var(--font-body);text-align:center;cursor:pointer;transition:transform .15s,box-shadow .2s}
 .icard .i{width:30px;height:30px}.icard.sel,.prow.sel,.unk-btn.sel{outline:2px solid var(--brand-primary)}
 .crumbs{display:flex;flex-wrap:wrap;gap:4px;align-items:center;margin:8px 0;font-size:13px}
 .crumbs button{background:rgba(23,107,80,.14);color:var(--danger);border:0;border-radius:999px;padding:4px 10px;font:inherit;cursor:pointer}
@@ -1423,3 +1423,42 @@ html.ob-open,html.ob-open body{overflow:hidden}
   #view .acc-more-wrap{display:none}
   #view .account-tabs > .acc-t,#view .account-tabs .acc-more{flex-direction:row;gap:6px;min-height:44px;font-size:13.5px}
 }
+
+/* ═══ 2026-11-20 design pass (scratchpad design/PROPOSALS.md + UX audit) ═══ */
+#view{font-family:var(--font-body)}
+/* (2) one slim trust row of chips under the categories */
+#view .trust-strip{display:flex;flex-wrap:nowrap;gap:6px;margin:10px 0 2px;padding:0;overflow-x:auto;scrollbar-width:none}
+#view .trust-strip::-webkit-scrollbar{display:none}
+#view .trust-strip li{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:var(--r-pill);background:var(--surface-primary);border:1px solid var(--border-subtle);box-shadow:none}
+#view .trust-strip li small{display:none}
+#view .trust-strip li b{font:var(--t-label);font-size:13px;white-space:nowrap}
+#view .trust-strip li .i{font-size:16px;color:var(--accent)}
+/* (3) help bubble: smaller, above the tab bar, quiet until needed; hidden where lists fill the screen */
+@media (max-width:899px){
+  .help-fab{width:40px;height:40px;min-height:40px;inset-inline-end:10px;bottom:calc(var(--tab-h) + env(safe-area-inset-bottom,0px) + 10px);opacity:.82;box-shadow:0 4px 14px rgba(31,27,23,.14);transition:opacity .2s}
+  .help-fab:hover,.help-fab:focus-visible{opacity:1}
+  html[data-screen="orders"] .help-fab,html[data-screen="sections"] .help-fab,html[data-screen="search"] .help-fab{display:none}
+  #view{padding-bottom:calc(var(--tab-h) + 64px)}
+}
+/* (5) tracking stages: done = green, now = orange with a soft pulse, next = grey */
+#view .journey li.is-done::before,#view .journey li.is-now::before{background:var(--success)}
+#view .journey li.is-done i{background:var(--success);border-color:var(--success);color:#fff}
+#view .journey li.is-now i{background:var(--accent);border-color:var(--accent);color:var(--on-accent,#fff);animation:hsNowPulse 1.8s ease-out infinite}
+#view .journey li.is-now{color:var(--text-primary);font-weight:700}
+#view .journey li{font-size:13px}
+@keyframes hsNowPulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 45%,transparent)}100%{box-shadow:0 0 0 10px transparent}}
+@media (prefers-reduced-motion:reduce){#view .journey li.is-now i{animation:none}}
+/* (6) order cards: a status stripe on the starting edge — orange = needs you, blue = in progress, green = done, grey = cancelled */
+#view .prow[data-track]{border-inline-start:4px solid var(--info)}   /* a border, since design-system hides .glass::after */
+#view .prow[data-track]:has(.mj i:last-child.n),#view .prow[data-track]:has(.mj i:last-child.d){border-inline-start-color:var(--success)}
+#view .prow[data-track]:has(.tag.warn){border-inline-start-color:var(--border-strong)}
+#view .prow[data-track]:not(:has(.mj)):not(:has(.rb)):not(:has(.tag.warn)){border-inline-start-color:var(--success)}
+#view .prow[data-track]:has(.rb-need){border-inline-start-color:var(--accent)}   /* needs the customer: wins over the stage colours */
+/* (8) clear section hierarchy: the categories title leads, the others are quieter; one rhythm between sections */
+#view .sec-title{margin:var(--sp-6) 0 var(--sp-3);font:var(--t-h3);font-size:17px}
+#view .sec-title .i{font-size:18px}
+#view #tilesT{font:var(--t-h2);margin-top:var(--sp-5)}
+#view #tilesT .i{font-size:22px}
+#view .sec-hint{font:var(--t-caption);color:var(--text-secondary);margin:-6px 0 12px}
+/* UX audit: 13px floor for secondary text on the main screens */
+#view small,#view .tx small{font-size:max(13px,.82em)}

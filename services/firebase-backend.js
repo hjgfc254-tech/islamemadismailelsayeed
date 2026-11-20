@@ -100,9 +100,9 @@ async function start() {
                   : [{ name: 'code', label: 'اكتب كود الدخول الخاص بيك (٨ أرقام)', type: 'password', attrs: num }],
             first ? 'حفظ الكود والدخول' : 'دخول');
           if (!v) return false;
-          if (first && v.code !== v.again) { alert('الكودين مش زي بعض — اكتبهم تاني.'); continue; }
+          if (first && v.code !== v.again) { await uiAlert('الكودين مش زي بعض — اكتبهم تاني.'); continue; }
           try { await callSession({ op: 'adminCode', action: first ? 'set' : 'unlock', code: v.code }); location.reload(); return true; }
-          catch (e) { alert((e && e.message) || 'تعذّر التحقق من الكود'); if (/مقفول/.test(String(e && e.message))) return false; }
+          catch (e) { await uiAlert((e && e.message) || 'تعذّر التحقق من الكود'); if (/مقفول/.test(String(e && e.message))) return false; }
         }
         return false;
       } finally { codeFlow = null; }
@@ -176,6 +176,8 @@ async function start() {
   });
 
   /* ── sign-in dialog (RTL, design-system tokens) ── */
+  /* in-app alert (shared/components/hs-dialog.js) instead of the browser's grey alert(); falls back when not loaded */
+  const uiAlert = (m) => (globalThis.HSUiDialog ? globalThis.HSUiDialog.alert(String(m || '')) : (window.alert(m), Promise.resolve()));
   function dialog(title, fields, submitLabel) {
     return new Promise(resolve => {
       const d = document.createElement('dialog');
@@ -333,13 +335,13 @@ async function start() {
       const v = await dialog('دخول الإدارة', [{ name: 'email', label: 'البريد الإلكتروني', type: 'email' }, { name: 'password', label: 'كلمة المرور', type: 'password' }], 'دخول');
       if (!v) return null;
       const cred = await A.signInWithEmailAndPassword(auth, v.email, v.password);
-      if (!cred.user.emailVerified) { await A.sendEmailVerification(cred.user); alert('أرسلنا رسالة تأكيد إلى بريدك — أكّد البريد ثم سجّل الدخول مرة أخرى.'); return null; }
+      if (!cred.user.emailVerified) { await A.sendEmailVerification(cred.user); await uiAlert('أرسلنا رسالة تأكيد إلى بريدك — أكّد البريد ثم سجّل الدخول مرة أخرى.'); return null; }
       await cred.user.getIdToken(true);
       let r = await sync();
       if (r.adminGate) return null;                                     // the access-code dialog takes over (adminCodeFlow)
       if (!r.actor) { try { await callSession({ op: 'claimOwner', name: cred.user.displayName || v.email }); r = await sync(); } catch (e) { /* not the bootstrap owner: the server decides */ } }
       if (r.adminGate) return null;                                     // new owner: sets the access code now
-      if (!r.actor) { alert('هذا الحساب ليس له صلاحية إدارة.'); return null; }
+      if (!r.actor) { await uiAlert('هذا الحساب ليس له صلاحية إدارة.'); return null; }
       location.reload(); return actor;
     },
     /** Web push: ask permission (only from a user gesture), get this device's FCM token, register it server-side. */
@@ -362,9 +364,9 @@ async function start() {
       const num = 'inputmode="numeric" pattern="[0-9]{8}" maxlength="8" autocomplete="off" required';
       const v = await dialog('تغيير كود الدخول', [{ name: 'current', label: 'الكود الحالي', type: 'password', attrs: num }, { name: 'code', label: 'الكود الجديد (٨ أرقام)', type: 'password', attrs: num }, { name: 'again', label: 'الكود الجديد تاني', type: 'password', attrs: num }], 'تغيير');
       if (!v) return false;
-      if (v.code !== v.again) { alert('الكودين الجداد مش زي بعض.'); return false; }
-      try { await callSession({ op: 'adminCode', action: 'set', code: v.code, current: v.current }); alert('اتغيّر كود الدخول.'); return true; }
-      catch (e) { alert((e && e.message) || 'تعذّر تغيير الكود'); return false; }
+      if (v.code !== v.again) { await uiAlert('الكودين الجداد مش زي بعض.'); return false; }
+      try { await callSession({ op: 'adminCode', action: 'set', code: v.code, current: v.current }); await uiAlert('اتغيّر كود الدخول.'); return true; }
+      catch (e) { await uiAlert((e && e.message) || 'تعذّر تغيير الكود'); return false; }
     },
     /** Admin: end the code unlock on this account (also part of signing out). */
     lockAdmin: () => callSession({ op: 'adminCode', action: 'lock' }).catch(() => {}),
@@ -429,7 +431,7 @@ async function start() {
     b.id = 'hs-backend-signin'; b.type = 'button';
     b.textContent = APP === 'admin' ? 'دخول الإدارة' : (e.detail && e.detail.provider && e.detail.provider.status === 'pending' ? 'تسجيلك قيد المراجعة' : 'دخول مقدم الخدمة');
     b.style.cssText = 'position:fixed;inset-inline-start:16px;bottom:88px;z-index:200;min-height:46px;padding:0 18px;border:0;border-radius:14px;background:var(--brand-primary,#1F1B17);color:#fff;font:inherit;font-weight:700;box-shadow:0 8px 22px rgba(31,27,23,.2)';
-    b.addEventListener('click', () => (APP === 'admin' ? HSBackend.signInAdmin() : HSBackend.signInProvider()).catch(err => alert(err.message)));
+    b.addEventListener('click', () => (APP === 'admin' ? HSBackend.signInAdmin() : HSBackend.signInProvider()).catch(err => uiAlert(err.message)));
     document.body.appendChild(b);
   });
 }
