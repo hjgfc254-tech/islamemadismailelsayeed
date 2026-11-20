@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 592,
+  "file_count": 594,
   "files": [
     {
       "path": "_redirects",
@@ -496,8 +496,8 @@
       "path": "apps/customer/index.html",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 8450,
-      "sha256": "7f8875133eb1631a0c24a68ba2c4e01f2f346d3fc0bee064b17c236b055e73cb"
+      "bytes": 8496,
+      "sha256": "4e9b97765de07ed9d33a9ced7feb1f9e006460e0c30de0fe0583a5ecff38d561"
     },
     {
       "path": "apps/customer/pages/account.page.js",
@@ -540,6 +540,13 @@
       "status": "IMPLEMENTED",
       "bytes": 33323,
       "sha256": "36fea7f91010073afbf4c189c2d16476ff156715433d96d80914d2003adac255"
+    },
+    {
+      "path": "apps/customer/pages/offer-alerts.js",
+      "area": "apps/customer",
+      "status": "NEEDS_REVIEW",
+      "bytes": 6559,
+      "sha256": "51e780691edd46576892382d001a468edb1332aa877bf4b044435b3c16fed6b6"
     },
     {
       "path": "apps/customer/pages/offers.js",
@@ -622,8 +629,8 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 133619,
-      "sha256": "f41b178daec2f3d71170b3f3cff08c7d60547b5323e580aa6ca5b433e8cee39d"
+      "bytes": 135368,
+      "sha256": "077728bde938cd6117793aee11e732175224bafcc2482013c8220d0e47d1a29e"
     },
     {
       "path": "apps/customer/styles/overrides.css",
@@ -2099,8 +2106,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 279573,
-      "sha256": "1c4a2307f9b768a608856de80511544e8269508da202ce761ede77f6026374e1"
+      "bytes": 280051,
+      "sha256": "ab7a26abed6910cf6c947535fc50c1412193e2f2ba8f203184ce3f839235890c"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2113,8 +2120,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 150876,
-      "sha256": "836110e634ac4e180fbdf576ed813a30865df06d6f44ce422a07a7aba141c866"
+      "bytes": 151304,
+      "sha256": "60e6dc4971c4d7e8b90318f3f18243a548f0c2ce7401dc903faa656f31e31dbb"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2526,8 +2533,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 28355,
-      "sha256": "c384d8e2cfde1fef5be0d6f956432bfa7a1fdb23d66e0dea86c2ac584c1ac733"
+      "bytes": 28441,
+      "sha256": "410c3d1652523ee094281b08ec07791803811e3da302df4e99a51ec734ad5e5d"
     },
     {
       "path": "docs/README.md",
@@ -2953,15 +2960,15 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 10709,
-      "sha256": "12cdb3853bd1cd4908f05e8a76f28e76c651b4277fafc40c9626fe84538aa4c2"
+      "bytes": 10750,
+      "sha256": "20429e50d3b4f7d65a21f0a5b0bbca4668132a426e91a794ebe1f476bba6af3f"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "ddc60b41d3d65172e2c597d0663fa61bd6480fd1cbd96991a82d8aa1b9b6626f"
+      "sha256": "b946a42d5e90938753af1d4a11ad7a2b365fd817e30d92e86159c5e44843cfea"
     },
     {
       "path": "services/admin-api.js",
@@ -3009,8 +3016,8 @@
       "path": "services/firebase-backend.js",
       "area": "services",
       "status": "NEEDS_REVIEW",
-      "bytes": 29777,
-      "sha256": "8636473ee8f21e17a9b05c2c756d15fc9707c4650720170563ceb03d33e749ac"
+      "bytes": 30203,
+      "sha256": "32014a3d2ab2cc94c8dd5be85f9f1116e4e57edc0d63ac77558a2d5bbbd670e3"
     },
     {
       "path": "services/firebase-config.js",
@@ -3419,6 +3426,13 @@
       "sha256": "6dd97dd86a2afd326151432ed5859b92454561b6ca264046c52f37d0da131044"
     },
     {
+      "path": "tests/e2e/offer-alerts.cdp.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 4785,
+      "sha256": "d395721ccbf2d854cf490a1961fe7d6f71391f76bcbf8b1937c1481ee1ad0357"
+    },
+    {
       "path": "tests/e2e/offers-cycle.cdp.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
@@ -3639,8 +3653,8 @@
       "path": "tests/unit/client-error-telemetry.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 10174,
-      "sha256": "34b07885e929fb11cb840ad28e8fcb54f80aeaf542ce6083fd0abe2b75c5ff37"
+      "bytes": 10777,
+      "sha256": "5d6c9b13f957ce4ae94332ed3b95dde6a31f1cb5d266e3c2956bad6c03ae8f8d"
     },
     {
       "path": "tests/unit/commissions.test.js",

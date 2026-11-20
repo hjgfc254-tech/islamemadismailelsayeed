@@ -86,6 +86,7 @@ hansalhlak/
 │   │   │   ├── discover.page.js
 │   │   │   ├── home.page.js
 │   │   │   ├── market-ui.page.js
+│   │   │   ├── offer-alerts.js
 │   │   │   ├── offers.js
 │   │   │   ├── onboarding.js
 │   │   │   ├── order-details.page.js
@@ -569,6 +570,7 @@ hansalhlak/
 │   │   ├── firebase-emulator.cdp.js
 │   │   ├── guest.cdp.js
 │   │   ├── interaction.cdp.js
+│   │   ├── offer-alerts.cdp.js
 │   │   ├── offers-cycle.cdp.js
 │   │   ├── perf.cdp.js
 │   │   ├── provider-standalone.cdp.js

@@ -160,3 +160,11 @@ test('every app loads the reporter first, and the service worker precaches it', 
   const sw = fs.readFileSync(path.join(ROOT, 'service-worker.js'), 'utf8');
   assert.ok(sw.includes("'shared/utils/error-reporter.js'") && sw.includes("'apps/admin/modules/client-errors.js'"));
 });
+
+test('customer app loads offer alerts after the offers module and the service worker precaches it', () => {
+  const html = fs.readFileSync(path.join(ROOT, 'apps/customer/index.html'), 'utf8');
+  assert.ok(html.indexOf('pages/offer-alerts.js') > html.indexOf('pages/offers.js'));
+  assert.ok(fs.readFileSync(path.join(ROOT, 'service-worker.js'), 'utf8').includes("'apps/customer/pages/offer-alerts.js'"));
+  const src = fs.readFileSync(path.join(ROOT, 'apps/customer/pages/offer-alerts.js'), 'utf8');
+  assert.ok(!/requestPermission/.test(src), 'never asks for notification permission by itself');
+});
