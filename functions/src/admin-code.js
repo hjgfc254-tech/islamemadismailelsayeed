@@ -51,9 +51,17 @@ async function setCode(backend, uid, admin, code, current, now = Date.now()) {
   return { ok: true, unlockedUntil: new Date(now + UNLOCK_MS).toISOString() };
 }
 
+/* security (round 2): the attempt counter is read and written in ONE transaction, so parallel guesses cannot all
+   read «0 failures» and never reach the lock (Firestore serialises / retries concurrent transactions). */
 async function fail(backend, uid, admin, now) {
-  const fails = (+admin.codeFails || 0) + 1, lock = fails >= MAX_FAILS;
-  await backend.setDoc(`admins/${uid}`, { codeFails: lock ? 0 : fails, codeLockUntil: lock ? now + LOCK_MS : (+admin.codeLockUntil || 0) }, true);
+  const { fails, lock, already } = await backend.runTransaction(async (tx) => {
+    const cur = (await backend.adapter.get(tx, `admins/${uid}`)) || admin;
+    if (+cur.codeLockUntil > now) return { fails: MAX_FAILS, lock: true, already: true };
+    const n = (+cur.codeFails || 0) + 1, l = n >= MAX_FAILS;
+    backend.adapter.set(tx, `admins/${uid}`, { ...cur, codeFails: l ? 0 : n, codeLockUntil: l ? now + LOCK_MS : (+cur.codeLockUntil || 0) });
+    return { fails: n, lock: l };
+  });
+  if (already) return { fails, lock };
   await audit(backend, uid, 'admin.code.unlock', lock ? 'locked' : 'failed');
   if (lock) await require('./owner-alerts').notifyOwner(backend, `حساب إداري (${admin.name || admin.email || uid}) اتقفل ١٥ دقيقة بعد ${MAX_FAILS} محاولات كود غلط`, 'apps/admin/index.html#/audit');
   return { fails, lock };
@@ -67,7 +75,14 @@ async function unlock(backend, uid, admin, code, now = Date.now()) {
     const r = await fail(backend, uid, admin, now);
     throw err(r.lock ? 'resource-exhausted' : 'permission-denied', r.lock ? 'محاولات كتير غلط — الحساب مقفول ١٥ دقيقة' : `الكود غلط — فاضل ${MAX_FAILS - r.fails} محاولات`);
   }
-  await backend.setDoc(`admins/${uid}`, { codeFails: 0, codeLockUntil: 0, unlockedUntil: now + UNLOCK_MS, lastUnlockAt: new Date(now).toISOString() }, true);
+  /* the right code is honoured only if the account is not locked at commit time (a parallel guess may have locked it) */
+  const granted = await backend.runTransaction(async (tx) => {
+    const cur = (await backend.adapter.get(tx, `admins/${uid}`)) || admin;
+    if (+cur.codeLockUntil > now) return false;
+    backend.adapter.set(tx, `admins/${uid}`, { ...cur, codeFails: 0, codeLockUntil: 0, unlockedUntil: now + UNLOCK_MS, lastUnlockAt: new Date(now).toISOString() });
+    return true;
+  });
+  if (!granted) throw err('resource-exhausted', 'محاولات كتير غلط — الحساب مقفول ١٥ دقيقة');
   await audit(backend, uid, 'admin.code.unlock', 'ok');
   return { ok: true, unlockedUntil: new Date(now + UNLOCK_MS).toISOString() };
 }

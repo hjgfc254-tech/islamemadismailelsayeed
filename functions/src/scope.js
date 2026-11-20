@@ -30,9 +30,24 @@ function customerRequestView(r) {
   delete out.customerReview;                       // the provider's rating of the customer is not shown to them
   return out;
 }
+/* M3 (owner decision, OFF by default): data minimisation per admin rank. Enabled when system/settings has
+   adminDataPolicy: 'minimal'. Low ranks (support, moderator) then get customers' phones masked (010•••••678), no saved
+   addresses and no transactions; finance keeps transactions; admin / owner see everything (unchanged). */
+const maskPhone = (p) => { const s = String(p || ''); return s.length >= 7 ? s.slice(0, 3) + '•'.repeat(s.length - 6) + s.slice(-3) : (s ? '•••' : ''); };
+function adminView(db, actor) {
+  const full = JSON.parse(JSON.stringify(db));
+  const policy = db.settings && db.settings.adminDataPolicy;
+  const rank = actor.adminRole || 'owner';
+  if (policy !== 'minimal' || ['owner', 'admin'].includes(rank)) return full;
+  full.customers = (full.customers || []).map((c) => ({ ...c, phone: maskPhone(c.phone), email: c.email ? '•••' : c.email }));
+  full.serviceRequests = (full.serviceRequests || []).map((r) => ({ ...r, phone: maskPhone(r.phone), addr: r.addr ? '•••' : r.addr, geo: null }));
+  full.addresses = [];
+  if (rank !== 'finance') full.transactions = [];
+  return full;
+}
 function scopeFor(db, actor) {
   if (!db) return null;
-  if (actor && actor.role === 'admin') return JSON.parse(JSON.stringify(db));
+  if (actor && actor.role === 'admin') return adminView(db, actor);
   const out = base(db);
   out.settings = { defaultRate: 0, rates: {}, ...out.settings };
   const approved = (db.providers || []).filter(p => p.status === 'approved').map(publicProvider);
@@ -76,4 +91,4 @@ function scopeFor(db, actor) {
   return out;
 }
 
-module.exports = { scopeFor, publicProvider, PROVIDER_PUBLIC, customerRequestView, customerQuote };
+module.exports = { adminView, maskPhone, scopeFor, publicProvider, PROVIDER_PUBLIC, customerRequestView, customerQuote };

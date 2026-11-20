@@ -267,11 +267,16 @@ const MP = (() => {
   };
 
   /* ═════════ الإسناد ═════════ */
+  /* security (round 2): a provider never serves a request from their own phone number (self-dealing: fake jobs,
+     bonus and rating farming) */
+  const digitsOf = s => String(s || '').replace(/\D/g, '').replace(/^20(?=1\d{9}$)/, '0');
+  const selfDeal = (p, r) => !!(p && r && digitsOf(p.phone) && digitsOf(p.phone) === digitsOf(r.phone));
   const candidates = r => {
     /* التوافق: 1) التخصص (cats)  2) تخصص الجهاز إن أمكن (subs)  3) المحافظة  4) التوفر */
     const subs = r.itemId || '';
     return db.providers.filter(p => {
         if (p.status !== 'approved' || !p.available) return false;
+        if (selfDeal(p, r)) return false;
         if (!p.cats.includes(r.cat)) return false;
         if (!p.govs.includes(r.gov)) return false;
         /* إن كان للمزود subs محدد، نفضّل أن يتضمن subs الجهاز — وإلا فالتخصص العام كافٍ */
@@ -354,6 +359,7 @@ const MP = (() => {
       if(!r || !['searching','received'].includes(r.status)) return {ok:false,msg:'حالة الطلب لا تسمح بالإسناد'};
       const p = providerId ? get('providers',providerId) : candidates(r)[0];
       if(!p) return {ok:false,msg:'لا يوجد مقدم خدمة مطابق (التخصص/المحافظة/التوفر)'};
+      if(selfDeal(p, r)) return {ok:false,msg:'مقدم الخدمة ده هو صاحب الطلب نفسه — اختار مقدم خدمة تاني'};
       db.assignments.push({id:uid('a'),reqId,providerId:p.id,status:'offered',reason:'',at:now(),manual:!!providerId});
       log(r,'sent', (providerId?'إسناد يدوي من الإدارة':'مطابقة تلقائية')+' — '+p.name);
       notify('provider:'+p.id,'طلب جديد '+r.no+' بانتظار ردّك',r.id);
@@ -368,6 +374,7 @@ const MP = (() => {
     respond(reqId, accept, reason){
       const r = get('serviceRequests',reqId), a = api.activeAssignment(reqId);
       if(!r||!a||a.status!=='offered') return false;
+      if(accept && selfDeal(get('providers', a.providerId), r)) return false;
       if(accept){
         a.status='accepted';
         r.pin = String(1000 + Math.floor(Math.random() * 9000));   /* arrival code: the customer shows it, the provider enters it at the door */
@@ -663,6 +670,7 @@ const MP = (() => {
       const r = get('serviceRequests', reqId);
       const a = db.assignments.find(x => x.reqId === reqId && x.providerId === providerId && x.status === 'offered' && x.bidding);
       if (!r || !a || !r.bidding || !['received', 'searching', 'sent'].includes(r.status)) return { ok: false, msg: 'الطلب ده مش متاح للعروض دلوقتي' };
+      if (selfDeal(get('providers', providerId), r)) return { ok: false, msg: 'مينفعش تبعت عرض على طلب من رقمك' };
       const kind = b && b.kind === 'inspection' ? 'inspection' : 'quote';
       let labor = 0, parts = 0, fee = 0, base;
       if (kind === 'inspection') {
@@ -789,7 +797,7 @@ const MP = (() => {
       if (!r || !r.bidding || r.bidding.widened || api.providerOf(reqId) || !['received', 'searching', 'sent'].includes(r.status)) return false;
       if (Date.parse(r.bidding.until) > Date.now() || api.offersFor(reqId).length) return false;
       const invited = new Set(db.assignments.filter(a => a.reqId === r.id).map(a => a.providerId));
-      const pick = db.providers.filter(p => p.status === 'approved' && p.available && (p.cats || []).includes(r.cat) && !invited.has(p.id))
+      const pick = db.providers.filter(p => p.status === 'approved' && p.available && (p.cats || []).includes(r.cat) && !invited.has(p.id) && !selfDeal(p, r))
         .sort((x, y) => (rating(y.id) || 0) - (rating(x.id) || 0)).slice(0, 3);
       for (const p of pick) {
         db.assignments.push({ id: uid('a'), reqId: r.id, providerId: p.id, status: 'offered', reason: '', at: now(), bidding: true, wide: true });
@@ -831,7 +839,9 @@ const MP = (() => {
     cashConfirm(reqId, side, paid){
       const r = get('serviceRequests', reqId);
       if (!r || !['completed', 'closed'].includes(r.status) || !['customer', 'provider'].includes(side) || +r.finalValue === 0) return false;
-      r.cash = r.cash || {}; r.cash[side] = !!paid; r.cash[side + 'At'] = now();
+      r.cash = r.cash || {};
+      if (r.cash[side] != null) return false;   /* security (round 2): one answer per side — no flipping after the bonus counted */
+      r.cash[side] = !!paid; r.cash[side + 'At'] = now();
       const t = db.transactions.find(x => x.reqId === reqId);
       if (r.cash.customer === true && r.cash.provider === true && t) t.collection = 'collected';
       if (side === 'customer' && paid && !r.cash.disputed && !r.cash.counted) { r.cash.counted = true; api.bonusCount(r); }

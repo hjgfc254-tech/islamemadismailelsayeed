@@ -341,7 +341,18 @@ async function tickOffers(backend) {
 async function maintenanceOn(backend) { try { const s = await backend.getDoc('system/settings'); return !!(s && s.controls && s.controls.maintenance && s.controls.maintenance.on); } catch (e) { return false; } }
 
 /** Callable `session`: sync (scoped read model), registerCustomer, claimOwner, importLocal. */
-async function session(backend, { auth, data }) {
+/* security (round 2): AI classification costs money per call — besides the per-account daily quota (ai.js), cap
+   calls per client IP per instance per day, so throw-away anonymous accounts cannot drain the AI budget. */
+const AI_IP_DAILY = 40; const aiIpHits = new Map(); let aiIpDay = '';
+function aiIpAllow(ip) {
+  const day = new Date().toISOString().slice(0, 10);
+  if (day !== aiIpDay) { aiIpDay = day; aiIpHits.clear(); }
+  const k = String(ip || 'unknown'), n = (aiIpHits.get(k) || 0) + 1;
+  if (aiIpHits.size > 50000) aiIpHits.clear();
+  aiIpHits.set(k, n); return n <= AI_IP_DAILY;
+}
+
+async function session(backend, { auth, data, ip }) {
   const d = data || {};
   const token = tokenOf(auth);
   const app = APPS.includes(d.app) ? d.app : 'customer';
@@ -422,7 +433,7 @@ async function session(backend, { auth, data }) {
       await linkUser(backend, token.uid, actor, 'customer');
       return { actor, db: scopeFor(out.db, actor) };
     }
-    case 'ai': return ai.classify(backend, token, d, fail);   // «اكتب مشكلتك» / «صوّر المشكلة» → catalogue item + problem
+    case 'ai': if (!aiIpAllow(ip)) fail('resource-exhausted', 'وصلت للحد اليومي — اختار المشكلة بنفسك'); return ai.classify(backend, token, d, fail);   // «اكتب مشكلتك» / «صوّر المشكلة» → catalogue item + problem
     case 'content': {
       /* public site content; only fetched when settings.contentV changes. `have`: media ids this device caches */
       const have = Array.isArray(d.have) ? d.have.filter(x => typeof x === 'string').slice(0, 300) : [];
@@ -529,4 +540,4 @@ async function importLocal(backend, token, d) {
   return { report, totals: result };
 }
 
-module.exports = { tickOffers, api, session, importLocal, validateApi, affectedTags, ServiceError, WRITE_LIMIT_PER_MIN };
+module.exports = { aiIpAllow, AI_IP_DAILY, tickOffers, api, session, importLocal, validateApi, affectedTags, ServiceError, WRITE_LIMIT_PER_MIN };

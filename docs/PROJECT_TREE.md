@@ -673,6 +673,7 @@ hansalhlak/
 │       ├── reviews-management.test.js
 │       ├── round5-features.test.js
 │       ├── security-fixes.test.js
+│       ├── security-round2.test.js
 │       ├── security.test.js
 │       ├── service-worker-precache.test.js
 │       ├── services-management.test.js
@@ -693,6 +694,9 @@ hansalhlak/
 │       ├── ui-round3.test.js
 │       ├── upfront-pricing.test.js
 │       └── workforce.test.js
+├── tools/
+│   └── security/
+│       └── self-test.js
 ├── tools-lab/
 │   └── .gitignore
 ├── _redirects
