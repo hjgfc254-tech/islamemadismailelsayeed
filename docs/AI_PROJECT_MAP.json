@@ -11672,8 +11672,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "3d6cfef1ba9c3ce8527238a0f523d852a0711e2e266abe79b675ee8ad88255bb",
-      "bytes": 4515
+      "sha256": "2068c3e537feb41e1988d3f125c0f0baf9cceb23e7fa7f60f596e8ed8d32f5de",
+      "bytes": 4741
     },
     {
       "path": "scripts/sync-functions-domain.cjs",
@@ -11718,7 +11718,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "6316ac061212c512c913c958199c8396fd903e254359433b50d9159022a2f63f",
+      "sha256": "5ba4dc1a0118c99950418f691634dd91aa0d80578199682496a00c3b067e473c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11766,7 +11766,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "5dcfe7c1c6e8e354504d47e4e481e12c49ac1bca8777ec1d36d45178747dddb6",
+      "sha256": "a5b109e7e48e442bab65faebf0debd391602121ad18746c3b2387214d223e545",
       "bytes": 195
     },
     {

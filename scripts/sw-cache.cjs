@@ -18,7 +18,9 @@ const SW = path.join(ROOT, 'service-worker.js');
 const LOCK = path.join(ROOT, 'service-worker.lock.json');
 const SERVED_DIRS = ['apps', 'shared', 'services', 'assets'];
 const SERVED_ROOT_FILES = ['index.html', 'manifest.json'];
-const TEXT = /\.(js|cjs|mjs|css|html|json|svg|txt|md|webmanifest)$/i;
+/* Everything that is not a known binary is text: git normalises it (.gitattributes: text=auto eol=lf), including
+   extension-less files such as a vendor LICENSE, so CRLF on Windows and LF on CI must hash the same. */
+const BINARY = /\.(png|jpe?g|gif|webp|ico|woff2?|pdf|mp4|mp3|wav|zip)$/i;
 const CACHE_RE = /const CACHE = '([^']+)';/;
 
 function walk(dir, out) {
@@ -40,7 +42,7 @@ function fingerprint() {
   const h = crypto.createHash('sha256');
   for (const rel of servedFiles()) {
     let buf = fs.readFileSync(path.join(ROOT, rel));
-    if (TEXT.test(rel)) buf = Buffer.from(buf.toString('utf8').replace(/\r\n/g, '\n'), 'utf8');
+    if (!BINARY.test(rel)) buf = Buffer.from(buf.toString('utf8').replace(/\r\n/g, '\n'), 'utf8');
     h.update(rel + '\0' + crypto.createHash('sha256').update(buf).digest('hex') + '\n');
   }
   return h.digest('hex');
