@@ -351,6 +351,15 @@ async function start() {
       return true;
     },
     pushState() { return !('Notification' in globalThis) ? 'unsupported' : Notification.permission; },
+    /** Admin: change my own 8-digit code (current code required). */
+    async changeAdminCode() {
+      const num = 'inputmode="numeric" pattern="[0-9]{8}" maxlength="8" autocomplete="off" required';
+      const v = await dialog('تغيير كود الدخول', [{ name: 'current', label: 'الكود الحالي', type: 'password', attrs: num }, { name: 'code', label: 'الكود الجديد (٨ أرقام)', type: 'password', attrs: num }, { name: 'again', label: 'الكود الجديد تاني', type: 'password', attrs: num }], 'تغيير');
+      if (!v) return false;
+      if (v.code !== v.again) { alert('الكودين الجداد مش زي بعض.'); return false; }
+      try { await callSession({ op: 'adminCode', action: 'set', code: v.code, current: v.current }); alert('اتغيّر كود الدخول.'); return true; }
+      catch (e) { alert((e && e.message) || 'تعذّر تغيير الكود'); return false; }
+    },
     /** Admin: end the code unlock on this account (also part of signing out). */
     lockAdmin: () => callSession({ op: 'adminCode', action: 'lock' }).catch(() => {}),
     async signOut() {
