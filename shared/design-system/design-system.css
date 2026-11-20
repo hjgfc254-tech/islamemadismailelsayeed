@@ -523,3 +523,9 @@ button.ghost[aria-busy="true"]::after,.cta.ghost[aria-busy="true"]::after{backgr
 /* 2026-11-20: the sub-screen title accent reads as a brand mark (short two-tone pill with room above), not a stray dash */
 .dhead h2{padding-bottom:10px}
 .dhead h2::after{inset-inline:auto;left:50%;right:auto;width:30px;height:4px;bottom:0;transform:translateX(-50%);border-radius:4px;opacity:1;background:linear-gradient(90deg,var(--brand-primary),color-mix(in srgb,var(--brand-primary) 45%,#E58A3A))}
+
+/* ── 2026-11-20 consistency pass (customer screens) ──
+   • call-to-action buttons have one height (tracking showed 44px and 50px buttons side by side);
+   • chips have one height and weight (36px on Home, 42px on tracking). */
+#view .cta{min-height:48px}
+#view .chip{min-height:40px;display:inline-flex;align-items:center;gap:6px;font-weight:600}
