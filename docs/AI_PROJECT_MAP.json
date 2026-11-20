@@ -3806,7 +3806,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "f9b0fb319cf2799cd66ba0d700a8230c162b294a4a20013823432db26e2e8550",
+      "sha256": "2d5559817ec8076275cece812ddad1fc2cfe406d5f123d58ef21f4e37ef4f3cc",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3843,7 +3843,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 66804
+      "bytes": 70188
     },
     {
       "path": "apps/provider/index.html",
@@ -4005,7 +4005,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "9696d79d4882b5f173876cf855836844747b87a6c37771e9c5ff41ab1a828244",
+      "sha256": "dd1e3200651bf4a51258f37c53deeebaef8b500491bb0a72e2559f5457e14f61",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4042,7 +4042,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1482
+      "bytes": 1694
     },
     {
       "path": "apps/provider/pages/earnings.page.js",
@@ -4152,7 +4152,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "041dd0982e5f4601f7172d182df20f067e480f5f761686e0a658a2b3fdfb8f42",
+      "sha256": "4204851e4510932e846d7df458a129739a788a04c92a9b0ae49d3db5ccc34958",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4189,7 +4189,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 813
+      "bytes": 897
     },
     {
       "path": "apps/provider/pages/profile.page.js",
@@ -4201,7 +4201,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "3b8dc1ea83ef6daeec37e49b7f424d176c4d9d3641c77263f32590e9fb3252c2",
+      "sha256": "4bf5d60237e53c3f29ce9a7553bb4123dc964177af590c8a8005f803ca413e46",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4238,7 +4238,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1382
+      "bytes": 1550
     },
     {
       "path": "apps/provider/pages/quotes.page.js",
@@ -4348,7 +4348,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "5dc09bf9c203cab43472dd1ed25e2804a592e810ab2e7e47904d97c7781f793d",
+      "sha256": "4fbf74a2fb041bf6acdc92380167e6815b1b5800d829af8fd3da843b14746afd",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4385,7 +4385,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 631
+      "bytes": 703
     },
     {
       "path": "apps/provider/pages/schedule.page.js",
@@ -4397,7 +4397,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "da35277d06dde01b46bfebfbdb1e050b0c2c263478ad8b65cf244515d07668e6",
+      "sha256": "8e424ef6826c4a0f13551b9cee6676f99f1f41bb4b7947e6dc177ce4a5bc8ff5",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4434,7 +4434,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 689
+      "bytes": 764
     },
     {
       "path": "apps/provider/pages/services.page.js",
@@ -4495,7 +4495,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "6279927048394cff2874c28ff4a9071a6522fc5f69a3ba26734d32c69c566557",
+      "sha256": "eed33076b575a579eb68380e5c7d840f13912f9434b11a95f3834b6fd9fff438",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4532,7 +4532,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 985
+      "bytes": 1066
     },
     {
       "path": "apps/provider/provider-auth.js",
@@ -4837,7 +4837,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "95127aeff4f300603d8336459202db4741369e82e612dfe3f7bb6c4a282cf348",
+      "sha256": "3f4d5ae41e4e49250d83bd35af4a0c315c676bb7bb49da11063c14d8729ef927",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4876,7 +4876,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 31168
+      "bytes": 33402
     },
     {
       "path": "assets/app-icon-192.png",
@@ -11694,7 +11694,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "1b783e1909463c59ad12e42a65ec432dd7c505ae02052b4033c4cd50aaa66154",
+      "sha256": "12cdb3853bd1cd4908f05e8a76f28e76c651b4277fafc40c9626fe84538aa4c2",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11731,7 +11731,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 10940
+      "bytes": 10709
     },
     {
       "path": "service-worker.lock.json",
@@ -11742,7 +11742,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "59418bf5760bccb8d393b10a5cdb8d0849a5bd7eccf69a0b7975f06aeb9acc91",
+      "sha256": "ddc60b41d3d65172e2c597d0663fa61bd6480fd1cbd96991a82d8aa1b9b6626f",
       "bytes": 195
     },
     {
@@ -14328,8 +14328,8 @@
       "next_action": "Run after Provider UI changes; keep checks aligned with behavior.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P2 batch).",
-      "sha256": "b04e768a6a39aa342bcaaa1fe9508e8c3a22a16da8dcdf217f485e0792b3774b",
-      "bytes": 18068
+      "sha256": "6b5babcb67c6785885a23f7bb5e130b3fc6c8656ef98c8670c40d2506d01362a",
+      "bytes": 18051
     },
     {
       "path": "tests/e2e/quotes-management.browser.js",
@@ -15656,8 +15656,8 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "283efabb18e1e81a52880b40a1b3cef21520328c8d5dc2a05363b487347aea89",
-      "bytes": 5579
+      "sha256": "5151a5920790e0e5807c9f89144fbbb6a0376332dd8174e405ff92ca1d91d7d5",
+      "bytes": 6214
     },
     {
       "path": "tests/unit/provider-bonus.test.js",

@@ -48,7 +48,7 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
     if(firebaseMode())return firebaseSignIn();
     const accounts=HSProviderAuth.listDemoAccounts(MP);
     dom.nav.hidden=true; $('[data-pv-action="logout"]',dom.host).hidden=true;
-    dom.view.innerHTML=`<section class="pv-welcome"><span class="pv-eyebrow">HANSALEHLAK · PROVIDER PORTAL</span><h1>مساحة عمل مقدم الخدمة</h1><p>اختر حسابًا تجريبيًا لفتح مساحة العمل. هذا الاختيار لا يمثل تسجيل دخول حقيقيًا ولا يمنح صلاحيات إنتاجية.</p></section><section class="pv-panel"><div class="pv-section-head"><h2>حسابات العرض</h2><span>${accounts.length} حساب</span></div><div class="pv-account-list">${accounts.map(p=>`<button class="pv-account" type="button" data-pv-action="select" data-id="${esc(p.id)}"><span class="pv-avatar">${esc(p.name.slice(0,1))}</span><span class="pv-account-copy"><b>${esc(p.name)}</b><small>${p.demo?'حساب تجريبي':'حساب مسجل'} · ${p.status==='approved'?'مقبول':p.status==='pending'?'قيد المراجعة':p.status==='suspended'?'معلّق':'مرفوض'}</small></span><span class="pv-arrow">${icon('chev')}</span></button>`).join('')}</div></section><section class="pv-panel"><div class="pv-section-head"><h2>مقدم خدمة جديد؟</h2></div><p class="pv-hint">سجّل حسابًا تجريبيًا محليًا؛ يظهر بحالة «قيد المراجعة» حتى تعتمده الإدارة.</p><button class="pv-btn pv-btn-primary" type="button" data-pv-action="register">تسجيل مقدم خدمة جديد</button></section><p class="pv-disclaimer">لا توجد مصادقة فعلية في هذه النسخة. لا تستخدم بيانات حقيقية أو تعتبر هذه الشاشة حماية للحساب.</p>`;
+    dom.view.innerHTML=`<section class="pv-welcome"><span class="pv-eyebrow">HANSALEHLAK · PROVIDER PORTAL</span><h1>مساحة عمل مقدم الخدمة</h1><p>اختر حسابًا تجريبيًا لفتح مساحة العمل. هذا الاختيار لا يمثل تسجيل دخول حقيقيًا ولا يمنح صلاحيات إنتاجية.</p></section><section class="pv-panel"><div class="pv-section-head"><h2>حسابات العرض</h2><span>${num(accounts.length)} حساب</span></div><div class="pv-account-list">${accounts.map(p=>`<button class="pv-account" type="button" data-pv-action="select" data-id="${esc(p.id)}"><span class="pv-avatar">${esc(p.name.slice(0,1))}</span><span class="pv-account-copy"><b>${esc(p.name)}</b><small>${p.demo?'حساب تجريبي':'حساب مسجل'} · ${p.status==='approved'?'مقبول':p.status==='pending'?'قيد المراجعة':p.status==='suspended'?'معلّق':'مرفوض'}</small></span><span class="pv-arrow">${icon('chev')}</span></button>`).join('')}</div></section><section class="pv-panel"><div class="pv-section-head"><h2>مقدم خدمة جديد؟</h2></div><p class="pv-hint">سجّل حسابًا تجريبيًا محليًا؛ يظهر بحالة «قيد المراجعة» حتى تعتمده الإدارة.</p><button class="pv-btn pv-btn-primary" type="button" data-pv-action="register">تسجيل مقدم خدمة جديد</button></section><p class="pv-disclaimer">لا توجد مصادقة فعلية في هذه النسخة. لا تستخدم بيانات حقيقية أو تعتبر هذه الشاشة حماية للحساب.</p>`;
   }
 
   /* Demo self-registration (parity with legacy providerForm). Local only: MP.registerProvider → status "pending". */
@@ -88,7 +88,20 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
     dom.nav.hidden=false;
     /* V9: each destination carries its Lucide icon (shared registry); the label stays the accessible name. */
     const NAV_ICON={home:'home',new:'inbox',accepted:'st-accepted',progress:'st-working',quote:'st-quote',schedule:'calendar',done:'st-done',reviews:'star',transactions:'wallet',earnings:'earnings',services:'wrench',notifications:'bell',profile:'user'};
-    dom.nav.innerHTML=tabs.map(([id,label])=>`<button type="button" data-pv-route="${id}" class="${active===id?'is-active':''}" ${active===id?'aria-current="page"':''}>${typeof ic==='function'?ic(NAV_ICON[id]||'dots'):''}<span>${esc(label)}</span></button>`).join('');
+    /* Phones (≤1023px): the first NAV_PRIMARY destinations + «المزيد», which opens the rest in a grid above the bar
+       (no sideways-scrolling bar with a clipped fifth label). Desktop shows every destination in the sidebar. */
+    const NAV_SHORT={new:'جديدة',quote:'العروض',notifications:'إشعارات',transactions:'معاملات',earnings:'أرباحي'};   /* phone bar labels; the full label stays the accessible name */
+    const NAV_PRIMARY=4, extraActive=tabs.slice(NAV_PRIMARY).some(([id])=>id===active);
+    dom.nav.classList.remove('is-more-open');
+    dom.nav.innerHTML=tabs.map(([id,label],i)=>`<button type="button" data-pv-route="${id}" class="${[active===id?'is-active':'',i>=NAV_PRIMARY?'pv-nav-extra':''].filter(Boolean).join(' ')}" ${active===id?'aria-current="page"':''} aria-label="${esc(label)}">${typeof ic==='function'?ic(NAV_ICON[id]||'dots'):''}<span class="pv-nav-l">${esc(label)}</span><span class="pv-nav-s" aria-hidden="true">${esc(NAV_SHORT[id]||label)}</span></button>`).join('')+
+      `<button type="button" class="pv-nav-more${extraActive?' is-active':''}" data-pv-more aria-expanded="false" aria-controls="provider-nav">${typeof ic==='function'?ic('grid'):''}<span>المزيد</span></button>`;
+  }
+  function toggleMore(open) {
+    const btn=$('[data-pv-more]',dom.nav); if(!btn)return;
+    const on=open==null?!dom.nav.classList.contains('is-more-open'):!!open;
+    dom.nav.classList.toggle('is-more-open',on); btn.setAttribute('aria-expanded',String(on));
+    $('span',btn).textContent=on?'إغلاق':'المزيد';
+    if(on){const first=$('.pv-nav-extra',dom.nav); if(first)first.focus({preventScroll:true});}
   }
 
   function summary(p,groups,transactions) {
@@ -184,13 +197,32 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
     return `<article class="pv-request"${a.status==='offered'?` data-swipe-id="${esc(r.id)}"`:''}><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header>${journey}<p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.pricing&&r.pricing.providerAmount!=null?`<p class="pv-note">مبلغك المحدد عند الحجز: <b>${money(r.pricing.providerAmount)}</b> — يدفع العميل ${money(r.pricing.customerPrice)} شاملًا رسوم المنصة</p>`:''}${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${bidNote}${inspNote}${cancelNote}${warrantyNote}${tipNote}${pkgNote}${custNote}${promoNote}${rateNote}${swipeHint}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}<div class="pv-actions"><button class="pv-btn" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">عرض التفاصيل${chatCount?` · ${chatCount} رسالة`:''}</button>${actions.join('')}</div>${locPanel(r,a)}</article>`;
   }
 
+  /* Empty states: an icon, the (unchanged) message, one line on what fills this screen, and the next step when there is one. */
+  const EMPTY_ICON={new:'inbox',accepted:'st-accepted',progress:'st-working',done:'st-done',cancelled:'st-done',quote:'st-quote',schedule:'calendar',reviews:'star',transactions:'wallet',notifications:'bell',priority:'sparkle'};
+  const EMPTY_HINT={
+    new:['خليك «متاح» من الرئيسية، والطلبات اللي في تخصصك ومنطقتك هتوصلك هنا على طول.',['home','للرئيسية']],
+    accepted:['لما تقبل طلب هيظهر هنا ومعاه عنوان العميل وطرق التواصل.',['new','شوف الطلبات الجديدة']],
+    progress:['الشغل اللي بدأته بيفضل هنا لحد ما تخلّصه وتسجّل الحساب.'],
+    done:['كل خدمة بتخلّصها بتتحسب في أرباحك وبتقرّبك من مستوى البونص الأعلى.'],
+    cancelled:['مفيش إلغاءات — استمر كده.'],
+    schedule:['المواعيد اللي بتتفق عليها مع العملاء بتتجمع هنا بالترتيب.'],
+    reviews:['بعد كل خدمة العميل بيقيّمك، والتقييم العالي بيقدّمك في ترشيح الطلبات.'],
+    transactions:['أول ما تخلّص خدمة مدفوعة هتلاقي الحساب والعمولة والصافي هنا.'],
+    notifications:['هنبلّغك هنا بكل طلب جديد أو رد من عميل.'],
+    priority:['مفيش حاجة مستنياك دلوقتي — وقت مناسب تراجع ملفك وخدماتك.',['profile','راجع ملفي']]
+  };
+  function emptyState(kind,text){
+    const [hint,cta]=EMPTY_HINT[kind]||[];
+    return `<div class="pv-empty pv-empty-rich">${typeof ic==='function'?`<span class="pv-empty-ic" aria-hidden="true">${ic(EMPTY_ICON[kind]||'inbox')}</span>`:''}<b>${esc(text)}</b>${hint?`<p>${esc(hint)}</p>`:''}${cta?`<button type="button" class="pv-btn" data-pv-route="${cta[0]}">${esc(cta[1])}</button>`:''}</div>`;
+  }
+
   function sectionFor(page,p,groups,transactions) {
     const reviews=MP.db().reviews.filter(x=>x.providerId===p.id);
     const notifications=typeof MP.notesFor==='function'?MP.notesFor('provider:'+p.id):[];
     const totals=domain.totals(transactions);
     const ctx={p,groups,transactions,reviews,notifications,totals,esc,date,money,catName:MP.catName,
-      summary,requestCard,chatPanel,statusLabel:STATUS_LABEL,items:Object.values(groups).flat(),
-      renderGroup(key){const items=groups[key]||[];return `<section class="pv-panel"><div class="pv-section-head"><h1>${esc(domain.GROUPS[key]||key)}</h1><span>${items.length} طلب</span></div>${items.length?items.map(x=>requestCard(x,p)).join(''):'<div class="pv-empty">لا توجد طلبات في هذا القسم.</div>'}</section>`;}};
+      summary,requestCard,chatPanel,statusLabel:STATUS_LABEL,num,empty:emptyState,items:Object.values(groups).flat(),
+      renderGroup(key){const items=groups[key]||[];return `<section class="pv-panel"><div class="pv-section-head"><h1>${esc(domain.GROUPS[key]||key)}</h1><span>${num(items.length)} طلب</span></div>${items.length?items.map(x=>requestCard(x,p)).join(''):emptyState(key,'لا توجد طلبات في هذا القسم.')}</section>`;}};
     const renderers={
       home:()=>HSProviderDashboardPage.render(ctx),new:()=>HSProviderIncomingRequestsPage.render(ctx),
       progress:()=>HSProviderActiveJobsPage.render(ctx),quote:()=>HSProviderQuotesPage.render(ctx),
@@ -364,9 +396,12 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
 
   function onKeydown(event) {
     if(event.key==='Escape'&&event.target.closest('.pv-inline-form')){event.preventDefault();cancelForm();}
+    if(event.key==='Escape'&&dom.nav.classList.contains('is-more-open')){event.preventDefault();toggleMore(false);const b=$('[data-pv-more]',dom.nav);if(b)b.focus();}
   }
 
   function onClick(event) {
+    if(event.target.closest('[data-pv-more]')){toggleMore();return;}
+    if(dom.nav.classList.contains('is-more-open')&&!event.target.closest('#provider-nav'))toggleMore(false);
     const route=event.target.closest('[data-pv-route]'); if(route){const [page,id='']=route.dataset.pvRoute.split('/');router.navigate(page,id);return;}
     const button=event.target.closest('[data-pv-action]'); if(!button)return;
     const {pvAction:action,id,next}=button.dataset;

@@ -126,7 +126,7 @@ async function run({ exe, wsUrl }) {
       await ENTER();
       ok(await waitFor('document.activeElement?.name === "value"'), `${tag} completion form focuses the value field`);
       await cdp.send('Input.insertText', { text: '500' });
-      ok(await waitFor(`/صافي مستحقك التجريبي/.test(document.querySelector('#pv-complete-preview')?.textContent||'')`), `${tag} typing a value updates the commission/net preview`);
+      ok(await waitFor(`/صافي مستحقك/.test(document.querySelector('#pv-complete-preview')?.textContent||'')`), `${tag} typing a value updates the commission/net preview`);
       ok(await noOverflow(), `${tag} completion form with preview: no horizontal overflow`);
       await ESC();
     }

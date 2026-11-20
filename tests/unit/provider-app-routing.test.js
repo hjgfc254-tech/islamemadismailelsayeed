@@ -6,7 +6,7 @@ const { boot, offerRequest, entryScripts } = require('../helpers/provider-app-ha
 
 const PROVIDER = 'p_demo1';
 const TAB_ROUTES = ['home', 'new', 'accepted', 'progress', 'quote', 'schedule', 'done', 'reviews', 'transactions', 'earnings', 'services', 'notifications', 'profile'];
-const activeRoute = app => (/data-pv-route="([^"]+)" class="is-active" aria-current="page"/.exec(app.navHtml()) || [])[1];
+const activeRoute = app => (/data-pv-route="([^"]+)" class="is-active[^"]*" aria-current="page"/.exec(app.navHtml()) || [])[1];
 
 test('harness loads exactly the production script list of apps/provider/index.html, app.js last', async () => {
   const scripts = entryScripts();
@@ -43,7 +43,7 @@ test('group routes render the group heading with an item count or an empty state
   let rid;
   const app = boot({ session: PROVIDER, setup: ({ MP }) => { rid = offerRequest(MP, PROVIDER).id; MP.respond(rid, true); } });
   app.go('#/accepted');
-  assert.match(app.html(), /<h1>مقبولة<\/h1><span>1 طلب<\/span>/);
+  assert.match(app.html(), /<h1>مقبولة<\/h1><span>١ طلب<\/span>/);
   app.go('#/done');
   assert.match(app.html(), /لا توجد طلبات في هذا القسم/);
 });
@@ -115,4 +115,15 @@ test('a deep link without a demo session shows the account picker, not request d
   app.go('#/request/' + rid);
   assert.match(app.html(), /pv-account-list/);
   assert.doesNotMatch(app.html(), /تركيب لوحة كهرباء/);
+});
+
+test('phones get 4 destinations + «المزيد»; the rest are marked as extras and «المزيد» lights up for them', async () => {
+  const app = boot({ session: PROVIDER });
+  const nav = app.navHtml();
+  assert.match(nav, /data-pv-more aria-expanded="false"/);
+  const extras = (nav.match(/pv-nav-extra/g) || []).length;
+  assert.ok(extras >= 8, 'everything after the first four is an extra');
+  assert.ok(!/class="pv-nav-more is-active"/.test(nav), 'home is a primary tab');
+  app.go('#/earnings');
+  assert.match(app.navHtml(), /class="pv-nav-more is-active"/, 'an extra destination highlights «المزيد»');
 });
