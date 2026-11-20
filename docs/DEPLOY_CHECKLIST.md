@@ -21,9 +21,10 @@ quietly (by design), and offers / bonus actions return the server's «route not 
 ## Before deploying
 1. `npm run functions:check` — the server's copy of the domain (`functions/domain`) matches `services/`.
 2. `npm test` — all unit tests pass.
-3. Emulators (JDK 21, already at `%USERPROFILE%\.tools\jdk-21.0.13+9`):
+3. Emulators (JDK 21: `C:\Program Files\Microsoft\jdk-21.0.13.102-hotspot`, or `%USERPROFILE%\.tools\jdk-21.0.13+9`).
+   Last run 2026-11-20 at `23f893e` (firebase-admin 14): `test:emulators` 3/3, `test:emulators:e2e` 58/58.
    ```
-   $env:JAVA_HOME="$env:USERPROFILE\.tools\jdk-21.0.13+9"; $env:Path="$env:JAVA_HOME\bin;$env:Path"
+   $env:JAVA_HOME="C:\Program Files\Microsoft\jdk-21.0.13.102-hotspot"; $env:Path="$env:JAVA_HOME\bin;$env:Path"
    npm run test:emulators
    npm run test:emulators:e2e
    ```
