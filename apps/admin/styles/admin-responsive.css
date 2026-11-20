@@ -1,6 +1,6 @@
 /* Responsive behaviour of the admin shell. Desktop (>=1024px) rules live in admin.css; this file is the drawer mode. STATUS: shell IMPLEMENTED. */
 .adm-toggle{flex:none}
-.adm-backdrop{position:fixed;inset:0;z-index:calc(var(--z-overlay) - 1);background:rgba(8,8,12,.62)}
+.adm-backdrop{position:fixed;inset:0;z-index:calc(var(--z-overlay) - 1);background:color-mix(in srgb,var(--emerald-deep) 62%,transparent)}
 .adm-backdrop[hidden]{display:none}
 @media (max-width:1023px){
   .adm-side{width:min(86vw,320px);inset-block:0;border-inline-end:0;border-inline-start:0;box-shadow:var(--shadow-3);transform:translateX(calc(var(--adm-dir) * 100%));visibility:hidden;transition:transform var(--motion-slow) ease,visibility 0s linear var(--motion-slow);padding-top:env(safe-area-inset-top)}
@@ -14,7 +14,7 @@
 }
 @media (max-width:599px){
   .adm-brand small,.adm-site{display:none}
-  .adm-chip{font-size:11px}
+  .adm-chip{font-size:var(--fs-xs)}
   .adm-actions{width:100%}.adm-actions .adm-btn{flex:1 1 auto}
   .adm-state{padding-block:var(--sp-6)}
 }
@@ -24,4 +24,4 @@
 }
 /* V9: on phones the demo chip moves out of the crowded header (the page banner already states demo mode) */
 @media (max-width:480px){.adm-head .adm-chip{display:none}.adm-acc-name small{display:none}}
-.adm-backdrop{background:rgba(23,35,31,.42)}
+.adm-backdrop{background:color-mix(in srgb,var(--text-primary) 42%,transparent)}

@@ -160,7 +160,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "6516aecc1115c4151be93f36819466be31e8d023aa1fcb77e2d88e62b6103bdc",
-      "bytes": 93
+      "bytes": 89
     },
     {
       "path": ".gitattributes",
@@ -186,7 +186,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "f1e1cf479715fdbbd31e17fec7cb607b0f4009b6f05b597912023ba031debd1e",
-      "bytes": 568
+      "bytes": 541
     },
     {
       "path": ".gitignore",
@@ -196,7 +196,7 @@
       "current_responsibility": "Current inventory entry; inspect file for exact behavior.",
       "next_action": "Read when relevant; do not duplicate behavior.",
       "sha256": "ec7d7591397118e050f654ca4f4cf95429d8de59b4abe7c68e0481bf1663e795",
-      "bytes": 1048
+      "bytes": 1045
     },
     {
       "path": ".graphifyignore",
@@ -208,7 +208,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "820f61ddf2a14505b9a7c1a4dbe2936e27abbe27e462e2870421afd2465f4119",
-      "bytes": 592
+      "bytes": 591
     },
     {
       "path": ".repomixignore",
@@ -929,7 +929,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "453bd9291aad9ff66bfbb81fe330326b0f9c9fc9006ec3cd3900e6ea4669b27b",
-      "bytes": 15530
+      "bytes": 15347
     },
     {
       "path": "apps/admin/modules/workforce/employee-form.js",
@@ -2529,7 +2529,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md). Also holds .hs-badge styles for shared/components/status-badge.js. Also holds .hs-grid styles for shared/components/data-grid.js.",
-      "sha256": "f08ba0147547c87cb62416dcbd2a1c48760c12554eca54ef477e829f6f8ec42d",
+      "sha256": "d496e324ec64c9bb25d15ad5087809bfbc7362487c621a40ef365cb13e0d2028",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2566,7 +2566,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 40955
+      "bytes": 41950
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -2578,7 +2578,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md).",
-      "sha256": "060589c6eb70613394472e23b0dd82fc919c169e31e1fe02b703839ecbee90ba",
+      "sha256": "44bc53e218c8efc7f1a2dea1fa6fa650ad13a35d41266661ce041a4ecb916e2b",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2615,7 +2615,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1708
+      "bytes": 1790
     },
     {
       "path": "apps/admin/styles/admin.css",
@@ -2627,7 +2627,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md).",
-      "sha256": "fddad7836c7844a55c101ae0f764ffb73add5e74c775c837a332c57be4da173f",
+      "sha256": "9327f08fd1b4743a860945a31c55f4d2a597b069f034cb7f616804781253337c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2666,7 +2666,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 5444
+      "bytes": 5575
     },
     {
       "path": "apps/admin/styles/overrides.css",
@@ -2732,7 +2732,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 101447
+      "bytes": 100043
     },
     {
       "path": "apps/customer/customer-router.js",
@@ -3259,7 +3259,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 19088
+      "bytes": 18872
     },
     {
       "path": "apps/customer/pages/orders.page.js",
@@ -3308,7 +3308,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 3051
+      "bytes": 3011
     },
     {
       "path": "apps/customer/pages/providers.page.js",
@@ -3357,7 +3357,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 11195
+      "bytes": 11042
     },
     {
       "path": "apps/customer/pages/request-create.page.js",
@@ -3457,7 +3457,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 67896
+      "bytes": 66849
     },
     {
       "path": "apps/customer/pages/search.page.js",
@@ -3632,7 +3632,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "c796f7e9e5391d7702a48083af92c6e13e9536905b96996e4a2efd65a3f26ccd",
+      "sha256": "ab0a0b01be5395e2ef6ebfb03b464f395800aeb5eafaf7437081b60a1c63e182",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3671,7 +3671,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 143137
+      "bytes": 151036
     },
     {
       "path": "apps/customer/styles/overrides.css",
@@ -4873,7 +4873,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "b0282641aa7a4737a572d645ff538ebdcb0b1569b4622bc25bbba8d7ae5bd22f",
+      "sha256": "d9e1fce4c9787aa52511248f66f60fddec94da64922e76e90ed9aa212f169cc1",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4912,7 +4912,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 37011
+      "bytes": 39180
     },
     {
       "path": "assets/app-icon-192.png",
@@ -6100,7 +6100,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "337bfca5cabd03b39815b2700febe2b3b7edf55921c59cd49f88ecb328212303",
-      "bytes": 14806
+      "bytes": 14145
     },
     {
       "path": "assets/vendor/leaflet/1.9.4/leaflet.js",
@@ -6124,7 +6124,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "bbc959aaef7488b38942e7f05cfd1244351f8bce54261951ea17dd7cf60f894b",
-      "bytes": 1395
+      "bytes": 1369
     },
     {
       "path": "assets/vendor/lucide.LICENSE.txt",
@@ -9391,7 +9391,7 @@
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
       "sha256": "db3fa3c3df428280534fa6d7336cd5bf926045c9292ef4a14911af3c2bb53bcf",
-      "bytes": 7594
+      "bytes": 7593
     },
     {
       "path": "docs/AI_CONTEXT/FILE_INDEX.json",
@@ -11121,7 +11121,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "94e0bf915f63c929795e629a8a05c4ce0f682b2710a7d2882cac7883b564eb09",
-      "bytes": 81255
+      "bytes": 80466
     },
     {
       "path": "functions/domain/services/notifications-api.js",
@@ -11193,7 +11193,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "a59798542eb0b64ac63bf4597b2e0c854e97077989fb2b2ac4b1d45e9660c545",
-      "bytes": 38016
+      "bytes": 37771
     },
     {
       "path": "functions/index.js",
@@ -11217,7 +11217,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "612e8d44bae17461443a02e7c6936be94ea2fbfbbfdb5830e9c455cb5d35629b",
-      "bytes": 110165
+      "bytes": 107650
     },
     {
       "path": "functions/package.json",
@@ -11229,7 +11229,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "a541ce8d5c5aa39d1249effb91a51ee1797646ea00751ffb90a6f55b23c5a542",
-      "bytes": 553
+      "bytes": 533
     },
     {
       "path": "functions/src/admin-code.js",
@@ -11325,7 +11325,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "1d1fd20ebada8b79583372ec86c0efb9b9acababf20a621c422541c58fa6917f",
-      "bytes": 12796
+      "bytes": 12576
     },
     {
       "path": "functions/src/plan.js",
@@ -11610,7 +11610,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1408
+      "bytes": 1392
     },
     {
       "path": "README.md",
@@ -11790,7 +11790,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "56971c9cd8b822e653c49469eabdb1e383c5594fec6008029b635fb62e62935b",
+      "sha256": "c3130fd2f0cb375a0290d7ea8b49e1139adb1a07d2530c89a746c874b8f1ef7c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11838,7 +11838,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "cb321c852da0ed2204f5308de642345cf1f5b0f3c16581e1bbb78bc83a1cdd2d",
+      "sha256": "c25e4535d1f104d200594c50f9d8b397171bad8dd56db5ebbd20a1e7d23301c9",
       "bytes": 195
     },
     {
@@ -12310,7 +12310,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 81255
+      "bytes": 80466
     },
     {
       "path": "services/notifications-api.js",
@@ -13300,7 +13300,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 38016
+      "bytes": 37771
     },
     {
       "path": "shared/config/routes.js",
@@ -13361,7 +13361,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "6c017c43c77499963dd9d73db97b1e968a0c9247d635e783093cac02ce476396",
-      "bytes": 5827
+      "bytes": 5727
     },
     {
       "path": "shared/design-system/components.css",
@@ -13422,7 +13422,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "8ce252943e64373afa83e616aca73f1151f7ab1561a3f393f22dfbd0beddbcbd",
+      "sha256": "54a820a5c67fbb29e3d66df0843b9de27ffc77c1ea1b6032b1f61c8f13fc4c41",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -13461,7 +13461,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 53816
+      "bytes": 55694
     },
     {
       "path": "shared/design-system/layout.css",
@@ -13659,7 +13659,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 93732
+      "bytes": 92809
     },
     {
       "path": "shared/README.md",
@@ -14485,7 +14485,7 @@
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P2 batch).",
       "sha256": "a8146bbb0487bd20b56c23b4ba945f2ed74a6452d186e89ef4c69672a9f66548",
-      "bytes": 18215
+      "bytes": 18015
     },
     {
       "path": "tests/e2e/quotes-management.browser.js",
@@ -14969,7 +14969,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "70d293e2cd2c6c23533486658c8048f97f411770162b43ae99f6ebf40e4c3d15",
-      "bytes": 14846
+      "bytes": 14844
     },
     {
       "path": "tests/unit/admin-runtime.test.js",
@@ -15131,7 +15131,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "54e3f6758de8c0bd2113afc8ebc41ac6602c9138ebbad6a73f30f4202c4ce923",
-      "bytes": 10849
+      "bytes": 10848
     },
     {
       "path": "tests/unit/commissions.test.js",
@@ -15443,8 +15443,8 @@
       "file_behavior": "Unit tests source wiring and Admin CSS literal count.",
       "completion_definition": "All checks pass and Admin count is no greater than 163 unless baseline change is explicitly reviewed.",
       "actual_status_ar": "منفذ: اختبار حارس لعدد القيم الحرفية في CSS الإدارة.",
-      "bytes": 3022,
-      "sha256": "ac2625430230d20920ca7e6ad841f20676ff11ce0dc1d6dff2fec82029eaebcf"
+      "bytes": 3342,
+      "sha256": "80e0b66a3ac6058e4251bf6363df4934e047e40fd470dae4109dfc9b5bc6e89c"
     },
     {
       "path": "tests/unit/dialogs.test.js",
@@ -15666,7 +15666,7 @@
       "file_behavior": "Unit tests registry and asset integrity contracts.",
       "completion_definition": "All icons/maps/assets resolve and are precached without byte-identical duplicates.",
       "actual_status_ar": "منفذ: اختبارات تكامل الأيقونات والأصول.",
-      "bytes": 4660,
+      "bytes": 4567,
       "sha256": "10660b03c616b989bbd797f647738045c664893296d3b0f006773e6865ac36ea"
     },
     {
@@ -16581,7 +16581,7 @@
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "fbc727c987970c9f6b8cf97ffd6e41a05b23d12095724975b8e747c3e33ab5ec",
-      "bytes": 112
+      "bytes": 111
     }
   ]
 }
