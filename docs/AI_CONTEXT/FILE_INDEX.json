@@ -2596,8 +2596,8 @@
       "path": "firestore.indexes.json",
       "area": "firestore.indexes.json",
       "status": "NEEDS_REVIEW",
-      "bytes": 11257,
-      "sha256": "d0cb6aeea1be5c2ed610228ad1dc1ab6998accf6a49b924c8493dde3c20bf0c2"
+      "bytes": 5005,
+      "sha256": "07ded9fc6fd8c6457a94cbbd342dced5567b1943b0dd94640d1b15145cf3c79d"
     },
     {
       "path": "firestore.rules",
@@ -3010,14 +3010,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 10870,
-      "sha256": "4a46031018dae2f4b79a962ff0e1351403ab5cec9b3995615a9e05f7881950d0"
+      "sha256": "f4c3b6f4a803116850a7854c1cdae3be53810b06647d8d671f6e6f092963be49"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "a94ba46ca5b55ebd2e7b9460cedff5140eec955d97bac8b6083e157bb25d8bc6"
+      "sha256": "255674f3406706a4e130358476b820cf5ec8732e6a4b41ed7e74147978dd209d"
     },
     {
       "path": "services/admin-api.js",
@@ -3065,15 +3065,15 @@
       "path": "services/firebase-backend.js",
       "area": "services",
       "status": "NEEDS_REVIEW",
-      "bytes": 34919,
-      "sha256": "d0eeb5fd67f524728751ed3aef135f2f0f27b923ae83f9d7c82844c97afcba79"
+      "bytes": 35280,
+      "sha256": "2ac936889f3f897cbd5b70b09d138753e5c8c34caaa27cda835ad4cb3fa1101f"
     },
     {
       "path": "services/firebase-config.js",
       "area": "services",
       "status": "NEEDS_REVIEW",
-      "bytes": 2507,
-      "sha256": "46a44e66f1309f9aeb1501bc02039f8a4d6503f352c30913588776386de87a30"
+      "bytes": 2756,
+      "sha256": "bd0756c690206da1e159bf991625f95537ee476ff8faae84cd45c2752ba459da"
     },
     {
       "path": "services/local-attachments.js",

@@ -31,6 +31,9 @@
   const mode = read('hs_backend') === 'firebase' || read('hs_backend') === 'local' ? read('hs_backend') : DEFAULT_MODE;
   root.HSFirebaseConfig = Object.freeze({
     web, mode, region: 'me-central1', sdkVersion: '13.1.0',
+    /* App Check (reCAPTCHA v3 site key from Console › App Check). Empty = off. After setting it, vendor
+       firebase-app-check.js 13.1.0 next to the other SDK files and set ENFORCE_APP_CHECK=true in functions/.env. */
+    appCheckSiteKey: '',
     /* Web Push (FCM) public VAPID key — public by design (identifies the sender; it cannot send anything) */
     vapidKey: 'BA1uWhLcPjtLTSCU0d1yjVcrNALmpMG1SRm9P0O9KpfRcwQ78vtTYWFno5_EO31d83syWa-DtkL6byU6W2L3ycU',
     emulators: read('hs_emulators') === '1' ? { host: '127.0.0.1', auth: 9099, functions: 5001, database: 9000 } : null

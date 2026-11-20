@@ -23,6 +23,8 @@ const appName = () => { try { return globalThis.HSAuthApi ? globalThis.HSAuthApi
 async function start() {
   const [{ initializeApp }, A, F, D] = await Promise.all(['firebase-app.js', 'firebase-auth.js', 'firebase-functions.js', 'firebase-database.js'].map(m => import(SDK + m)));
   const app = initializeApp(CFG.web);
+  /* App Check: only when a site key is configured (firebase-config.js appCheckSiteKey) — requests then prove they come from this site */
+  if (CFG.appCheckSiteKey) { import(SDK + 'firebase-app-check.js').then(AC => AC.initializeAppCheck(app, { provider: new AC.ReCaptchaV3Provider(CFG.appCheckSiteKey), isTokenAutoRefreshEnabled: true })).catch(() => {}); }
   const auth = A.getAuth(app);
   auth.languageCode = 'ar';
   const fns = F.getFunctions(app, CFG.region);
