@@ -60,3 +60,6 @@ TOOL-HEALTH-REPORT.txt
 local-only/
 
 coverage-map.txt
+
+# Claude Code agent worktrees (local only)
+.claude/worktrees/
