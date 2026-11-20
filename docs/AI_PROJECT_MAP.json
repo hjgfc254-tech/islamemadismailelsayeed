@@ -449,7 +449,7 @@
       "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
-      "sha256": "c1ac0efe3ce69aa5680b02bef74a527c3f41cc1ffff19559df2d2657c041dfcc",
+      "sha256": "2a695770b90f464ba13060e7b7acdfcf0ee9e12616163e154639e12d7788bda9",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -486,7 +486,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 5163
+      "bytes": 5832
     },
     {
       "path": "apps/admin/index.html",
@@ -880,8 +880,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "7072bf84885af19fb92c527cf229b89d505791730817c635aaffdaeeff758432",
-      "bytes": 4629
+      "sha256": "957261930c6e927d08076ebc012eb2cb919417ee7b895693f5ee725379bf0084",
+      "bytes": 4655
     },
     {
       "path": "apps/admin/modules/command-palette.js",
@@ -11204,8 +11204,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "096dedd2e9d23837bee8b947826e5630350cba49e338b94c3654907db7a0b5b9",
-      "bytes": 5052
+      "sha256": "94daa90e57cb60302cd915e2b94fbe30c9f947e373f486941b128e4c9e5861c4",
+      "bytes": 5499
     },
     {
       "path": "functions/package-lock.json",
@@ -11252,8 +11252,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "ee14c73be576a9db9bdc20985d69c8a491cab4b36b4e6b795afe772ca770a814",
-      "bytes": 11197
+      "sha256": "e38bc3c99a3ec0e1671dfc4332103556e162bc1748563674e59b119ee45b790d",
+      "bytes": 11651
     },
     {
       "path": "functions/src/ai.js",
@@ -11384,8 +11384,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "9844bf9379b1ff86dcb6ae56223f20971212ec16bd3e628e50636bf409a47712",
-      "bytes": 4983
+      "sha256": "e9c2744e4f1beca173378470634b81317a0f22b3a49d18772f34426368ab9e09",
+      "bytes": 4991
     },
     {
       "path": "functions/src/workforce.js",
@@ -11754,7 +11754,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "360b1486a1d3000ae9da05b3eadca05f374648be65b5f8c9dba8083125f4090b",
+      "sha256": "ca7edbbf72b0cb882f05ba717dc1c61021dca1ba1fc92cc88d732f88c9369575",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11802,7 +11802,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "a6c4e305941d09685c363762ed1e7d3e68d92ca45739f750863c93f49ff82312",
+      "sha256": "adf19a5b518de1dd811fd243f9b24b91e2767dbc38df89584506bfbdf22c948f",
       "bytes": 195
     },
     {
@@ -12108,8 +12108,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "2b58c78918e57a2c0f342c9a2ee4dcb0f64885cbb07ba908938f59c84025a070",
-      "bytes": 32545
+      "sha256": "60c39be3b019399ca6a9c115e76254f48110be13584734180dc2217e3694b7a7",
+      "bytes": 34316
     },
     {
       "path": "services/firebase-config.js",

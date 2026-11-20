@@ -10,7 +10,7 @@
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const nf = (n) => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
   const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }).format(t); } catch (e) { return iso; } };
-  const APP = { customer: 'العميل', provider: 'مقدم الخدمة', admin: 'الإدارة' };
+  const APP = { customer: 'العميل', provider: 'مقدم الخدمة', admin: 'الإدارة', server: 'السيرفر' };
   const live = () => !!(root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase');
   const call = (method, path, body) => (root.HSBackend && root.HSBackend.admin ? root.HSBackend.admin(method, path, body) : root.HSApiClient.request(method, path, { body }));
 

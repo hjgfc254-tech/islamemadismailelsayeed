@@ -87,4 +87,4 @@ async function handle({ backend, method, path, query, body, app, actor, token })
   return env(404, 'NOT_FOUND', 'unknown route');
 }
 
-module.exports = { PATH_RE, handle, scrub, clean, groupId, MAX_REPORTS };
+module.exports = { PATH_RE, handle, report, scrub, clean, groupId, MAX_REPORTS };

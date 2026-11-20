@@ -375,6 +375,19 @@ async function start() {
   };
   globalThis.HSBackend = HSBackend;
 
+  /* Admin idle lock: 30 minutes without any interaction ends the code unlock on the server and asks for the code
+     again (an unattended screen in an office or café cannot be used by someone else). */
+  if (APP === 'admin') {
+    const IDLE_MS = 30 * 60000; let lastAct = Date.now();
+    ['pointerdown', 'keydown', 'wheel', 'touchstart'].forEach((ev) => document.addEventListener(ev, () => { lastAct = Date.now(); }, { passive: true, capture: true }));
+    setInterval(async () => {
+      if (!actor || actor.role !== 'admin' || Date.now() - lastAct < IDLE_MS) return;
+      lastAct = Date.now();
+      try { await callSession({ op: 'adminCode', action: 'lock' }); } catch {}
+      location.reload();                                              // sync returns {adminGate} → the code dialog
+    }, 60000);
+  }
+
   /* Provider/Admin: offer sign-in when the app has no backend identity. */
   /* Customer/Provider: once signed in, offer device notifications politely (never an automatic permission prompt).
      The browser prompt only opens when the user taps «تفعيل». «لاحقًا» hides the offer for 7 days. */

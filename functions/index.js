@@ -84,6 +84,8 @@ function wrap(name, fn) {
     catch (e) {
       if (e instanceof service.ServiceError) throw new HttpsError(e.code, e.message);
       logger.error(name + ' failed', { error: e && e.message, stack: e && e.stack });
+      /* unexpected server errors join «أخطاء عند المستخدمين» as app «server» (scrubbed and grouped like client reports) */
+      try { await require('./src/telemetry').report(backend, 'server', { reports: [{ msg: String((e && e.message) || 'internal error'), src: name + (request.data && request.data.path ? ' ' + request.data.path : ''), stack: e && e.stack }] }, null); } catch (x) { /* never mask the original error */ }
       throw new HttpsError('internal', 'حدث خطأ غير متوقع');
     }
   });
