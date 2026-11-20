@@ -1,8 +1,9 @@
 # HANSALEHLAK V8 — START HERE
 
 **Current phase:** FRONTEND ONLY (no backend, database, real auth, payments or network APIs).  
-**Latest verified baseline (2026-11-19):**
-- `npm test`: 470/470 passed. Coverage map: `npm run coverage:map` (71 % of named functions).
+**Latest verified baseline (2026-11-20):**
+- `npm test`: 484/484 passed (includes the service-worker cache guard: after any UI change run `npm run sw:bump`). Coverage map: `npm run coverage:map`.
+- New runners: `perf.cdp.js` (load budgets, self-served gzip), `client-errors.cdp.js`, `offer-alerts.cdp.js`. Deploy steps: `docs/DEPLOY_CHECKLIST.md`.
 - Real-browser CDP runners (`tests/e2e/*.cdp.js`):
 
   | Runner | Checks |
@@ -13,7 +14,7 @@
   | Admin | 124 |
   | Accessibility | 112 |
   | Responsive sweep (5 widths) | 280 |
-  | Interaction QA | 206 distinct controls, 0 inert |
+  | Interaction QA | 239 distinct controls, 0 inert |
 
 - Inventory reproduces from a clean clone (0/0/0).
 

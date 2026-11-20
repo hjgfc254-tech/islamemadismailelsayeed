@@ -69,6 +69,15 @@
 - **التالي:** استكمال فحص Customer (addresses/orders/tracking/support/details)، ثم Provider عبر legacy bridge، ثم Admin page/dialog keyboard traversal. قارئات الشاشة وFirefox/WebKit/Safari والأجهزة الفعلية لم تُختبر. Phase 5 item 4 ما زال جزئيًا؛ لا يوجد ادعاء WCAG.
 
 
+## 2026-11-20 — Strengthening round: cache guard, speed, error reporting, provider polish, offer alerts (484 tests)
+- **SW cache guard:** `scripts/sw-cache.cjs` + `service-worker.lock.json`; `npm test` fails when a served file changes without `npm run sw:bump` (never edit `CACHE` by hand). Tests read the name from the lock.
+- **Speed** (`tests/e2e/perf.cdp.js`, Fast-3G-like + 4x CPU, gzip): Admin first paint 3.2 s → 0.6 s and Customer repeat visit 3.7 s → 1.0 s (static boot loaders); Google Fonts no longer render-blocking, weight 500 dropped; hero / onboarding photo preloaded. Customer LCP stays ~4.9 s on that profile: ~45 classic scripts (246 KB gz) — the next step is bundling/minifying or lazy page modules.
+- **Error reporting:** `shared/utils/error-reporter.js` (first script in every app) → `POST /telemetry/errors` (`functions/src/telemetry.js`, scrubbed, grouped, in-memory limited, 30-day TTL) or the device in demo mode; Admin › سجل التدقيق › «أخطاء عند المستخدمين» (`apps/admin/modules/client-errors.js`).
+- **Provider:** phone bar = 4 tabs + «المزيد» grid (no clipped labels), rich empty states, Arabic status/digits.
+- **Customer:** `apps/customer/pages/offer-alerts.js` — «وصلك عرض جديد» banner, title count, background notification; contextual push prompt while offers are open.
+- **a11y runner** now skips onboarding like the other runners; admin chart peak labels have their own surface. `provider-standalone` completion-preview check updated to the current wording.
+- **Deploy:** nothing deployed. See `docs/DEPLOY_CHECKLIST.md` (server changes since 2026-11-15, TTL for `clientErrors`, verification, rollback).
+
 ## 2026-11-19 — Provider bonus + price-trust cues (round 11, 470 tests)
 - **Bonus (admin «بونص الفنيين», off by default, every number from the admin):** tiers `{name, minJobs (distinct customers), minRating, maxStrikes, rateOff}` over `windowDays` (default 30); a tier gets priority in the offers round (candidates score) and a lower platform share (`rateCut` → `customerTotalFor` on offers, `rateFor` on classic completion; the provider's base never changes). Weekly cash target `{target, amount}` → one `kind:'bonus'` transaction per Cairo week (weeks start Saturday). A job counts only after the **customer** confirms the cash; a cash dispute is a strike and removes the job. Counters live on the provider doc (`recent`, `strikes`, `tier`, `bonusWeek`) — no extra server reads. Public settings now include `bonus`, `markupRate`, `inspectionRate`.
 - **Customer:** comparison tags (الأرخص / الأعلى تقييمًا / الأكثر خبرة), «why the best» line, countdown ring, 5-second undo bar before the choice is sent, «السعر ثابت» seal, new-price difference on the quote card, printable warranty certificate (`HSTrust.warrantyCert`), Arabic digits on offers / provider card / providers page, one-line demo note.

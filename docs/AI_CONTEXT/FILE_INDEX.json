@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 594,
+  "file_count": 595,
   "files": [
     {
       "path": "_redirects",
@@ -447,8 +447,8 @@
       "path": "apps/admin/styles/admin-components.css",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL PARTS)",
-      "bytes": 35462,
-      "sha256": "35e649c3d17ec298ad3174fb0967833a799c1e73b7e4da1fbafcc40e6c990f58"
+      "bytes": 35607,
+      "sha256": "9e0230f15eaee0766d1c09effd9d1a28e7513fca10655c46a452f085ca82de10"
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -2085,8 +2085,8 @@
       "path": "docs/AI_CONTEXT/START_HERE.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 6389,
-      "sha256": "31c1e5fe4cc68b713af2f458e4cb6c88fd5d0b18c0cc247d60b2c633b8a567a2"
+      "bytes": 6600,
+      "sha256": "7d51026b30d787072b980880cd23e16c610cddd36ec4aed4a5f293b70df601c5"
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -2106,8 +2106,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 280051,
-      "sha256": "ab7a26abed6910cf6c947535fc50c1412193e2f2ba8f203184ce3f839235890c"
+      "bytes": 280279,
+      "sha256": "2cd047bcf9b6d4230c93f66dad34b76dd5f94aa8338a38595bbbaaf312a22690"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2120,8 +2120,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 151304,
-      "sha256": "60e6dc4971c4d7e8b90318f3f18243a548f0c2ce7401dc903faa656f31e31dbb"
+      "bytes": 151510,
+      "sha256": "4e36861896ac165c64d2a1b38b57d70c31093b58486fb4400563cc411bab4e4f"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2404,6 +2404,13 @@
       "sha256": "08b7dd65c391f1bac45a045e023b2b4c3ddeed0571ec2d2d326ded3a8348a6d9"
     },
     {
+      "path": "docs/DEPLOY_CHECKLIST.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 3459,
+      "sha256": "5ce431d48d96b4d3a135286a41d40f0cd149e676f4f04b2b53b97542cb56f123"
+    },
+    {
       "path": "docs/DESIGN_MAP.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
@@ -2491,8 +2498,8 @@
       "path": "docs/HANDOFF_NEXT_AI.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 93269,
-      "sha256": "600f94e148119ab21c5da930503a446a68b02508785bfc41ef5d2410529833c4"
+      "bytes": 94975,
+      "sha256": "8f9f763e189beed0d62bfb8086b285dd10b4ea2b300fd574228a7cb8500a1b0a"
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -2533,8 +2540,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 28441,
-      "sha256": "410c3d1652523ee094281b08ec07791803811e3da302df4e99a51ec734ad5e5d"
+      "bytes": 28477,
+      "sha256": "28ca5338cdded53f14019a656b3a55d7e9bc426d0fc889a9c85cd9e9a09a779e"
     },
     {
       "path": "docs/README.md",
@@ -2961,14 +2968,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 10750,
-      "sha256": "20429e50d3b4f7d65a21f0a5b0bbca4668132a426e91a794ebe1f476bba6af3f"
+      "sha256": "c9bb2f9ec61ee34a809715be83479185785adf3bbea00ccc88be999225a182dc"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "b946a42d5e90938753af1d4a11ad7a2b365fd817e30d92e86159c5e44843cfea"
+      "sha256": "29121bc6f34dba0b8c21e80f490d575e4e92ba3ff0e477cbd585d34c2377e736"
     },
     {
       "path": "services/admin-api.js",
@@ -3338,8 +3345,8 @@
       "path": "tests/e2e/a11y.cdp.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 10308,
-      "sha256": "030145c7e45509072315e1444cb10777c78924b12781db602963d057c77cfbcf"
+      "bytes": 10350,
+      "sha256": "6eb478a5712926cddcf7d1bcf7b6dca15d7b85a7c7afa861bfc4801cf407bfcb"
     },
     {
       "path": "tests/e2e/admin-app.cdp.js",
@@ -3408,8 +3415,8 @@
       "path": "tests/e2e/interaction.cdp.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 12934,
-      "sha256": "b2a7a1b1d2e29dcddd0fea12b5532b37e28d57b9271dd32c8281a75f060b44cf"
+      "bytes": 13497,
+      "sha256": "088014b7134485de9d126161cfa6e3236ad8585ce7678ac4f8564136918604d9"
     },
     {
       "path": "tests/e2e/lib/a11y-audit.js",

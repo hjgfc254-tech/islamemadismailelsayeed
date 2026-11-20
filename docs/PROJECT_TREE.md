@@ -410,6 +410,7 @@ hansalhlak/
 │   ├── ARCHITECTURE.md
 │   ├── AUTHENTICATION.md
 │   ├── DATA_MODEL.md
+│   ├── DEPLOY_CHECKLIST.md
 │   ├── DESIGN_MAP.md
 │   ├── DESIGN_SYSTEM_V9.md
 │   ├── FIREBASE_BACKEND.md

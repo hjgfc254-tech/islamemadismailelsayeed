@@ -316,7 +316,7 @@ a.adm-link:hover{background:var(--nav-dark-hover);color:var(--on-brand)}
 /* edge bars: keep the tip inside the chart (RTL: the first columns are on the right) */
 .mc-col:nth-child(-n+3) .mc-bar::after{left:auto;right:0;transform:none}
 .mc-col:nth-last-child(-n+3) .mc-bar::after{left:0;transform:none}
-.mc-peak{position:absolute;bottom:calc(100% + var(--sp-1));left:50%;transform:translateX(-50%);font-style:normal;font-size:var(--fs-xs);font-weight:700;color:var(--text-secondary);white-space:nowrap}
+.mc-peak{position:absolute;bottom:calc(100% + var(--sp-1));left:50%;transform:translateX(-50%);font-style:normal;font-size:var(--fs-xs);font-weight:700;color:var(--text-secondary);white-space:nowrap;padding:0 var(--sp-1);border-radius:var(--r-sm);background:var(--surface-primary)}   /* own surface: the label sits above the bar, never on it */
 .mc-bar:hover .mc-peak,.mc-bar:focus-visible .mc-peak{visibility:hidden}
 .mc-axis{display:flex;justify-content:space-between;margin-top:var(--sp-2);font-size:var(--fs-xs);color:var(--text-muted)}
 .mc-table{margin-top:var(--sp-2);font-size:var(--fs-sm)}.mc-table summary{cursor:pointer;color:var(--text-secondary)}.mc-table table{width:100%;margin-top:var(--sp-2);border-collapse:collapse}.mc-table td,.mc-table th{padding:var(--sp-1) var(--sp-2);border-bottom:1px solid var(--border-subtle);text-align:start}

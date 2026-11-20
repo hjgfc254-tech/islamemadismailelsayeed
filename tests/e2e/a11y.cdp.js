@@ -28,7 +28,7 @@ async function run({ exe, wsUrl }) {
 
     /* ── Customer (guest first, then a signed-in customer with a quoted request) ── */
     await fresh(C);
-    await step(`localStorage.clear();sessionStorage.clear();sessionStorage.setItem('hs_intro_v1','1');MP.reset();MP.db().settings.autoAssign=false`);
+    await step(`localStorage.clear();sessionStorage.clear();sessionStorage.setItem('hs_intro_v1','1');localStorage.setItem('hs_onboard_v1','1');MP.reset();MP.db().settings.autoAssign=false`);
     await fresh(C + '#/account');
     await audit(`${tag} guest account / sign-in form`);
     await step(`HSCustomerSession.signIn('سارة','01011112222');const r=MP.createRequest({name:'سارة',phone:'01011112222',cat:'electric',serviceName:'كهرباء',desc:'عطل',gov:'القاهرة',area:'مدينة نصر',addr:'ش 1'});MP.assign(r.id,'p_demo1');MP.respond(r.id,true);MP.confirmTime(r.id,'provider');['enroute','arrived','started'].forEach(s=>MP.advance(r.id,s));MP.createQuote(r.id,{labor:200});window.__rid=r.id;MP.addAddress(MP.db().customers[0].id,{label:'البيت',gov:'القاهرة',area:'المعادي',addr:'ش 9'})`);

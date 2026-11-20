@@ -48,6 +48,10 @@ async function run({ exe, wsUrl }) {
   let chooser = 0;
   cdp.on(m => { if (m.method === 'Page.fileChooserOpened') chooser++; });
   await cdp.send('Page.setInterceptFileChooserDialog', { enabled: true });
+  /* System UI (print dialog, OS share sheet) never appears in headless mode: record the calls as a response instead of
+     reporting those buttons as inert. The counter lives in sessionStorage, which SNAP already compares. */
+  await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: `(() => { const hit = () => { try { sessionStorage.setItem('qa_system_ui_' + Date.now(), '1'); } catch (e) {} };
+    window.print = hit; try { Object.defineProperty(navigator, 'share', { configurable: true, value: async () => { hit(); } }); } catch (e) {} })();` });
   const load = async (url, code) => {
     await cdp.send('Page.navigate', { url: 'about:blank' }); await sleep(60);
     await cdp.send('Page.navigate', { url }); await waitFor('document.readyState==="complete"', 6000); await sleep(200);
