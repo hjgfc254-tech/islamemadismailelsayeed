@@ -2921,7 +2921,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "015ffa251af6c389ab5da2f3fe757a57ceb8f78a6591243b77cbdb9d6671d85d",
+      "sha256": "f4976aa1e35420fe6fa5320696b8775829fb83c278ba5aa3564f519cd14395a2",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2960,7 +2960,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 27375
+      "bytes": 30879
     },
     {
       "path": "apps/customer/pages/addresses.page.js",
@@ -3632,7 +3632,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "3528f0a423b45cc34f96d4e6c165045cbc655b6af0aafe30eca748991431c979",
+      "sha256": "dfc341c7a2ef484b0aa5e76d4d6f656c0410bc3dd5446a7470e65e96c2cb2f18",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3671,7 +3671,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 135877
+      "bytes": 139772
     },
     {
       "path": "apps/customer/styles/overrides.css",
@@ -11790,7 +11790,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "8921c2b16346bd65713a0abfb3d2e5b341f7aff5ed339028befe63ddb00480fe",
+      "sha256": "c7294ede779eb0c30d6bcc691d989ed3382a184b47510415d0fe82d8a8a416dc",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11838,7 +11838,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "5ef8ed1886f63b50d046282c95dcf44d214b31c6bb6bf675d2471359363d5ee6",
+      "sha256": "6ce8348e33cd24f7cc0839aea1b57b8652ed4720f86fd8f3da6d107db3e2f398",
       "bytes": 195
     },
     {
@@ -14384,8 +14384,8 @@
       "next_action": "Keep in sync with apps/guest/guest-policy.js.",
       "explicit_references": [],
       "notes": "Added 2026-11-14 (final completion sprint).",
-      "sha256": "2e7fb722b59e861e07bb974fba15edfac5ba52410f053fd646713e7ef3167c24",
-      "bytes": 9786,
+      "sha256": "3efcdf36cf37049d91c1fe386e03d2c1bd833bc9cb210b26a868cfe25baa8013",
+      "bytes": 10283,
       "has_real_logic": true,
       "actual_status_ar": "اختبار متصفح"
     },

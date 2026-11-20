@@ -1389,4 +1389,37 @@ html.ob-open,html.ob-open body{overflow:hidden}
    screens have their own help entry. Page-title accent reads as an intentional brand mark, not a stray dash. */
 @media (max-width:899px){
   html[data-screen="account"] .help-fab,html[data-screen="request"] .help-fab,html[data-screen="wizard"] .help-fab,html[data-screen="tracking"] .help-fab,html[data-screen="addresses"] .help-fab,html[data-screen="support"] .help-fab{display:none}
+/* ── «حسابي» sections row (account.page.js): equal cells, no sideways scrolling; the rest live in the «⋮» menu ──
+   phones < 480px: 3 tabs + «⋮» · 480–719px: 4 tabs + «⋮» · ≥ 720px: all 6, no «⋮». */
+#view .account-tabs{position:relative;display:flex;flex-wrap:nowrap;gap:6px;margin-top:10px;padding:4px;overflow:visible;border-radius:16px;background:var(--surface-sunken,var(--card2));border:1px solid var(--border-subtle,var(--line-soft))}
+#view .account-tabs > .acc-t,#view .account-tabs .acc-more{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:54px;padding:6px 4px;border-radius:12px;border:0;background:transparent;color:var(--text-secondary,inherit);font-size:12.5px;font-weight:600;line-height:1.2;white-space:normal;text-align:center;cursor:pointer;box-shadow:none}
+#view .account-tabs > .acc-t span,#view .account-tabs .acc-more span{overflow-wrap:normal;word-break:keep-all}
+#view .account-tabs > .acc-t .i,#view .account-tabs .acc-more .i{font-size:18px;opacity:.9}
+#view .account-tabs > .acc-t.on{background:var(--surface-primary,#fff);color:var(--text-primary,inherit);font-weight:800;box-shadow:0 1px 2px rgba(31,27,23,.08),0 2px 8px rgba(31,27,23,.06);border:0}
+#view .account-tabs > .acc-t.on .i{color:var(--brand-primary);opacity:1}
+#view .account-tabs > .acc-t:focus-visible,#view .account-tabs .acc-more:focus-visible,#view .acc-menu [role="menuitem"]:focus-visible{outline:3px solid var(--brand-primary);outline-offset:2px}
+#view .acc-more-wrap{position:relative;flex:0 0 64px;display:flex}
+#view .account-tabs .acc-more{flex:1 1 auto}
+#view .account-tabs .acc-more[aria-expanded="true"]{background:var(--surface-primary,#fff)}
+#view .acc-menu{position:absolute;top:calc(100% + 8px);inset-inline-end:0;z-index:40;min-width:200px;max-width:calc(100vw - 32px);display:grid;gap:2px;padding:6px;border-radius:16px;background:var(--surface-primary,#fff);border:1px solid var(--border-subtle,var(--line-soft));box-shadow:0 14px 34px rgba(31,27,23,.16)}
+#view .acc-menu[hidden]{display:none}
+#view .acc-menu [role="menuitem"]{display:flex;align-items:center;gap:10px;width:100%;min-height:44px;padding:0 12px;border:0;border-radius:10px;background:transparent;color:var(--text-primary,inherit);font:inherit;font-size:14px;font-weight:600;text-align:start;cursor:pointer}
+#view .acc-menu [role="menuitem"]:hover{background:var(--surface-sunken,var(--card2))}
+#view .acc-menu [role="menuitem"].on{background:var(--surface-sunken,var(--card2));font-weight:800}
+#view .acc-menu [role="menuitem"].on .i{color:var(--brand-primary)}
+#view .acc-menu [role="menuitem"] .i{font-size:18px}
+/* which tabs are inline, which are in the menu */
+#view .account-tabs > .acc-t3,#view .account-tabs > .acc-t4,#view .account-tabs > .acc-t5{display:none}
+#view .account-tabs[data-cur="3"] .acc-more,#view .account-tabs[data-cur="4"] .acc-more,#view .account-tabs[data-cur="5"] .acc-more{background:var(--surface-primary,#fff);color:var(--text-primary,inherit);font-weight:800;box-shadow:0 1px 2px rgba(31,27,23,.08),0 2px 8px rgba(31,27,23,.06)}
+#view .account-tabs[data-cur="3"] .acc-more .i,#view .account-tabs[data-cur="4"] .acc-more .i,#view .account-tabs[data-cur="5"] .acc-more .i{color:var(--brand-primary)}
+@media (min-width:480px){
+  #view .account-tabs > .acc-t3{display:flex}
+  #view .acc-menu .acc-mi3{display:none}
+  #view .account-tabs[data-cur="3"] .acc-more{background:transparent;color:var(--text-secondary,inherit);font-weight:600;box-shadow:none}
+  #view .account-tabs[data-cur="3"] .acc-more .i{color:inherit}
+}
+@media (min-width:720px){
+  #view .account-tabs > .acc-t4,#view .account-tabs > .acc-t5{display:flex}
+  #view .acc-more-wrap{display:none}
+  #view .account-tabs > .acc-t,#view .account-tabs .acc-more{flex-direction:row;gap:6px;min-height:44px;font-size:13.5px}
 }

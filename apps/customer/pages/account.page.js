@@ -242,8 +242,18 @@ const Account = (() => {
   const render = () => {
     const u = meUser();
     const tab = (typeof state !== 'undefined' && state.accountTab) || 'orders';
-    const tabBar = u ? `<div class="subtabs account-tabs" role="group" aria-label="أقسام الحساب" style="margin-top:10px">
-      ${TABS.map(([k, n, ico]) => `<button type="button" aria-pressed="${tab === k}" class="${tab === k ? 'on' : ''}" data-account-tab="${k}">${safeIc(ico)} ${_esc(n)}</button>`).join('')}
+    /* Tabs that fit are shown in equal cells (3 on phones, 4 on large phones, all from 720px — CSS); the rest sit in the
+       «⋮» menu, so no section hides behind a sideways swipe. data-cur lets CSS light «⋮» when the current section is
+       inside the menu at the current width. */
+    const cur = Math.max(0, TABS.findIndex(([k]) => k === tab));
+    const tabBar = u ? `<div class="subtabs account-tabs" role="group" aria-label="أقسام الحساب" data-cur="${cur}">
+      ${TABS.map(([k, n, ico], i) => `<button type="button" aria-pressed="${tab === k}" class="acc-t acc-t${i}${tab === k ? ' on' : ''}" data-account-tab="${k}">${safeIc(ico)}<span>${_esc(n)}</span></button>`).join('')}
+      <div class="acc-more-wrap">
+        <button type="button" class="acc-more" data-acc-more aria-haspopup="menu" aria-expanded="false" aria-controls="acc-more-menu" aria-label="باقي أقسام الحساب">${safeIc('dots')}<span>المزيد</span></button>
+        <div class="acc-menu" id="acc-more-menu" role="menu" aria-label="باقي أقسام الحساب" hidden>
+          ${TABS.map(([k, n, ico], i) => (i < 3 ? '' : `<button type="button" role="menuitem" tabindex="-1" class="acc-mi acc-mi${i}${tab === k ? ' on' : ''}" ${tab === k ? 'aria-current="true"' : ''} data-account-tab="${k}">${safeIc(ico)}<span>${_esc(n)}</span></button>`)).join('')}
+        </div>
+      </div>
     </div>` : '';
     const body = !u ? loginPrompt() : (({
       orders: tabOrders,
@@ -284,14 +294,46 @@ const Account = (() => {
     `);
   };
 
+  /* ═════════ «⋮» menu of the sections that do not fit ═════════ */
+  const moreBtn = () => document.querySelector('.account-tabs [data-acc-more]');
+  const moreMenu = () => document.getElementById('acc-more-menu');
+  const menuItems = () => { const m = moreMenu(); return m ? [...m.querySelectorAll('[role="menuitem"]')].filter((b) => b.offsetParent !== null) : []; };
+  function setMenu(open, focusFirst) {
+    const b = moreBtn(), m = moreMenu(); if (!b || !m) return;
+    m.hidden = !open; b.setAttribute('aria-expanded', String(open));
+    if (open && focusFirst) { const items = menuItems(); const cur = items.find((x) => x.classList.contains('on')) || items[0]; if (cur) cur.focus(); }
+  }
+  document.addEventListener('keydown', (e) => {
+    const m = moreMenu(); if (!m || m.hidden) {
+      if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && e.target.closest && e.target.closest('[data-acc-more]')) { e.preventDefault(); setMenu(true, true); }
+      return;
+    }
+    const items = menuItems(), i = items.indexOf(document.activeElement);
+    if (e.key === 'Escape') { e.preventDefault(); setMenu(false); const b = moreBtn(); if (b) b.focus(); }
+    else if (e.key === 'ArrowDown') { e.preventDefault(); (items[(i + 1) % items.length] || items[0]).focus(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); (items[(i - 1 + items.length) % items.length] || items[0]).focus(); }
+    else if (e.key === 'Home') { e.preventDefault(); if (items[0]) items[0].focus(); }
+    else if (e.key === 'End') { e.preventDefault(); if (items.length) items[items.length - 1].focus(); }
+    else if (e.key === 'Tab') setMenu(false);
+  });
+
   /* ═════════ الأحداث ═════════ */
   document.addEventListener('click', (e) => {
+    const more = e.target.closest('[data-acc-more]');
+    if (more) { const m = moreMenu(); setMenu(!!(m && m.hidden), e.detail === 0); return; }
+    if (moreMenu() && !moreMenu().hidden && !e.target.closest('#acc-more-menu')) setMenu(false);
     const t = e.target.closest('[data-account-tab],[data-account-profile-edit],[data-account-logout],[data-account-delete],[data-account-cancel-delete]');
     if (!t) return;
     const d = t.dataset;
     if (d.accountTab) {
+      const fromMenu = !!t.closest('#acc-more-menu');
       if (typeof state !== 'undefined') state.accountTab = d.accountTab;
       if (typeof show === 'function') show('account');
+      /* keep keyboard users where they were: the «⋮» button (menu choice) or the chosen tab */
+      setTimeout(() => {
+        const target = fromMenu ? moreBtn() : [...document.querySelectorAll(`.account-tabs > [data-account-tab="${d.accountTab}"]`)].find((x) => x.offsetParent !== null);
+        if (target && target.offsetParent !== null) { try { target.focus({ preventScroll: true }); } catch (err) { target.focus(); } }
+      }, 0);
       return;
     }
     if (d.accountProfileEdit !== undefined) return openProfile();
