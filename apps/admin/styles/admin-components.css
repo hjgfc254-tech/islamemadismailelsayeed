@@ -387,3 +387,18 @@ a.adm-link:hover{background:var(--nav-dark-hover);color:var(--on-brand)}
 .aud-filters{display:flex;flex-wrap:wrap;align-items:end;gap:var(--sp-2);margin-bottom:var(--sp-3)}
 
 .ins-export{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3)}
+
+/* ── 2026-11-20 consistency pass ──
+   • one admin button height everywhere (grid row actions were 40px, toolbar 44/48px);
+   • checkboxes in forms are normal-size and sit next to their label (the generic field rule made them 44px tall and
+     full-width, squeezing the label into a narrow column);
+   • task rows keep text · due · «فتح» on one line on phones (the link wrapped onto its own line);
+   • the phone header keeps the account button on one line and drops the long name (the role chip was already hidden). */
+.hs-grid-acts .adm-btn{min-height:44px}
+.hs-grid-field input[type=checkbox],.hs-grid-field input[type=radio]{width:var(--sp-5);height:var(--sp-5);min-height:0;flex:none;margin:0;accent-color:var(--brand-primary)}
+.set-bool label,label.hs-grid-field:has(> input[type=checkbox]){display:flex;align-items:center;gap:var(--sp-2);font-size:var(--fs-sm);color:var(--text-primary)}
+label.hs-grid-field:has(> input[type=checkbox])>span{flex:1}
+.dash-tasks li{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center}
+.dash-tasks li label{display:flex;align-items:flex-start;gap:var(--sp-2);min-width:0}
+#adm-account .adm-btn{white-space:nowrap;padding-inline:var(--sp-3)}
+@media (max-width:420px){.adm-acc-name{display:none}}

@@ -237,3 +237,18 @@
 @media(max-width:380px){.pv-top-actions{gap:6px}.pv-demo{padding:4px 8px;font-size:11px}.pv-top-actions .pv-icon-btn{padding-inline:10px;min-width:40px}}
 @media(max-width:340px){.pv-demo{display:none}}
 .pv-btn-danger{background:transparent;color:var(--danger,#b3261e);border-color:color-mix(in srgb,var(--danger,#b3261e) 45%,transparent)}
+
+/* ── 2026-11-20 consistency pass ──
+   • every .pv-btn uses the app font at the same size (secondary buttons rendered at the browser's 12–13px while the
+     primary next to them was 15px);
+   • the direct alternative next to the primary action («رفض», «ما استلمتش») matches its height;
+   • top-bar icon buttons and chips meet the 44 / 40px touch sizes used elsewhere. */
+.pv-btn{font-family:inherit;font-size:var(--fs-md);padding-inline:var(--sp-4);display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-2)}
+.pv-actions-main>.pv-btn{min-height:50px}
+.pv-icon-btn{min-height:44px}
+.pv-chip{min-height:40px;display:inline-flex;align-items:center}
+.pv-card-links .pv-link,.pv-card-links>.pv-btn{font-size:var(--fs-sm)}
+/* secondary actions under «خيارات تانية»: full-width rows of buttons that keep their label on one line (they were 105px wide and wrapped to three lines) */
+.pv-more-actions .pv-actions{display:flex;flex-wrap:wrap;gap:var(--sp-2);width:100%}
+.pv-more-actions .pv-actions>.pv-btn,.pv-more-actions .pv-actions>.pv-photos{flex:1 1 auto;white-space:nowrap}
+.pv-more-actions .pv-photos{display:flex;gap:var(--sp-2)}

@@ -13,7 +13,9 @@ const ROOT = path.resolve(__dirname, '../..');
    height 3.4rem, label min-width 4rem, the 700px breakpoint and the 2px bar gap from the dataviz mark spec). */
 /* 173 → 176 (2026-11-20, explicit audit): «الإحصائيات» card column min 15rem, the emergency page width 46rem and the
    card border 1px have no token equivalent. */
-const ADMIN_HARDCODED_BASELINE = 176;
+/* 176 → 177 (2026-11-20 consistency pass, explicit audit): the 420px phone-header breakpoint (media queries cannot use
+   custom properties). */
+const ADMIN_HARDCODED_BASELINE = 177;
 
 test('the live shared design-system stylesheet is loaded by Admin and Customer', () => {
   const admin = fs.readFileSync(path.join(ROOT, 'apps/admin/index.html'), 'utf8');
