@@ -15,9 +15,6 @@
     "engines": {
         "node": "24"
     },
-    "devDependencies": {
-        "firebase-functions-test": "^3.4.1"
-    },
     "description": "HANSALEHLAK Cloud Functions",
     "main": "index.js"
 }

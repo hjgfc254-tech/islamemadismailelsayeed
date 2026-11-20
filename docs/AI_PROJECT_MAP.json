@@ -10904,8 +10904,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "c651ab79ffe4f8c4e7f289a1a64875460b9eb9cfef45e53a24583632718d304f",
-      "bytes": 2800
+      "sha256": "97bfc130787a7e61fa384e469945dc6d75c5fd60cbeb8c346371f743b47be58a",
+      "bytes": 2887
     },
     {
       "path": "firestore.indexes.json",
@@ -11216,8 +11216,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "6d63d6db3ff5658a95b4884c0776e0657e709d5a5825b20439893dd89964cc07",
-      "bytes": 300290
+      "sha256": "612e8d44bae17461443a02e7c6936be94ea2fbfbbfdb5830e9c455cb5d35629b",
+      "bytes": 110165
     },
     {
       "path": "functions/package.json",
@@ -11228,8 +11228,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "68d14f686f6b441a64b54caf062df0634db5b5bb1fe827487f4fc3568a0df2d7",
-      "bytes": 632
+      "sha256": "a541ce8d5c5aa39d1249effb91a51ee1797646ea00751ffb90a6f55b23c5a542",
+      "bytes": 553
     },
     {
       "path": "functions/src/admin-code.js",

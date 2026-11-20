@@ -69,7 +69,10 @@
       "local-only/**",
       "tools-lab/**",
       ".serena/**",
-      ".claude/**"
+      ".claude/**",
+      "install-tools.ps1",
+      "coverage-map.txt",
+      "service-worker.lock.json"
     ],
     "redirects": [
       {
