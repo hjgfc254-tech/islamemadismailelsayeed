@@ -13,12 +13,16 @@
 <link rel="icon" type="image/webp" href="../../assets/brand/logo-v10-mark.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Font CSS loads without blocking the first paint (display=swap shows the system font until it arrives). -->
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="styles/customer.css">
 <link rel="stylesheet" href="../../shared/design-system/design-system.css">
 <link rel="stylesheet" href="styles/overrides.css">
 <script>
 /* الافتتاحية السينمائية: مرة واحدة لكل جلسة. الفحص مبكر لمنع أي وميض عند الدخول الداخلي المتكرر. */
+/* LCP: the home hero photo is rendered by JS after ~45 scripts; preloading it on the home route lets it download in parallel. */
+(function(){try{if(!location.hash||/^#\/?(home)?$/.test(location.hash)){var h=document.createElement('link');h.rel='preload';h.as='image';h.href='../../assets/brand/'+(localStorage.getItem('hs_onboard_v1')?'hero-tech-v2.webp':'onboard-1.webp');   /* first visit: the onboarding photo covers the hero */h.setAttribute('fetchpriority','high');document.head.appendChild(h);}}catch(e){}})();
 (function(){try{var d=document.documentElement;if(sessionStorage.getItem('hs_intro_v1')){d.classList.add('no-intro');}else{sessionStorage.setItem('hs_intro_v1','1');['brand/logo-v10-mark.webp','brand/logo-v10-word.webp'].forEach(function(n){var l=document.createElement('link');l.rel='preload';l.as='image';l.href='../../assets/'+n;document.head.appendChild(l);});}}catch(e){}})();
 </script>
 </head>
@@ -34,7 +38,8 @@
 
 <div id="app">
   <div class="bg-blob b1"></div><div class="bg-blob b2"></div>
-  <main id="view"></main>
+  <main id="view"><!-- Boot loader: painted at once while the scripts download; the first render replaces it. -->
+    <div role="status" style="display:grid;justify-items:center;align-content:center;gap:14px;min-height:62vh;color:var(--text-secondary,#6b625a);font-size:14px"><span class="spinner" aria-hidden="true"></span>جاري التحميل…</div></main>
   <nav id="tabbar"></nav>
   <div id="sheet-backdrop"></div>
   <section id="sheet" role="dialog" aria-modal="true" tabindex="-1"></section>
@@ -59,6 +64,7 @@
      ← مدخل إنشاء الطلب ← المرفقات ← البحث/الاكتشاف/العناوين/الحساب/الدعم.
      لا تُحمَّل هنا أي واجهة لمقدم الخدمة أو الإدارة: مقدم الخدمة في apps/provider/ (الانضمام عبر ../provider/index.html#/join)
      والإدارة تطبيق مستقل بمدخل مقيد خاص به، ولا يُربط من هنا. -->
+<script src="../../shared/utils/error-reporter.js"></script>
 <script src="../../shared/icons/icon-registry.js"></script>
 <script src="../../shared/content/site-content.js"></script>
 <script src="../../shared/components/accessible-tabs.js"></script>

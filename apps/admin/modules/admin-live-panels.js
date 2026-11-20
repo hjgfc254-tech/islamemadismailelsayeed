@@ -26,7 +26,9 @@
       const res = await C().request('GET', '/admin/audit');
       if (!res.ok) { host.innerHTML = frame('سجل التدقيق', `<p>${esc(errText(res))}</p>`); return; }
       host.innerHTML = frame('سجل التدقيق', table(['الوقت', 'المنفذ', 'العملية', 'النتيجة'], res.data.items.map((a) => [
-        esc(dt(a.at)), esc(a.actor ? (a.actor.adminRole || a.actor.role) : (a.action ? 'النظام' : '—')), esc(a.action || ((a.method || '') + ' ' + (a.path || ''))), esc(a.status || (a.action ? 'تم' : '—'))])));
+        esc(dt(a.at)), esc(a.actor ? (a.actor.adminRole || a.actor.role) : (a.action ? 'النظام' : '—')), esc(a.action || ((a.method || '') + ' ' + (a.path || ''))), esc(a.status || (a.action ? 'تم' : '—'))])) +
+        '<section class="cerr" data-client-errors aria-labelledby="cerr-h"></section>');
+      if (root.HSClientErrors) root.HSClientErrors.mount(host.querySelector('[data-client-errors]'));   /* modules/client-errors.js */
     },
     async settings(host) {
       const res = await C().request('GET', '/admin/settings');

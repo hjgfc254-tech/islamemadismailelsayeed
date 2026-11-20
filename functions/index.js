@@ -16,7 +16,7 @@ const { getFirestore, FieldPath } = require('firebase-admin/firestore');
 const { getAuth } = require('firebase-admin/auth');
 const { getDatabase } = require('firebase-admin/database');
 const { getMessaging } = require('firebase-admin/messaging');
-const { createLimiter, clientIp, isReadCall } = require('./src/limits');
+const { createLimiter, createTelemetryLimiter, isTelemetryCall, clientIp, isReadCall } = require('./src/limits');
 const service = require('./src/service');
 const { firestoreAdapter } = require('./src/partial');
 
@@ -69,9 +69,14 @@ const backend = {
 const OPTS = { enforceAppCheck: process.env.ENFORCE_APP_CHECK === 'true', cors: true };
 
 const readLimiter = createLimiter();
+const telemetryLimiter = createTelemetryLimiter();
 
 function wrap(name, fn) {
   return onCall(OPTS, async request => {
+    if (isTelemetryCall(name, request.data)) {
+      /* error reports are best-effort: over the limit they are dropped quietly (the client never retries) */
+      if (!telemetryLimiter.allow({ uid: request.auth && request.auth.uid, ip: clientIp(request.rawRequest) })) return { ok: true, status: 202, data: { stored: 0, dropped: true } };
+    }
     if (isReadCall(name, request.data) && !readLimiter.allowRead({ uid: request.auth && request.auth.uid, ip: clientIp(request.rawRequest) })) {
       throw new HttpsError('resource-exhausted', 'طلبات كثيرة — حاول بعد دقيقة');
     }

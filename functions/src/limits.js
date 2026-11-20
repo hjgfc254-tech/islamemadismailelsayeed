@@ -46,6 +46,22 @@ function clientIp(rawRequest) {
   return hops.length ? hops[hops.length - 1] : (rawRequest.ip || (rawRequest.socket && rawRequest.socket.remoteAddress) || null);
 }
 
+/** Client error reports (POST /telemetry/errors): per uid / IP, in memory, independent of the read buckets. */
+const TELEMETRY = Object.freeze({ perKeyPerMin: 10, perInstancePerMin: 300 });
+function createTelemetryLimiter(limits = TELEMETRY, now = () => Date.now()) {
+  const inner = createLimiter({ userReadsPerMin: limits.perKeyPerMin, ipReadsPerMin: limits.perKeyPerMin, anonymousReadsPerMinPerInstance: Infinity }, now);
+  let w0 = 0, n = 0;
+  return {
+    allow({ uid, ip }) {
+      const w = Math.floor(now() / WINDOW_MS);
+      if (w !== w0) { w0 = w; n = 0; }
+      if (++n > limits.perInstancePerMin) return false;
+      return inner.allowRead({ uid, ip });
+    }
+  };
+}
+const isTelemetryCall = (name, data) => name === 'api' && !!data && data.path === '/telemetry/errors';
+
 /** Is this callable invocation a read (GET api / session.sync)? */
 function isReadCall(name, data) {
   if (name === 'session') return !!data && data.op === 'sync';
@@ -53,4 +69,4 @@ function isReadCall(name, data) {
   return false;
 }
 
-module.exports = { createLimiter, clientIp, isReadCall, LIMITS };
+module.exports = { createLimiter, createTelemetryLimiter, isTelemetryCall, clientIp, isReadCall, LIMITS, TELEMETRY };

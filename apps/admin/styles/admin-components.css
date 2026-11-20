@@ -344,3 +344,11 @@ a.adm-link:hover{background:var(--nav-dark-hover);color:var(--on-brand)}
 .ai-actions{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center}
 .ai-add{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
 .ai-test-out{grid-column:1/-1;margin:0}
+
+/* client-errors (modules/client-errors.js): «أخطاء عند المستخدمين» under the audit log */
+.cerr{margin-top:var(--sp-6);display:grid;gap:var(--sp-2)}
+.cerr h3{margin:0;font-size:var(--fs-lg)}
+.cerr-empty{padding:var(--sp-4);border:1px dashed var(--border-default);border-radius:var(--r-md);text-align:center;color:var(--text-secondary)}
+.cerr details summary{cursor:pointer;font-weight:600;overflow-wrap:anywhere}
+.cerr-stack{margin:var(--sp-2) 0;padding:var(--sp-2);max-width:100%;overflow:auto;direction:ltr;text-align:left;font-size:var(--fs-xs);background:var(--surface-secondary);border-radius:var(--r-sm);white-space:pre-wrap}
+.cerr code{font-size:var(--fs-xs);overflow-wrap:anywhere}

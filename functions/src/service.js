@@ -20,6 +20,7 @@ const { normalizePhone, APPS } = require('./identity');
 const { scopeFor, customerRequestView, customerQuote } = require('./scope');
 const workforce = require('./workforce');
 const adminExtra = require('./admin-extra');
+const telemetry = require('./telemetry');
 const content = require('./content');
 const ai = require('./ai');
 const { invalidateShared } = require('./partial');
@@ -196,6 +197,11 @@ async function api(backend, { auth, data }) {
   const req = validateApi(data);
   const token = tokenOf(auth);
   const isRead = req.method === 'GET';
+  if (telemetry.PATH_RE.test(req.path)) {        // client error reports: rate limited in memory (limits.js), never audited
+    const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
+    const actor = adm && adm.status === 'active' ? { role: 'admin', id: token.uid, adminRole: adm.role } : null;
+    return telemetry.handle({ backend, method: req.method, path: req.path, query: req.query, body: req.body, app: req.app, actor, token });
+  }
   if (!isRead) await rateLimit(backend, token ? token.uid : 'anonymous');
   const admin = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
   if (req.method === 'POST' && req.path === '/providers/register' && token && token.phone_number) {

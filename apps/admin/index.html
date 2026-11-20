@@ -8,7 +8,9 @@
 <link rel="icon" type="image/webp" href="../../assets/brand/logo-v10-mark.webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<!-- Font CSS loads without blocking the first paint (display=swap shows the system font until it arrives). -->
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="../../shared/design-system/design-system.css">
 <link rel="stylesheet" href="styles/admin.css">
 <link rel="stylesheet" href="styles/admin-components.css">
@@ -18,8 +20,11 @@
 <body>
 <!-- Admin shell mounts here (apps/admin/admin-shell.js). Demo frontend only: no authentication or server-side permissions exist. -->
 <div id="admin-app" data-admin-shell>
+  <!-- Boot loader: painted at once while the scripts below download; the shell replaces it on mount. -->
+  <div class="adm-state adm-boot" role="status" style="margin:15vh auto 0;max-width:420px;border:0;background:none"><span class="adm-spin" aria-hidden="true"></span><p>جاري تحميل مركز الإدارة…</p></div>
   <noscript><p style="padding:24px">يتطلب مركز الإدارة تفعيل JavaScript.</p></noscript>
 </div>
+<script src="../../shared/utils/error-reporter.js"></script>
 <script src="../../shared/icons/icon-registry.js"></script>
 <script src="../../shared/content/site-content.js"></script>
 <script src="../../shared/components/status-badge.js"></script>
@@ -50,6 +55,7 @@
 <script src="modules/access-control/permission-presets.js"></script>
 <script src="modules/access-control/role-editor.js"></script>
 <script src="modules/admin-live.js"></script>
+<script src="modules/client-errors.js"></script>
 <script src="modules/mini-charts.js"></script><script src="modules/command-palette.js"></script><script src="modules/admin-live-panels.js"></script><script src="modules/site-content-editor.js"></script><script src="modules/marketing-editor.js"></script><script src="modules/ai-settings.js"></script>
 <script src="pages/admin-dashboard.page.js"></script>
 <script src="pages/finance-dashboard.page.js"></script>

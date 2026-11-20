@@ -32,6 +32,7 @@ hansalhlak/
 │   │   │   ├── admin-live-panels.js
 │   │   │   ├── admin-live.js
 │   │   │   ├── ai-settings.js
+│   │   │   ├── client-errors.js
 │   │   │   ├── command-palette.js
 │   │   │   ├── marketing-editor.js
 │   │   │   ├── mini-charts.js
@@ -472,6 +473,7 @@ hansalhlak/
 │   │   ├── scope.js
 │   │   ├── service.js
 │   │   ├── store.js
+│   │   ├── telemetry.js
 │   │   └── workforce.js
 │   ├── .env.example
 │   ├── .gitignore
@@ -487,6 +489,7 @@ hansalhlak/
 │   ├── coverage-run.cjs
 │   ├── inventory-files.mjs
 │   ├── refresh-project-inventory.mjs
+│   ├── sw-cache.cjs
 │   ├── sync-functions-domain.cjs
 │   └── verify-project-inventory.mjs
 ├── services/
@@ -542,6 +545,7 @@ hansalhlak/
 │   │   └── provider.types.js
 │   ├── utils/
 │   │   ├── dates.js
+│   │   ├── error-reporter.js
 │   │   ├── errors.js
 │   │   ├── formatting.js
 │   │   ├── money.js
@@ -557,6 +561,7 @@ hansalhlak/
 │   │   ├── a11y.cdp.js
 │   │   ├── admin-app.cdp.js
 │   │   ├── audit-log.browser.js
+│   │   ├── client-errors.cdp.js
 │   │   ├── customer-orders.cdp.js
 │   │   ├── customer-request-wizard-accessibility.browser.py
 │   │   ├── customer-search-keyboard.browser.py
@@ -565,6 +570,7 @@ hansalhlak/
 │   │   ├── guest.cdp.js
 │   │   ├── interaction.cdp.js
 │   │   ├── offers-cycle.cdp.js
+│   │   ├── perf.cdp.js
 │   │   ├── provider-standalone.cdp.js
 │   │   ├── quotes-management.browser.js
 │   │   ├── README.md
@@ -600,6 +606,7 @@ hansalhlak/
 │       ├── audit-log.test.js
 │       ├── catalog-wizard.test.js
 │       ├── categories-management.test.js
+│       ├── client-error-telemetry.test.js
 │       ├── commissions.test.js
 │       ├── complaints-management.test.js
 │       ├── customer-page-renderers.test.js
@@ -662,6 +669,7 @@ hansalhlak/
 │       ├── static-audit.test.js
 │       ├── status-badge.test.js
 │       ├── super-dashboard.test.js
+│       ├── sw-cache-guard.test.js
 │       ├── system-settings.test.js
 │       ├── tree.test.js
 │       ├── trust-ui.test.js
@@ -690,5 +698,6 @@ hansalhlak/
 ├── manifest.json
 ├── package.json
 ├── README.md
-└── service-worker.js
+├── service-worker.js
+└── service-worker.lock.json
 ```

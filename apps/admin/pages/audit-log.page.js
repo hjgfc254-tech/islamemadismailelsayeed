@@ -91,7 +91,8 @@
   const render = () => {
     const wrap = root.document.createElement('div'); wrap.className = 'ord aud';
     wrap.innerHTML = `<div class="fin-banner" role="note">${icon('info')}<span>بيانات تجريبية محلية للعرض فقط — ليست سجل تدقيق حقيقيًا ولا غير قابل للتلاعب، ولا يُسجَّل أي إجراء من الصفحات الأخرى هنا. لا تعديل ولا حذف ولا تصدير. تاريخ العرض الثابت: ${esc(dt(DEMO_NOW))}.</span></div>
-      ${summaryHtml()}<div id="aud-grid"></div><dialog class="ord-dlg" id="aud-dlg" aria-labelledby="ord-dlg-t"></dialog>`;
+      ${summaryHtml()}<div id="aud-grid"></div><section class="cerr" data-client-errors aria-labelledby="cerr-h"></section><dialog class="ord-dlg" id="aud-dlg" aria-labelledby="ord-dlg-t"></dialog>`;
+    if (root.HSClientErrors) root.HSClientErrors.mount(wrap.querySelector('[data-client-errors]'));   /* modules/client-errors.js */
     const dlgEl = wrap.querySelector('#aud-dlg');
     let cur = null;
     const rows = () => sortNewest(events).map(toRow);
