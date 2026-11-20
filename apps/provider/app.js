@@ -97,7 +97,7 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
     dom.nav.innerHTML=tabs.map(([id,label])=>`<button type="button" data-pv-route="${id}" class="${tab===id?'is-active':''}" ${tab===id?'aria-current="page"':''}>${typeof ic==='function'?ic(NAV_ICON[id]||'dots'):''}<span>${esc(label)}</span></button>`).join('');
     /* top bar bell: unread notifications */
     const bell=$('[data-pv-bell]',dom.host), p=currentProvider();
-    if(bell&&!bell.dataset.ready){bell.innerHTML=(typeof ic==='function'?ic('bell'):'🔔')+'<b hidden></b>';bell.dataset.ready='1';}
+    if(bell&&!bell.dataset.ready){bell.innerHTML=(typeof ic==='function'?ic('bell'):'')+'<b hidden></b>';bell.dataset.ready='1';}
     if(bell&&p){ const unread=(typeof MP.notesFor==='function'?MP.notesFor('provider:'+p.id):[]).filter(n=>!n.read).length;
       bell.hidden=false; bell.classList.toggle('is-active',active==='notifications'); bell.setAttribute('aria-label',unread?`الإشعارات — ${num(unread)} جديدة`:'الإشعارات');
       const b=$('b',bell); if(b){b.textContent=unread?num(Math.min(unread,99)):'';b.hidden=!unread;} }

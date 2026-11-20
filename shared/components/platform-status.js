@@ -27,7 +27,7 @@
     if (m) {
       if (!ov && doc.createElement && doc.body) { ov = doc.createElement('div'); ov.id = 'hs-maint'; ov.setAttribute('role', 'alertdialog'); ov.setAttribute('aria-modal', 'true'); ov.setAttribute('aria-labelledby', 'hs-maint-t'); doc.body.appendChild(ov); }
       if (!ov) return;
-      ov.innerHTML = `<div class="hs-maint-box"><img src="../../assets/brand/logo-v10-lockup.webp" alt="هنصلحلك" width="180" height="47"><span class="hs-maint-ic" aria-hidden="true">🛠️</span>
+      ov.innerHTML = `<div class="hs-maint-box"><img src="../../assets/brand/logo-v10-lockup.webp" alt="هنصلحلك" width="180" height="47"><span class="hs-maint-ic" aria-hidden="true">${typeof ic === 'function' ? ic('wrench') : ''}</span>
         <h1 id="hs-maint-t">المنصة في صيانة دلوقتي</h1><p>${esc(m.message || 'بنحسّن الخدمة عشانك. طلباتك وبياناتك محفوظة — ارجع بعد شوية.')}</p>
         <button type="button" data-maint-retry>جرّب تاني</button></div>`;
       ov.querySelector('[data-maint-retry]').addEventListener('click', () => root.location.reload());

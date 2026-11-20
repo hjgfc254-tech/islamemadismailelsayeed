@@ -1462,3 +1462,30 @@ html.ob-open,html.ob-open body{overflow:hidden}
 #view .sec-hint{font:var(--t-caption);color:var(--text-secondary);margin:-6px 0 12px}
 /* UX audit: 13px floor for secondary text on the main screens */
 #view small,#view .tx small{font-size:max(13px,.82em)}
+
+/* ───────── 2026-11-20 premium icon tiles ─────────
+   Categories and items are line icons (shared/icons/icon-registry.js CATEGORY_ICONS + Lucide) in a soft, quiet tile:
+   warm surface, hairline border, ink stroke and a light copper duotone — one consistent, premium language instead of
+   the former 3D artwork. Photo icons published by the owner from the Admin Center keep their own style (.ph). */
+#view .tile .tart:not(.ph),#view .icard .ip:not(.ph),#view .prow .ip:not(.ph),#view .ip.dev:not(.ph){
+  display:grid;place-items:center;margin-inline:auto;border-radius:18px;color:var(--text-primary);
+  background:linear-gradient(180deg,var(--surface-primary) 0%,var(--surface-secondary) 100%);
+  box-shadow:inset 0 0 0 1px var(--border-subtle),0 1px 2px rgba(31,27,23,.05),0 6px 14px -8px rgba(31,27,23,.18);
+  --ic-a:var(--accent);filter:none}
+#view .tile .tart:not(.ph) .if,#view .icard .ip:not(.ph) .if,#view .prow .ip:not(.ph) .if,#view .ip.dev:not(.ph) .if{fill-opacity:.18}
+#view .tile .tart:not(.ph){width:60px;height:60px;margin-bottom:8px}
+#view .tile .tart:not(.ph) .i{font-size:30px;stroke-width:1.75}
+#view .grid.fit>.tile .tart:not(.ph){width:58px;height:58px}
+#view .icard .ip:not(.ph){width:58px;height:58px}
+#view .icard .ip:not(.ph) .i{font-size:28px;stroke-width:1.75}
+#view .prow .ip:not(.ph),#view .ip.dev:not(.ph){width:48px;height:48px;border-radius:15px}
+#view .prow .ip:not(.ph) .i,#view .ip.dev:not(.ph) .i{font-size:25px;stroke-width:1.75}
+#view .tile:hover .tart:not(.ph),#view .icard:hover .ip:not(.ph){box-shadow:inset 0 0 0 1px var(--border-default),0 2px 4px rgba(31,27,23,.06),0 10px 18px -10px rgba(31,27,23,.24)}
+#view .icard.sel .ip:not(.ph),#view .prow.sel .ip:not(.ph){box-shadow:inset 0 0 0 1.5px var(--accent),0 6px 14px -8px rgba(180,81,28,.35);}
+#view .icard.sel .ip:not(.ph) .if,#view .prow.sel .ip:not(.ph) .if{fill-opacity:.28}
+.ai-ic .i{font-size:22px;stroke-width:1.75;--ic-a:var(--accent)}
+@media (max-width:360px){#view .tile .tart:not(.ph){width:52px;height:52px;border-radius:16px}#view .tile .tart:not(.ph) .i{font-size:26px}}
+/* tile surface: a soft warm tint (no box inside a box) */
+#view .tile .tart:not(.ph),#view .icard .ip:not(.ph),#view .prow .ip:not(.ph),#view .ip.dev:not(.ph){background:color-mix(in srgb,var(--mint) 70%,var(--surface-primary));box-shadow:none}
+#view .tile:hover .tart:not(.ph),#view .icard:hover .ip:not(.ph){background:var(--mint);box-shadow:none}
+#view .icard.sel .ip:not(.ph),#view .prow.sel .ip:not(.ph){background:var(--mint);box-shadow:inset 0 0 0 1.5px var(--accent)}

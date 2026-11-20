@@ -26,7 +26,7 @@
   function html(items) {
     const head = `<h3 id="cerr-h">أخطاء عند المستخدمين</h3>
       <p class="ord-muted">أعطال حصلت فعلًا في متصفحات الزوار، متجمّعة حسب الرسالة والملف. ${live() ? 'من كل الأجهزة (آخر ٣٠ يوم).' : 'وضع العرض التجريبي: أخطاء هذا الجهاز فقط.'} الأرقام والإيميلات بتتشال قبل الحفظ.</p>`;
-    if (!items.length) return head + '<p class="cerr-empty">مفيش أخطاء متسجلة — كويس 👌</p>';
+    if (!items.length) return head + '<p class="cerr-empty">' + (typeof ic === 'function' ? ic('check') + ' ' : '') + 'مفيش أخطاء متسجلة — كويس</p>';
     return head + `<div class="hs-grid-scroll"><table class="hs-grid-table" aria-labelledby="cerr-h"><thead><tr>
       <th scope="col">الرسالة</th><th scope="col">التطبيق</th><th scope="col">المكان</th><th scope="col">المرات</th><th scope="col">آخر مرة</th></tr></thead><tbody>${items.map((x) => `<tr>
       <td><details><summary>${esc(x.msg)}</summary><pre class="cerr-stack">${esc(x.stack || 'لا يوجد تتبع')}</pre><small class="ord-muted">${esc(x.route || '')} · ${esc(x.ua || '')} · أول مرة ${esc(dt(x.first))}</small></details></td>

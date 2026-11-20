@@ -45,7 +45,7 @@
       const r = api() ? await api().controls() : { ok: false };
       if (!r.ok) { wrap.innerHTML = '<p>تعذّر تحميل حالة المفاتيح.</p>'; return; }
       const anyOn = Object.values(r.data).some((v) => v.on);
-      wrap.innerHTML = `<p class="ctl-summary ${anyOn ? 'is-alert' : ''}" role="status">${anyOn ? '⚠️ فيه مفتاح طوارئ شغّال دلوقتي.' : '✓ المنصة شغالة طبيعي.'}</p>
+      wrap.innerHTML = `<p class="ctl-summary ${anyOn ? 'is-alert' : ''}" role="status">${anyOn ? (typeof ic === 'function' ? ic('warn') + ' ' : '') + 'فيه مفتاح طوارئ شغّال دلوقتي.' : (typeof ic === 'function' ? ic('check') + ' ' : '') + 'المنصة شغالة طبيعي.'}</p>
         <p role="status" aria-live="polite" class="ord-muted" data-ctl-status>${esc(status || '')}</p>
         ${SWITCHES.map((s) => cardHtml(s, r.data[s.key])).join('')}
         <section class="ctl-card"><h2>متابعة أي مشكلة</h2><p><a class="dash-link" href="#/audit">سجل الإداريين وأخطاء المستخدمين</a> · <a class="dash-link" href="#/security">الأمان والدخول</a></p></section>`;
