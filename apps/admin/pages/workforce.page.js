@@ -115,7 +115,7 @@
     });
     const save = () => {
       const values = read();
-      if (remote) return remoteRun(openId ? 'PATCH' : 'POST', '/admin/employees' + (openId ? '/' + encodeURIComponent(openId) : ''), values, values, openId ? 'تم حفظ التعديلات على الخادم.' : 'أُضيف الموظف بدعوة معلّقة — يفعّل حسابه بالدخول ببريده بعد تأكيده.', '#wf-name');
+      if (remote) return remoteRun(openId ? 'PATCH' : 'POST', '/admin/employees' + (openId ? '/' + encodeURIComponent(openId) : ''), values, values, openId ? 'تم حفظ التعديلات على الخادم.' : 'أُضيف الموظف واتبعتله إيميل يعمل منه كلمة المرور — بدعوة معلّقة — يفعّل حسابه بالدخول ببريده بعد تأكيده.', '#wf-name');
       try {
         if (openId) { staff = updateEmployee(staff, openId, values); st = { message: 'تم حفظ التعديلات محليًا.' }; sync(); paintDlg('#wf-name'); }
         else { staff = createEmployee(staff, values); openId = staff[staff.length - 1].id; st = { message: 'أُضيف الموظف ودُعي محليًا (لم تُرسل دعوة).' }; sync(); paintDlg('[data-ord-close]'); }
@@ -130,7 +130,7 @@
       try {
         if (b.hasAttribute('data-wf-save')) return; /* submit button: handled once by the form's submit event (also covers Enter) */
         if (remote && b.dataset.ordStatus) return void remoteRun('POST', '/admin/employees/' + encodeURIComponent(openId) + '/status', { status: b.dataset.ordStatus }, undefined, 'تم تحديث الحالة على الخادم.', '[data-ord-close]');
-        if (remote && b.hasAttribute('data-wf-resend')) return void remoteRun('POST', '/admin/employees/' + encodeURIComponent(openId) + '/resend', {}, undefined, 'سُجّلت إعادة الدعوة على الخادم.', '[data-ord-close]');
+        if (remote && b.hasAttribute('data-wf-resend')) return void remoteRun('POST', '/admin/employees/' + encodeURIComponent(openId) + '/resend', {}, undefined, 'اتبعتت الدعوة تاني على الإيميل.', '[data-ord-close]');
         if (b.dataset.ordStatus) { staff = setStatus(staff, openId, b.dataset.ordStatus); st = {}; sync(); paintDlg('[data-ord-close]'); }
         else if (b.hasAttribute('data-wf-resend')) { staff = resendInvite(staff, openId); st = { message: 'سُجّلت إعادة الإرسال محليًا (لم تُرسل دعوة).' }; sync(); paintDlg('[data-ord-close]'); }
       } catch (err) { st = { message: err.message === 'Last owner' ? 'لا يمكن تعطيل آخر مالك مفعّل (قاعدة تجريبية).' : 'تعذر تنفيذ الإجراء على هذا الموظف.' }; paintDlg(); }

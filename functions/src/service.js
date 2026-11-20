@@ -290,6 +290,16 @@ async function api(backend, { auth, data }) {
     else if (out.workforce) { const admins = await backend.queryDocs('admins', 'status', '==', 'active'); await backend.signal(admins.map(a => a.id)); }
     else await notifyChanges(backend, out.changes, out.db, token && token.uid);
   }
+  if (out.envelope.ok && req.method === 'POST' && req.path === '/admin/controls') {
+    const k = req.body && req.body.key, NAME = { maintenance: 'وضع الصيانة', pauseOrders: 'إيقاف الطلبات الجديدة', pauseSignups: 'إيقاف تسجيل مقدمي الخدمة' };
+    await require('./owner-alerts').notifyOwner(backend, (req.body.on ? 'اتشغّل' : 'اتقفل') + ' «' + (NAME[k] || k) + '»' + (out.actor && out.actor.name ? ' — ' + out.actor.name : ''), 'apps/admin/index.html#/controls');
+  }
+  if (out.envelope.ok && req.method === 'POST' && /^\/admin\/employees(\/[^/]+\/resend)?$/.test(req.path) && backend.ensureInviteUser) {
+    /* staff invitation by email: make sure a sign-in account exists for the invited address (verified: only the mailbox
+       owner can set its password); the admin app then asks Firebase Auth to email the «set your password» link */
+    const d = out.envelope.data || {}, em = d.email || (d.employee && d.employee.email);
+    if (em) { try { await backend.ensureInviteUser(String(em).toLowerCase(), d.name || (d.employee && d.employee.name) || ''); out.envelope.data = { ...d, inviteEmail: String(em).toLowerCase() }; } catch (e) { if (backend.log) backend.log('invite user failed', e && e.message); } }
+  }
   if (out.envelope.ok && req.method === 'DELETE' && ['/customers/me', '/providers/me'].includes(req.path) && token) {
     /* account deletion: the Firebase Auth account, the user link and this user's push tokens go too */
     try { const toks = await backend.queryDocs('pushTokens', 'uid', '==', token.uid); for (const x of toks) await backend.deleteDoc(`pushTokens/${x.id}`); } catch (e) { if (backend.log) backend.log('push token cleanup failed', e && e.message); }

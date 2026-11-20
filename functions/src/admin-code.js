@@ -55,6 +55,7 @@ async function fail(backend, uid, admin, now) {
   const fails = (+admin.codeFails || 0) + 1, lock = fails >= MAX_FAILS;
   await backend.setDoc(`admins/${uid}`, { codeFails: lock ? 0 : fails, codeLockUntil: lock ? now + LOCK_MS : (+admin.codeLockUntil || 0) }, true);
   await audit(backend, uid, 'admin.code.unlock', lock ? 'locked' : 'failed');
+  if (lock) await require('./owner-alerts').notifyOwner(backend, `حساب إداري (${admin.name || admin.email || uid}) اتقفل ١٥ دقيقة بعد ${MAX_FAILS} محاولات كود غلط`, 'apps/admin/index.html#/audit');
   return { fails, lock };
 }
 

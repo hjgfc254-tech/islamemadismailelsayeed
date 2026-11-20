@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 604,
+  "file_count": 605,
   "files": [
     {
       "path": "_redirects",
@@ -328,8 +328,8 @@
       "path": "apps/admin/pages/insights.page.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 7903,
-      "sha256": "ce2edda65be65722e4edbabbc7a0440284dacdb120d4fba44b45263cc45a1f2b"
+      "bytes": 11268,
+      "sha256": "b519b6432e8d9f16c890235e0be2ebd7e048809767392e9f75ab0be104304c0b"
     },
     {
       "path": "apps/admin/pages/marketplace.page.js",
@@ -433,8 +433,8 @@
       "path": "apps/admin/pages/workforce.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 16342,
-      "sha256": "39f7305bc82b7c9364eea6a856ec597b4ddf349e9e6fc9d7129b2150ffb157c0"
+      "bytes": 16412,
+      "sha256": "df040d6332d633ed6a9b093d68a09db40ef484668ecc946c3101904347d996ec"
     },
     {
       "path": "apps/admin/permission-guard.js",
@@ -461,8 +461,8 @@
       "path": "apps/admin/styles/admin-components.css",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL PARTS)",
-      "bytes": 38406,
-      "sha256": "ff701383ec0d13fb4526e4fe4ea2bf2267df4db38e262416be1cb19ba9a76057"
+      "bytes": 38509,
+      "sha256": "63ce6200e4818458c5ac61b6ae46666e079fcb1d12562652057198ac2792206c"
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -2120,8 +2120,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 282386,
-      "sha256": "57acbb8f191c0460e3acf7d87b22928030cb48011f26c6735351c0a238967584"
+      "bytes": 282620,
+      "sha256": "58f2cf4897b1806e2330d54d461c1429ec7e83d7de3157ff9602d4d20a59f86e"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2134,8 +2134,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 153412,
-      "sha256": "af38cdcc205755ff1ce2e2b61660dfca1268b3923f9c9ee2a016080f346e2669"
+      "bytes": 153623,
+      "sha256": "91e7796dfa44d238988fe19276367dc98df4d706e2b4e6ce4921144f3b0e90d4"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2554,8 +2554,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 28834,
-      "sha256": "d2af1d7220906390d66b640b9bc2c81891c28de5cd4898813c4b567d3ddb70d1"
+      "bytes": 28872,
+      "sha256": "095b3cf348694465272d399bf14d806f4316a7cbadacd1832ca7e28e9eb4057e"
     },
     {
       "path": "docs/README.md",
@@ -2764,8 +2764,8 @@
       "path": "functions/index.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 6026,
-      "sha256": "adc1c733c32eec4dfb28e70616d0d64beabd3afda42bddaf1ea541f144abecef"
+      "bytes": 6383,
+      "sha256": "453011971778c1ce8f252d37008e8a3dbc57327e72b66b9267ac9cc1b4fb0e78"
     },
     {
       "path": "functions/package-lock.json",
@@ -2785,8 +2785,8 @@
       "path": "functions/src/admin-code.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 6355,
-      "sha256": "72c44edc5501f0b48dde36cd45ece50302cd6a1e70b4acdc1551f3f316582287"
+      "bytes": 6590,
+      "sha256": "991aa68aac3e7d72309b69b9e092e7106e77cdd71fa9bbbaa8df0892b0091cb1"
     },
     {
       "path": "functions/src/admin-extra.js",
@@ -2824,6 +2824,13 @@
       "sha256": "a2d900ce1ddcc2d9cb2b83803072d3402133b37613adb6af5df9e22854d9d0b7"
     },
     {
+      "path": "functions/src/owner-alerts.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 1425,
+      "sha256": "60c51b3320f2444d17c3ba909a70f99a4054f36c9a33e96439b4e7d3b1d9d83d"
+    },
+    {
       "path": "functions/src/partial.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
@@ -2855,8 +2862,8 @@
       "path": "functions/src/service.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 34660,
-      "sha256": "550297f27adf5ca726cbefa0f86073c0e15262abde683bc825096bf0cc8d2253"
+      "bytes": 35943,
+      "sha256": "8c580ea5ae271395f56ed9b3b5771b8509fc99ca3485c39cf43bbef45022ccf6"
     },
     {
       "path": "functions/src/store.js",
@@ -2869,8 +2876,8 @@
       "path": "functions/src/telemetry.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 4991,
-      "sha256": "e9c2744e4f1beca173378470634b81317a0f22b3a49d18772f34426368ab9e09"
+      "bytes": 5394,
+      "sha256": "316ad509040a97d5cc58dea1245e9a6309b2a967c24a524d974488d437c09511"
     },
     {
       "path": "functions/src/workforce.js",
@@ -3003,14 +3010,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 10870,
-      "sha256": "90c86c5238b71e8a460935dbeaf2886469e7497cc993306d29f3bb6db30c654c"
+      "sha256": "4a46031018dae2f4b79a962ff0e1351403ab5cec9b3995615a9e05f7881950d0"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "7c6631b450cbe911046c983565949d98580f71f818b40a618cebbd110f6e689d"
+      "sha256": "a94ba46ca5b55ebd2e7b9460cedff5140eec955d97bac8b6083e157bb25d8bc6"
     },
     {
       "path": "services/admin-api.js",
@@ -3058,8 +3065,8 @@
       "path": "services/firebase-backend.js",
       "area": "services",
       "status": "NEEDS_REVIEW",
-      "bytes": 34316,
-      "sha256": "60c39be3b019399ca6a9c115e76254f48110be13584734180dc2217e3694b7a7"
+      "bytes": 34919,
+      "sha256": "d0eeb5fd67f524728751ed3aef135f2f0f27b923ae83f9d7c82844c97afcba79"
     },
     {
       "path": "services/firebase-config.js",
@@ -3660,8 +3667,8 @@
       "path": "tests/unit/admin-platform-controls.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 14011,
-      "sha256": "6a22933e6c04110b98ee76449bdd71ab826bb9c9d5733da339e418cb6b169005"
+      "bytes": 14846,
+      "sha256": "70d293e2cd2c6c23533486658c8048f97f411770162b43ae99f6ebf40e4c3d15"
     },
     {
       "path": "tests/unit/admin-runtime.test.js",

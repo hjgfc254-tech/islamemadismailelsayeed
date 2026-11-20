@@ -64,6 +64,7 @@ const backend = {
     return dead;
   },
   deleteAuthUser: uid => getAuth().deleteUser(uid),
+  ensureInviteUser: async (email, name) => { try { return (await getAuth().getUserByEmail(email)).uid; } catch (e) { if (e && e.code !== 'auth/user-not-found') throw e; } const u = await getAuth().createUser({ email, emailVerified: true, displayName: name || undefined, password: require('crypto').randomBytes(24).toString('base64url') }); return u.uid; },
   env: { bootstrapEmails: String(process.env.ADMIN_BOOTSTRAP_EMAILS || '').split(',').map(s => s.trim()).filter(Boolean) }
 };
 

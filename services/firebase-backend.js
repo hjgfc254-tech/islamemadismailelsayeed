@@ -290,6 +290,10 @@ async function start() {
     /** Admin Center mutation through the server; resolves after the read model (workforce/RBAC included) is refreshed. */
     async admin(method, path, body) {
       const res = await C.request(method, path, { body });
+      /* staff invitation: Firebase Auth emails the invited address a «set your password» link to the Admin Center */
+      if (res && res.ok && res.data && res.data.inviteEmail) {
+        try { await A.sendPasswordResetEmail(auth, res.data.inviteEmail, { url: location.origin + location.pathname.replace(/[^/]*$/, '') + 'index.html' }); res.inviteSent = true; } catch (e) { res.inviteSent = false; }
+      }
       try { await sync(); } catch {}
       return res;
     },
@@ -393,7 +397,7 @@ async function start() {
      The browser prompt only opens when the user taps «تفعيل». «لاحقًا» hides the offer for 7 days. */
   document.addEventListener('hs:backend-sync', e => {
     try {
-      if (APP === 'admin' || !(e.detail && e.detail.actor)) return;
+      if (!(e.detail && e.detail.actor)) return;   /* admin too: the owner receives emergency / security alerts (owner-alerts.js) */
       if (HSBackend.pushState() !== 'default' || document.getElementById('hs-push-offer')) return;
       const until = Number(localStorage.getItem('hs_push_later') || 0); if (until > Date.now()) return;
       const box = document.createElement('div');
@@ -401,7 +405,7 @@ async function start() {
       box.style.cssText = 'position:fixed;inset-inline:12px;bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:220;max-width:440px;margin-inline:auto;display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border-subtle,#E6DDCF);border-radius:16px;background:var(--surface-primary,#fff);box-shadow:0 12px 30px rgba(31,27,23,.16);font-family:var(--font-body,inherit);color:var(--text-primary,#1F1B17)';
       /* a customer waiting for offers hears the most relevant reason */
       let biddingOpen = false; try { biddingOpen = typeof MP !== 'undefined' && (MP.db().serviceRequests || []).some(r => r.bidding && ['received', 'searching', 'sent'].includes(r.status)); } catch {}
-      const msg = APP === 'provider' ? 'فعّل الإشعارات عشان توصلك الطلبات الجديدة فورًا.' : biddingOpen ? 'فعّل الإشعارات عشان نبلغك أول ما توصلك عروض الفنيين — حتى لو قفلت الصفحة.' : 'فعّل الإشعارات عشان نبلغك بحالة طلبك أول بأول.';
+      const msg = APP === 'admin' ? 'فعّل الإشعارات عشان توصلك تنبيهات الطوارئ والأمان فورًا.' : APP === 'provider' ? 'فعّل الإشعارات عشان توصلك الطلبات الجديدة فورًا.' : biddingOpen ? 'فعّل الإشعارات عشان نبلغك أول ما توصلك عروض الفنيين — حتى لو قفلت الصفحة.' : 'فعّل الإشعارات عشان نبلغك بحالة طلبك أول بأول.';
       box.innerHTML = `<span style="flex:1;font-size:14px;line-height:1.5">${msg}</span><button type="button" data-push-yes style="min-height:40px;padding:0 14px;border:0;border-radius:12px;background:var(--brand-primary,#1F1B17);color:#fff;font:inherit;font-weight:700;cursor:pointer">تفعيل</button><button type="button" data-push-later style="min-height:40px;padding:0 10px;border:0;background:none;color:var(--text-secondary,#4A433C);font:inherit;cursor:pointer">لاحقًا</button>`;
       box.querySelector('[data-push-yes]').addEventListener('click', () => {
         box.remove();

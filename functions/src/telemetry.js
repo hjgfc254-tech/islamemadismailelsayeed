@@ -63,6 +63,8 @@ async function report(backend, app, body, uid) {
       expiresAt: new Date(now.getTime() + TTL_MS)
     }, false);
     stored++;
+    const n = (cur ? +cur.count || 0 : 0) + 1;
+    if ([10, 100, 1000].includes(n)) await require('./owner-alerts').notifyOwner(backend, `خطأ بيتكرر (${n} مرة) في ${c.app === 'server' ? 'السيرفر' : c.app === 'provider' ? 'تطبيق مقدم الخدمة' : c.app === 'admin' ? 'الإدارة' : 'تطبيق العميل'}: ${c.msg.slice(0, 90)}`, 'apps/admin/index.html#/audit');
   }
   return okEnv({ stored }, 201);
 }
