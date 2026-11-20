@@ -10369,8 +10369,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "db19463c48d4c9dc99f1b2598d831f9e79108d77df671ffaac1c06ed15cf68f2",
-      "bytes": 4285
+      "sha256": "c74a2d0c38c8ab0eea4bc42d8b74962e11dffbfce6d9ba589f47edeb0b861607",
+      "bytes": 4778
     },
     {
       "path": "docs/DESIGN_MAP.md",

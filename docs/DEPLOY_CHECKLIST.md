@@ -1,4 +1,6 @@
-# Deploy checklist — Cloud Functions / Firestore (pending owner approval)
+# Deploy checklist — Cloud Functions / Firestore
+
+> **Deployed 2026-11-20 (`42f420a`, owner approval):** functions `api`, `session`, `offersClock` (new, every 5 min), Firestore rules + indexes (incl. the `clientErrors` TTL), RTDB rules and Firebase Hosting. Daily Firestore backups were already scheduled (98-day retention). Smoke test: anonymous sync OK, admin route without sign-in → 401. Still manual: App Check site key (Console › App Check), the Arabic «reset password» email template (Console › Authentication › Templates) used for staff invitations.
 
 The frontend is served by GitHub Pages and goes live on every push to `main`. The **server** (Cloud Functions in
 `me-central1`, Firestore rules / indexes, RTDB rules) changes only with `firebase deploy`. Nothing below has been

@@ -2421,8 +2421,8 @@
       "path": "docs/DEPLOY_CHECKLIST.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 4285,
-      "sha256": "db19463c48d4c9dc99f1b2598d831f9e79108d77df671ffaac1c06ed15cf68f2"
+      "bytes": 4778,
+      "sha256": "c74a2d0c38c8ab0eea4bc42d8b74962e11dffbfce6d9ba589f47edeb0b861607"
     },
     {
       "path": "docs/DESIGN_MAP.md",
