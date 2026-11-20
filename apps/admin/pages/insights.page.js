@@ -51,7 +51,7 @@
   }
 
   /* ── CSV export (opens in Excel; UTF-8 BOM so Arabic shows correctly) ── */
-  const csvCell = (v) => { const s = String(v == null ? '' : v); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  const csvCell = (v) => { let s = String(v == null ? '' : v); if (/^[=+\-@\t\r]/.test(s) && !/^-?\d+(\.\d+)?$/.test(s)) s = "'" + s;   /* L1: no spreadsheet formulas from user text */ return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
   function toCsv(rows) { return '\ufeff' + rows.map((r) => r.map(csvCell).join(',')).join('\r\n'); }
   function exportRows(kind, d) {
     d = d || (typeof MP !== 'undefined' ? MP.db() : {});

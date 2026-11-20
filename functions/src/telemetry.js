@@ -23,7 +23,7 @@ function scrub(s, max) {
   return String(s == null ? '' : s)
     .replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, '<email>')
         .replace(/\b(eyJ[\w-]{10,}\.[\w-]+\.[\w-]+|AIza[\w-]{20,}|[A-Za-z0-9_-]{32,})\b/g, '<token>')
-    .replace(/\+?\d[\d\s-]{7,}\d/g, '<num>')
+    .replace(/\+?[\d\u0660-\u0669][\d\u0660-\u0669\s-]{7,}[\d\u0660-\u0669]/g, '<num>')
     .replace(/\?[^\s#)'":]*/g, '')          // query strings can carry ids / tokens
     .replace(/\s+\n/g, '\n').slice(0, max);
 }

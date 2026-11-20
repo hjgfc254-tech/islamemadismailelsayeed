@@ -100,6 +100,14 @@
     if (Object.keys(errors).length) return fail('VALIDATION', 'راجع الحقول المطلوبة', errors);
     const c = store.get('customers', actor.id);
     if (!c) return fail('UNAUTHENTICATED');
+    /* security (M1): an unverified quick / email account may keep 3 open requests, a verified one 10 — no flooding the
+       providers with fake jobs. Local demo customers (no phoneVerified field) are not limited. */
+    if (c.phoneVerified !== undefined) {
+      const OPEN = ['received', 'searching', 'sent', 'accepted', 'scheduled', 'enroute', 'arrived', 'started', 'quote'];
+      const open = (store.db().serviceRequests || []).filter(r => r.customerId === c.id && OPEN.includes(r.status)).length;
+      const cap = c.phoneVerified === true ? 10 : 3;
+      if (open >= cap) return fail('CONFLICT', c.phoneVerified === true ? 'عندك طلبات مفتوحة كتير — خلّص أو الغي واحد الأول' : 'عندك ' + open + ' طلبات مفتوحة — أكّد رقمك بكود SMS عشان تقدر تفتح طلبات أكتر');
+    }
     const disc = resolvePromo(store, c, body.promo);
     if (disc.error) return fail('VALIDATION', disc.error, { promo: disc.error });
     const pkgs = Array.isArray((store.db().settings || {}).packages) ? store.db().settings.packages : [];

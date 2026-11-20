@@ -19,7 +19,7 @@
   const mask = (s, max) => String(s == null ? '' : s)
     .replace(/[\w.+-]+@[\w-]+(\.[\w-]+)+/g, '<email>')
         .replace(/\b(eyJ[\w-]{10,}\.[\w-]+\.[\w-]+|AIza[\w-]{20,}|[A-Za-z0-9_-]{32,})\b/g, '<token>')
-    .replace(/\+?\d[\d\s-]{7,}\d/g, '<num>')
+    .replace(/\+?[\d\u0660-\u0669][\d\u0660-\u0669\s-]{7,}[\d\u0660-\u0669]/g, '<num>')
     .replace(/\?[^\s#)'":]*/g, '').slice(0, max);
   const rel = (u) => String(u || '').replace(loc.origin || '\u0000', '');
   const ua = () => { const n = (root.navigator && root.navigator.userAgent) || ''; const m = /(Edg|OPR|SamsungBrowser|Chrome|Firefox|Version)\/(\d+)/.exec(n); const os = ['Android', 'iPhone', 'iPad', 'Windows', 'Mac OS X', 'Linux'].find((x) => n.includes(x)); return (m ? (m[1] === 'Version' ? 'Safari' : m[1]) + ' ' + m[2] : 'other') + (os ? ' · ' + os : ''); };

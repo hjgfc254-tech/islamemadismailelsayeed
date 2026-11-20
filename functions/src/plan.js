@@ -57,6 +57,8 @@ async function plan(ld, { method, path, query, body, actor }) {
   if (seg[0] === 'requests') {
     if (seg.length === 1 && method === 'POST') {
       if (autoAssign || bidding) await candidates(ld, body.cat);
+      /* M1: the open-requests cap (orders-api) needs this customer's open requests */
+      if (actor && actor.role === 'customer') await ld.where('serviceRequests', [['customerId', '==', actor.id], ['status', 'in', ['received', 'searching', 'sent', 'accepted', 'scheduled', 'enroute', 'arrived', 'started', 'quote']]], { limit: 12 });
       if (body.promo && actor && actor.role === 'customer') {     // promo rules read: first request? whose invite code?
         await Promise.all([ld.where('serviceRequests', [['customerId', '==', actor.id]], { limit: 1 }), ld.where('customers', [['refCode', '==', String(body.promo).trim().toUpperCase()]], { limit: 1 })]);
       }

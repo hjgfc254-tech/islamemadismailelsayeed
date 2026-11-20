@@ -6,7 +6,7 @@
     "services/local-market-store.js": "c0981b7abc5d3de20fa759b135e71041d0645a7e26ffbaa4ec0aa418d1f7ea74",
     "services/api-client.js": "331f7fe2216cb88724b10846b016760e8ab6915de68931f632d34bdb45dcd069",
     "services/auth-api.js": "7221c02eb6559ce21c465fc5f1987ca47ce43ecefdf963fc901a8e2b3bfd587b",
-    "services/orders-api.js": "b7df2077fbf2c2f8c4efc87a0208d521ccb7786c599a35d9b1f618cb701548a4",
+    "services/orders-api.js": "a6b5db762e0db68263a6009a9d9677fa4713a4074fca21a709a19414a1d06f2d",
     "services/quotes-api.js": "81629b0682010cfef34d798ce60bbbe60ff77f5ef8471ba4bf21e995b5f4000f",
     "services/catalog-api.js": "b849ea9b4ddbaedde173a6033e2e2229acdbb16c1c5c7326cdcb3e3dbb506a8d",
     "services/provider-api.js": "ce6ae58aaca6a81a179292603000360bdb1f614842e7ab392be401980cf500d3",

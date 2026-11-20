@@ -196,7 +196,7 @@ async function adminSummary(ld) {
 }
 
 /** Callable `api`: every application request — identity resolved server-side, data loaded per operation. */
-async function api(backend, { auth, data }) {
+async function api(backend, { auth, data, ip }) {
   const req = validateApi(data);
   const token = tokenOf(auth);
   const isRead = req.method === 'GET';
@@ -205,7 +205,11 @@ async function api(backend, { auth, data }) {
     const actor = adm && adm.status === 'active' && adminCode.isUnlocked(adm) ? { role: 'admin', id: token.uid, adminRole: adm.role } : null;
     return telemetry.handle({ backend, method: req.method, path: req.path, query: req.query, body: req.body, app: req.app, actor, token });
   }
-  if (!isRead) await rateLimit(backend, token ? token.uid : 'anonymous');
+  if (!isRead) await rateLimit(backend, token ? token.uid : 'anon_' + String(ip || 'unknown').replace(/[^\w.:-]/g, '_').slice(0, 60));   /* M2: per IP, not one shared bucket */
+  if (req.method === 'POST' && req.path === '/providers/register' && !(token && token.phone_number)) {
+    /* M2: a provider registration is bound to a phone verified by SMS — no anonymous sign-ups with someone else's number */
+    return { ok: false, status: 401, error: { code: 'UNAUTHENTICATED', message: 'سجّل الدخول برقم موبايلك (كود SMS) الأول، وبعدها كمّل التسجيل' } };
+  }
   /* the admin's access code must be unlocked (admin-code.js); until then the token resolves to no admin actor */
   const adminDoc = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
   const admin = adminDoc && adminCode.isUnlocked(adminDoc) ? adminDoc : null;
@@ -333,6 +337,9 @@ async function tickOffers(backend) {
   return { changed: out.ids.length };
 }
 
+/** L3: the owner's maintenance switch also stops sign-ups (session ops do not pass through the API gate). */
+async function maintenanceOn(backend) { try { const s = await backend.getDoc('system/settings'); return !!(s && s.controls && s.controls.maintenance && s.controls.maintenance.on); } catch (e) { return false; } }
+
 /** Callable `session`: sync (scoped read model), registerCustomer, claimOwner, importLocal. */
 async function session(backend, { auth, data }) {
   const d = data || {};
@@ -364,6 +371,7 @@ async function session(backend, { auth, data }) {
       return { serverTime: Date.now(), actor, db: scopeFor(db, actor), provider: app === 'provider' && token ? await providerStatusOf(ld, token) : null, admin: adminData, signedIn: !!token, reads: ld.reads };
     }
     case 'registerCustomer': {
+      if (await maintenanceOn(backend)) fail('unavailable', 'المنصة في صيانة دلوقتي — جرّب تاني بعد شوية');   /* L3 */
       /* Three ways in, one customer record per phone:
          phone OTP   → the verified token phone is the identity (phoneVerified: true);
          email / quick (anonymous) account → identity is the uid; d.phone is a CONTACT number (phoneVerified: false)
@@ -376,6 +384,7 @@ async function session(backend, { auth, data }) {
       if (name.length < 2 || name.length > 60) fail('invalid-argument', 'اكتب اسمك (2–60 حرفًا)');
       await rateLimit(backend, token.uid);
       const method = authMethodOf(token);
+      let staleUid = null;
       const out = await backend.runTransaction(async tx => {
         const ld = new PartialDb(backend.adapter, tx);
         await ld.loadSystem();
@@ -394,7 +403,13 @@ async function session(backend, { auth, data }) {
         const res = runtime.operation({ db: ld.toDb(), roster: [] }, env => env.mp.customerFor(name, phone));
         const rec = (res.db.customers || []).find(c => c.id === res.result.id);
         if (rec) {
-          if (verified) { rec.phoneVerified = true; if (!rec.uid) rec.uid = token.uid; }
+          if (verified) {
+            /* security (H1): the verified owner of the phone always wins. A record made earlier by an unverified quick /
+               email account with this number is taken over by the OTP-verified account and the squatter's link dropped. */
+            if (rec.uid && rec.uid !== token.uid && rec.phoneVerified !== true) staleUid = rec.uid;
+            if (!rec.uid || staleUid) rec.uid = token.uid;
+            rec.phoneVerified = true;
+          }
           else { rec.uid = token.uid; rec.phoneVerified = false; }
           rec.authMethod = method;
           if (token.email && !rec.email) rec.email = String(token.email).toLowerCase();
@@ -402,6 +417,7 @@ async function session(backend, { auth, data }) {
         ld.commit(res.db);
         return res;
       });
+      if (staleUid) { try { await backend.deleteDoc(`users/${staleUid}`); } catch (e) {} try { if (backend.deleteAuthUser) await backend.deleteAuthUser(staleUid); } catch (e) {} }
       const actor = { role: 'customer', id: out.result.id, name: out.result.name };
       await linkUser(backend, token.uid, actor, 'customer');
       return { actor, db: scopeFor(out.db, actor) };

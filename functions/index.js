@@ -82,7 +82,7 @@ function wrap(name, fn) {
     if (isReadCall(name, request.data) && !readLimiter.allowRead({ uid: request.auth && request.auth.uid, ip: clientIp(request.rawRequest) })) {
       throw new HttpsError('resource-exhausted', 'طلبات كثيرة — حاول بعد دقيقة');
     }
-    try { return await fn(backend, { auth: request.auth, data: request.data }); }
+    try { return await fn(backend, { auth: request.auth, data: request.data, ip: clientIp(request.rawRequest) }); }
     catch (e) {
       if (e instanceof service.ServiceError) throw new HttpsError(e.code, e.message);
       logger.error(name + ' failed', { error: e && e.message, stack: e && e.stack });

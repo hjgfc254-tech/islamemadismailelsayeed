@@ -237,3 +237,4 @@
 @media(max-width:380px){.pv-top-actions{gap:6px}.pv-demo{padding:4px 8px;font-size:11px}.pv-top-actions .pv-icon-btn{padding-inline:10px;min-width:40px}}
 @media(max-width:340px){.pv-demo{display:none}}
 .pv-btn-danger{background:transparent;color:var(--danger,#b3261e);border-color:color-mix(in srgb,var(--danger,#b3261e) 45%,transparent)}
+.pv-disclaimer a{color:var(--text-primary);font-weight:700;text-decoration:underline;text-underline-offset:3px}
