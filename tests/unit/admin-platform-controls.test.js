@@ -166,3 +166,14 @@ test('rank: riskier actions need a higher rank — support resolves complaints b
   assert.equal(G.riskDenied(who('owner'), 'finance.commission'), '');
   assert.equal(G.riskDenied({ role: 'customer', id: 'c' }, 'providers.suspend'), '', 'only admin actors are ranked');
 });
+
+test('«الإحصائيات» exports CSV with a BOM, quoted cells and Arabic headers', () => {
+  const I = require(path.join(ROOT, 'apps/admin/pages/insights.page.js'));
+  const csv = I.toCsv([['أ', 'b,c'], ['قال "هاي"', 1]]);
+  assert.equal(csv.charCodeAt(0), 0xfeff, 'BOM so Excel reads UTF-8');
+  assert.ok(csv.includes('"b,c"') && csv.includes('"قال ""هاي"""'));
+  const rows = I.exportRows('transactions', { transactions: [{ at: '2026-11-20T10:00:00Z', reqId: 'r1', providerId: 'p1', value: 300, commission: 45, collection: 'pending' }, { free: true }], providers: [{ id: 'p1', name: 'كريم' }], serviceRequests: [{ id: 'r1', no: 'HS-1' }] });
+  assert.equal(rows.length, 2, 'free services are not exported');
+  assert.deepEqual(rows[1], ['2026-11-20 10:00', 'HS-1', 'كريم', 300, 45, 255, 'لسه']);
+});
+

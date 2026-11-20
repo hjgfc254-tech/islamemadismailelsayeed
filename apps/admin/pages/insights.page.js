@@ -50,6 +50,27 @@
     </div>`;
   }
 
+  /* ── CSV export (opens in Excel; UTF-8 BOM so Arabic shows correctly) ── */
+  const csvCell = (v) => { const s = String(v == null ? '' : v); return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+  function toCsv(rows) { return '\ufeff' + rows.map((r) => r.map(csvCell).join(',')).join('\r\n'); }
+  function exportRows(kind, d) {
+    d = d || (typeof MP !== 'undefined' ? MP.db() : {});
+    const st = STATUS(), day = (iso) => String(iso || '').slice(0, 16).replace('T', ' ');
+    if (kind === 'orders') return [['رقم الطلب', 'التاريخ', 'الخدمة', 'القسم', 'المحافظة', 'المنطقة', 'الحالة', 'القيمة النهائية']].concat((d.serviceRequests || []).map((x) => [x.no || x.id, day(x.createdAt), x.serviceName || '', x.cat || '', x.gov || '', x.area || '', st[x.status] || x.status, x.finalValue || '']));
+    if (kind === 'transactions') return [['التاريخ', 'الطلب', 'مقدم الخدمة', 'قيمة الخدمة', 'حصة المنصة', 'صافي مقدم الخدمة', 'التحصيل']].concat((d.transactions || []).filter((x) => !x.free).map((x) => {
+      const p = (d.providers || []).find((y) => y.id === x.providerId), r = (d.serviceRequests || []).find((y) => y.id === x.reqId);
+      return [day(x.at), r ? (r.no || r.id) : x.reqId || '', p ? p.name : x.providerId || '', x.value || 0, x.commission || 0, x.net != null ? x.net : (x.value || 0) - (x.commission || 0), ({ collected: 'اتحصّلت', pending: 'لسه' })[x.collection] || x.collection || ''];
+    }));
+    if (kind === 'providers') return [['الاسم', 'الحالة', 'التخصصات', 'المحافظات', 'التقييم', 'عدد الشغلانات', 'متاح']].concat((d.providers || []).map((p) => [p.name, PSTATUS[p.status] || p.status, (p.cats || []).join(' / '), (p.govs || []).join(' / '), p.rating || '', p.jobs || 0, p.available ? 'نعم' : 'لا']));
+    return [];
+  }
+  function download(kind) {
+    const rows = exportRows(kind); if (rows.length < 2) return false;
+    const name = ({ orders: 'الطلبات', transactions: 'المعاملات', providers: 'مقدمي-الخدمة' })[kind] + '-' + new Date().toISOString().slice(0, 10) + '.csv';
+    try { const url = URL.createObjectURL(new Blob([toCsv(rows)], { type: 'text/csv;charset=utf-8' })); const a = root.document.createElement('a'); a.href = url; a.download = name; root.document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 2000); return true; } catch (e) { return false; }
+  }
+  const exportBar = () => `<div class="ins-export" role="group" aria-label="تصدير"><b>تصدير لملف Excel:</b>${[['orders', 'الطلبات'], ['transactions', 'المعاملات'], ['providers', 'مقدمو الخدمة']].map(([k, l]) => `<button type="button" class="adm-btn" data-ins-export="${k}">${l}</button>`).join('')}<span role="status" aria-live="polite" class="ord-muted" data-ins-export-status></span></div>`;
+
   async function paintTab(host, ctx) {
     const t = TABS.find((x) => x.id === tab) || TABS[0];
     if (t.id === 'overview') { host.innerHTML = ''; if (root.HSAdminDashboardPage && root.HSAdminDashboardPage.kpiView) root.HSAdminDashboardPage.kpiView(host); return; }
@@ -71,6 +92,7 @@
     const tabs = TABS.filter((t) => !t.owner || isOwner());
     if (!tabs.some((t) => t.id === tab)) tab = 'overview';
     wrap.innerHTML = `<div class="ins-tabs" role="tablist" aria-label="أقسام الإحصائيات">${tabs.map((t) => `<button type="button" role="tab" id="ins-t-${t.id}" aria-controls="ins-panel" aria-selected="${t.id === tab}" tabindex="${t.id === tab ? 0 : -1}" data-ins-tab="${t.id}">${esc(t.label)}</button>`).join('')}</div>
+      ${exportBar()}
       <div id="ins-panel" role="tabpanel" aria-labelledby="ins-t-${tab}" class="ins-panel"></div>`;
     const panel = wrap.querySelector('#ins-panel');
     paintTab(panel, ctx);
@@ -81,6 +103,7 @@
       const fresh = panel.cloneNode(false); panel.replaceWith(fresh);          // drop listeners of the previous tab
       paintTab(wrap.querySelector('#ins-panel'), ctx);
     };
+    wrap.addEventListener('click', (e) => { const b = e.target.closest('[data-ins-export]'); if (!b) return; const ok = download(b.dataset.insExport); const s = wrap.querySelector('[data-ins-export-status]'); if (s) s.textContent = ok ? 'اتحمّل الملف.' : 'مفيش بيانات للتصدير.'; });
     wrap.querySelector('.ins-tabs').addEventListener('click', (e) => { const b = e.target.closest('[data-ins-tab]'); if (b) select(b.dataset.insTab); });
     wrap.querySelector('.ins-tabs').addEventListener('keydown', (e) => {
       if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(e.key)) return;
@@ -91,7 +114,7 @@
     return wrap;
   }
 
-  const api = { TABS, areaCounts, render, _setTab: (t) => { tab = t; } };
+  const api = { TABS, areaCounts, render, exportRows, toCsv, _setTab: (t) => { tab = t; } };
   root.HSAdminInsightsPage = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (root.HSAdminShell && typeof root.HSAdminShell.registerPage === 'function') {

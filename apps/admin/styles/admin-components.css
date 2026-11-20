@@ -385,3 +385,5 @@ a.adm-link:hover{background:var(--nav-dark-hover);color:var(--on-brand)}
 
 /* «سجل الإداريين» filters (admin-live-panels audit) */
 .aud-filters{display:flex;flex-wrap:wrap;align-items:end;gap:var(--sp-2);margin-bottom:var(--sp-3)}
+
+.ins-export{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2);margin-bottom:var(--sp-3)}
