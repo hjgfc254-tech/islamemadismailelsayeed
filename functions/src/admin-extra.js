@@ -129,6 +129,10 @@ async function handle({ backend, tx, method, path, query, body, admin, token }) 
     }
     if (seg[2] === 'broadcast' && method === 'POST') {
       if (!(await can(a, tx, admin, 'notifications', 'create'))) return deny();
+      if (!isRole(admin, 'owner')) {   /* rank: a broadcast to everyone needs «مدير» (rbac-store RISK) */
+        const st = await workforce.loadState(a, tx); const R = require('./runtime').createContext(null, [], st.rbac || null).ctx.HSAdminRbac;
+        if (R.levelOf(R.state.roles, admin.role) < R.riskNeed('notifications.broadcast')) return env(403, 'FORBIDDEN', '«إشعار جماعي» محتاج رتبة مدير أو أعلى');
+      }
       const audience = body.audience, text = String(body.text || '').trim();
       if (!['customers', 'providers'].includes(audience)) return env(422, 'VALIDATION', 'اختر الجمهور', { audience: 'customers|providers' });
       if (text.length < 5 || text.length > TEXT_MAX) return env(422, 'VALIDATION', 'نص الإشعار من 5 إلى 500 حرف', { text: '5–500' });
