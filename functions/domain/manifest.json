@@ -9,7 +9,7 @@
     "services/orders-api.js": "b7df2077fbf2c2f8c4efc87a0208d521ccb7786c599a35d9b1f618cb701548a4",
     "services/quotes-api.js": "81629b0682010cfef34d798ce60bbbe60ff77f5ef8471ba4bf21e995b5f4000f",
     "services/catalog-api.js": "b849ea9b4ddbaedde173a6033e2e2229acdbb16c1c5c7326cdcb3e3dbb506a8d",
-    "services/provider-api.js": "d436f657c2923c92162069e02259afa88c4701a0b1eeadb38d27479422e09782",
+    "services/provider-api.js": "ce6ae58aaca6a81a179292603000360bdb1f614842e7ab392be401980cf500d3",
     "services/customer-api.js": "faacf1c1ca9a48640134a4d29f90a1e15deccf56a0ee63feab4997097c8010fc",
     "services/notifications-api.js": "3db9b04eb3396796eb1a84bc37e87e4d7ba417140251ff5b43024e1af79e41a9",
     "services/support-api.js": "8e52c5cb211d4e6096c07261aca9470f2914f5a1eac6347d2eb59d98b0d552cc",

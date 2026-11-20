@@ -70,6 +70,19 @@
     return own(store, store.get('providers', p.id));
   });
 
+  /* Account deletion (store requirement): refused while a job is open; afterwards the record is anonymised — past
+     jobs, reviews and transactions keep their numbers for customers' history and the accounts, without personal data. */
+  client.define('DELETE', '/providers/me', { roles: ['provider'], summary: 'Delete own account (anonymise; refused with open jobs).' }, ({ actor, store }) => {
+    const db = store.db(), p = store.get('providers', actor.id);
+    if (!p) return client.fail('NOT_FOUND');
+    const open = (db.assignments || []).filter((x) => x.providerId === p.id && x.status === 'accepted')
+      .some((x) => { const r = store.get('serviceRequests', x.reqId); return r && !['completed', 'closed', 'cancelled', 'failed'].includes(r.status); });
+    if (open) return client.fail('CONFLICT', 'عندك شغل لسه مفتوح — خلّصه أو اعتذر عنه الأول، وبعدها احذف الحساب');
+    (db.assignments || []).forEach((x) => { if (x.providerId === p.id && x.status === 'offered') x.status = 'withdrawn'; });
+    Object.assign(p, { name: 'مقدم خدمة محذوف', phone: '', email: '', bio: '', photo: '', available: false, status: 'deleted', deletedAt: new Date().toISOString(), areas: [], govs: [] });
+    store.save();
+    return { id: p.id, deleted: true };
+  });
   client.define('PATCH', '/providers/me/availability', { roles: ['provider'], summary: 'Toggle availability for new requests.' }, ({ body, actor, store }) => {
     if (typeof body.available !== 'boolean') return fail('VALIDATION', 'قيمة التوفر غير صالحة', { available: 'boolean' });
     store.updateProvider(actor.id, { available: body.available });
@@ -81,6 +94,7 @@
     register: body => client.post('/providers/register', body),
     me: () => client.get('/providers/me'),
     update: patch => client.patch('/providers/me', patch),
-    setAvailability: available => client.patch('/providers/me/availability', { available })
+    setAvailability: available => client.patch('/providers/me/availability', { available }),
+    deleteMe: () => client.del('/providers/me')
   };
 });

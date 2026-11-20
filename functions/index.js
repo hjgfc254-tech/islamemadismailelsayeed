@@ -63,6 +63,7 @@ const backend = {
     });
     return dead;
   },
+  deleteAuthUser: uid => getAuth().deleteUser(uid),
   env: { bootstrapEmails: String(process.env.ADMIN_BOOTSTRAP_EMAILS || '').split(',').map(s => s.trim()).filter(Boolean) }
 };
 

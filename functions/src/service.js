@@ -290,6 +290,12 @@ async function api(backend, { auth, data }) {
     else if (out.workforce) { const admins = await backend.queryDocs('admins', 'status', '==', 'active'); await backend.signal(admins.map(a => a.id)); }
     else await notifyChanges(backend, out.changes, out.db, token && token.uid);
   }
+  if (out.envelope.ok && req.method === 'DELETE' && ['/customers/me', '/providers/me'].includes(req.path) && token) {
+    /* account deletion: the Firebase Auth account, the user link and this user's push tokens go too */
+    try { const toks = await backend.queryDocs('pushTokens', 'uid', '==', token.uid); for (const x of toks) await backend.deleteDoc(`pushTokens/${x.id}`); } catch (e) { if (backend.log) backend.log('push token cleanup failed', e && e.message); }
+    try { await backend.deleteDoc(`users/${token.uid}`); } catch (e) {}
+    try { if (backend.deleteAuthUser) await backend.deleteAuthUser(token.uid); } catch (e) { if (backend.log) backend.log('auth delete failed', e && e.message); }
+  }
   return out.envelope;
 }
 

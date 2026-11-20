@@ -149,6 +149,7 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /providers/register` | public | provider-api.js | Onboarding: create a pending provider registration. |
 | `GET /providers/me` | provider | provider-api.js | Own full profile. |
 | `PATCH /providers/me` | provider | provider-api.js | Edit allow-listed own profile fields. |
+| `DELETE /providers/me` | provider | provider-api.js | Delete own account (anonymise; refused with open jobs). |
 | `PATCH /providers/me/availability` | provider | provider-api.js | Toggle availability for new requests. |
 | `GET /customers/me` | customer | customer-api.js | Own customer profile. |
 | `PATCH /customers/me` | customer | customer-api.js | Edit own profile {name, phone, email, prefs}. On the Firebase backend the phone must stay the verified one. |

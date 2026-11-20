@@ -486,7 +486,9 @@ hansalhlak/
 │   ├── package-lock.json
 │   └── package.json
 ├── legal/
-│   └── privacy.html
+│   ├── legal.css
+│   ├── privacy.html
+│   └── terms.html
 ├── scripts/
 │   ├── build-lucide-icons.cjs
 │   ├── build-project-reference.cjs

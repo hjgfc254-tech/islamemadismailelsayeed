@@ -230,6 +230,7 @@ const Support = (() => {
       <div class="card2 glass neon" style="padding:14px">
         <div style="font-size:13.5px;line-height:1.7;color:#eadfe7">${_esc(p.body)}</div>
       </div>
+      ${kind === 'privacy' || kind === 'terms' ? `<p style="margin:10px 0 0"><a class="cta ghost" href="../../legal/${kind}.html" target="_blank" rel="noopener">اقرا النص الكامل</a></p>` : ''}
       ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'':`<div class="demo-banner">${safeIc('info')}<span>نص تجريبي — عند التشغيل الفعلي، ستحتاج لصياغة قانونية.</span></div>`}`);
   };
 

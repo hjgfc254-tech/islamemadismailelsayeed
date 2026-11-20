@@ -436,6 +436,14 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
     const route=event.target.closest('[data-pv-route]'); if(route){const [page,id='']=route.dataset.pvRoute.split('/');router.navigate(page,id);return;}
     const button=event.target.closest('[data-pv-action]'); if(!button)return;
     const {pvAction:action,id,next}=button.dataset;
+    if(action==='delete-account') {   /* store requirement: delete my account (refused while a job is open) */
+      const w=root.prompt?root.prompt('حذف الحساب نهائي: هتتشال بياناتك وهتخرج من التطبيق. اكتب «حذف» للتأكيد'):'';
+      if(String(w||'').trim()!=='حذف'){ if(w!=null) toast('اكتب «حذف» بالظبط للتأكيد'); return; }
+      root.HSProviderApi.deleteMe().then(res=>{   /* not the local const api (declared further down: TDZ) */ if(!res||!res.ok){ toast(errorText(res)); return; }
+        session.clear&&session.clear(); toast('اتحذف الحساب');
+        if(root.HSBackend&&root.HSBackend.signOut) root.HSBackend.signOut().catch(()=>{}).then(()=>location.reload()); else { router.navigate('home'); render(); } });
+      return;
+    }
     if(action==='select') { const p=HSProviderAuth.resolveDemoAccount(MP,id); if(!p)return; session.select(id); router.navigate('home'); render(); toast('تم فتح حساب العرض التجريبي'); return; }
     if(action==='logout') { session.clear(); router.navigate('home'); render(); return; }
     if(action==='register') { openRegisterForm(); return; }
