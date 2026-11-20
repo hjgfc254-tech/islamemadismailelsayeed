@@ -133,7 +133,7 @@
     </button>
   </aside>
   <main class="adm-main" id="adm-main" tabindex="-1">
-    <div class="adm-banner" role="note">${icon('info')}<span>هذه لوحة تجريبية: البيانات محلية، والصلاحيات المعروضة هنا للعرض فقط وليست حماية فعلية.</span></div>
+    ${firebaseMode() ? '' : `<div class="adm-banner" role="note">${icon('info')}<span>هذه لوحة تجريبية: البيانات محلية، والصلاحيات المعروضة هنا للعرض فقط وليست حماية فعلية.</span></div>`}
     <nav class="adm-crumbs" id="adm-crumbs" aria-label="مسار التنقل"></nav>
     <div class="adm-titlebar">
       <div class="adm-titles"><h1 class="adm-title" id="adm-title" tabindex="-1"></h1><p class="adm-desc" id="adm-desc"></p></div>

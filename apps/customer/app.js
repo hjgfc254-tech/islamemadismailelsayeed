@@ -914,6 +914,7 @@ function fadeImages(scope){
 function show(name, arg){
   clearInterval(carTimer);
   state.lastShown = { name, arg };
+  try { document.documentElement.dataset.screen = name; } catch {}   /* CSS: screen-specific chrome (help bubble hidden on form screens) */
   renderTabs();   /* V8-C3: يحدّث شارة الطلبات النشطة عند كل عرض */
   view.innerHTML = screens[name](arg);
   view.scrollTop = 0;
@@ -991,7 +992,7 @@ function applyEntry(hash){
   const customer = typeof HSCustomerSession !== 'undefined' ? HSCustomerSession.customer() : null;
   const entry = HSGuestEntry.resolve(hash, customer, MP);
   if (!entry) return false;
-  if (entry.signin) { HSGuestEntry.rememberReturn(entry.returnTo); go('account'); toast('سجّل الدخول (تجريبيًا) لعرض هذه الصفحة'); return true; }
+  if (entry.signin) { HSGuestEntry.rememberReturn(entry.returnTo); go('account'); toast('سجّل الدخول الأول عشان تشوف الصفحة دي'); return true; }
   if (entry.notFound) { go('home'); toast('الرابط غير متاح'); return true; }
   openRoute(entry); return true;
 }

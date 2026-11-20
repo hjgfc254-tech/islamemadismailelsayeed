@@ -104,8 +104,8 @@ withBrowser(async ({ wsUrl }) => {
   await emailAccount(OWNER_EMAIL, 'emulator-only-1', true);                     // owner verified their email (emulator)
   const ADMIN = BASE + '/apps/admin/index.html?backend=firebase&emulators=1';
   await cdp.send('Page.navigate', { url: ADMIN });
-  ok(await d.waitFor('typeof HSBackend==="object" && !!HSBackend.lastSync && !!document.getElementById("hs-backend-signin")', 20000), 'admin app: no backend identity → sign-in offered');
-  await d.evaluate(`document.getElementById('hs-backend-signin').click(); true`);
+  ok(await d.waitFor('typeof HSBackend==="object" && !!HSBackend.lastSync && !!document.querySelector("[data-adm-fb-login]")', 20000), 'admin app: no backend identity → sign-in offered');
+  await d.evaluate(`document.querySelector('[data-adm-fb-login]').click(); true`);
   ok(await d.waitFor('!!document.querySelector("dialog input[name=email]")', 8000), 'admin sign-in dialog opens');
   await d.evaluate(`(() => { document.querySelector('dialog input[name=email]').value = ${JSON.stringify(OWNER_EMAIL)}; document.querySelector('dialog input[name=password]').value = 'emulator-only-1'; document.querySelector('dialog button[value=ok]').click(); return true; })()`);
   /* third factor: the new owner sets the 8-digit access code in the app dialog, then the console opens */
@@ -132,8 +132,8 @@ withBrowser(async ({ wsUrl }) => {
   const asg = await callable('api', { app: 'admin', method: 'POST', path: `/admin/requests/${created.id}/assign`, body: { providerId: reg.data.id } }, ownerTok);
   ok(appr.ok && asg.ok, 'admin approved the provider and assigned the request');
   await cdp.send('Page.navigate', { url: BASE + '/apps/provider/index.html?backend=firebase&emulators=1' });
-  ok(await d.waitFor('typeof HSBackend==="object" && !!HSBackend.lastSync && !!document.getElementById("hs-backend-signin")', 20000), 'provider app: sign-in offered');
-  await d.evaluate(`document.getElementById('hs-backend-signin').click(); true`);
+  ok(await d.waitFor('typeof HSBackend==="object" && !!HSBackend.lastSync && !!document.querySelector("[data-pv-fb-signin]")', 20000), 'provider app: sign-in offered');
+  await d.evaluate(`document.querySelector('[data-pv-fb-signin]').click(); true`);
   ok(await d.waitFor('!!document.querySelector("dialog input[name=phone]")', 8000), 'provider phone dialog opens');
   await d.evaluate(`(() => { document.querySelector('dialog input[name=phone]').value = '01099998888'; document.querySelector('dialog button[value=ok]').click(); return true; })()`);
   ok(await d.waitFor('!!document.querySelector("dialog input[name=code]")', 15000), 'provider OTP dialog opens');
@@ -151,8 +151,8 @@ withBrowser(async ({ wsUrl }) => {
   /* one Firebase Auth session per origin: the provider signs out, then the owner signs in to the Admin app again */
   await d.evaluate('HSBackend.signOut().then(() => true)');
   await cdp.send('Page.navigate', { url: ADMIN + '#/providers' });
-  ok(await d.waitFor('!!document.getElementById("hs-backend-signin")', 20000), 'admin app after the provider signed out: sign-in offered');
-  await d.evaluate(`document.getElementById('hs-backend-signin').click(); true`);
+  ok(await d.waitFor('!!document.querySelector("[data-adm-fb-login]")', 20000), 'admin app after the provider signed out: sign-in offered');
+  await d.evaluate(`document.querySelector('[data-adm-fb-login]').click(); true`);
   await d.waitFor('!!document.querySelector("dialog input[name=email]")', 8000);
   await d.evaluate(`(() => { document.querySelector('dialog input[name=email]').value = ${JSON.stringify(OWNER_EMAIL)}; document.querySelector('dialog input[name=password]').value = 'emulator-only-1'; document.querySelector('dialog button[value=ok]').click(); return true; })()`);
   ok(await d.waitFor('typeof HSBackend==="object" && HSBackend.actor && HSBackend.actor.role==="admin" && !document.querySelector("[data-adm-fb-wait]")', 25000), 'admin shell reopens for the server identity');

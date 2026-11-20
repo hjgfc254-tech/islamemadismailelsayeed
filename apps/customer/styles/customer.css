@@ -1384,3 +1384,9 @@ html.ob-open,html.ob-open body{overflow:hidden}
 .offer-alert button:focus-visible{outline:3px solid var(--brand-primary,#2FA57A);outline-offset:2px}
 @keyframes oaRing{0%,100%{transform:rotate(0)}20%{transform:rotate(-14deg)}40%{transform:rotate(12deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(4deg)}}
 @media (prefers-reduced-motion:reduce){.offer-alert{transition:opacity .2s;transform:none}.offer-alert .oa-ic{animation:none}}
+
+/* 2026-11-20 mobile polish: the help bubble never covers a form or the request wizard; the account / request / tracking
+   screens have their own help entry. Page-title accent reads as an intentional brand mark, not a stray dash. */
+@media (max-width:899px){
+  html[data-screen="account"] .help-fab,html[data-screen="request"] .help-fab,html[data-screen="wizard"] .help-fab,html[data-screen="tracking"] .help-fab,html[data-screen="addresses"] .help-fab,html[data-screen="support"] .help-fab{display:none}
+}

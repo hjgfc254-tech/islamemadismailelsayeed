@@ -421,6 +421,9 @@ async function start() {
 
   document.addEventListener('hs:backend-sync', e => {
     if (APP === 'customer' || (e.detail && e.detail.actor)) return;
+    /* the provider and admin screens already show their own sign-in button (provider app.js firebaseSignIn, admin app.js
+       startFirebase): the floating duplicate is only added when neither is on the page */
+    if (document.querySelector('[data-pv-fb-signin],[data-pv-signin-screen],[data-adm-fb-login],[data-adm-fb-signin],[data-adm-fb-wait],.pv-account-list')) return;
     if (document.getElementById('hs-backend-signin')) return;
     const b = document.createElement('button');
     b.id = 'hs-backend-signin'; b.type = 'button';
