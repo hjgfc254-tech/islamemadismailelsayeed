@@ -40,7 +40,7 @@
     { id: 'a3', level: 'info', text: 'تسوية الأسبوع جاهزة للمراجعة.', module: 'settlements' }
   ];
   const SHORTCUTS = [['orders', 'الطلبات', 'list'], ['providers', 'مقدمو الخدمة', 'provider'], ['customers', 'العملاء', 'user'],
-    ['complaints', 'الشكاوى', 'warn'], ['finance', 'الماليات', 'wallet'], ['reports', 'التقارير', 'info']];
+    ['complaints', 'الشكاوى', 'warn'], ['settlements', 'التسويات', 'wallet'], ['insights', 'الإحصائيات', 'info']];
   const MODULE_LABEL = { orders: 'الطلبات', providers: 'مقدمو الخدمة', customers: 'العملاء', finance: 'الماليات', reviews: 'التقييمات', complaints: 'الشكاوى', settlements: 'التسويات', reports: 'التقارير' };
 
   /* ───── State (memory only) ───── */
@@ -110,18 +110,51 @@
       ${C.bars({ id: 'ch-req', title: 'الطلبات الجديدة يوميًا', points: reqs })}
       ${C.bars({ id: 'ch-val', title: 'قيمة الخدمات المكتملة يوميًا', unit: 'ج.م', points: value })}</section>`;
   };
-  const viewHtml = () => {
+  /* «مهام اليوم»: what needs a decision now, counted from the loaded records (demo and live alike). Statistics live in
+     «الإحصائيات» (pages/insights.page.js), not here. */
+  const queue = () => {
+    if (typeof MP === 'undefined') return [];
+    const d = MP.db(), now = Date.now(), old = (iso, min) => now - (Date.parse(iso) || now) > min * 60000;
+    const rows = [
+      { n: (d.providers || []).filter((p) => p.status === 'pending').length, text: 'طلبات انضمام مقدمي خدمة مستنية مراجعة', module: 'providers', level: 'warning' },
+      { n: (d.serviceRequests || []).filter((r) => ['received', 'searching'].includes(r.status) && old(r.createdAt, 30)).length, text: 'طلبات من غير مقدم خدمة من أكتر من نص ساعة', module: 'orders', level: 'danger' },
+      { n: (d.complaints || []).filter((k) => k.status === 'open').length, text: 'شكاوى مفتوحة', module: 'complaints', level: 'warning' },
+      { n: (d.quotes || []).filter((q) => q.status === 'pending').length, text: 'عروض أسعار مستنية رد العميل', module: 'quotes', level: 'info' },
+      { n: (d.transactions || []).filter((x) => !x.free && x.collection === 'pending').length, text: 'عمولات لسه ما اتحصّلتش', module: 'settlements', level: 'info' }
+    ];
+    return rows.filter((r) => r.n > 0);
+  };
+  const queueHtml = () => {
+    const q = queue();
+    return `<section class="dash-card dash-queue" aria-labelledby="dash-h-queue"><h2 id="dash-h-queue">محتاج تصرّف دلوقتي <span class="dash-count">${nf(q.reduce((s, r) => s + r.n, 0))}</span></h2>
+      ${q.length ? `<ul class="dash-qlist">${q.map((r) => `<li class="is-${esc(r.level)}"><b>${nf(r.n)}</b><span>${esc(r.text)}</span>${link(r.module, 'افتح', 'dash-link')}</li>`).join('')}</ul>`
+        : `<p class="dash-empty">${icon('check')}<span>مفيش حاجة مستنياك — كل حاجة ماشية.</span></p>`}</section>`;
+  };
+  /* KPIs + trend charts: rendered by «الإحصائيات» through kpiView(host). */
+  const kpiHtml2 = () => {
     const m = buildModel(state.period);
-    const pend = m.tasks.filter((t) => !t.done).length;
-    return `
-    <div class="dash-tools">
+    return `<div class="dash-tools">
       <div role="radiogroup" class="dash-seg" aria-label="الفترة الزمنية">
         ${PERIODS.map((p) => `<button type="button" role="radio" aria-checked="${p.id === m.period}" data-period="${p.id}">${p.label}</button>`).join('')}
       </div>
       ${root.HSAdminLive && root.HSAdminLive.enabled() ? '' : '<p class="dash-note">بيانات تجريبية محلية — ليست أرقامًا حقيقية.</p>'}
     </div>
-    <section aria-label="المؤشرات التشغيلية" class="dash-kpis">${m.kpis.map(kpiHtml).join('')}</section>
-    ${chartsHtml()}
+    <section aria-label="المؤشرات التشغيلية" class="dash-kpis">${m.kpis.map(kpiHtml).join('')}</section>${chartsHtml()}`;
+  };
+  function kpiView(host) {
+    const paint = (sel) => { host.innerHTML = kpiHtml2(); if (sel) { const n = host.querySelector(sel); if (n) n.focus(); } };
+    paint();
+    host.addEventListener('click', (e) => {
+      const t = e.target.closest('button'); if (!t) return;
+      if (t.dataset.period) { state.period = t.dataset.period; paint('[data-period="' + state.period + '"]'); }
+      else if (t.dataset.kpiToggle) { const id = t.dataset.kpiToggle; state.open[id] = !state.open[id]; paint('[data-kpi-toggle="' + id + '"]'); }
+    });
+    return host;
+  }
+  const viewHtml = () => {
+    const m = buildModel(state.period);
+    const pend = m.tasks.filter((t) => !t.done).length;
+    return `${queueHtml()}
     <div class="dash-cols">
       <section class="dash-card" aria-labelledby="dash-h-tasks"><h2 id="dash-h-tasks">المهام <span class="dash-count">${nf(pend)} متبقية</span></h2>
         ${pend === 0 && m.tasks.length ? `<p class="dash-ok">${icon('check')}<span>أنجزت كل المهام.</span></p>` : ''}
@@ -158,13 +191,13 @@
   /* Toolbar actions re-render identical demo data: announce the result so the user gets feedback (shell live region). */
   function announce(msg) { const l = root.document && root.document.getElementById('adm-live'); if (!l) return; l.textContent = ''; setTimeout(() => { l.textContent = msg; }, 60); }
 
-  const api = { buildModel, PERIODS, resetState() { state = fresh(); }, _state: () => state };
+  const api = { buildModel, PERIODS, kpiView, queue, resetState() { state = fresh(); }, _state: () => state };
   root.HSAdminDashboardPage = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (root.HSAdminShell && typeof root.HSAdminShell.registerPage === 'function') {
     root.HSAdminShell.registerPage('dashboard', {
-      title: 'لوحة الإدارة',
-      description: 'نظرة تشغيلية سريعة: المؤشرات والمهام والتنبيهات واختصارات الوحدات.',
+      title: 'مهام اليوم',
+      description: 'اللي محتاج تصرّف دلوقتي، والمهام والتنبيهات. الأرقام والمؤشرات في «الإحصائيات».',
       actions: [
         { id: 'reset', label: 'استعادة البيانات التجريبية', hidden: () => !!(root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase'), onClick: (ctx) => { state = fresh(); ctx.shell.refresh(); announce('تمت استعادة بيانات اللوحة التجريبية.'); } },
         { id: 'refresh', label: 'تحديث', kind: 'primary', onClick: (ctx) => { ctx.shell.refresh(); announce('تم تحديث اللوحة.'); } }

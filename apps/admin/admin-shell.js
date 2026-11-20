@@ -26,40 +26,43 @@
 'use strict';
 (function (root) {
   /* ───────────── Navigation model (one entry per documented admin page) ───────────── */
+  /* Grouped by responsibility (2026-11-20). Daily work first; numbers in one place («الإحصائيات»); everything that
+     changes how the platform itself runs — emergency switches, staff, roles, security, the admins' log, settings —
+     sits in «إدارة المنصة», which is the owner's area (staff see it only when the owner granted that module). */
   const NAV = [
-    { id: 'overview', label: 'نظرة عامة', items: [
-      { id: 'dashboard', label: 'لوحة الإدارة', icon: 'grid' },
-      { id: 'super-dashboard', label: 'لوحة المالك', icon: 'star' } ] },
-    { id: 'operations', label: 'العمليات', items: [
+    { id: 'today', label: 'اليوم', items: [
+      { id: 'dashboard', label: 'مهام اليوم', icon: 'check' } ] },
+    { id: 'operations', label: 'التشغيل', items: [
       { id: 'marketplace', label: 'تشغيل السوق', icon: 'grid' },
       { id: 'orders', label: 'الطلبات', icon: 'list' },
+      { id: 'quotes', label: 'عروض الأسعار', icon: 'send' },
       { id: 'providers', label: 'مقدمو الخدمة', icon: 'provider' },
-      { id: 'customers', label: 'العملاء', icon: 'user' },
-      { id: 'quotes', label: 'عروض الأسعار', icon: 'send' } ] },
-    { id: 'catalog', label: 'الكتالوج', items: [
-      { id: 'services', label: 'الخدمات', icon: 'p-service' },
-      { id: 'categories', label: 'التصنيفات', icon: 'book' } ] },
-    { id: 'finance', label: 'الماليات', items: [
-      { id: 'finance', label: 'الماليات', icon: 'wallet' },
-      { id: 'commissions', label: 'العمولات', icon: 'earnings' },
-      { id: 'settlements', label: 'التسويات', icon: 'check' } ] },
-    { id: 'quality', label: 'الجودة والتواصل', items: [
+      { id: 'customers', label: 'العملاء', icon: 'user' } ] },
+    { id: 'quality', label: 'الدعم والجودة', items: [
       { id: 'complaints', label: 'الشكاوى', icon: 'warn' },
       { id: 'reviews', label: 'التقييمات', icon: 'star' },
-      { id: 'notifications', label: 'الإشعارات', icon: 'bell' },
-      { id: 'reports', label: 'التقارير', icon: 'info' } ] },
-    { id: 'team', label: 'الفريق والصلاحيات', items: [
-      { id: 'workforce', label: 'فريق العمل', icon: 'admin' },
+      { id: 'notifications', label: 'الإشعارات', icon: 'bell' } ] },
+    { id: 'catalog', label: 'الكتالوج والأسعار', items: [
+      { id: 'categories', label: 'التصنيفات والأسعار', icon: 'book' },
+      { id: 'services', label: 'الخدمات', icon: 'p-service' } ] },
+    { id: 'money', label: 'المالية', items: [
+      { id: 'commissions', label: 'العمولات', icon: 'earnings' },
+      { id: 'settlements', label: 'التسويات والتحصيل', icon: 'wallet' } ] },
+    { id: 'numbers', label: 'الأرقام', items: [
+      { id: 'insights', label: 'الإحصائيات والتقارير', icon: 'info' } ] },
+    { id: 'platform', label: 'إدارة المنصة', items: [
+      { id: 'controls', label: 'الطوارئ والصيانة', icon: 'power' },
+      { id: 'workforce', label: 'الموظفين', icon: 'admin' },
       { id: 'departments', label: 'الإدارات', icon: 'grid' },
       { id: 'roles', label: 'الأدوار', icon: 'medal' },
-      { id: 'permissions', label: 'الصلاحيات', icon: 'key' } ] },
-    { id: 'oversight', label: 'الرقابة والنظام', items: [
-      { id: 'security', label: 'الأمان', icon: 'shield' },
-      { id: 'audit', label: 'سجل التدقيق', icon: 'clock' },
+      { id: 'permissions', label: 'الصلاحيات', icon: 'key' },
+      { id: 'security', label: 'الأمان والدخول', icon: 'shield' },
+      { id: 'audit', label: 'سجل الإداريين', icon: 'clock' },
       { id: 'settings', label: 'الإعدادات', icon: 'settings' } ] }
   ];
   /* Pages that exist but are reached from a parent page, not from the menu. */
-  const HIDDEN_PAGES = { 'employee-details': { label: 'تفاصيل الموظف', parent: 'workforce' } };
+  const HIDDEN_PAGES = { 'employee-details': { label: 'تفاصيل الموظف', parent: 'workforce' },
+    finance: { label: 'الماليات', parent: 'insights' }, reports: { label: 'التقارير', parent: 'insights' }, 'super-dashboard': { label: 'لوحة المالك', parent: 'insights' } };
   const DEFAULT_ROUTE = 'dashboard';
   const STORE_KEY = 'hs_admin_sidebar_collapsed';
   const DESKTOP_MQ = '(min-width:1024px)';
@@ -326,6 +329,8 @@
       if (els && current && current.id === id) renderRoute(id, { keepFocus: true });
     },
     isRegistered: (id) => !!pages[id],
+    /** A registered page definition (used by «الإحصائيات» to show finance / reports / owner board as tabs). */
+    getPage: (id) => pages[id] || null,
     /** Install a presentation-only route visibility check (id → boolean); refreshes the nav and current page. */
     setAccess(fn) { canViewRoute = typeof fn === 'function' ? fn : () => true; refreshNav(); if (els && current) renderRoute(current.id, { keepFocus: true }); },
     canView: (id) => canViewRoute(id),

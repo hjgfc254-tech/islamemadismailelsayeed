@@ -10,7 +10,7 @@ test('unknown period falls back to 30 days',()=>assert.strictEqual(D.buildModel(
 test('dismissed alerts and done tasks are reflected',()=>{const m=D.buildModel('7',{done:{t1:true},dismissed:{a1:true}});assert(m.tasks.find(t=>t.id==='t1').done);assert(!m.alerts.some(a=>a.id==='a1'))});
 test('complaints delta is good when it decreases (inverted metric)',()=>{const k=D.buildModel('7',{done:{},dismissed:{}}).kpis.find(k=>k.id==='complaints');assert(k.delta<0&&k.good)});
 test('every shortcut/module target is a known admin page id',()=>{
-  const ids=require(path.join(root,'apps/admin/admin-shell.js'))._internals.flatItems().map(i=>i.id);
+  const ids=require(path.join(root,'apps/admin/admin-shell.js'))._internals.flatItems().map(i=>i.id).concat(Object.keys(require(path.join(root,'apps/admin/admin-shell.js'))._internals.HIDDEN_PAGES));   // finance / reports / owner board are reached from «الإحصائيات»
   const src=fs.readFileSync(path.join(root,'apps/admin/pages/admin-dashboard.page.js'),'utf8');
   for(const m of src.matchAll(/module: '([a-z-]+)'/g))assert(ids.includes(m[1]),m[1]);
   for(const m of src.matchAll(/\['([a-z-]+)', '[^']+', '[a-z-]+'\]/g))assert(ids.includes(m[1]),m[1]);

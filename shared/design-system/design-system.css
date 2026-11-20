@@ -511,3 +511,12 @@ button.ghost[aria-busy="true"]::after,.cta.ghost[aria-busy="true"]::after{backgr
   .spinner::before,.adm-state .adm-spin::before,.hs-loader::before,button[aria-busy="true"]::after,.pv-btn[aria-busy="true"]::after,.ai-dots i{animation:hsGlow 1.6s ease-in-out infinite}
   .spinner::after,.adm-state .adm-spin::after,.hs-loader::after{animation:none}
 }
+/* platform-status.js: owner emergency switches as seen by customers and providers */
+#hs-maint{position:fixed;inset:0;z-index:100000;display:grid;place-items:center;padding:24px;background:var(--bg-primary,#F6F1EA);color:var(--text-primary,#1F1B17);font-family:var(--font-body,inherit)}
+#hs-maint .hs-maint-box{max-width:420px;display:grid;justify-items:center;gap:14px;text-align:center}
+#hs-maint img{width:180px;height:auto}
+#hs-maint .hs-maint-ic{font-size:44px;line-height:1}
+#hs-maint h1{margin:0;font-size:1.5rem;font-weight:800}
+#hs-maint p{margin:0;color:var(--text-secondary,#4A433C);line-height:1.8}
+#hs-maint button{min-height:46px;padding:0 22px;border:0;border-radius:14px;background:var(--brand-ink,#1F1B17);color:#fff;font:inherit;font-weight:700;cursor:pointer}
+#hs-pause{position:sticky;top:0;z-index:9500;padding:10px 16px;background:#FFF3D6;color:#5A4300;border-bottom:1px solid #F1D48A;text-align:center;font-weight:700;font-size:14px;line-height:1.6}

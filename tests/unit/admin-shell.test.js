@@ -8,7 +8,7 @@ test('navigation covers every documented admin page except hidden sub-pages',()=
   const ids=I.flatItems().map(i=>i.id);
   const pageFiles=fs.readdirSync(path.join(root,'apps/admin/pages')).map(f=>f.replace('.page.js',''));
   const map={'admin-dashboard':'dashboard','finance-dashboard':'finance','system-settings':'settings','audit-log':'audit','providers-management':'providers','customers-management':'customers','orders-management':'orders','quotes-management':'quotes','services-management':'services','categories-management':'categories','complaints-management':'complaints','reviews-management':'reviews','notifications-management':'notifications'};
-  for(const f of pageFiles){ if(I.HIDDEN_PAGES[f]) continue; const id=map[f]||f; assert(ids.includes(id),'missing nav item for '+f+' ('+id+')'); }
+  for(const f of pageFiles){ if(I.HIDDEN_PAGES[f]) continue; const id=map[f]||f; if(I.HIDDEN_PAGES[id]) continue; assert(ids.includes(id),'missing nav item for '+f+' ('+id+')'); }
   assert.strictEqual(new Set(ids).size,ids.length,'duplicate nav ids');
 });
 test('parseHash resolves routes and falls back to the dashboard',()=>{
@@ -18,8 +18,8 @@ test('parseHash resolves routes and falls back to the dashboard',()=>{
   assert.strictEqual(I.parseHash('#/<script>'),shell.DEFAULT_ROUTE);
 });
 test('breadcrumbs: group, page and hidden sub-page parent',()=>{
-  const b=I.breadcrumbsFor('orders');assert.deepStrictEqual(b.map(x=>x.label),['الإدارة','العمليات','الطلبات']);
-  const e=I.breadcrumbsFor('employee-details');assert.deepStrictEqual(e.map(x=>x.label),['الإدارة','الفريق والصلاحيات','فريق العمل','تفاصيل الموظف']);
+  const b=I.breadcrumbsFor('orders');assert.deepStrictEqual(b.map(x=>x.label),['الإدارة','التشغيل','الطلبات']);
+  const e=I.breadcrumbsFor('employee-details');assert.deepStrictEqual(e.map(x=>x.label),['الإدارة','إدارة المنصة','الموظفين','تفاصيل الموظف']);
   assert.strictEqual(e[2].id,'workforce');
   assert.strictEqual(I.breadcrumbsFor('nope').length,2);
 });

@@ -43,10 +43,12 @@ hansalhlak/
 │   │   │   ├── categories-management.page.js
 │   │   │   ├── commissions.page.js
 │   │   │   ├── complaints-management.page.js
+│   │   │   ├── controls.page.js
 │   │   │   ├── customers-management.page.js
 │   │   │   ├── departments.page.js
 │   │   │   ├── employee-details.page.js
 │   │   │   ├── finance-dashboard.page.js
+│   │   │   ├── insights.page.js
 │   │   │   ├── marketplace.page.js
 │   │   │   ├── notifications-management.page.js
 │   │   │   ├── orders-management.page.js
@@ -522,6 +524,7 @@ hansalhlak/
 │   │   ├── dialogs.js
 │   │   ├── forms.js
 │   │   ├── notification-center.js
+│   │   ├── platform-status.js
 │   │   ├── status-badge.js
 │   │   ├── tables.js
 │   │   └── ui-kit.js
@@ -562,6 +565,7 @@ hansalhlak/
 │   │   │   └── cdp.js
 │   │   ├── a11y.cdp.js
 │   │   ├── admin-app.cdp.js
+│   │   ├── admin-controls.cdp.js
 │   │   ├── audit-log.browser.js
 │   │   ├── client-errors.cdp.js
 │   │   ├── customer-orders.cdp.js
@@ -602,6 +606,7 @@ hansalhlak/
 │       ├── admin-dashboard.test.js
 │       ├── admin-live-editors.test.js
 │       ├── admin-modules.test.js
+│       ├── admin-platform-controls.test.js
 │       ├── admin-runtime.test.js
 │       ├── admin-shell.test.js
 │       ├── api-adapters.test.js

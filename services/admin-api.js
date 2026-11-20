@@ -186,6 +186,26 @@
     if (body.hidden && String(body.reason || '').trim().length < 3) return fail('VALIDATION', 'اكتب سبب الإخفاء', { reason: 'مطلوب' });
     return store.setReviewHidden(params.id, body.hidden, body.reason) ? store.get('reviews', params.id) : fail('NOT_FOUND', 'التقييم غير موجود');
   });
+  /* ── Owner emergency switches (settings.controls) — enforced for customers / providers in api-client.js ── */
+  const isOwner = (actor) => (actor.adminRole ? actor.adminRole === 'owner'
+    : ((((root.HSAdminRbac || {}).state || {}).roster || []).some((x) => x.id === actor.id && x.role === 'owner')));
+  const CONTROL_KEYS = ['maintenance', 'pauseOrders', 'pauseSignups'];
+  const controlsView = (st) => { const c = (st && st.controls) || {}; return CONTROL_KEYS.reduce((o, k) => { const v = c[k] || {}; o[k] = { on: !!v.on, message: String(v.message || ''), at: v.at || null, by: v.by || null }; return o; }, {}); };
+  client.define('GET', '/admin/controls', { roles: A, summary: 'Emergency switches (maintenance, pause new requests, pause provider sign-ups).' }, ({ store }) => controlsView(store.db().settings));
+  client.define('POST', '/admin/controls', { roles: A, summary: 'Owner only: turn a switch on/off {key, on, message?}.' }, ({ body, actor, store }) => {
+    if (!isOwner(actor)) return fail('FORBIDDEN', 'مفاتيح الطوارئ للمالك فقط');
+    const key = String((body && body.key) || '');
+    if (!CONTROL_KEYS.includes(key)) return fail('VALIDATION', 'مفتاح غير معروف', { key: CONTROL_KEYS.join('|') });
+    if (typeof body.on !== 'boolean') return fail('VALIDATION', 'on لازم تكون true أو false', { on: 'boolean' });
+    const message = String(body.message || '').trim().slice(0, 200);
+    const db = store.db(); db.settings = db.settings || {};
+    const c = { ...(db.settings.controls || {}) };
+    c[key] = { on: body.on, message, at: new Date().toISOString(), by: actor.id };
+    db.settings.controls = c;
+    if (typeof store.save === 'function') store.save();
+    return controlsView(db.settings);
+  });
+
   client.define('GET', '/admin/marketing', { roles: A, summary: 'Promo codes, invite reward and packages.' }, ({ actor, store }) =>
     guard(actor, 'services', 'view') || marketingView(store.db().settings || {}));
   client.define('PATCH', '/admin/marketing', { roles: A, summary: 'Replace promo codes / invite reward / packages {promos?, referral?, packages?}.' }, ({ body, actor, store }) => {
@@ -200,6 +220,8 @@
   const id = v => encodeURIComponent(v);
   return {
     summary: () => client.get('/admin/summary'),
+    controls: () => client.get('/admin/controls'),
+    setControl: (key, on, message) => client.post('/admin/controls', { key, on, message }),
     marketing: () => client.get('/admin/marketing'),
     setReviewHidden: (rid, hidden, reason) => client.post('/admin/reviews/' + id(rid) + '/visibility', { hidden, reason }),
     saveMarketing: patch => client.patch('/admin/marketing', patch),

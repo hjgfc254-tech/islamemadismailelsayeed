@@ -8,7 +8,7 @@ const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 const exists = (p) => fs.existsSync(path.join(root, p));
 const html = read('apps/admin/index.html');
 const shell = require('../../apps/admin/admin-shell.js');
-const navIds = new Set(shell._internals.flatItems().map((x) => x.id));
+const navIds = new Set(shell._internals.flatItems().map((x) => x.id).concat(Object.keys(shell._internals.HIDDEN_PAGES)));
 
 function scriptPaths(source) {
   return [...source.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/gi)].map((m) => m[1]);

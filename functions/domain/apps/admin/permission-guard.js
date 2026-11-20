@@ -33,14 +33,18 @@
     return !!perms && perms.has(module + '.' + (action || 'view'));
   }
 
-  /** canView(routeId, employee) — uncatalogued routes are open; catalogued ones need `<module>.view`. */
+  /* «إدارة المنصة» switches that only the owner may open (the server enforces the same for its routes). */
+  const OWNER_ONLY = Object.freeze(['controls', 'security', 'audit', 'settings', 'super-dashboard']);
+
+  /** canView(routeId, employee) — owner-only pages need the owner; uncatalogued routes are open; catalogued ones need `<module>.view`. */
   function canView(routeId, employee) {
+    if (OWNER_ONLY.includes(routeId)) return !!employee && employee.role === 'owner';
     const module = ROUTE_MODULE[routeId];
     if (!module) return true;
     return can(employee, module, 'view');
   }
 
-  const api = Object.freeze({ ROUTE_MODULE, permissionsOf, can, canView, isGuarded: (id) => !!ROUTE_MODULE[id] });
+  const api = Object.freeze({ ROUTE_MODULE, OWNER_ONLY, permissionsOf, can, canView, isGuarded: (id) => !!ROUTE_MODULE[id] });
   root.HSAdminPermissionGuard = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

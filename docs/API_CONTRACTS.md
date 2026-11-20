@@ -181,6 +181,8 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /admin/requests/:id/assign` | admin | admin-api.js | Assign manually {providerId} or auto-match. |
 | `POST /admin/customers/:id/status` | admin | admin-api.js | Suspend / reactivate a customer. |
 | `POST /admin/reviews/:id/visibility` | admin | admin-api.js | Hide or re-publish a review {hidden, reason}. |
+| `GET /admin/controls` | admin | admin-api.js | Emergency switches (maintenance, pause new requests, pause provider sign-ups). |
+| `POST /admin/controls` | admin | admin-api.js | Owner only: turn a switch on/off {key, on, message?}. Customers / providers get 503 on blocked mutations. |
 | `GET /admin/marketing` | admin | admin-api.js | Promo codes, invite reward and packages. |
 | `PATCH /admin/marketing` | admin | admin-api.js | Replace promo codes / invite reward / packages {promos?, referral?, packages?}. |
 

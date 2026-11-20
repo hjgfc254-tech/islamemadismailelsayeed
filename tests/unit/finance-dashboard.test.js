@@ -49,7 +49,7 @@ test('no real-operation API is exposed and UI text says data is demo',()=>{
   assert(src.includes('بيانات تجريبية محلية')&&src.includes('لا يتم تنفيذ أي دفع'));
 });
 test('registers page id «finance» which exists in the shell NAV; every module link target is a known page',()=>{
-  const ids=require(path.join(root,'apps/admin/admin-shell.js'))._internals.flatItems().map(i=>i.id);
+  const ids=require(path.join(root,'apps/admin/admin-shell.js'))._internals.flatItems().map(i=>i.id).concat(Object.keys(require(path.join(root,'apps/admin/admin-shell.js'))._internals.HIDDEN_PAGES));   // «finance» is a tab of «الإحصائيات» (hidden page)
   const src=fs.readFileSync(path.join(root,'apps/admin/pages/finance-dashboard.page.js'),'utf8');
   assert(ids.includes('finance'));assert(src.includes("registerPage('finance'"));
   for(const m of src.matchAll(/'(?:reports|commissions|settlements)'/g))assert(ids.includes(m[0].slice(1,-1)),m[0]);

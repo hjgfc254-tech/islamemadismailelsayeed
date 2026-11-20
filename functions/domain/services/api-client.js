@@ -106,6 +106,15 @@
    * Performs a request. options: { body, query, actor }. `actor` overrides the session-derived actor (tests/tools).
    * Resolves with the contract envelope; never rejects.
    */
+  /** Message when an owner switch blocks this non-admin mutation, else ''. */
+  function controlsBlock(c, method, pattern) {
+    if (!c || typeof c !== 'object') return '';
+    if (c.maintenance && c.maintenance.on) return String(c.maintenance.message || '') || 'المنصة في صيانة دلوقتي — جرّب تاني بعد شوية';
+    if (c.pauseOrders && c.pauseOrders.on && method === 'POST' && pattern === '/requests') return String(c.pauseOrders.message || '') || 'استقبال الطلبات الجديدة متوقف مؤقتًا — جرّب تاني بعد شوية';
+    if (c.pauseSignups && c.pauseSignups.on && method === 'POST' && pattern === '/providers/register') return 'تسجيل مقدمي الخدمة الجدد متوقف مؤقتًا';
+    return '';
+  }
+
   async function request(method, rawPath, options = {}) {
     const m = String(method || 'GET').toUpperCase();
     const { path, query: q } = splitQuery(String(rawPath || ''));
@@ -125,6 +134,13 @@
     }
     const s = store();
     if (!s) return fail('UNAVAILABLE');
+    /* Owner emergency switches (settings.controls, set by POST /admin/controls): customers and providers cannot change
+       anything while the platform is in maintenance; new requests / provider sign-ups can be paused on their own.
+       Admin calls always pass, so the team can keep working during an incident. Same check on the server (synced domain). */
+    if (m !== 'GET' && (!actor || actor.role !== 'admin')) {
+      const blocked = controlsBlock(((s.db && s.db().settings) || {}).controls, m, route.pattern);
+      if (blocked) return fail('UNAVAILABLE', blocked);
+    }
     let out;
     try { out = normalize(route.handler({ params, query, body: clone(options.body) || {}, actor, store: s })); }
     catch (e) { return fail('INTERNAL', (e && e.message) || MESSAGES.INTERNAL); }
@@ -145,7 +161,7 @@
   }
 
   return {
-    ERRORS, ROLES, ok, fail, normalize, define, request, viewState, store,
+    ERRORS, ROLES, ok, fail, normalize, define, request, viewState, store, controlsBlock,
     get: (p, o) => request('GET', p, o),
     post: (p, body, o) => request('POST', p, { ...(o || {}), body }),
     patch: (p, body, o) => request('PATCH', p, { ...(o || {}), body }),

@@ -44,9 +44,9 @@ test('router: parse/format/breadcrumbs, and the shell delegates to it (same resu
   assert.equal(R.parse('nope'), 'dashboard');
   assert.equal(R.format('roles'), '#/roles');
   assert.deepEqual(plain(R.breadcrumbs(shell.NAV, shell._internals.HIDDEN_PAGES, 'employee-details', 'سامي')),
-    [{ label: 'الإدارة', id: 'dashboard' }, { label: 'الفريق والصلاحيات' }, { label: 'فريق العمل', id: 'workforce' }, { label: 'سامي' }]);
+    [{ label: 'الإدارة', id: 'dashboard' }, { label: 'إدارة المنصة' }, { label: 'الموظفين', id: 'workforce' }, { label: 'سامي' }]);
   assert.deepEqual(plain(shell._internals.breadcrumbsFor('orders')), plain(R.breadcrumbs(shell.NAV, shell._internals.HIDDEN_PAGES, 'orders')));
-  assert.equal(R.findItem(shell.NAV, 'audit').label, 'سجل التدقيق');
+  assert.equal(R.findItem(shell.NAV, 'audit').label, 'سجل الإداريين');
 });
 
 test('navigation builder keeps allowed items, flags readiness and drops empty groups', () => {
@@ -70,7 +70,8 @@ test('permission guard follows the RBAC demo catalog for the employee (role chai
   }
   const support = roster.find(e => e.role === 'support');
   assert.equal(G.canView('roles', support), false, 'support role has no roles.view in the demo catalog');
-  for (const open of ['dashboard', 'super-dashboard', 'finance', 'audit', 'settings']) assert.equal(G.canView(open, support), true, `${open} is outside the catalog → open`);
+  for (const open of ['dashboard', 'finance', 'insights']) assert.equal(G.canView(open, support), true, `${open} is outside the catalog → open`);
+  for (const own of ['controls', 'security', 'audit', 'settings', 'super-dashboard']) assert.equal(G.canView(own, support), false, `${own} is owner-only`);
   assert.equal(G.canView('orders', null), false, 'no employee → guarded routes hidden');
   R.state.overrides[support.id] = ['roles.view'];
   assert.equal(G.canView('roles', support), true, 'per-employee extra permission is honoured');

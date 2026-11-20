@@ -32,7 +32,7 @@ test('every KPI is derived from the implemented pages (no copied numbers)', () =
   assert(o.total > 0 && p.approved > 0, 'fixtures must be non-trivial');
 });
 test('attention items equal the source counters and each links to a real NAV page', () => {
-  const m = S.buildModel(), ids = new Set(SHELL_NAV.reduce((a, g) => a.concat(g.items.map((i) => i.id)), []));
+  const m = S.buildModel(), ids = new Set(SHELL_NAV.reduce((a, g) => a.concat(g.items.map((i) => i.id)), []).concat(Object.keys(require(path.join(root, 'apps/admin/admin-shell.js'))._internals.HIDDEN_PAGES)));
   const by = (id) => m.attention.find((a) => a.id === id);
   assert.strictEqual(by('sec-critical').count, SEC.counts().critical); assert.strictEqual(by('complaints-hot').count, CP.counts(CP._items()).hot);
   assert.strictEqual(by('orders-problem').count, O.counts(O._orders()).problem); assert.strictEqual(by('providers-pending').count, P.counts(P._providers()).pending);
@@ -74,13 +74,13 @@ test('the model follows the sources (live), and maintenance mode is surfaced as 
   assert.deepStrictEqual(b.ops.slice(0, 3), [['وضع الصيانة', 'مفعّل (محاكاة)'], ['اعتماد المزود الجديد', 'غير مطلوب'], ['الضريبة', 'مفعّلة ١٤٪ (غير معتمدة بعد)']]);
 });
 test('module links: self excluded, only registered pages are links, the rest are disabled «قريبًا»', () => {
-  const shell = { NAV: SHELL_NAV, isRegistered: (id) => id !== 'reports' };
+  const shell = { NAV: SHELL_NAV, isRegistered: (id) => id !== 'quotes' };   // the owner board is a tab of «الإحصائيات» now (not in NAV)
   const groups = S.modulesFor(shell), items = groups.reduce((x, g) => x.concat(g.items), []);
-  assert(!items.some((i) => i.id === 'super-dashboard')); assert.strictEqual(items.find((i) => i.id === 'reports').enabled, false);
+  assert(!items.some((i) => i.id === 'super-dashboard')); assert.strictEqual(items.find((i) => i.id === 'quotes').enabled, false);
   assert.strictEqual(items.find((i) => i.id === 'orders').enabled, true);
-  assert.strictEqual(items.length, SHELL_NAV.reduce((n, g) => n + g.items.length, 0) - 1);
+  assert.strictEqual(items.length, SHELL_NAV.reduce((n, g) => n + g.items.length, 0));
   global.HSAdminShell = shell;
-  try { const html = S.viewHtml(S.buildModel(S.readSources(zero))); assert(/href="#\/orders"/.test(html)); assert(!/href="#\/reports"/.test(html)); assert(/aria-disabled="true">التقارير <small>\(قريبًا\)<\/small>/.test(html.replace(/<span aria-hidden="true">[\s\S]*?<\/span>/g, ''))); }
+  try { const html = S.viewHtml(S.buildModel(S.readSources(zero))); assert(/href="#\/orders"/.test(html)); assert(!/href="#\/quotes"/.test(html)); assert(/aria-disabled="true">عروض الأسعار <small>\(قريبًا\)<\/small>/.test(html.replace(/<span aria-hidden="true">[\s\S]*?<\/span>/g, ''))); }
   finally { delete global.HSAdminShell; }
 });
 test('rendered HTML escapes values and discloses demo/read-only', () => {
