@@ -34,7 +34,8 @@ async function run({ exe, wsUrl }) {
   const badIcons = () => evaluate(`[...document.querySelectorAll('#provider-app svg.i')].filter(s=>{const r=s.getBoundingClientRect();return r.width>48||r.height>48||getComputedStyle(s).fill!=='none';}).length`);
   /* Focus a control; when it is missing, report what is on screen instead of throwing. */
   const focusEl = async (sel, label) => {
-    const found = await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(sel)});if(e)e.focus();return !!e;})()`);
+    /* secondary card actions live under «خيارات تانية» (<details>): open it first, as a user would */
+    const found = await evaluate(`(()=>{const e=document.querySelector(${JSON.stringify(sel)});if(e){const d=e.closest('details');if(d)d.open=true;e.focus();}return !!e;})()`);
     if (!found) ok(false, `${label}: control ${sel} not rendered — hash ${await evaluate('location.hash')}, view: ${(await evaluate('document.querySelector("#provider-view")?.innerText||""')).replace(/\s+/g, ' ').slice(0, 160)}`);
     return found;
   };
@@ -65,8 +66,8 @@ async function run({ exe, wsUrl }) {
     ok(reached, `${tag} Tab reaches a demo account button`);
     ok(await evaluate('getComputedStyle(document.activeElement).outlineStyle !== "none"'), `${tag} keyboard focus is visible`);
     await ENTER();
-    ok(await waitFor('!document.querySelector("#provider-nav").hidden && !!document.querySelector(".pv-hero")'), `${tag} Enter opens the workspace`);
-    ok(await evaluate('document.title.startsWith("الرئيسية |")'), `${tag} title reflects the route`);
+    ok(await waitFor('!document.querySelector("#provider-nav").hidden && !!document.querySelector(".pv-ohead")'), `${tag} Enter opens the workspace`);
+    ok(await evaluate('document.title.startsWith("الطلبات |")'), `${tag} title reflects the route`);
     ok(await evaluate('document.activeElement?.id === "provider-view"'), `${tag} focus moves to the main view after sign-in`);
 
     // Seed one request offered to the selected provider (local demo store only).

@@ -76,6 +76,8 @@ test('round 4: announcement bar on Home, category header, sticky wizard nav, mot
 
 test('provider: today card and a new-request alert after the first render', async () => {
   const app = P.boot({ session: 'p_demo1' });
+  assert.match(app.html(), /<section class="pv-ohead">[\s\S]*النهارده:/, 'today\'s total in the orders header');
+  app.go('#/earnings');
   assert.match(app.html(), /<section class="pv-today" aria-label="مكسبك النهارده">/);
   P.offerRequest(app.MP, 'p_demo1');
   app.go('#/new');

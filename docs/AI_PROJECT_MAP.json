@@ -3818,7 +3818,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "2d5559817ec8076275cece812ddad1fc2cfe406d5f123d58ef21f4e37ef4f3cc",
+      "sha256": "0505e9ce4644ee82da769dbeaed6a0f82c5836b1c0be75111c0eb6514b101515",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3855,7 +3855,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 70188
+      "bytes": 73885
     },
     {
       "path": "apps/provider/index.html",
@@ -4507,7 +4507,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "eed33076b575a579eb68380e5c7d840f13912f9434b11a95f3834b6fd9fff438",
+      "sha256": "3cf65fd75870e614f2f121c02659d5fb2da096d9012aa67dc7c600af599e25ff",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4544,7 +4544,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1066
+      "bytes": 1180
     },
     {
       "path": "apps/provider/provider-auth.js",
@@ -4739,7 +4739,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "3bf4268db88e1f680411711a40011e864aa667d48fd1071c676c38d4a82f6326",
+      "sha256": "92a2458e115b5f60d146713c207b02ec37772681f7932f444d279195908913cb",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4776,7 +4776,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1162
+      "bytes": 1303
     },
     {
       "path": "apps/provider/README.md",
@@ -4849,7 +4849,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "3f4d5ae41e4e49250d83bd35af4a0c315c676bb7bb49da11063c14d8729ef927",
+      "sha256": "5dfdcbdd0bdce729fc55cf10639bb4d9d7776278de26e7667cbfcb91cc9a19f9",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4888,7 +4888,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 33402
+      "bytes": 34858
     },
     {
       "path": "assets/app-icon-192.png",
@@ -10574,7 +10574,7 @@
       "next_action": "Review in the relevant task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added during the 2026-11-09 environment normalization pass.",
-      "sha256": "8f9f763e189beed0d62bfb8086b285dd10b4ea2b300fd574228a7cb8500a1b0a",
+      "sha256": "cb3a150d5b5a03763eaeb294696007ab3be448142355f913f351b3cf4172c2d3",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "HANDOFF_NEXT_AI.md",
@@ -10583,7 +10583,7 @@
       "file_behavior": "Inventory entry only; inspect source for exact behavior.",
       "completion_definition": "File responsibility and actual behavior are verified and covered by appropriate checks.",
       "actual_status_ar": "مضاف إلى الجرد الحالي؛ يحتاج فحصًا بحسب المهمة.",
-      "bytes": 94975
+      "bytes": 96416
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -11718,7 +11718,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "c9bb2f9ec61ee34a809715be83479185785adf3bbea00ccc88be999225a182dc",
+      "sha256": "6316ac061212c512c913c958199c8396fd903e254359433b50d9159022a2f63f",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11766,7 +11766,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "29121bc6f34dba0b8c21e80f490d575e4e92ba3ff0e477cbd585d34c2377e736",
+      "sha256": "5dcfe7c1c6e8e354504d47e4e481e12c49ac1bca8777ec1d36d45178747dddb6",
       "bytes": 195
     },
     {
@@ -14364,8 +14364,8 @@
       "next_action": "Run after Provider UI changes; keep checks aligned with behavior.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P2 batch).",
-      "sha256": "6b5babcb67c6785885a23f7bb5e130b3fc6c8656ef98c8670c40d2506d01362a",
-      "bytes": 18051
+      "sha256": "a8146bbb0487bd20b56c23b4ba945f2ed74a6452d186e89ef4c69672a9f66548",
+      "bytes": 18215
     },
     {
       "path": "tests/e2e/quotes-management.browser.js",
@@ -15656,7 +15656,7 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P1 batch).",
-      "sha256": "ca81c4f2e4d95643c3ea7dc0fb3fac14ebb8a8e850988c9b97ff4d4d9dd48f81",
+      "sha256": "fe339399197e7f752ed87a011dd50b15d4c66987e8f2a279f1f4611effcd3602",
       "bytes": 7816
     },
     {
@@ -15668,8 +15668,8 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "b338a742e65db29baa16e3554c5db1b2e760f3c6470c78f5bd02c86f2563fe23",
-      "bytes": 21415
+      "sha256": "65ab7db2c8b5d4cd36af7bdecaf03cfa654bf53d8bc1369ce182d1bcaefe80fe",
+      "bytes": 21467
     },
     {
       "path": "tests/unit/provider-app-register.test.js",
@@ -15692,8 +15692,8 @@
       "next_action": "Read when relevant; keep tests and docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after inspecting the file (Provider P0 batch).",
-      "sha256": "5151a5920790e0e5807c9f89144fbbb6a0376332dd8174e405ff92ca1d91d7d5",
-      "bytes": 6214
+      "sha256": "a2d23fa94797236d2f07d48af4c1cc12bb42e909a6ede85741f7c5ffd2cf47d3",
+      "bytes": 6206
     },
     {
       "path": "tests/unit/provider-bonus.test.js",
@@ -16015,8 +16015,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "ba21af4c7efb32cbc1a359a353f31c15881493231cb4c6363379ce465a3c4d3d",
-      "bytes": 37197
+      "sha256": "435406ace7fe16b8c774928fcc53fc557c66c64e11643e65d446e599809516e5",
+      "bytes": 37299
     },
     {
       "path": "tests/unit/security.test.js",
@@ -16304,8 +16304,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "28f289d9d1e041c389aaee3d859a8aa9f9975dec3f6a5f658351e4e0156500ef",
-      "bytes": 6196
+      "sha256": "d4614cf0b1fd5c0e8680a1f9a5a5d8332c218076afbc89eb23668677328459c5",
+      "bytes": 6257
     },
     {
       "path": "tests/unit/ui-adapter-integration.test.js",
@@ -16379,8 +16379,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "bfc3a8832c45898ebb7684c2cc6f6a1412ef028a6ca418e2cd4afbf304ffe91a",
-      "bytes": 5565
+      "sha256": "46b15dba500a202eea727cdcaa563f6968f7a0805f3185a48a92eb37179c4099",
+      "bytes": 5710
     },
     {
       "path": "tests/unit/upfront-pricing.test.js",

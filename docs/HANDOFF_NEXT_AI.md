@@ -69,6 +69,12 @@
 - **التالي:** استكمال فحص Customer (addresses/orders/tracking/support/details)، ثم Provider عبر legacy bridge، ثم Admin page/dialog keyboard traversal. قارئات الشاشة وFirefox/WebKit/Safari والأجهزة الفعلية لم تُختبر. Phase 5 item 4 ما زال جزئيًا؛ لا يوجد ادعاء WCAG.
 
 
+## 2026-11-20 — Provider app simplified (owner: «عملية أكثر من كونها مليانة اختيارات»)
+- **4 destinations** instead of 13: الطلبات (`home`) · فلوسي (`earnings`) · تقييماتي (`reviews`) · حسابي (`profile`); notifications behind a bell with an unread badge in the top bar. Every old route still works (`TAB_OF` / `FILTER_OF` in `apps/provider/app.js`): new/accepted/progress/quote/schedule/done/cancelled open الطلبات with a filter; transactions → فلوسي; services → حسابي. Push links and deep links are unchanged.
+- **الطلبات** (`ordersPage`): header «طلباتك» + today's total + the availability switch, three filters جديدة / شغالة / خلصت with counts; home opens the filter that has work. The 10-section dashboard is gone; its cards moved to فلوسي (today, bonus/level, last 7 days, totals, transactions) and تقييماتي (what customers praise). `summary(..., {parts:true})` returns the pieces; `HSProviderDashboardPage` is no longer routed.
+- **Request card:** one large primary action plus its direct alternative (decline / «ما استلمتش» / ETA chips); «التفاصيل» and «موقع العميل» as links; every other action under «خيارات تانية (n)» (`<details>`). No action was removed.
+- Transactions show the collection state in Arabic. Top bar fits 320 px (demo badge hidden ≤340 px).
+
 ## 2026-11-20 — Strengthening round: cache guard, speed, error reporting, provider polish, offer alerts (484 tests)
 - **SW cache guard:** `scripts/sw-cache.cjs` + `service-worker.lock.json`; `npm test` fails when a served file changes without `npm run sw:bump` (never edit `CACHE` by hand). Tests read the name from the lock.
 - **Speed** (`tests/e2e/perf.cdp.js`, Fast-3G-like + 4x CPU, gzip): Admin first paint 3.2 s → 0.6 s and Customer repeat visit 3.7 s → 1.0 s (static boot loaders); Google Fonts no longer render-blocking, weight 500 dropped; hero / onboarding photo preloaded. Customer LCP stays ~4.9 s on that profile: ~45 classic scripts (246 KB gz) — the next step is bundling/minifying or lazy page modules.

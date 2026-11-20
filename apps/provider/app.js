@@ -29,7 +29,12 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
     for (const sel of [].concat(selectors||[])) { const el=$(sel,dom.view); if(el){ el.focus({preventScroll:true}); return; } }
     dom.view.focus({preventScroll:true});
   }
-  const tabs = [['home','الرئيسية'],['new','طلبات جديدة'],['accepted','مقبولة'],['progress','جارية'],['quote','عروض الأسعار'],['schedule','المواعيد'],['done','مكتملة'],['reviews','التقييمات'],['transactions','المعاملات'],['earnings','الأرباح'],['services','خدماتي'],['notifications','الإشعارات'],['profile','ملفي']];
+  /* Four destinations (2026-11-20 simplification). Every older route still works and opens inside one of them:
+     new / accepted / progress / quote / schedule / done / cancelled → الطلبات (with a filter); transactions → فلوسي;
+     services → حسابي; notifications → the bell in the top bar. */
+  const tabs = [['home','الطلبات'],['earnings','فلوسي'],['reviews','تقييماتي'],['profile','حسابي']];
+  const TAB_OF = {new:'home',accepted:'home',progress:'home',quote:'home',schedule:'home',done:'home',cancelled:'home',request:'home',transactions:'earnings',services:'profile'};
+  const FILTER_OF = {new:'new',accepted:'active',progress:'active',quote:'active',schedule:'active',done:'done',cancelled:'done'};
 
   /* Firebase backend: identity comes from a verified phone sign-in, never from a list of accounts. */
   const firebaseMode=()=>!!(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase');
@@ -87,21 +92,35 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
   function renderNav(active) {
     dom.nav.hidden=false;
     /* V9: each destination carries its Lucide icon (shared registry); the label stays the accessible name. */
-    const NAV_ICON={home:'home',new:'inbox',accepted:'st-accepted',progress:'st-working',quote:'st-quote',schedule:'calendar',done:'st-done',reviews:'star',transactions:'wallet',earnings:'earnings',services:'wrench',notifications:'bell',profile:'user'};
-    /* Phones (≤1023px): the first NAV_PRIMARY destinations + «المزيد», which opens the rest in a grid above the bar
-       (no sideways-scrolling bar with a clipped fifth label). Desktop shows every destination in the sidebar. */
-    const NAV_SHORT={new:'جديدة',quote:'العروض',notifications:'إشعارات',transactions:'معاملات',earnings:'أرباحي'};   /* phone bar labels; the full label stays the accessible name */
-    const NAV_PRIMARY=4, extraActive=tabs.slice(NAV_PRIMARY).some(([id])=>id===active);
-    dom.nav.classList.remove('is-more-open');
-    dom.nav.innerHTML=tabs.map(([id,label],i)=>`<button type="button" data-pv-route="${id}" class="${[active===id?'is-active':'',i>=NAV_PRIMARY?'pv-nav-extra':''].filter(Boolean).join(' ')}" ${active===id?'aria-current="page"':''} aria-label="${esc(label)}">${typeof ic==='function'?ic(NAV_ICON[id]||'dots'):''}<span class="pv-nav-l">${esc(label)}</span><span class="pv-nav-s" aria-hidden="true">${esc(NAV_SHORT[id]||label)}</span></button>`).join('')+
-      `<button type="button" class="pv-nav-more${extraActive?' is-active':''}" data-pv-more aria-expanded="false" aria-controls="provider-nav">${typeof ic==='function'?ic('grid'):''}<span>المزيد</span></button>`;
+    const NAV_ICON={home:'inbox',new:'inbox',accepted:'st-accepted',progress:'st-working',quote:'st-quote',schedule:'calendar',done:'st-done',reviews:'star',transactions:'wallet',earnings:'earnings',services:'wrench',notifications:'bell',profile:'user'};
+    const tab=TAB_OF[active]||active;
+    dom.nav.innerHTML=tabs.map(([id,label])=>`<button type="button" data-pv-route="${id}" class="${tab===id?'is-active':''}" ${tab===id?'aria-current="page"':''}>${typeof ic==='function'?ic(NAV_ICON[id]||'dots'):''}<span>${esc(label)}</span></button>`).join('');
+    /* top bar bell: unread notifications */
+    const bell=$('[data-pv-bell]',dom.host), p=currentProvider();
+    if(bell&&!bell.dataset.ready){bell.innerHTML=(typeof ic==='function'?ic('bell'):'🔔')+'<b hidden></b>';bell.dataset.ready='1';}
+    if(bell&&p){ const unread=(typeof MP.notesFor==='function'?MP.notesFor('provider:'+p.id):[]).filter(n=>!n.read).length;
+      bell.hidden=false; bell.classList.toggle('is-active',active==='notifications'); bell.setAttribute('aria-label',unread?`الإشعارات — ${num(unread)} جديدة`:'الإشعارات');
+      const b=$('b',bell); if(b){b.textContent=unread?num(Math.min(unread,99)):'';b.hidden=!unread;} }
   }
-  function toggleMore(open) {
-    const btn=$('[data-pv-more]',dom.nav); if(!btn)return;
-    const on=open==null?!dom.nav.classList.contains('is-more-open'):!!open;
-    dom.nav.classList.toggle('is-more-open',on); btn.setAttribute('aria-expanded',String(on));
-    $('span',btn).textContent=on?'إغلاق':'المزيد';
-    if(on){const first=$('.pv-nav-extra',dom.nav); if(first)first.focus({preventScroll:true});}
+
+  /* ── الطلبات: one list with three filters instead of seven pages ── */
+  function ordersPage(p,groups,transactions,filter) {
+    const uniq=list=>{const seen=new Set();return list.filter(x=>{const id=x&&x.request&&x.request.id;if(!id||seen.has(id))return false;seen.add(id);return true;});};
+    const when=x=>new Date(x.request.agreedAt||x.request.when||x.request.createdAt||0).getTime()||0;
+    const lists={new:uniq(groups.new||[]),active:uniq([...(groups.quote||[]),...(groups.progress||[]),...(groups.accepted||[])]).sort((a,b)=>when(a)-when(b)),done:uniq([...(groups.done||[]),...(groups.cancelled||[])])};
+    const f=filter||(lists.new.length?'new':lists.active.length?'active':'new');
+    const s=summary(p,groups,transactions,{parts:true});
+    const FILTERS=[['new','جديدة','new'],['active','شغالة','progress'],['done','خلصت','done']];
+    const seg=`<div class="pv-seg" role="group" aria-label="عرض الطلبات">${FILTERS.map(([k,l,route])=>`<button type="button" data-pv-route="${route}" class="${f===k?'is-on':''}" aria-pressed="${f===k}">${l}${lists[k].length&&k!=='done'?` <b>${num(lists[k].length)}</b>`:''}</button>`).join('')}</div>`;
+    const EMPTY={new:['new','مفيش طلبات جديدة دلوقتي'],active:['progress','مفيش شغل شغال دلوقتي'],done:['done','لسه ما خلصتش طلبات']};
+    const items=lists[f];
+    const body=items.length?items.map(x=>requestCard(x,p)).join(''):emptyState(EMPTY[f][0],EMPTY[f][1])+(f==='new'?s.demandCard:'');
+    return `<section class="pv-ohead"><div><h1>طلباتك</h1><p>النهارده: <b>${money(s.tt.net)}</b> · ${num(s.todayCount)} خدمة</p></div><button class="pv-availability ${p.available?'is-on':''}" type="button" data-pv-action="availability" aria-pressed="${!!p.available}">${icon('power')} ${p.available?'متاح':'مش متاح'}</button></section>${seg}<section class="pv-olist" aria-label="${esc(FILTERS.find(x=>x[0]===f)[1])}">${body}</section>`;
+  }
+  /* ── فلوسي: today, bonus / level, last 7 days, totals and every transaction ── */
+  function moneyPage(p,groups,transactions,ctx) {
+    const s=summary(p,groups,transactions,{parts:true});
+    return `${s.todayMoneyCard}${s.rankCard}${s.weekCard}${HSProviderEarningsPage.render(ctx)}${HSProviderTransactionsPage.render(ctx).replace(/<p class="pv-disclaimer">[\s\S]*?<\/p>/,'')}`;   /* one demo note is enough */
   }
 
   function summary(p,groups,transactions) {
@@ -146,6 +165,7 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
     /* today's earnings: completed services recorded today (provider amount, net of the platform share) */
     const day=new Date().toDateString(), todayTx=transactions.filter(x=>{const d=new Date(x.at);return !Number.isNaN(d.getTime())&&d.toDateString()===day;}), tt=domain.totals(todayTx);
     const todayCard=`<section class="pv-today" aria-label="مكسبك النهارده"><div><small>مكسبك النهارده</small><b>${money(tt.net)}</b></div><div><small>خدمات خلصتها النهارده</small><b>${num(todayTx.length)}</b></div><div><small>طلبات جديدة مستنياك</small><b>${num(groups.new.length)}</b></div></section>`;
+    if(arguments[3]&&arguments[3].parts) return {todayMoneyCard:`<section class="pv-today" aria-label="مكسبك النهارده"><div><small>مكسبك النهارده</small><b>${money(tt.net)}</b></div><div><small>خدمات خلصتها النهارده</small><b>${num(todayTx.length)}</b></div></section>`,todayCard,rankCard:bonusCard||levelCard,praiseCard,weekCard,demandCard,live,tt,todayCount:todayTx.length};
     return `<section class="pv-hero"><div><span class="pv-eyebrow">مساحة مقدم الخدمة</span><h1>أهلًا، ${esc((p.name||'').split(' ')[0])}</h1><p>تابع الطلبات والمواعيد ومستحقاتك${live?'':' التجريبية'} من مكان واحد.</p></div><button class="pv-availability ${p.available?'is-on':''}" type="button" data-pv-action="availability" aria-pressed="${!!p.available}">${icon('power')} ${p.available?'متاح لاستقبال الطلبات':'متوقف عن استقبال الطلبات'}</button></section>${todayCard}${bonusCard||levelCard}${praiseCard}${weekCard}${demandCard}<section class="pv-kpis pv-kpis-slim" aria-label="ملخص شغلك"><article><small>إجراءات معلقة</small><b>${num(active)}</b></article><article><small>مكتملة</small><b>${num(groups.done.length)}</b></article><article><small>صافي مستحقاتك${live?'':' (تجريبي)'}</small><b>${money(t.net)}</b></article></section>`;
   }
 
@@ -193,16 +213,27 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
     const tipNote=r.tip?`<p class="pv-note pv-note-tip">${icon('star')} العميل هيديك بقشيش <b>${money(r.tip.amount)}</b> مع الحساب</p>`:'';
     const pkgNote=r.packageName?`<p class="pv-note">الطلب ضمن باقة: <b>${esc(r.packageName)}</b> — اتفق مع العميل على مواعيد الزيارات.</p>`:'';
     const chatCount=a.status==='accepted'&&Array.isArray(r.chat)?r.chat.filter(m=>m.pid===p.id).length:0;
-    const swipeHint=a.status==='offered'?'<p class="pv-swipe-hint" aria-hidden="true">اسحب الكارت يمين للقبول أو شمال للرفض</p>':'';
-    return `<article class="pv-request"${a.status==='offered'?` data-swipe-id="${esc(r.id)}"`:''}><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header>${journey}<p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.pricing&&r.pricing.providerAmount!=null?`<p class="pv-note">مبلغك المحدد عند الحجز: <b>${money(r.pricing.providerAmount)}</b> — يدفع العميل ${money(r.pricing.customerPrice)} شاملًا رسوم المنصة</p>`:''}${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${bidNote}${inspNote}${cancelNote}${warrantyNote}${tipNote}${pkgNote}${custNote}${promoNote}${rateNote}${swipeHint}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}<div class="pv-actions"><button class="pv-btn" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">عرض التفاصيل${chatCount?` · ${chatCount} رسالة`:''}</button>${actions.join('')}</div>${locPanel(r,a)}</article>`;
+    const swipeHint='';   /* swiping still works on offered cards; the hint line was removed to keep cards short */
+    /* One clear next step: the primary action (and its direct alternative: decline / «ما استلمتش» / ETA chips) stays
+       visible; everything else moves under «خيارات تانية». Customer location sits with «التفاصيل». */
+    const prim=[],pair=[],more=[],quick=[];
+    for(const h of actions){
+      if(/data-pv-action="customer-location"/.test(h)) quick.push(h);
+      else if(!prim.length&&/pv-btn-primary/.test(h)) prim.push(h);
+      else if(/data-pv-action="(reject|cash-no)"/.test(h)||/pv-eta-pick/.test(h)) pair.push(h);
+      else more.push(h);
+    }
+    if(!prim.length&&more.length) prim.push(more.shift());
+    const actionsHtml=`${prim.length||pair.length?`<div class="pv-actions pv-actions-main">${prim.join('')}${pair.join('')}</div>`:''}<div class="pv-card-links"><button class="pv-link" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">التفاصيل${chatCount?` · ${num(chatCount)} رسالة`:''}</button>${quick.join('')}${more.length?`<details class="pv-more-actions"><summary>خيارات تانية (${num(more.length)})</summary><div class="pv-actions">${more.join('')}</div></details>`:''}</div>`;
+    return `<article class="pv-request"${a.status==='offered'?` data-swipe-id="${esc(r.id)}"`:''}><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header>${journey}<p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.pricing&&r.pricing.providerAmount!=null?`<p class="pv-note">مبلغك المحدد عند الحجز: <b>${money(r.pricing.providerAmount)}</b> — يدفع العميل ${money(r.pricing.customerPrice)} شاملًا رسوم المنصة</p>`:''}${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${bidNote}${inspNote}${cancelNote}${warrantyNote}${tipNote}${pkgNote}${custNote}${promoNote}${rateNote}${swipeHint}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}${actionsHtml}${locPanel(r,a)}</article>`;
   }
 
   /* Empty states: an icon, the (unchanged) message, one line on what fills this screen, and the next step when there is one. */
   const EMPTY_ICON={new:'inbox',accepted:'st-accepted',progress:'st-working',done:'st-done',cancelled:'st-done',quote:'st-quote',schedule:'calendar',reviews:'star',transactions:'wallet',notifications:'bell',priority:'sparkle'};
   const EMPTY_HINT={
-    new:['خليك «متاح» من الرئيسية، والطلبات اللي في تخصصك ومنطقتك هتوصلك هنا على طول.',['home','للرئيسية']],
+    new:['خليك «متاح» من الزرار اللي فوق، والطلبات اللي في تخصصك ومنطقتك هتوصلك هنا على طول.'],
     accepted:['لما تقبل طلب هيظهر هنا ومعاه عنوان العميل وطرق التواصل.',['new','شوف الطلبات الجديدة']],
-    progress:['الشغل اللي بدأته بيفضل هنا لحد ما تخلّصه وتسجّل الحساب.'],
+    progress:['الطلبات اللي قبلتها والشغل اللي بدأته بيفضلوا هنا لحد ما تخلّصهم.',['new','شوف الطلبات الجديدة']],
     done:['كل خدمة بتخلّصها بتتحسب في أرباحك وبتقرّبك من مستوى البونص الأعلى.'],
     cancelled:['مفيش إلغاءات — استمر كده.'],
     schedule:['المواعيد اللي بتتفق عليها مع العملاء بتتجمع هنا بالترتيب.'],
@@ -232,8 +263,11 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
       notifications:()=>HSProviderNotificationsPage.render(ctx),
       request:()=>HSProviderRequestDetailsPage.render({...ctx,id:router.parse(location.hash).id,backPage:'home'})
     };
-    if(['accepted','done','cancelled'].includes(page)) return ctx.renderGroup(page);
-    return (renderers[page]||renderers.home)();
+    if(page==='home'||FILTER_OF[page]) return ordersPage(p,groups,transactions,FILTER_OF[page]);
+    if(page==='earnings'||page==='transactions') return moneyPage(p,groups,transactions,ctx);
+    if(page==='reviews') return summary(p,groups,transactions,{parts:true}).praiseCard+renderers.reviews();
+    if(page==='profile'||page==='services') return renderers.profile();   /* the profile already lists specialties, governorates and areas */
+    return (renderers[page]||(()=>ordersPage(p,groups,transactions)))();
   }
 
   /* render(focusTargets): a route change focuses the main view; a same-route re-render (after an action)
@@ -326,7 +360,7 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
     settle(page+'/'+(page==='request'?id:''),titleFor(page),focusTargets);
   }
 
-  const titleFor = page => page==='request' ? 'تفاصيل الطلب' : ((tabs.find(t=>t[0]===page)||[])[1] || domain.GROUPS[page] || 'الرئيسية');
+  const titleFor = page => page==='request' ? 'تفاصيل الطلب' : page==='notifications' ? 'الإشعارات' : FILTER_OF[page] ? ({new:'طلبات جديدة',active:'الطلبات الشغالة',done:'الطلبات اللي خلصت'})[FILTER_OF[page]] : ((tabs.find(t=>t[0]===(TAB_OF[page]||page))||[])[1] || 'الطلبات');
 
   function settle(routeKey,label,focusTargets) {
     const first=lastRouteKey===null, changed=routeKey!==lastRouteKey;
@@ -396,12 +430,9 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
 
   function onKeydown(event) {
     if(event.key==='Escape'&&event.target.closest('.pv-inline-form')){event.preventDefault();cancelForm();}
-    if(event.key==='Escape'&&dom.nav.classList.contains('is-more-open')){event.preventDefault();toggleMore(false);const b=$('[data-pv-more]',dom.nav);if(b)b.focus();}
   }
 
   function onClick(event) {
-    if(event.target.closest('[data-pv-more]')){toggleMore();return;}
-    if(dom.nav.classList.contains('is-more-open')&&!event.target.closest('#provider-nav'))toggleMore(false);
     const route=event.target.closest('[data-pv-route]'); if(route){const [page,id='']=route.dataset.pvRoute.split('/');router.navigate(page,id);return;}
     const button=event.target.closest('[data-pv-action]'); if(!button)return;
     const {pvAction:action,id,next}=button.dataset;

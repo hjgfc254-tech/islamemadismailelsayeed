@@ -64,7 +64,7 @@ test('provider: the offer form previews what the customer will see; the bonus ca
     if (!MP.db().assignments.some(x => x.reqId === r.id && x.providerId === P)) MP.db().assignments.push({ id: 'a_x', reqId: r.id, providerId: P, status: 'offered', reason: '', at: new Date().toISOString(), bidding: true });
     rid = r.id;
   } });
-  a.go('#/home');
+  a.go('#/earnings');   // the bonus card lives in «فلوسي» (2026-11-20)
   assert.match(a.html(), /class="pv-level pv-bonus"/); assert.match(a.html(), /فضي/);
   assert.ok(a.html().includes('باقي ' + ar(4) + ' على بونص'), 'weekly target in Arabic digits'); assert.match(a.html(), /العميل يأكد إنه دفع/);
   a.go('#/request/' + rid);

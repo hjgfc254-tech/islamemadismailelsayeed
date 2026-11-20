@@ -190,7 +190,7 @@ test('round 5 screens: tracking shows chat + share, closed orders offer receipt 
   assert.match(html, /data-act="receipt"/); assert.match(html, /data-act="sameProvider"/); assert.match(html, /data-repeat="/);
   assert.doesNotMatch(html, /id="chatForm"/, 'chat closes with the request');
   const P = require('../helpers/provider-app-harness.js');
-  const pv = P.boot({ session: 'p_demo1' }).html();
+  const pvApp = P.boot({ session: 'p_demo1' }); pvApp.go('#/earnings'); const pv = pvApp.html();   // level and week moved to «فلوسي» (2026-11-20)
   assert.match(pv, /class="pv-level"/); assert.match(pv, /class="pv-week"/);
 });
 test('round 6: home footer links, «امتى محتاج الفني؟» pre-fills the next request, tab tap to top, pull to refresh', () => {

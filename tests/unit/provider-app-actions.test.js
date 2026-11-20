@@ -54,7 +54,7 @@ test('selecting a demo account stores only the demo session id and opens the wor
   assert.equal(app.location.hash, '#/home');
   assert.equal(app.nav.hidden, false);
   assert.equal(app.logout.hidden, false);
-  assert.match(app.html(), /pv-hero/);
+  assert.match(app.html(), /pv-ohead/);
   assert.equal(app.toast.textContent, 'تم فتح حساب العرض التجريبي');
 });
 
@@ -127,7 +127,7 @@ test('reject opens a reason form; confirming records the reason and routes to ca
   assert.equal(a.reason, 'خارج المنطقة');
   assert.equal(app.request(rid).status, 'searching');
   assert.equal(app.location.hash, '#/cancelled');
-  assert.match(app.html(), /ملغاة \/ مرفوضة/);
+  assert.match(app.html(), /data-pv-route="done" class="is-on"/, 'cancelled opens the «خلصت» filter');
 });
 
 test('reject requires a reason', async () => {

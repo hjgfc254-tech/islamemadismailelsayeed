@@ -15,7 +15,7 @@ test('route changes move focus to the main view and update the document title', 
   app.focus.history.length = 0;
   await app.click({ 'data-pv-route': 'earnings' });
   assert.equal(app.focus.current, 'view');
-  assert.match(app.title(), /^الأرباح \| /);
+  assert.match(app.title(), /^فلوسي \| /);
   app.go('#/new');
   assert.equal(app.focus.current, 'view');
   assert.match(app.title(), /^طلبات جديدة \| /);
@@ -24,7 +24,7 @@ test('route changes move focus to the main view and update the document title', 
 test('initial boot does not steal focus but sets a meaningful title', async () => {
   const app = boot({ session: PROVIDER });
   assert.equal(app.focus.history.includes('view'), false);
-  assert.match(app.title(), /^الرئيسية \| مساحة مقدم الخدمة/);
+  assert.match(app.title(), /^الطلبات \| مساحة مقدم الخدمة/);
 });
 
 test('picker, gate, details and cancelled routes have their own titles', async () => {
@@ -35,7 +35,7 @@ test('picker, gate, details and cancelled routes have their own titles', async (
   app.go('#/request/' + rid);
   assert.match(app.title(), /^تفاصيل الطلب \| /);
   app.go('#/cancelled');
-  assert.match(app.title(), /^ملغاة \/ مرفوضة \| /);
+  assert.match(app.title(), /^الطلبات اللي خلصت \| /);
 });
 
 test('re-rendering the same route keeps focus on the control the user operated', async () => {

@@ -22,30 +22,32 @@ test('an empty hash boots to #/home', async () => {
   assert.equal(activeRoute(app), 'home');
 });
 
-test('every navigation route renders and marks only its own tab as current', async () => {
+test('four destinations; every older route opens inside one of them and lights its tab', async () => {
   const app = boot({ session: PROVIDER });
-  for (const route of TAB_ROUTES) {
+  assert.equal((app.navHtml().match(/data-pv-route=/g) || []).length, 4);
+  const TAB = { home: 'home', new: 'home', accepted: 'home', progress: 'home', quote: 'home', schedule: 'home', done: 'home', cancelled: 'home', earnings: 'earnings', transactions: 'earnings', reviews: 'reviews', profile: 'profile', services: 'profile' };
+  for (const [route, tab] of Object.entries(TAB)) {
     app.go('#/' + route);
-    assert.equal(activeRoute(app), route, route);
+    assert.equal(activeRoute(app), tab, route);
     assert.equal((app.navHtml().match(/aria-current="page"/g) || []).length, 1, route);
     assert.ok(app.html().length > 0, route);
   }
+  app.go('#/notifications');
+  assert.equal(activeRoute(app), undefined, 'notifications live behind the bell, not a tab');
+  assert.match(app.html(), /الإشعارات/);
 });
 
-test('cancelled is a reachable group route without a nav tab', async () => {
-  const app = boot({ session: PROVIDER });
-  app.go('#/cancelled');
-  assert.match(app.html(), /ملغاة \/ مرفوضة/);
-  assert.equal(activeRoute(app), undefined);
-});
-
-test('group routes render the group heading with an item count or an empty state', async () => {
+test('الطلبات: three filters with counts; older group routes select the matching filter', async () => {
   let rid;
   const app = boot({ session: PROVIDER, setup: ({ MP }) => { rid = offerRequest(MP, PROVIDER).id; MP.respond(rid, true); } });
   app.go('#/accepted');
-  assert.match(app.html(), /<h1>مقبولة<\/h1><span>١ طلب<\/span>/);
+  assert.match(app.html(), /data-pv-route="progress" class="is-on" aria-pressed="true">شغالة <b>١<\/b>/);
+  assert.match(app.html(), new RegExp('data-pv-route="request/' + rid));
   app.go('#/done');
-  assert.match(app.html(), /لا توجد طلبات في هذا القسم/);
+  assert.match(app.html(), /data-pv-route="done" class="is-on"/);
+  assert.match(app.html(), /لسه ما خلصتش طلبات/);
+  app.go('#/home');
+  assert.match(app.html(), /data-pv-route="progress" class="is-on"/, 'home opens the filter that has work in it');
 });
 
 test('nav clicks navigate through the hash router', async () => {
@@ -60,9 +62,9 @@ test('unknown routes and query strings fall back safely', async () => {
   app.go('#/does-not-exist');
   assert.equal(activeRoute(app), 'home');
   app.go('#/new?ref=push');
-  assert.equal(activeRoute(app), 'new');
+  assert.equal(activeRoute(app), 'home');
   app.go('#services');
-  assert.equal(activeRoute(app), 'services');
+  assert.equal(activeRoute(app), 'profile', 'services opens inside حسابي');
   assert.equal(app.ctx.HSProviderRouter.navigate('admin'), undefined);
   assert.equal(app.location.hash, '#/home', 'navigate() never writes an unsupported route');
 });
@@ -115,15 +117,4 @@ test('a deep link without a demo session shows the account picker, not request d
   app.go('#/request/' + rid);
   assert.match(app.html(), /pv-account-list/);
   assert.doesNotMatch(app.html(), /تركيب لوحة كهرباء/);
-});
-
-test('phones get 4 destinations + «المزيد»; the rest are marked as extras and «المزيد» lights up for them', async () => {
-  const app = boot({ session: PROVIDER });
-  const nav = app.navHtml();
-  assert.match(nav, /data-pv-more aria-expanded="false"/);
-  const extras = (nav.match(/pv-nav-extra/g) || []).length;
-  assert.ok(extras >= 8, 'everything after the first four is an extra');
-  assert.ok(!/class="pv-nav-more is-active"/.test(nav), 'home is a primary tab');
-  app.go('#/earnings');
-  assert.match(app.navHtml(), /class="pv-nav-more is-active"/, 'an extra destination highlights «المزيد»');
 });
