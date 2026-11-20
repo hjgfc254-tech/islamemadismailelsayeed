@@ -150,3 +150,19 @@ test('owner resets an employee code (never their own); the employee must set a n
   const s = await service.session(b, { auth: SUP, data: { op: 'sync', app: 'admin' } });
   assert.deepEqual({ needsCode: s.adminGate.needsCode, hasCode: s.adminGate.hasCode }, { needsCode: true, hasCode: false });
 });
+
+test('rank: riskier actions need a higher rank — support resolves complaints but cannot suspend; only the owner sets rates', () => {
+  const vm = require('node:vm');
+  const ctx = { console }; ctx.globalThis = ctx;
+  for (const f of ['apps/admin/rbac-store.js', 'apps/admin/permission-guard.js']) vm.runInNewContext(fs.readFileSync(path.join(ROOT, f), 'utf8'), ctx);
+  const R = ctx.HSAdminRbac, G = ctx.HSAdminPermissionGuard;
+  assert.equal(R.levelOf(R.state.roles, 'support'), 1); assert.equal(R.levelOf(R.state.roles, 'moderator'), 2, 'inherits support, own level 2');
+  assert.equal(R.levelOf(R.state.roles, 'admin'), 3); assert.equal(R.levelOf(R.state.roles, 'owner'), 4);
+  const who = (role) => ({ role: 'admin', id: 'x_' + role, adminRole: role });
+  assert.equal(G.riskDenied(who('support'), 'complaints.resolve'), '');
+  assert.match(G.riskDenied(who('support'), 'providers.suspend'), /مدير/);
+  assert.equal(G.riskDenied(who('admin'), 'providers.suspend'), '');
+  assert.match(G.riskDenied(who('admin'), 'finance.commission'), /المالك/);
+  assert.equal(G.riskDenied(who('owner'), 'finance.commission'), '');
+  assert.equal(G.riskDenied({ role: 'customer', id: 'c' }, 'providers.suspend'), '', 'only admin actors are ranked');
+});

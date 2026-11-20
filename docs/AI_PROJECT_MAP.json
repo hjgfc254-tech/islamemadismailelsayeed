@@ -2401,7 +2401,7 @@
       "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
-      "sha256": "654b8cffdc5ee74d149a1af584359cb487a7a67ee0001396ab15f26ab5bb31ba",
+      "sha256": "d49dc2e69023f2b33e23f979671c1e0335eb3503567fca997a442130ac336209",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2438,7 +2438,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 2862
+      "bytes": 3765
     },
     {
       "path": "apps/admin/rbac-store.js",
@@ -2450,7 +2450,7 @@
       "next_action": "Done for the demo scope. If the workforce page and these pages must share live data, record a decision first (docs/DECISIONS/).",
       "explicit_references": [],
       "notes": "Unit-tested in tests/unit/rbac-store.test.js (14 cases) and tests/unit/rbac-pages.test.js. Pages read and write the same in-memory state, so the permissions matrix reflects role edits.",
-      "sha256": "ccc0e6ee029a3a6ba6fb5e41e747695fa1811e7d8ea2ed80747cafb4134d90eb",
+      "sha256": "2918676004f85d5e514d0cb579522f4e28fa5c2053ab9cb068c563119d8a15bf",
       "resolved_dependencies": [],
       "dependents": [
         "apps/admin/pages/roles.page.js",
@@ -2468,7 +2468,7 @@
       "user_role": "داخلي: مشترك بين صفحات الإدارة",
       "user_visible_behavior": "لا يظهر مباشرة؛ يغذي صفحات الأدوار والصلاحيات وتفاصيل الموظف.",
       "file_behavior": "منطق نقي للوراثة والتأثير وحدود سلطة المنفّذ مع حالة تجريبية في الذاكرة.",
-      "bytes": 15489
+      "bytes": 17528
     },
     {
       "path": "apps/admin/README.md",
@@ -11000,8 +11000,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "654b8cffdc5ee74d149a1af584359cb487a7a67ee0001396ab15f26ab5bb31ba",
-      "bytes": 2862
+      "sha256": "d49dc2e69023f2b33e23f979671c1e0335eb3503567fca997a442130ac336209",
+      "bytes": 3765
     },
     {
       "path": "functions/domain/apps/admin/rbac-store.js",
@@ -11012,8 +11012,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "ccc0e6ee029a3a6ba6fb5e41e747695fa1811e7d8ea2ed80747cafb4134d90eb",
-      "bytes": 15489
+      "sha256": "2918676004f85d5e514d0cb579522f4e28fa5c2053ab9cb068c563119d8a15bf",
+      "bytes": 17528
     },
     {
       "path": "functions/domain/manifest.json",
@@ -11024,7 +11024,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "5f3b82ee2a6d4fd224994bd0b63a26e952c01953ce98b0f05b708ff64036addc",
+      "sha256": "be1d2979ca01b7a8755f46260c2616571bb04db6c30dd59c215ef95ee973e685",
       "bytes": 2051
     },
     {
@@ -11036,8 +11036,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "f0cdb2971d09224dbf2e95e06fd7c67653031f85fc608bc8a1fc19fe63960ff0",
-      "bytes": 20344
+      "sha256": "e2f4e10a37f98853390d4257eec8f28583e3f6807f486ff585e0375f708794c1",
+      "bytes": 21342
     },
     {
       "path": "functions/domain/services/api-client.js",
@@ -11096,8 +11096,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "3787368a257195a10c7b651b870ddb5dad7aed4934c2b352a064b2967722359c",
-      "bytes": 7175
+      "sha256": "237f9df4531f9c98941c111cb60bceb40c0e4ee79d123cdefeb1b950d714e90e",
+      "bytes": 7742
     },
     {
       "path": "functions/domain/services/local-catalog.js",
@@ -11180,8 +11180,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "a206923cc18bdadd7310b1932eacff6b3fa2ae81bc621f56b47dc59a2e20a40f",
-      "bytes": 4297
+      "sha256": "8e52c5cb211d4e6096c07261aca9470f2914f5a1eac6347d2eb59d98b0d552cc",
+      "bytes": 4714
     },
     {
       "path": "functions/domain/shared/config/legacy-data.js",
@@ -11754,7 +11754,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "c4f5c7f49fc7fe8ce4e422aaabac99a2cd8830b9a378ad19027d3bbd399c9650",
+      "sha256": "360b1486a1d3000ae9da05b3eadca05f374648be65b5f8c9dba8083125f4090b",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11802,7 +11802,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "bea101889252f773c8db3a7b2625e17f45aa43389b2a6dd764f86e4567f49aed",
+      "sha256": "a6c4e305941d09685c363762ed1e7d3e68d92ca45739f750863c93f49ff82312",
       "bytes": 195
     },
     {
@@ -11815,7 +11815,7 @@
       "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
       "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
-      "sha256": "f0cdb2971d09224dbf2e95e06fd7c67653031f85fc608bc8a1fc19fe63960ff0",
+      "sha256": "e2f4e10a37f98853390d4257eec8f28583e3f6807f486ff585e0375f708794c1",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11852,7 +11852,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 20344
+      "bytes": 21342
     },
     {
       "path": "services/api-client.js",
@@ -12060,7 +12060,7 @@
       "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
       "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
-      "sha256": "3787368a257195a10c7b651b870ddb5dad7aed4934c2b352a064b2967722359c",
+      "sha256": "237f9df4531f9c98941c111cb60bceb40c0e4ee79d123cdefeb1b950d714e90e",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12097,7 +12097,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 7175
+      "bytes": 7742
     },
     {
       "path": "services/firebase-backend.js",
@@ -12580,7 +12580,7 @@
       "next_action": "Backend phase: plug a real transport via HSApiClient.setTransport and enforce the same rules server-side. Screens still call MP directly; migrate per screen with regression tests.",
       "explicit_references": [],
       "notes": "In-process mock over the local MP store; no network. Contract: docs/API_CONTRACTS.md. Tests: tests/unit/api-adapters.test.js (2026-11-14). Not loaded by any app entry yet.",
-      "sha256": "a206923cc18bdadd7310b1932eacff6b3fa2ae81bc621f56b47dc59a2e20a40f",
+      "sha256": "8e52c5cb211d4e6096c07261aca9470f2914f5a1eac6347d2eb59d98b0d552cc",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12617,7 +12617,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 4297
+      "bytes": 4714
     },
     {
       "path": "services/uploads-api.js",
@@ -14908,8 +14908,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "ca7efff9cd238d07cf029a920a6b7ff130e2e3dc9f0cbf8927f7ec09bb42a87a",
-      "bytes": 12755
+      "sha256": "6a22933e6c04110b98ee76449bdd71ab826bb9c9d5733da339e418cb6b169005",
+      "bytes": 14011
     },
     {
       "path": "tests/unit/admin-runtime.test.js",

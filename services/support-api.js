@@ -21,6 +21,8 @@
   const { ok, fail } = client;
   const byOf = actor => actor.role + ':' + actor.id;
 
+  /* rank check for risky actions (apps/admin/permission-guard.js riskDenied; same on the server) */
+  const risk = (actor, key) => { const G = (typeof globalThis !== 'undefined' && globalThis.HSAdminPermissionGuard) || null; const m = G && G.riskDenied && key ? G.riskDenied(actor, key) : ''; return m ? client.fail('FORBIDDEN', m) : null; };
   client.define('POST', '/complaints', { roles: ['customer', 'provider'], summary: 'File a complaint {reqId?, text, kind?}.' }, ({ body, actor, store }) => {
     const text = String(body.text || '').trim();
     if (text.length < 5 || text.length > 1000) return fail('VALIDATION', 'اكتب تفاصيل الشكوى (5–1000 حرف)', { text: '5–1000' });
@@ -48,6 +50,7 @@
   });
 
   client.define('POST', '/complaints/:id/resolve', { roles: ['admin'], summary: 'Resolve a complaint {resolution}.' }, ({ params, body, actor, store }) => {
+    { const rk = risk(actor, 'complaints.resolve'); if (rk) return rk; }
     const G = (typeof globalThis !== 'undefined' && globalThis.HSAdminPermissionGuard) || null;
     const roster = (((globalThis.HSAdminRbac || {}).state || {}).roster || []);
     const emp = actor.adminRole ? (roster.find((x) => x.id === actor.id) || { id: actor.id, role: actor.adminRole, status: 'active' }) : null;

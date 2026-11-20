@@ -33,6 +33,8 @@
     return { jobs: list.length, freeJobs: list.filter(t => t.free).length, value: sum('value'), commission: sum('commission'), net: sum('net') };
   }
 
+  /* rank check for risky actions (apps/admin/permission-guard.js riskDenied; same on the server) */
+  const risk = (actor, key) => { const G = (typeof globalThis !== 'undefined' && globalThis.HSAdminPermissionGuard) || null; const m = G && G.riskDenied && key ? G.riskDenied(actor, key) : ''; return m ? client.fail('FORBIDDEN', m) : null; };
   client.define('GET', '/providers/me/earnings', { roles: ['provider'], summary: 'Own transactions and totals.' }, ({ actor, store }) => {
     const items = store.db().transactions.filter(t => t.providerId === actor.id);
     return { items, totals: totals(items), demo: true };
@@ -45,6 +47,7 @@
   });
 
   client.define('POST', '/admin/transactions/:id/collection', { roles: ['admin'], summary: 'Set a commission collection status.' }, ({ params, body, actor, store }) => {
+    { const rk = risk(actor, 'finance.collection'); if (rk) return rk; }
     if (!permitted(actor, 'finance', 'edit')) return fail('FORBIDDEN');
     const t = store.get('transactions', params.id); if (!t) return fail('NOT_FOUND', 'المعاملة غير موجودة');
     if (t.free) return fail('CONFLICT', 'خدمة مجانية — لا توجد عمولة للتحصيل');
@@ -58,7 +61,8 @@
     return { defaultRate: s.defaultRate, rates: { ...s.rates }, collectionModel: s.collectionModel };
   });
 
-  client.define('POST', '/admin/commission', { roles: ['admin'], summary: 'Update default or per-category rate (0–100 %).' }, ({ body, store }) => {
+  client.define('POST', '/admin/commission', { roles: ['admin'], summary: 'Update default or per-category rate (0–100 %).' }, ({ body, actor, store }) => {
+    { const rk = risk(actor, 'finance.commission'); if (rk) return rk; }
     if (body.defaultRate !== undefined) {
       if (!rateOk(body.defaultRate)) return fail('VALIDATION', 'النسبة من 0 إلى 100', { defaultRate: '0–100' });
       store.setSetting('defaultRate', +body.defaultRate);
@@ -84,6 +88,7 @@
     return { markupRate: store.markupRate(), prices: { ...(store.db().settings.prices || {}) } };
   });
   client.define('POST', '/admin/pricing', { roles: ['admin'], summary: 'Set or clear the base price of a service key {key, base>0|null}; or the markup {markupRate 0–100}.' }, ({ body, actor, store }) => {
+    { const rk = risk(actor, 'finance.pricing'); if (rk) return rk; }
     if (!permitted(actor, 'services', 'edit')) return fail('FORBIDDEN');
     if (body.markupRate !== undefined) {
       if (!rateOk(body.markupRate)) return fail('VALIDATION', 'النسبة من 0 إلى 100', { markupRate: '0–100' });

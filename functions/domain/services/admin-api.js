@@ -44,18 +44,22 @@
     };
   }
 
+  /* rank check for risky actions (apps/admin/permission-guard.js riskDenied; same on the server) */
+  const risk = (actor, key) => { const G = (typeof globalThis !== 'undefined' && globalThis.HSAdminPermissionGuard) || null; const m = G && G.riskDenied && key ? G.riskDenied(actor, key) : ''; return m ? client.fail('FORBIDDEN', m) : null; };
   client.define('GET', '/admin/summary', { roles: A, summary: 'Operations counts.' }, ({ store }) => summary(store.db()));
 
   client.define('GET', '/admin/providers', { roles: A, summary: 'All providers (?status=).' }, ({ query, actor, store }) =>
     guard(actor, 'providers', 'view') || store.db().providers.filter(p => !query.status || p.status === query.status));
 
   client.define('POST', '/admin/providers/:id/warn', { roles: A, summary: 'Warn a provider (e.g. off-platform deals) {reason}; the second warning suspends.' }, ({ params, body, actor, store }) => {
+    { const rk = risk(actor, 'providers.warn'); if (rk) return rk; }
     const denied = guard(actor, 'providers', 'decide'); if (denied) return denied;
     const p = store.get('providers', params.id); if (!p) return fail('NOT_FOUND', 'مقدم الخدمة غير موجود');
     store.warnProvider(p.id, String((body && body.reason) || 'الاتفاق مع العملاء بره المنصة'));
     return store.get('providers', p.id);
   });
   client.define('POST', '/admin/providers/:id/status', { roles: A, summary: 'Approve / reject / suspend a provider.' }, ({ params, body, actor, store }) => {
+    { const rk = risk(actor, ({approved:'providers.approve',rejected:'providers.reject',suspended:'providers.suspend'})[body && body.status]); if (rk) return rk; }
     const denied = guard(actor, 'providers', 'decide'); if (denied) return denied;
     const p = store.get('providers', params.id); if (!p) return fail('NOT_FOUND', 'مقدم الخدمة غير موجود');
     if (!PROVIDER_STATUS.includes(body.status)) return fail('VALIDATION', 'حالة غير صالحة', { status: PROVIDER_STATUS.join('|') });
@@ -65,6 +69,7 @@
   });
 
   client.define('POST', '/admin/providers/:id/rate', { roles: A, summary: 'Set or clear a special commission rate.' }, ({ params, body, actor, store }) => {
+    { const rk = risk(actor, 'providers.rate'); if (rk) return rk; }
     const denied = guard(actor, 'providers', 'edit'); if (denied) return denied;
     const p = store.get('providers', params.id); if (!p) return fail('NOT_FOUND', 'مقدم الخدمة غير موجود');
     const v = body.specialRate;
@@ -80,6 +85,7 @@
   });
 
   client.define('POST', '/admin/requests/:id/assign', { roles: A, summary: 'Assign manually {providerId} or auto-match.' }, ({ params, body, actor, store }) => {
+    { const rk = risk(actor, 'requests.assign'); if (rk) return rk; }
     const denied = guard(actor, 'orders', 'decide'); if (denied) return denied;
     const r = store.get('serviceRequests', params.id); if (!r) return fail('NOT_FOUND', 'الطلب غير موجود');
     if (body.providerId) {
@@ -91,6 +97,7 @@
   });
 
   client.define('POST', '/admin/customers/:id/status', { roles: A, summary: 'Suspend / reactivate a customer.' }, ({ params, body, actor, store }) => {
+    { const rk = risk(actor, (body && body.status === 'suspended' ? 'customers.suspend' : '')); if (rk) return rk; }
     const denied = guard(actor, 'customers', 'decide'); if (denied) return denied;
     const c = store.get('customers', params.id); if (!c) return fail('NOT_FOUND', 'العميل غير موجود');
     if (!CUSTOMER_STATUS.includes(body.status)) return fail('VALIDATION', 'حالة غير صالحة', { status: CUSTOMER_STATUS.join('|') });
@@ -181,6 +188,7 @@
     bidding: !!s.bidding, bidWindowMin: +s.bidWindowMin || 15, inspectionCap: s.inspectionCap || { default: 0, cats: {} }, cancelFee: s.cancelFee != null ? +s.cancelFee : 50, visitFee: +s.visitFee || 0, inspectionRate: +s.inspectionRate || 0, priceCaps: s.priceCaps || { cats: {}, items: {}, problems: {} }, inspection: s.inspection || { cats: {}, items: {}, problems: {} },
     bonus: s.bonus || { on: false, windowDays: 30, tiers: [], weekly: { on: false, target: 0, amount: 0 } } });
   client.define('POST', '/admin/reviews/:id/visibility', { roles: A, summary: 'Hide or re-publish a review {hidden, reason}.' }, ({ params, body, actor, store }) => {
+    { const rk = risk(actor, (body && body.hidden ? 'reviews.hide' : '')); if (rk) return rk; }
     const denied = guard(actor, 'reviews', 'decide'); if (denied) return denied;
     if (typeof body.hidden !== 'boolean') return fail('VALIDATION', 'حدد إخفاء أو نشر', { hidden: 'boolean' });
     if (body.hidden && String(body.reason || '').trim().length < 3) return fail('VALIDATION', 'اكتب سبب الإخفاء', { reason: 'مطلوب' });
@@ -209,6 +217,7 @@
   client.define('GET', '/admin/marketing', { roles: A, summary: 'Promo codes, invite reward and packages.' }, ({ actor, store }) =>
     guard(actor, 'services', 'view') || marketingView(store.db().settings || {}));
   client.define('PATCH', '/admin/marketing', { roles: A, summary: 'Replace promo codes / invite reward / packages {promos?, referral?, packages?}.' }, ({ body, actor, store }) => {
+    { const rk = risk(actor, 'marketing.edit'); if (rk) return rk; }
     const denied = guard(actor, 'services', 'edit'); if (denied) return denied;
     const st = store.db().settings || {};
     const { out, errors } = cleanMarketing(body || {}, st);

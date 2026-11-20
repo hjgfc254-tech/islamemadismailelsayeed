@@ -44,7 +44,21 @@
     return can(employee, module, 'view');
   }
 
-  const api = Object.freeze({ ROUTE_MODULE, OWNER_ONLY, permissionsOf, can, canView, isGuarded: (id) => !!ROUTE_MODULE[id] });
+  /** The roster employee behind an API actor (server: adminRole on the actor; demo: the RBAC roster). */
+  function employeeOf(actor) {
+    const r = rbac(); if (!actor) return null;
+    const e = r && r.state && (r.state.roster || []).find((x) => x.id === actor.id);
+    return e || (actor.adminRole ? { id: actor.id, role: actor.adminRole, status: 'active' } : null);
+  }
+  /** '' when the actor's rank is enough for a risky action, else the Arabic refusal (who may do it). */
+  function riskDenied(actor, riskKey) {
+    const r = rbac(); if (!r || !r.levelOf || !actor || actor.role !== 'admin') return '';
+    const emp = employeeOf(actor); if (!emp) return '';
+    const need = r.riskNeed(riskKey), have = r.levelOf(r.state.roles, emp.role);
+    return have >= need ? '' : `«${r.RISK_LABEL[riskKey] || riskKey}» محتاج رتبة ${r.LEVELS[need]} أو أعلى`;
+  }
+
+  const api = Object.freeze({ ROUTE_MODULE, OWNER_ONLY, employeeOf, riskDenied, permissionsOf, can, canView, isGuarded: (id) => !!ROUTE_MODULE[id] });
   root.HSAdminPermissionGuard = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

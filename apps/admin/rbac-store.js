@@ -131,7 +131,30 @@
   const addAudit = (subject, text, at) => { state.audit = state.audit.concat([{ subject, text, at: at || new Date().toISOString(), actor: state.actor }]); };
   const auditFor = (subject) => state.audit.filter((a) => a.subject === subject);
 
-  const api = { MODULES, ACTIONS, DEPARTMENTS, STATUS_LABEL, LIMITS, ALL_KEYS, key, keyLabel, isKey, sortKeys, buildRoles, buildRoster, roleById, chain, effective, inherited, descendants, validParents, roleEmployees,
+  /* ───── Rank: the riskier the action, the higher the rank it needs (owner request 2026-11-20) ─────
+     1 دعم · 2 مشرف (مالية / مراقب محتوى) · 3 مدير · 4 المالك. A custom role may declare `level`; otherwise it takes the
+     highest level along its inheritance chain, and never more than 3 (only the owner role is 4). */
+  const LEVELS = { 1: 'دعم', 2: 'مشرف', 3: 'مدير', 4: 'المالك' };
+  const ROLE_LEVEL = { owner: 4, admin: 3, finance: 2, moderator: 2, support: 1 };
+  const RISK = Object.freeze({
+    'complaints.resolve': 1, 'requests.assign': 1,
+    'providers.warn': 2, 'providers.approve': 2, 'providers.reject': 2, 'reviews.hide': 2, 'finance.collection': 2,
+    'providers.suspend': 3, 'customers.suspend': 3, 'marketing.edit': 3, 'notifications.broadcast': 3,
+    'providers.rate': 4, 'finance.commission': 4, 'finance.pricing': 4
+  });
+  const RISK_LABEL = { 'complaints.resolve': 'حل شكوى', 'requests.assign': 'إسناد طلب يدويًا', 'providers.warn': 'إنذار مقدم خدمة', 'providers.approve': 'قبول مقدم خدمة',
+    'providers.reject': 'رفض مقدم خدمة', 'reviews.hide': 'إخفاء تقييم', 'finance.collection': 'تسجيل تحصيل عمولة', 'providers.suspend': 'تعليق مقدم خدمة',
+    'customers.suspend': 'إيقاف عميل', 'marketing.edit': 'العروض والخصومات', 'notifications.broadcast': 'إشعار جماعي', 'providers.rate': 'نسبة خاصة لمقدم خدمة',
+    'finance.commission': 'نسبة العمولة', 'finance.pricing': 'أسعار الخدمات' };
+  function levelOf(roles, roleId) {
+    if (roleId === 'owner') return 4;
+    let best = 0;
+    for (const id of chain(roles, roleId)) { const r = roleById(roles, id); best = Math.max(best, r && +r.level ? +r.level : (ROLE_LEVEL[id] || 1)); }
+    return Math.min(3, best || 1);
+  }
+  const riskNeed = (k) => RISK[k] || 1;
+
+  const api = { LEVELS, ROLE_LEVEL, RISK, RISK_LABEL, levelOf, riskNeed, MODULES, ACTIONS, DEPARTMENTS, STATUS_LABEL, LIMITS, ALL_KEYS, key, keyLabel, isKey, sortKeys, buildRoles, buildRoster, roleById, chain, effective, inherited, descendants, validParents, roleEmployees,
     validateRole, grantViolations, impact, createRole, updateRole, employeeEffective, setOverrides, isLastActiveOwner, changeEmployee, state, reset, addAudit, auditFor };
   root.HSAdminRbac = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
