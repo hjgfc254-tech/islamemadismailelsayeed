@@ -3,7 +3,7 @@
   "files": {
     "shared/config/legacy-data.js": "39f50b5456f3d685c3f1c06f477e7d90f835d58d850cfee151d1a9fa673dbfff",
     "services/local-catalog.js": "de3fcd80ef8de84667bada846d511897d05e285048cad59b10d9d6fdb69e8151",
-    "services/local-market-store.js": "c0981b7abc5d3de20fa759b135e71041d0645a7e26ffbaa4ec0aa418d1f7ea74",
+    "services/local-market-store.js": "9d06356bb02f2d1fa120f20bf8d941843a8f69f7cc5a7217169218a04652bf09",
     "services/api-client.js": "331f7fe2216cb88724b10846b016760e8ab6915de68931f632d34bdb45dcd069",
     "services/auth-api.js": "7221c02eb6559ce21c465fc5f1987ca47ce43ecefdf963fc901a8e2b3bfd587b",
     "services/orders-api.js": "a6b5db762e0db68263a6009a9d9677fa4713a4074fca21a709a19414a1d06f2d",

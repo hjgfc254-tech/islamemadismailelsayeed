@@ -73,7 +73,8 @@
       "install-tools.ps1",
       "coverage-map.txt",
       "service-worker.lock.json",
-      ".github/**"
+      ".github/**",
+      "tools/**"
     ],
     "redirects": [
       {
