@@ -159,6 +159,7 @@
     }
     for (const key of ['cancelFee', 'visitFee']) { if (body[key] === undefined) continue; const n = Math.round(+body[key]); if (!(n >= 0 && n <= 5000)) errors[key] = 'من 0 لـ 5000 ج.م'; else out[key] = n; }
     if (body.inspectionRate !== undefined) { const n = +body.inspectionRate; if (!(n >= 0 && n <= 50)) errors.inspectionRate = 'من 0 لـ 50٪'; else out.inspectionRate = n; }
+    if (body.autoPickMin !== undefined) { const n = Math.round(+body.autoPickMin); if (!(n >= 0 && n <= 240)) errors.autoPickMin = 'من 0 (مقفول) لـ 240 دقيقة'; else out.autoPickMin = n; }
     if (body.bidWindowMin !== undefined) { const n = Math.round(+body.bidWindowMin); if (!(n >= 5 && n <= 120)) errors.bidWindowMin = 'من 5 لـ 120 دقيقة'; else out.bidWindowMin = n; }
     for (const key of ['inspectionCap', 'priceCaps']) {           /* EGP caps: default + per category (+ per item / problem for prices) */
       if (body[key] === undefined) continue;
@@ -185,7 +186,7 @@
     return { out, errors };
   }
   const marketingView = s => ({ promos: Array.isArray(s.promos) ? s.promos : [], referral: s.referral || { on: false, reward: 0 }, packages: Array.isArray(s.packages) ? s.packages : [], warranty: s.warranty || { default: 30, cats: {}, items: {} }, arrivalPin: !!s.arrivalPin,
-    bidding: !!s.bidding, bidWindowMin: +s.bidWindowMin || 15, inspectionCap: s.inspectionCap || { default: 0, cats: {} }, cancelFee: s.cancelFee != null ? +s.cancelFee : 50, visitFee: +s.visitFee || 0, inspectionRate: +s.inspectionRate || 0, priceCaps: s.priceCaps || { cats: {}, items: {}, problems: {} }, inspection: s.inspection || { cats: {}, items: {}, problems: {} },
+    bidding: !!s.bidding, bidWindowMin: +s.bidWindowMin || 15, autoPickMin: +s.autoPickMin || 0, inspectionCap: s.inspectionCap || { default: 0, cats: {} }, cancelFee: s.cancelFee != null ? +s.cancelFee : 50, visitFee: +s.visitFee || 0, inspectionRate: +s.inspectionRate || 0, priceCaps: s.priceCaps || { cats: {}, items: {}, problems: {} }, inspection: s.inspection || { cats: {}, items: {}, problems: {} },
     bonus: s.bonus || { on: false, windowDays: 30, tiers: [], weekly: { on: false, target: 0, amount: 0 } } });
   client.define('POST', '/admin/reviews/:id/visibility', { roles: A, summary: 'Hide or re-publish a review {hidden, reason}.' }, ({ params, body, actor, store }) => {
     { const rk = risk(actor, (body && body.hidden ? 'reviews.hide' : '')); if (rk) return rk; }
@@ -218,6 +219,7 @@
     guard(actor, 'services', 'view') || marketingView(store.db().settings || {}));
   client.define('PATCH', '/admin/marketing', { roles: A, summary: 'Replace promo codes / invite reward / packages {promos?, referral?, packages?}.' }, ({ body, actor, store }) => {
     { const rk = risk(actor, 'marketing.edit'); if (rk) return rk; }
+    { const rk = risk(actor, body && (body.priceCaps !== undefined || body.inspectionCap !== undefined) ? 'finance.pricing' : ''); if (rk) return rk; }   /* price caps are price edits (owner) */
     const denied = guard(actor, 'services', 'edit'); if (denied) return denied;
     const st = store.db().settings || {};
     const { out, errors } = cleanMarketing(body || {}, st);

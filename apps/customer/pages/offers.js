@@ -59,6 +59,7 @@
     const top = best(offers), late = minutesSince(r) >= 60, tags = tagsFor(offers), why = offers.length > 1 ? whyBest(top, offers) : '';
     return `<section class="offers" aria-labelledby="of-h">${head}${intro}
       ${left ? `<div class="of-timer">${ring(r)}<span>ممكن توصلك عروض تانية — أو اختار دلوقتي.</span></div>` : `<p class="of-ready" role="status">${ic('bell')} العروض جاهزة — اختار واحد عشان الفني يتحرك</p>`}
+      ${(() => { const m = +((MP.db().settings || {}).autoPickMin) || 0; return m ? `<p class="of-auto" data-of-autopick>${ic('clock')} لو ما اخترتش خلال ${num(m)} دقيقة من انتهاء وقت العروض، هنختارلك الأنسب تلقائيًا.</p>` : ''; })()}
       ${offers.length > 1 ? `<button type="button" class="cta of-best ${late ? 'is-late' : ''}" data-of-choose="${esc(top.a.providerId)}">${ic('check')} اختارلي الأنسب</button>${why ? `<p class="of-why">${ic('info')} الأنسب: ${esc(top.p.name || 'فني')} — ${esc(why)}</p>` : ''}` : ''}
       <ul class="of-list">${offers.map((o) => { const { a, p } = o; const tg = tags.get(o) || []; return `<li class="of-card ${o === top && offers.length > 1 ? 'is-best' : ''}" data-of-card="${esc(a.providerId)}">
         ${tg.length ? `<div class="of-tags">${tg.map((x) => `<span class="of-tag">${esc(x)}</span>`).join('')}</div>` : ''}

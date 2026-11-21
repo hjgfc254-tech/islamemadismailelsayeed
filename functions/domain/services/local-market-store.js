@@ -537,6 +537,7 @@ const MP = (() => {
         const x = { value:pr.customerPrice, rate:pr.rate, commission:pr.platformFee, deductions:d, net:Math.round((pr.providerAmount-d)*100)/100, pricing:'upfront' };
         if (!db.transactions.some(t => t.reqId===reqId)) applyDiscount(r, x);
         r.finalValue = x.value;
+        api.learnPrice(r.problemId || r.itemId, pr.providerAmount);
         log(r,'completed','السعر المحدد مسبقًا '+x.value);
         if (!db.transactions.some(t => t.reqId===reqId)) db.transactions.push({id:uid('t'),reqId,providerId:p.id,customerId:r.customerId,cat:r.cat,...x,model:db.settings.collectionModel,collection:'pending',demo:true,at:now()});
         afterCompletion(r);
@@ -551,6 +552,7 @@ const MP = (() => {
       const rate = rateFor(r.cat, p.id), x = calc(v, rate, deductions);
       if (!db.transactions.some(t => t.reqId===reqId)) applyDiscount(r, x);
       r.finalValue = x.value;
+      api.learnPrice(r.problemId || r.itemId, x.value - (+x.commission || 0));
       log(r,'completed','القيمة النهائية '+x.value);
       if (!db.transactions.some(t => t.reqId===reqId)) {
         db.transactions.push({id:uid('t'),reqId,providerId:p.id,customerId:r.customerId,cat:r.cat,...x,model:db.settings.collectionModel,collection:'pending',demo:true,at:now()});
@@ -812,6 +814,28 @@ const MP = (() => {
         no offers, not widened yet → widen the search (widenBidding);
         no offers after the widened window → the round closes, the request goes back to the normal search and the admin
         sees it in «مهام اليوم». Returns the ids that changed. */
+    /** «الأنسب»: lowest price weighted by rating (5★ counts as is; lower ratings make the price «feel» higher) */
+    bestOffer(reqId){
+      const list = api.offersFor(reqId).filter(a => a.status === 'offered' && a.offer && a.bidding);
+      const score = a => a.offer.total * (1.3 - 0.06 * (rating(a.providerId) || 4));
+      return list.slice().sort((x, y) => score(x) - score(y))[0] || null;
+    },
+    /** Learned price library: provider amounts of completed jobs per problem / item (no personal data). O(1) update:
+        running count / sum / min / max + the last 15 amounts for a robust range (25th–75th percentile). */
+    learnPrice(key, amount){
+      if (!key || !(+amount > 0)) return;
+      const lib = db.settings.priceLib = db.settings.priceLib || {};
+      const s = lib[key] = lib[key] || { n: 0, sum: 0, min: null, max: null, recent: [] };
+      const v = Math.round(+amount);
+      s.n++; s.sum += v; s.min = s.min == null ? v : Math.min(s.min, v); s.max = s.max == null ? v : Math.max(s.max, v);
+      s.recent.push(v); if (s.recent.length > 15) s.recent.shift();
+      const keys = Object.keys(lib); if (keys.length > 400) delete lib[keys[0]];   /* bounded document */
+    },
+    priceRange(key){
+      const s = key && (db.settings.priceLib || {})[key]; if (!s || !s.n) return null;
+      const r = s.recent.slice().sort((a, b) => a - b), at = q => r[Math.min(r.length - 1, Math.max(0, Math.round(q * (r.length - 1))))];
+      return { n: s.n, low: at(.25), high: at(.75), median: at(.5), avg: Math.round(s.sum / s.n), min: s.min, max: s.max };
+    },
     tickBidding(at){
       const nowMs = at || Date.now(), changed = [];
       for (const r of db.serviceRequests) {
@@ -820,7 +844,18 @@ const MP = (() => {
         if (!(Date.parse(b.until) <= nowMs)) continue;
         const offers = api.offersFor(r.id).filter(a => a.status === 'offered' && a.offer).length;
         if (offers) {
-          if (!b.readyNotified) { b.readyNotified = true; notify('customer:' + r.customerId, 'وقت العروض خلص — عندك ' + offers + ' عرض على طلبك ' + r.no + '، اختار الأنسب', r.id); changed.push(r.id); }
+          const autoMin = +db.settings.autoPickMin || 0;
+          if (!b.readyNotified) { b.readyNotified = true; b.readyAt = new Date(nowMs).toISOString(); notify('customer:' + r.customerId, 'وقت العروض خلص — عندك ' + offers + ' عرض على طلبك ' + r.no + '، اختار الأنسب' + (autoMin ? ' (لو ما اخترتش خلال ' + autoMin + ' دقيقة هنختارلك الأنسب)' : ''), r.id); changed.push(r.id); }
+          else if (autoMin > 0 && nowMs - Date.parse(b.readyAt || b.until) >= autoMin * 60000) {
+            /* auto-pick: the same «الأنسب» score the customer sees (price weighted by rating, apps/customer/pages/offers.js) */
+            const best = api.bestOffer(r.id);
+            if (best && api.chooseBid(r.id, best.providerId).ok) {
+              r.bidding.autoPicked = true;
+              const p = get('providers', best.providerId);
+              notify('customer:' + r.customerId, 'اخترنالك أنسب عرض على طلبك ' + r.no + (p ? ' — ' + p.name : '') + ' بـ ' + best.offer.total + ' ج.م', r.id);
+              changed.push(r.id);
+            }
+          }
         } else if (!b.widened) {
           if (api.widenBidding(r.id)) changed.push(r.id);
         } else {

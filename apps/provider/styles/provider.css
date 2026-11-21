@@ -264,3 +264,4 @@
 .pv-panel h1,.pv-panel h2,.pv-hero h1,.pv-hero h2,.pv-gate h1{letter-spacing:0}
 /* closed «خيارات تانية»: its actions take no layout space (they were measured off-screen while hidden) */
 .pv-more-actions:not([open])>.pv-actions{display:none}
+.pv-lib-hint{margin:0;font-size:var(--fs-sm)}

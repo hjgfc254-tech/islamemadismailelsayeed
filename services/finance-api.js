@@ -83,9 +83,15 @@
     for (const k of Object.keys(prices)) { const q = store.priceFor(k); if (q) out[k] = q.customerPrice; }
     return { markupRate: store.markupRate(), prices: out };
   });
+  /* base prices + markup + the learned price library (ranges of provider amounts of completed jobs per item / problem) */
+  const pricingView = (store) => {
+    const lib = (store.db().settings || {}).priceLib || {};
+    const library = {}; for (const k of Object.keys(lib)) { const r = typeof store.priceRange === 'function' ? store.priceRange(k) : null; if (r) library[k] = r; }
+    return { markupRate: store.markupRate(), prices: { ...(store.db().settings.prices || {}) }, library };
+  };
   client.define('GET', '/admin/pricing', { roles: ['admin'], summary: 'Base prices (provider amounts) per service key and the markup rate.' }, ({ actor, store }) => {
     if (!permitted(actor, 'services', 'view')) return fail('FORBIDDEN');
-    return { markupRate: store.markupRate(), prices: { ...(store.db().settings.prices || {}) } };
+    return pricingView(store);
   });
   client.define('POST', '/admin/pricing', { roles: ['admin'], summary: 'Set or clear the base price of a service key {key, base>0|null}; or the markup {markupRate 0–100}.' }, ({ body, actor, store }) => {
     { const rk = risk(actor, 'finance.pricing'); if (rk) return rk; }
@@ -99,7 +105,7 @@
       if (body.base !== null && body.base !== '' && !(+body.base > 0 && +body.base <= 1000000)) return fail('VALIDATION', 'السعر الأساسي يجب أن يكون أكبر من صفر', { base: '>0' });
       store.setPrice(String(body.key), body.base === null || body.base === '' ? null : +body.base);
     }
-    return { markupRate: store.markupRate(), prices: { ...(store.db().settings.prices || {}) } };
+    return pricingView(store);
   });
 
   return {

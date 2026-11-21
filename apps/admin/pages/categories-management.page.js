@@ -108,6 +108,13 @@
   };
   const fErr = (e, k) => (e && e[k] ? `<small class="ord-err" id="cat-e-${k}" role="alert">${esc(e[k])}</small>` : '');
   let livePricing = null;   /* {markupRate, prices{itemId: base}} from GET /admin/pricing (server backend mode) */
+  /* learned price library: what completed jobs for this item actually paid the provider, with one-click approval */
+  const libraryHtml = (key, base) => {
+    const r = livePricing && livePricing.library && livePricing.library[key];
+    if (!r) return '<p class="ord-muted" data-cat-lib>لسه مفيش شغل مكتمل كفاية للخدمة دي عشان نقترح سعر من السوق.</p>';
+    return `<div class="cat-lib" data-cat-lib><p><b>من السوق:</b> آخر الشغلانات المكتملة دفعت للفني غالبًا بين ${esc(String(r.low))} و${esc(String(r.high))} ج.م (الوسط ${esc(String(r.median))} — من ${esc(String(r.n))} شغلانة).</p>` +
+      (r.median !== base ? `<p><button type="button" class="adm-btn" data-cat-price-lib="${esc(String(r.median))}">اعتمد ${esc(String(r.median))} ج.م كسعر أساسي</button></p>` : '<p class="ord-muted">السعر الأساسي الحالي هو وسط السوق.</p>') + '</div>';
+  };
   const priceSection = (c) => {
     if (!c || !livePricing || String(c.id).indexOf('item:') !== 0) return '';
     const key = String(c.id).slice(5), base = livePricing.prices[key], m = +livePricing.markupRate || 0;
@@ -115,7 +122,7 @@
     return `<section aria-labelledby="cat-h-price"><h3 id="cat-h-price">السعر (يُثبَّت للعميل عند الطلب)</h3>` +
       `<p class="ord-muted">${base ? 'مبلغ مقدم الخدمة: ' + esc(String(base)) + ' ج.م — يدفع العميل ' + esc(String(cust)) + ' ج.م (رسوم المنصة ' + esc(String(m)) + '%)' : 'لا يوجد سعر بعد — يُحدَّد السعر بعد المعاينة.'}</p>` +
       `<div class="hs-grid-field"><label for="cat-price">مبلغ مقدم الخدمة (ج.م)</label><input id="cat-price" type="number" min="1" step="1" inputmode="numeric" value="${base ? esc(String(base)) : ''}"></div>` +
-      `<p><button type="button" class="adm-btn adm-btn-p" data-cat-price>حفظ السعر</button>${base ? ' <button type="button" class="adm-btn" data-cat-price-clear>إزالة السعر</button>' : ''}</p></section>`;
+      `<p><button type="button" class="adm-btn adm-btn-p" data-cat-price>حفظ السعر</button>${base ? ' <button type="button" class="adm-btn" data-cat-price-clear>إزالة السعر</button>' : ''}</p>` + libraryHtml(key, base) + `</section>`;
   };
   const dialogHtml = (c, st) => {
     const creating = !c, v = st.values || (c ? { name: c.name, parentId: c.parentId } : { name: '', parentId: null }), e = st.errors || {};
@@ -182,8 +189,8 @@
     dlgEl.addEventListener('submit', (e) => { e.preventDefault(); save(); });
     d.onClick((b) => {
       if (L && (b.dataset.ordStatus || b.dataset.catMove)) { st = { message: L.UNSUPPORTED }; paintDlg(); return; }
-      if (L && (b.hasAttribute('data-cat-price') || b.hasAttribute('data-cat-price-clear'))) {
-        const key = String(openId).slice(5), clear = b.hasAttribute('data-cat-price-clear'), v = clear ? null : Number(dlgEl.querySelector('#cat-price').value);
+      if (L && (b.hasAttribute('data-cat-price') || b.hasAttribute('data-cat-price-clear') || b.hasAttribute('data-cat-price-lib'))) {
+        const key = String(openId).slice(5), clear = b.hasAttribute('data-cat-price-clear'), v = clear ? null : (b.hasAttribute('data-cat-price-lib') ? Number(b.getAttribute('data-cat-price-lib')) : Number(dlgEl.querySelector('#cat-price').value));
         if (!clear && !(v > 0)) { st = { message: 'اكتب مبلغًا أكبر من صفر.' }; paintDlg('#cat-price'); return; }
         const send = root.HSBackend && root.HSBackend.admin ? root.HSBackend.admin('POST', '/admin/pricing', { key, base: v }) : root.HSApiClient.request('POST', '/admin/pricing', { body: { key, base: v } });
         send.then((res) => { if (res.ok) { livePricing = res.data; st = { message: clear ? 'أُزيل السعر — يُحدَّد بعد المعاينة.' : 'تم حفظ السعر على الخادم.' }; } else st = { message: L.errorText(res) }; paintDlg('#cat-price'); });

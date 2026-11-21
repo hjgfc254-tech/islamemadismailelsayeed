@@ -1490,3 +1490,4 @@ html.ob-open,html.ob-open body{overflow:hidden}
 #view .tile:hover .tart:not(.ph),#view .icard:hover .ip:not(.ph){background:var(--mint);box-shadow:none}
 #view .icard.sel .ip:not(.ph),#view .prow.sel .ip:not(.ph){background:var(--mint);box-shadow:inset 0 0 0 1.5px var(--accent)}
 #view small,#view .tx small{font-size:var(--fs-xs)}
+#view .of-auto{margin:6px 0 0;font-size:var(--fs-sm);color:var(--text-secondary)}

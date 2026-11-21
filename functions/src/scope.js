@@ -7,7 +7,7 @@
 const PROVIDER_PUBLIC = ['id', 'name', 'type', 'cats', 'subs', 'govs', 'areas', 'years', 'bio', 'rating', 'jobs', 'avatar', 'status', 'available', 'demo', 'createdAt'];
 const pick = (o, keys) => Object.fromEntries(keys.filter(k => o[k] !== undefined).map(k => [k, o[k]]));
 const publicProvider = p => pick(p, PROVIDER_PUBLIC);
-const PUBLIC_SETTINGS = ['customerFee', 'autoAssign', 'collectionModel', 'contentV', 'trend', 'packages', 'referral', 'arrivalPin', 'ai', 'bidding', 'cancelFee', 'visitFee', 'bonus', 'markupRate', 'inspectionRate', 'controls'];   // ai = {text, photo} flags only (keys live in system/ai)   // promo codes stay admin-only
+const PUBLIC_SETTINGS = ['customerFee', 'autoAssign', 'collectionModel', 'contentV', 'trend', 'packages', 'referral', 'arrivalPin', 'ai', 'bidding', 'cancelFee', 'visitFee', 'bonus', 'markupRate', 'inspectionRate', 'autoPickMin', 'controls'];   // ai = {text, photo} flags only (keys live in system/ai)   // promo codes stay admin-only
 
 function base(db) {
   return { v: db.v || 2, meta: {}, serviceAreas: db.serviceAreas || [], customers: [], providers: [], serviceRequests: [],
@@ -67,6 +67,9 @@ function scopeFor(db, actor) {
     out.addresses = (db.addresses || []).filter(a => a.customerId === actor.id);
     out.favorites = (db.favorites || []).filter(f => f.customerId === actor.id);
   } else if (actor.role === 'provider') {
+    /* learned price library (provider amounts per problem / item, no personal data) for the bid-form hint;
+       customers never receive it (they only see what they pay). */
+    out.settings.priceLib = (db.settings || {}).priceLib || {};
     const mine = (db.assignments || []).filter(a => a.providerId === actor.id);
     const offered = new Set(mine.map(a => a.reqId));
     const accepted = new Set(mine.filter(a => a.status === 'accepted').map(a => a.reqId));
