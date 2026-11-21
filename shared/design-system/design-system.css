@@ -558,3 +558,8 @@ p,li,dd,.sec-hint,small{line-height:1.65}
 h1,h2,h3{text-wrap:balance}
 /* codes and order numbers keep Latin digits and LTR inside Arabic text */
 bdi.code,.code-ltr{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+
+/* 2026-11-20 icons: the maintenance screen uses the line icon set (no emoji) */
+#hs-maint .hs-maint-ic{display:grid;place-items:center;width:64px;height:64px;border-radius:18px;background:var(--mint,#F1E4D6);color:var(--text-primary,#1F1B17);font-size:32px;line-height:1}
+#hs-maint .hs-maint-ic svg.i{width:32px;height:32px}
+.ctl-summary svg.i,.cerr-empty svg.i,.fin-banner svg.i{vertical-align:-.15em}

@@ -41,7 +41,7 @@ test('without published content every getter returns the defaults signal (null /
   assert.equal(run('HSSiteContent.hero()'), null);
   assert.equal(run('HSSiteContent.slides()'), null);
   assert.equal(run("HSSiteContent.iconUrl('c-electric')"), '');
-  assert.match(run("icPhoto('c-electric')"), /assets\/icons\/svc\/home\/electric\.webp$/, 'bundled artwork stays');
+  assert.equal(run("icPhoto('c-electric')"), '', 'no bundled photo by default: categories render as the premium line icons (2026-11-20)');
 });
 
 test('applying published content: hero/slides/icons resolve, hidden slides drop, version persists, missing() empty', async () => {

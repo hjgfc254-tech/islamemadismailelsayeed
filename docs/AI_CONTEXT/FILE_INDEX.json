@@ -160,8 +160,8 @@
       "path": "apps/admin/modules/admin-live-panels.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 20506,
-      "sha256": "c136ea66452ac90f3fff4a1cab3978c9b4edcb54e6c6ff0fc4a01a7517eba416"
+      "bytes": 20545,
+      "sha256": "df40f90e4670a7996ad9cf8ed24201bc8b6318c36d8714d6f9f0b64326848a09"
     },
     {
       "path": "apps/admin/modules/admin-live.js",
@@ -195,8 +195,8 @@
       "path": "apps/admin/modules/client-errors.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 4791,
-      "sha256": "0895ce49d1a6bda6658e9aeaf21a2cdb5efa0acac6f167c029c5e97b4e275b38"
+      "bytes": 4845,
+      "sha256": "48ae4fda77db628556df07c1c9e7e279453aad754d2740b328263ea3109ad5cd"
     },
     {
       "path": "apps/admin/modules/command-palette.js",
@@ -293,8 +293,8 @@
       "path": "apps/admin/pages/controls.page.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 7262,
-      "sha256": "e85373231326fc712c425482843677ae34c7dcf65e44c1a459f296e226297d7e"
+      "bytes": 7358,
+      "sha256": "820e9e8d7b5b8966b4a256467b88ec78b9093794a29165b8e2fd9a0c3a48c4a4"
     },
     {
       "path": "apps/admin/pages/customers-management.page.js",
@@ -643,8 +643,8 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 143137,
-      "sha256": "c796f7e9e5391d7702a48083af92c6e13e9536905b96996e4a2efd65a3f26ccd"
+      "bytes": 145735,
+      "sha256": "6dccf9832a57eb6bfaf79dc107b9c4cd3511efc03112161daa8e79ddd8212ff3"
     },
     {
       "path": "apps/customer/styles/overrides.css",
@@ -678,8 +678,8 @@
       "path": "apps/provider/app.js",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 74942,
-      "sha256": "78043f078717c396ba424aaa3400ee39e915bb7174feec00599166de9f51b231"
+      "bytes": 74938,
+      "sha256": "56e636bb3f5c77719a8f59bff88658be2b696623f5b0346c0b3f1e9f0aa38673"
     },
     {
       "path": "apps/provider/index.html",
@@ -3010,14 +3010,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 10943,
-      "sha256": "c3130fd2f0cb375a0290d7ea8b49e1139adb1a07d2530c89a746c874b8f1ef7c"
+      "sha256": "43e85e64820c6d4186d58fd1976b2806ae05279b3a78bab42bbc60f6a73079b8"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "ba6eb6fe3fdce64bc0080dfe54922f7e71eee7b571aee3fc69fba2175cd136db"
+      "sha256": "8a0aab0edb1cc62d094e3386b7a7e67f4e788fdb8f642fb7a90b1eb0fa99eee7"
     },
     {
       "path": "services/admin-api.js",
@@ -3212,8 +3212,8 @@
       "path": "shared/components/platform-status.js",
       "area": "shared",
       "status": "NEEDS_REVIEW",
-      "bytes": 4757,
-      "sha256": "b176aebd5497e56d0b33f905f698a5560a78ffeee6196697bb9a584708517739"
+      "bytes": 4797,
+      "sha256": "9ad5c306e9f30b94679a7b1cb61edbc5f35685e953c4bab182d3d340d69238ff"
     },
     {
       "path": "shared/components/status-badge.js",
@@ -3282,8 +3282,8 @@
       "path": "shared/design-system/design-system.css",
       "area": "shared",
       "status": "IMPLEMENTED",
-      "bytes": 53816,
-      "sha256": "8ce252943e64373afa83e616aca73f1151f7ab1561a3f393f22dfbd0beddbcbd"
+      "bytes": 54221,
+      "sha256": "1c71cbb75c53bfc1f7f2cab4871b3146d9641cef9226856fbbfbe2146d95695c"
     },
     {
       "path": "shared/design-system/layout.css",
@@ -3310,8 +3310,8 @@
       "path": "shared/icons/icon-registry.js",
       "area": "shared",
       "status": "IMPLEMENTED",
-      "bytes": 93732,
-      "sha256": "229c342c9583658be76a6ee4d2158224ed8801cc850dd6c10cae04c7c806d475"
+      "bytes": 96161,
+      "sha256": "b58e454efa99bb8f9b8d62d0a8a1adeaeb4dc3cf11c0120251e6b4c46d53956b"
     },
     {
       "path": "shared/README.md",
@@ -4171,8 +4171,8 @@
       "path": "tests/unit/site-content.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 5609,
-      "sha256": "576c6cbbec2a003fee020fbb3cef082ba5eb88466be61bbd89aec238d6563f1d"
+      "bytes": 5632,
+      "sha256": "8e49fbe60cc51250cd23248f8423c69ec350b01c1897b4fee9193d49fedc79e0"
     },
     {
       "path": "tests/unit/static-audit.test.js",

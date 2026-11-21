@@ -47,7 +47,7 @@
       const paint = () => {
         const rows = items.filter((a) => (kind === 'all' || KIND(a) === kind) && (!person || who(a) === person));
         const bad = items.filter((a) => a.status === 'failed' || a.status === 'locked').length;
-        host.innerHTML = frame('سجل الإداريين', `${bad ? `<p class="fin-banner" role="note">⚠️ ${nf(bad)} محاولة دخول بكود غلط في آخر السجلات — راجع «الأمان والدخول» لو مش متوقعة.</p>` : ''}
+        host.innerHTML = frame('سجل الإداريين', `${bad ? `<p class="fin-banner" role="note">${typeof ic === 'function' ? ic('warn') : ''} ${nf(bad)} محاولة دخول بكود غلط في آخر السجلات — راجع «الأمان والدخول» لو مش متوقعة.</p>` : ''}
           <div class="aud-filters" role="group" aria-label="تصفية السجل">${[['all', 'الكل'], ['login', 'الدخول والأكواد'], ['emergency', 'الطوارئ'], ['admin', 'تعديلات الإدارة'], ['other', 'العملاء ومقدمو الخدمة']].map(([k, l]) => `<button type="button" class="adm-btn ${kind === k ? 'adm-btn-p' : ''}" aria-pressed="${kind === k}" data-aud-kind="${k}">${l}</button>`).join('')}
           <label class="hs-grid-field"><span>الشخص</span><select data-aud-person><option value="">الكل</option>${people.map((p) => `<option ${p === person ? 'selected' : ''}>${esc(p)}</option>`).join('')}</select></label></div>` +
           table(['الوقت', 'مين', 'العملية', 'النتيجة'], rows.map((a) => [esc(dt(a.at)), esc(who(a)), esc(LABEL(a)), esc(RESULT(a))])) +
