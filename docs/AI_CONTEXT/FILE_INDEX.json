@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 616,
+  "file_count": 621,
   "files": [
     {
       "path": "_redirects",
@@ -517,8 +517,8 @@
       "path": "apps/customer/index.html",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 8796,
-      "sha256": "142c85eca94530f05233751f896078d6a058207cb1e9cd6d6b9c02a9f2101e22"
+      "bytes": 8854,
+      "sha256": "9fe3474fd871488bb7487ad2bfe461c5a45ac8c7384c65ad04728399fe08dad4"
     },
     {
       "path": "apps/customer/pages/account.page.js",
@@ -559,8 +559,8 @@
       "path": "apps/customer/pages/live-map.js",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 5464,
-      "sha256": "d3b9267d60cc1ff1087f50b51abdaa7536daa9cfa71a2535b38cb9c9440723a8"
+      "bytes": 3890,
+      "sha256": "50b9c48d7c4c91e22e02a892ca7641d7f69b10581e7a9887bc0c229bbb57ec00"
     },
     {
       "path": "apps/customer/pages/market-ui.page.js",
@@ -622,8 +622,8 @@
       "path": "apps/customer/pages/request-wizard.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 67896,
-      "sha256": "043c4e998fc0a475b6a211c1505a090fb43a5a6ffc48be39f35e96529233bf63"
+      "bytes": 66274,
+      "sha256": "04c8184a51cefce04b530d063fae22e0aff236ab0793b020e2aaa8efed77cba3"
     },
     {
       "path": "apps/customer/pages/search.page.js",
@@ -657,8 +657,8 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 155043,
-      "sha256": "bb61e65765dce20924a1e63960b26d134a599f99b5d481c43e1d7379ead5918e"
+      "bytes": 157282,
+      "sha256": "9dcd1640bac3b2e60ab26cf3f6e109f1a62dc9448a17620f90eb901450cb7a0f"
     },
     {
       "path": "apps/customer/styles/overrides.css",
@@ -1578,6 +1578,34 @@
       "sha256": "1e7290b35280a048667bbf0ebabac1c7fd52a75300e8b2946ac165715997f2bc"
     },
     {
+      "path": "assets/vendor/maplibre/4.7.1/LICENSE.txt",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 5984,
+      "sha256": "ee5fc05a0677eaf69601d2c7db0d9ecd6cc27c3abc1d0733bc9ed34707cf8ef2"
+    },
+    {
+      "path": "assets/vendor/maplibre/4.7.1/mapbox-gl-rtl-text.min.js",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 206897,
+      "sha256": "142f4fc31b4911887bacfea4df1813df67be28dfcb4c56e3f8f576f2e6fdf5d2"
+    },
+    {
+      "path": "assets/vendor/maplibre/4.7.1/maplibre-gl.css",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 65534,
+      "sha256": "576b085fdd9487a65a19215328c1e086c07ce5bf6da09b666b3806d3d008dae9"
+    },
+    {
+      "path": "assets/vendor/maplibre/4.7.1/maplibre-gl.js",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 803086,
+      "sha256": "be9633c4d870e26fb37f1cfe5c5a77181667114003ea16207ac7850d8da8add1"
+    },
+    {
       "path": "assets/vendor/README.md",
       "area": "assets",
       "status": "NEEDS_REVIEW",
@@ -2134,8 +2162,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 285271,
-      "sha256": "e35a0428ed600702f4fe57bd4c864db6bb8db67496f6e40c1d21848ea737e485"
+      "bytes": 286488,
+      "sha256": "94e656d4809054641becc556f99dd508ae4b1e243f0441c56dd64cba34852f43"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2148,8 +2176,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 156001,
-      "sha256": "20c41bd13125f079c138f08e667e71f425367ffc0c356e3d993d92756f6e9047"
+      "bytes": 157119,
+      "sha256": "e70d674f0f1905ecb98338b161641989f2d875a9e701cccc61173a29b5a6cccf"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2568,8 +2596,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 29381,
-      "sha256": "5525b2008fbc131336c4ccb494c29d9d80622f9fd0d46246e0bbf215b39a1ab6"
+      "bytes": 29677,
+      "sha256": "b5a57eb2b69b97aa23ff2db71c59cf6d860b952424f7a46ebbfa67c665630f27"
     },
     {
       "path": "docs/README.md",
@@ -3023,15 +3051,15 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 11067,
-      "sha256": "8c1a57893e16e27f86b18cbac09733a32bc712873abe774ca75aae560c41bdca"
+      "bytes": 11100,
+      "sha256": "4ce20135ed8a074e1e842e493641971c35b6eaa1645999a61829d6886de35385"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "8910faa68d721084e0691605fa83559054a334226e8a4f1c1a9715f09848cb81"
+      "sha256": "b6c7d011768a4bb17c129d80d1c7f7b4d5ba8ecce62af6e59637a0a3e4582fd0"
     },
     {
       "path": "services/admin-api.js",
@@ -3207,6 +3235,13 @@
       "status": "NEEDS_REVIEW",
       "bytes": 6503,
       "sha256": "3204c17f217be84e224aa77ba514c6d826dc0cd5627ec1da224f3d7e0374e416"
+    },
+    {
+      "path": "shared/components/hs-map.js",
+      "area": "shared",
+      "status": "NEEDS_REVIEW",
+      "bytes": 9910,
+      "sha256": "f39a1e2223c7cd5057368188cb9a1d3773622b445b3ef4f1adc75821ece50a76"
     },
     {
       "path": "shared/components/live-clean.js",
@@ -3947,8 +3982,8 @@
       "path": "tests/unit/live-tracking.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 9435,
-      "sha256": "f8958034ea2b7621b0aed3dbe60845cbe4fee8e0bcc3399bad728d1431b14764"
+      "bytes": 9620,
+      "sha256": "1e231c543ff35d8027ca41b7bb5ef6f63fb21e31461a5358c72b7d70635598ec"
     },
     {
       "path": "tests/unit/local-attachments.test.js",
@@ -4283,8 +4318,8 @@
       "path": "tests/unit/ui-round3.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 5710,
-      "sha256": "46b15dba500a202eea727cdcaa563f6968f7a0805f3185a48a92eb37179c4099"
+      "bytes": 5902,
+      "sha256": "d869805860154efb584c2a5f43a70d841820cf921a01de1cc9ea342b5094b51e"
     },
     {
       "path": "tests/unit/upfront-pricing.test.js",

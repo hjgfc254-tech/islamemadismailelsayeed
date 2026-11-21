@@ -73,38 +73,19 @@ function wzSkip(n){
   while (n < 9 && skippable(n)) n++;
   return n;
 }
-/* Map pin picker: Leaflet (vendored, loaded on first use) + OpenStreetMap tiles (free; attribution shown).
-   Tap or drag the pin; «تأكيد» stores {lat,lng} on the request address (the provider sees it only after accepting). */
-let wzMapPick = null, wzLeaflet = null;
-function wzLoadLeaflet(){
-  if (wzLeaflet) return wzLeaflet;
-  const base = '../../assets/vendor/leaflet/1.9.4/';
-  wzLeaflet = new Promise((resolve, reject) => {
-    if (typeof L !== 'undefined' && L.map) return resolve(L);
-    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = base + 'leaflet.css'; document.head.appendChild(css);
-    const s = document.createElement('script'); s.src = base + 'leaflet.js'; s.onload = () => resolve(window.L); s.onerror = () => { wzLeaflet = null; reject(new Error('map')); };
-    document.head.appendChild(s);
-  });
-  return wzLeaflet;
-}
+/* Map pin picker: shared/components/hs-map.js (MapLibre + OpenFreeMap, loaded on first use / prefetched on the address step).
+   Move the map under the fixed centre pin; «تأكيد» stores {lat,lng} on the request address (the provider sees it only after accepting). */
+let wzMapPick = null;
 function wzOpenMap(){
   if (!WZ || typeof sheet !== 'function') return;
   const start = WZ.address.geo || { lat: 30.0444, lng: 31.2357 };
   wzMapPick = { lat: start.lat, lng: start.lng };
-  sheet(`<h4>${safeIc('pin')} حدد مكانك على الخريطة</h4><div class="sub">اضغط على المكان أو اسحب العلامة. ده بيساعد الفني يوصلك أسرع.</div>
-    <div id="wz-map" class="wz-map" role="application" aria-label="خريطة لتحديد المكان"></div>
+  sheet(`<h4>${safeIc('pin')} حدد مكانك على الخريطة</h4><div class="sub">حرّك الخريطة لحد ما العلامة تبقى على باب البيت، أو اضغط «موقعي».</div>
+    <div id="wz-map" class="wz-map" role="application" aria-label="خريطة لتحديد المكان — حرّك الخريطة والعلامة ثابتة في النص"></div>
     <button type="button" class="cta" data-act="wzMapOk">${safeIc('check')} تأكيد المكان</button>`);
-  wzLoadLeaflet().then(Lf => {
-    const el = document.getElementById('wz-map'); if (!el) return;
-    const map = Lf.map(el, { zoomControl: true, attributionControl: true }).setView([start.lat, start.lng], WZ.address.geo ? 17 : 12);
-    Lf.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
-    Lf.Icon.Default.imagePath = '../../assets/vendor/leaflet/1.9.4/images/';
-    const pin = Lf.marker([start.lat, start.lng], { draggable: true, keyboard: true, title: 'مكان الخدمة' }).addTo(map);
-    const set = ll => { wzMapPick = { lat: ll.lat, lng: ll.lng }; pin.setLatLng(ll); };
-    pin.on('dragend', () => set(pin.getLatLng()));
-    map.on('click', e => set(e.latlng));
-    setTimeout(() => map.invalidateSize(), 150);
-  }).catch(() => { const el = document.getElementById('wz-map'); if (el) el.innerHTML = '<p class="hint" style="padding:16px">تعذّر تحميل الخريطة — استخدم «موقعي الحالي» أو اكتب العنوان.</p>'; });
+  /* fast map layer (shared/components/hs-map.js): CARTO tiles, Leaflet pre-loaded, Uber-style fixed centre pin */
+  (window.HSMap ? HSMap.picker(document.getElementById('wz-map'), { start: WZ.address.geo || null, onChange: (g) => { wzMapPick = g; } }).then((p) => { wzMapPick = p.get(); })
+    : Promise.reject(new Error('map'))).catch(() => { const el = document.getElementById('wz-map'); if (el) el.innerHTML = '<p class="hint" style="padding:16px">تعذّر تحميل الخريطة — استخدم «موقعي الحالي» أو اكتب العنوان.</p>'; });
 }
 const UNKNOWN_TXT = 'مش عارف أحدد المشكلة — محتاج فني يفحصها';
 
@@ -557,7 +538,7 @@ Object.assign(screens, {
         <div><label for="wz-label">اسم مختصر (اختياري)</label><input id="wz-label" value="${_esc(w.address.label)}" placeholder="مثل: البيت، المكتب"></div>
         <label class="hint" style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" id="wz-save-addr" ${w.address.save?'checked':''} style="width:auto"> احفظ هذا العنوان لاستخدامه لاحقًا</label>
         <label class="hint" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="wz-default-addr" ${w.address.default?'checked':''} style="width:auto"> اجعله العنوان الافتراضي</label>
-        <button type="button" class="cta ghost" style="margin-top:8px;min-height:46px" data-act="wzGeo">${safeIc('pin')} ${w.address.geo ? 'تم تحديد موقعك' : 'استخدم موقعي الحالي (بموافقتك)'}</button>
+        ${(window.HSMap && HSMap.prefetch(), '')}<button type="button" class="cta ghost" style="margin-top:8px;min-height:46px" data-act="wzGeo">${safeIc('pin')} ${w.address.geo ? 'تم تحديد موقعك' : 'استخدم موقعي الحالي (بموافقتك)'}</button>
         <button type="button" class="cta ghost" style="margin-top:8px;min-height:46px" data-act="wzMap">${safeIc('search')} ${w.address.geo ? 'عدّل المكان على الخريطة' : 'حدد المكان على الخريطة'}</button>
       </div>`;
     }
@@ -989,10 +970,12 @@ document.addEventListener('click', e => {
     }
     case 'wzGeo': {
       if (!navigator.geolocation) return toast('المتصفح لا يدعم تحديد الموقع');
-      navigator.geolocation.getCurrentPosition(p => {
-        WZ.address.geo = { lat: p.coords.latitude, lng: p.coords.longitude };
-        show('wizard'); toast('تم تحديد موقعك');
-      }, () => toast('لم يتم السماح بتحديد الموقع'), { timeout: 8000 });
+      /* fast first (cached / network position in ~3 s), then the precise one replaces it */
+      let first = true;
+      const take = (g) => { WZ.address.geo = { lat: +g.lat.toFixed(6), lng: +g.lng.toFixed(6) }; wzSaveDraft(); if (first) { first = false; show('wizard'); toast('تم تحديد موقعك'); } };
+      toast('بنحدد موقعك…');
+      (window.HSMap ? HSMap.locate(take) : new Promise((res, rej) => navigator.geolocation.getCurrentPosition(p => { take({ lat: p.coords.latitude, lng: p.coords.longitude }); res(); }, rej, { timeout: 8000 })))
+        .catch(() => toast('لم يتم السماح بتحديد الموقع'));
       break;
     }
     case 'wzAddPhoto': {

@@ -27,10 +27,10 @@ test('Home: active request pinned above the hero, how-it-works for first visits,
 });
 
 test('wizard: Leaflet map picker is vendored, lazy-loaded and attributed; help button opens the support centre', () => {
-  assert.ok(fs.existsSync(path.join(ROOT, 'assets/vendor/leaflet/1.9.4/leaflet.js')));
+  assert.ok(fs.existsSync(path.join(ROOT, 'assets/vendor/maplibre/4.7.1/maplibre-gl.js')));
   const wiz = read('apps/customer/pages/request-wizard.page.js');
-  assert.match(wiz, /data-act="wzMap"/); assert.match(wiz, /attribution: '© OpenStreetMap'/);
-  assert.match(wiz, /base \+ 'leaflet\.js'/, 'loaded on first use only');
+  assert.match(wiz, /data-act="wzMap"/); assert.match(wiz, /HSMap\.picker/); { const m = read('shared/components/hs-map.js'); assert.match(m, /OpenStreetMap/); assert.match(m, /tiles\.openfreemap\.org/); assert.match(m, /maplibre/); }
+  assert.match(read('shared/components/hs-map.js'), /LIB \+ 'maplibre-gl\.js'/, 'map library loaded on first use only');
   const app = read('apps/customer/app.js');
   assert.match(app, /b\.addEventListener\('click', \(\) => \{ try \{ go\('support'\); \} catch \{\} \}\);/);
   assert.match(app, /addEventListener\('offline', \(\) => set\(false\)\)/);

@@ -1504,3 +1504,23 @@ html.ob-open,html.ob-open body{overflow:hidden}
 .live-pin b{position:absolute;top:34px;white-space:nowrap;padding:1px 6px;border-radius:8px;background:#fff;color:#1F1B17;font-size:11px;box-shadow:0 1px 4px rgba(0,0,0,.18)}
 @media (prefers-reduced-motion:no-preference){.live-pin.is-tech span{animation:livePulse 2s ease-out infinite}}
 @keyframes livePulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--brand-primary,#B4511C) 45%,transparent)}100%{box-shadow:0 0 0 14px transparent}}
+
+/* hs-map.js — fast Uber-style location picker (fixed centre pin, «موقعي» button, CARTO tiles) */
+#view .wz-map,.wz-map{position:relative;height:min(62vh,520px);min-height:320px;margin:12px 0;border-radius:var(--r-lg,18px);overflow:hidden;background:#EDE6DC;border:1px solid var(--border-subtle)}
+.hs-map .hs-map-canvas{position:absolute;inset:0}
+.hs-map .hs-map-pin{position:absolute;left:50%;top:50%;z-index:500;width:34px;height:48px;transform:translate(-50%,-100%);pointer-events:none;transition:transform .18s ease}
+.hs-map .hs-map-pin i{position:absolute;inset:0 0 auto 0;height:34px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--brand-primary,#B4511C);box-shadow:0 6px 14px rgba(31,27,23,.28)}
+.hs-map .hs-map-pin i::after{content:"";position:absolute;inset:10px;border-radius:50%;background:#fff}
+.hs-map .hs-map-pin::after{content:"";position:absolute;left:50%;bottom:-3px;width:12px;height:5px;transform:translateX(-50%);border-radius:50%;background:rgba(31,27,23,.28)}
+.hs-map.is-moving .hs-map-pin{transform:translate(-50%,calc(-100% - 10px))}
+.hs-map .hs-map-locate{position:absolute;z-index:600;top:12px;inset-inline-end:12px;display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 14px;border:0;border-radius:999px;background:var(--surface-primary,#fff);color:var(--text-primary);font:inherit;font-weight:700;box-shadow:0 6px 16px rgba(31,27,23,.18);cursor:pointer}
+.hs-map .hs-map-locate:disabled{opacity:.7}
+.hs-map .hs-map-hint{position:absolute;z-index:600;bottom:10px;inset-inline:10px;margin:0;padding:8px 12px;border-radius:12px;background:rgba(255,253,249,.94);font-size:var(--fs-sm,14px);text-align:center;color:var(--text-primary)}
+.hs-map .hs-map-hint:empty{display:none}
+.hs-map .leaflet-control-attribution{font-size:10px}
+@media (prefers-reduced-motion:reduce){.hs-map .hs-map-pin{transition:none}}
+
+/* hs-map (MapLibre): «me» dot, compact RTL attribution, markers */
+.hs-map-me{width:18px;height:18px;border-radius:50%;background:#2F6FDE;border:3px solid #fff;box-shadow:0 0 0 8px rgba(47,111,222,.18)}
+.hs-map .maplibregl-ctrl-attrib,.live-map .maplibregl-ctrl-attrib{font-size:10px;direction:ltr}
+.hs-map .maplibregl-ctrl-bottom-left{margin-bottom:46px}

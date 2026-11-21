@@ -259,6 +259,12 @@ hansalhlak/
 │   │   │       ├── leaflet.css
 │   │   │       ├── leaflet.js
 │   │   │       └── LICENSE
+│   │   ├── maplibre/
+│   │   │   └── 4.7.1/
+│   │   │       ├── LICENSE.txt
+│   │   │       ├── mapbox-gl-rtl-text.min.js
+│   │   │       ├── maplibre-gl.css
+│   │   │       └── maplibre-gl.js
 │   │   ├── lucide.LICENSE.txt
 │   │   └── README.md
 │   ├── app-icon-192.png
@@ -530,6 +536,7 @@ hansalhlak/
 │   │   ├── dialogs.js
 │   │   ├── forms.js
 │   │   ├── hs-dialog.js
+│   │   ├── hs-map.js
 │   │   ├── live-clean.js
 │   │   ├── notification-center.js
 │   │   ├── platform-status.js

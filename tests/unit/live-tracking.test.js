@@ -61,7 +61,7 @@ test('customer tracking renders a lazy map card while enroute; live-map module a
   const html = fs.readFileSync(path.join(ROOT, 'apps/customer/index.html'), 'utf8');
   assert.ok(html.includes('pages/live-map.js'));
   const lm = fs.readFileSync(path.join(ROOT, 'apps/customer/pages/live-map.js'), 'utf8');
-  assert.match(lm, /tile\.openstreetmap\.org/); assert.match(lm, /OpenStreetMap/);
+  assert.match(lm, /HSMap\.view/); { const hm = fs.readFileSync(path.join(ROOT, 'shared/components/hs-map.js'), 'utf8'); assert.match(hm, /tiles\.openfreemap\.org/); assert.match(hm, /OpenStreetMap/); }   // shared fast map, OSM data credited by the style attribution
   const sw = fs.readFileSync(path.join(ROOT, 'service-worker.js'), 'utf8');
   assert.match(sw, /url\.origin === location\.origin/, 'only same-origin responses are cached (third-party tiles are not)');
   const ctx = { document: { readyState: 'complete', addEventListener() {} }, setTimeout: () => 0 }; ctx.globalThis = ctx;
