@@ -3632,7 +3632,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "474ddbfad651a0ed2bdb72dc49a119e90effefe1adcd9f7abe929082e0397da3",
+      "sha256": "501ed0e36254eaf6c7896ee36e54f17fd14eec94aa5b87653efe91cd20b61e75",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3671,7 +3671,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 153689
+      "bytes": 153725
     },
     {
       "path": "apps/customer/styles/overrides.css",
@@ -4873,7 +4873,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "d9e1fce4c9787aa52511248f66f60fddec94da64922e76e90ed9aa212f169cc1",
+      "sha256": "0d9f6fa92447874deae1e915052ba2ae599fa9c1d6a96454d9868ee59d40fdea",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4912,7 +4912,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 39180
+      "bytes": 39356
     },
     {
       "path": "assets/app-icon-192.png",
@@ -11790,7 +11790,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "12229a8b44cc8d53393a504c3fab7ed24a8ed275313d06e103f1fbd1be9dc0c5",
+      "sha256": "6ec7342754a8cc76c12d49266897431626ab6d6459cb8ba95932276ea0fcc8dc",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11838,7 +11838,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "5b6cc53651745a24da42a14f8761f58d57dbcd8172358f829bc0c436bb928540",
+      "sha256": "6ae9155c27594bae454529cb23dd68a21210c31d1d4283ae5b3b81c9c9c06c55",
       "bytes": 195
     },
     {
@@ -13422,7 +13422,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "f1b447f99be79072cadbf0ec1e1ff35ab74d7239602884adbe0ba39056a1f3b7",
+      "sha256": "7e275e5ce0f9406b74364ab4627a9a066c6d5d2a9bfbe8e3e504d0b721893d70",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -13461,7 +13461,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 56098
+      "bytes": 56238
     },
     {
       "path": "shared/design-system/layout.css",

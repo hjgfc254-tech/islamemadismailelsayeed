@@ -552,7 +552,7 @@ input:not([type=checkbox]):not([type=radio]):focus-visible,select:focus-visible,
   /* one focus ring that shows on any background (WCAG 2.4.13): light inner + orange outer */
   --focus-ring:0 0 0 3px var(--surface-primary),0 0 0 5px var(--accent);
 }
-:where(button,a,[role="button"],[role="tab"],input,select,textarea,summary):focus-visible{outline:none;box-shadow:var(--focus-ring)}
+:where(button,a,[role="button"],[role="tab"],input,select,textarea,summary):focus-visible{outline:2px solid transparent;outline-offset:2px;box-shadow:var(--focus-ring)}   /* transparent outline: Windows high-contrast (forced colours) still draws it, box-shadow does not */
 /* Arabic reading comfort: multi-line text never below 1.6; titles balance their lines */
 p,li,dd,.sec-hint,small{line-height:1.65}
 h1,h2,h3{text-wrap:balance}

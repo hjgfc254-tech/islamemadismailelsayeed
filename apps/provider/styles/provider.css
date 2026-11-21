@@ -262,3 +262,5 @@
 .pv-today>div:not(:first-child) small{color:var(--text-secondary);opacity:1}
 @media (max-width:520px){.pv-today{grid-template-columns:minmax(0,1fr)}}
 .pv-panel h1,.pv-panel h2,.pv-hero h1,.pv-hero h2,.pv-gate h1{letter-spacing:0}
+/* closed «خيارات تانية»: its actions take no layout space (they were measured off-screen while hidden) */
+.pv-more-actions:not([open])>.pv-actions{display:none}
