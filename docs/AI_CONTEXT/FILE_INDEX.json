@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 621,
+  "file_count": 623,
   "files": [
     {
       "path": "_redirects",
@@ -2162,8 +2162,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 286488,
-      "sha256": "94e656d4809054641becc556f99dd508ae4b1e243f0441c56dd64cba34852f43"
+      "bytes": 286951,
+      "sha256": "e1c299091c7aa7a2cb368a4ae594621c7e6718c2fc4110b8c2649fb4159d927d"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2176,8 +2176,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 157119,
-      "sha256": "e70d674f0f1905ecb98338b161641989f2d875a9e701cccc61173a29b5a6cccf"
+      "bytes": 157525,
+      "sha256": "efd91231565a18e42d07eebe8650b84012a965f1412567f394513662a3f13097"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2460,6 +2460,13 @@
       "sha256": "08b7dd65c391f1bac45a045e023b2b4c3ddeed0571ec2d2d326ded3a8348a6d9"
     },
     {
+      "path": "docs/DEEPSEEK_HANDOFF.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 1878,
+      "sha256": "f54e46d64e5f73a097e554598c576ed1c48f277b09749547628feaa22aa5aeaa"
+    },
+    {
       "path": "docs/DEPLOY_CHECKLIST.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
@@ -2596,8 +2603,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 29677,
-      "sha256": "b5a57eb2b69b97aa23ff2db71c59cf6d860b952424f7a46ebbfa67c665630f27"
+      "bytes": 29742,
+      "sha256": "f81f79abad3d3e8e50bf2244762378378b0f864707e31c514372ff5197551e54"
     },
     {
       "path": "docs/README.md",
@@ -3459,6 +3466,13 @@
       "status": "IMPLEMENTED",
       "bytes": 2042,
       "sha256": "b1a85bff32930835152bba3652c154be767af31b56e454f74d0b91bce23884cd"
+    },
+    {
+      "path": "start-deepseek.ps1",
+      "area": "start-deepseek.ps1",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2247,
+      "sha256": "b314d50c4f48411d175fd52070c5774ffcce9c2d3ce86a4f6e931da06d6abcf5"
     },
     {
       "path": "tests/e2e/a11y.cdp.js",

@@ -420,6 +420,7 @@ hansalhlak/
 │   ├── ARCHITECTURE.md
 │   ├── AUTHENTICATION.md
 │   ├── DATA_MODEL.md
+│   ├── DEEPSEEK_HANDOFF.md
 │   ├── DEPLOY_CHECKLIST.md
 │   ├── DESIGN_MAP.md
 │   ├── DESIGN_SYSTEM_V9.md
@@ -732,5 +733,6 @@ hansalhlak/
 ├── package.json
 ├── README.md
 ├── service-worker.js
-└── service-worker.lock.json
+├── service-worker.lock.json
+└── start-deepseek.ps1
 ```
