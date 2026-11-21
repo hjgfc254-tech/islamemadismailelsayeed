@@ -3492,8 +3492,8 @@
       "path": "start-deepseek.ps1",
       "area": "start-deepseek.ps1",
       "status": "NEEDS_REVIEW",
-      "bytes": 2956,
-      "sha256": "95677f3a27fbbc3b9f6679077799378094e595eedf7df701a8bd13f2b84f9427"
+      "bytes": 3830,
+      "sha256": "42e1c822a9bb5ec1ea93d43513c650dd7323f2790f60aa381635e847d669179e"
     },
     {
       "path": "tests/e2e/a11y.cdp.js",

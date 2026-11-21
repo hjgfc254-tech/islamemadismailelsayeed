@@ -6,6 +6,8 @@
 #>
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
+# Arabic in the console and in the first prompt (UTF-8)
+[Console]::InputEncoding = [Text.Encoding]::UTF8; [Console]::OutputEncoding = [Text.Encoding]::UTF8; $OutputEncoding = [Text.Encoding]::UTF8
 
 # 1) API key: from the user environment, or ask once
 $key = [Environment]::GetEnvironmentVariable('DEEPSEEK_API_KEY', 'User')
@@ -34,8 +36,17 @@ $env:HS_AGENT = 'deepseek'
 # 3) Point Claude Code at DeepSeek for this window only
 $env:ANTHROPIC_BASE_URL = 'https://api.deepseek.com/anthropic'
 $env:ANTHROPIC_AUTH_TOKEN = $key
-$env:ANTHROPIC_MODEL = 'deepseek-chat'
-$env:ANTHROPIC_SMALL_FAST_MODEL = 'deepseek-chat'
+# Strongest model with thinking for the main work; the fast one only for small background chores.
+# Override without editing: set DEEPSEEK_MODEL / DEEPSEEK_FAST_MODEL in your Windows user environment.
+$model = [Environment]::GetEnvironmentVariable('DEEPSEEK_MODEL', 'User'); if (-not $model) { $model = 'deepseek-reasoner' }
+$fast = [Environment]::GetEnvironmentVariable('DEEPSEEK_FAST_MODEL', 'User'); if (-not $fast) { $fast = 'deepseek-chat' }
+$env:ANTHROPIC_MODEL = $model
+$env:ANTHROPIC_SMALL_FAST_MODEL = $fast
+$env:ANTHROPIC_DEFAULT_OPUS_MODEL = $model
+$env:ANTHROPIC_DEFAULT_SONNET_MODEL = $model
+$env:ANTHROPIC_DEFAULT_HAIKU_MODEL = $fast
+$env:MAX_THINKING_TOKENS = '31999'
+Write-Host "Model: $model (thinking)  ·  fast tasks: $fast" -ForegroundColor Cyan
 $env:API_TIMEOUT_MS = '600000'
 $env:CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = '1'
 

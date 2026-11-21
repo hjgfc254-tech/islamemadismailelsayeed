@@ -14393,8 +14393,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "95677f3a27fbbc3b9f6679077799378094e595eedf7df701a8bd13f2b84f9427",
-      "bytes": 2956
+      "sha256": "42e1c822a9bb5ec1ea93d43513c650dd7323f2790f60aa381635e847d669179e",
+      "bytes": 3830
     },
     {
       "path": "tests/e2e/a11y.cdp.js",
