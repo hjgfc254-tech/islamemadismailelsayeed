@@ -215,6 +215,44 @@
     return controlsView(db.settings);
   });
 
+  /* ── Support contacts (settings.support — public: shown in the customer «المساعدة» page and the provider app) ──
+     Only the fields set here are shown; nothing is invented. Edit: owner or manager («مدير»). */
+  const roleOf = (actor) => actor.adminRole || ((((root.HSAdminRbac || {}).state || {}).roster || []).find((x) => x.id === actor.id) || {}).role || '';
+  const digits = (v) => String(v == null ? '' : v).replace(/[\s\-()]/g, '').replace(/[٠-٩]/g, (d) => String(d.charCodeAt(0) - 0x0660));
+  function cleanSupport(b) {
+    const out = {}, errors = {};
+    const phone = digits(b.phone), wa = digits(b.whatsapp).replace(/^\+?20(?=1)/, '0'), email = String(b.email || '').trim().toLowerCase(), hours = String(b.hours || '').replace(/[<>]/g, '').trim();
+    if (phone && !/^(01[0125]\d{8}|0[2-9]\d{7,8}|1\d{4})$/.test(phone)) errors.phone = 'رقم موبايل مصري (01xxxxxxxxx) أو أرضي أو خط ساخن من 5 أرقام';
+    if (wa && !/^01[0125]\d{8}$/.test(wa)) errors.whatsapp = 'رقم موبايل مصري (01xxxxxxxxx)';
+    if (email && (email.length > 120 || !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]{2,}$/.test(email))) errors.email = 'بريد إلكتروني غير صحيح';
+    if (hours.length > 80) errors.hours = '80 حرف بحد أقصى';
+    out.phone = phone; out.whatsapp = wa; out.email = email; out.hours = hours;
+    return { out, errors };
+  }
+  const supportView = (st) => { const s = (st && st.support) || {}; return { phone: s.phone || '', whatsapp: s.whatsapp || '', email: s.email || '', hours: s.hours || '' }; };
+  client.define('GET', '/admin/support-contacts', { roles: A, summary: 'Support phone / WhatsApp / email / hours shown to customers and providers.' }, ({ store }) => supportView(store.db().settings));
+  client.define('PATCH', '/admin/support-contacts', { roles: A, summary: 'Owner or manager: set support contacts {phone?, whatsapp?, email?, hours?} (empty clears).' }, ({ body, actor, store }) => {
+    if (!['owner', 'admin'].includes(roleOf(actor))) return fail('FORBIDDEN', 'أرقام الدعم يعدّلها المالك أو المدير');
+    const { out, errors } = cleanSupport(body || {});
+    if (Object.keys(errors).length) return fail('VALIDATION', 'راجع بيانات التواصل', errors);
+    const db = store.db(); db.settings = db.settings || {};
+    db.settings.support = out;
+    if (typeof store.save === 'function') store.save();
+    return supportView(db.settings);
+  });
+
+  /* ── Admin data policy (settings.adminDataPolicy, read by functions/src/scope.js adminView) — owner only ──
+     'minimal': support / moderator get customers' phones masked, no addresses, no transactions (finance keeps transactions). */
+  client.define('GET', '/admin/data-policy', { roles: A, summary: 'Admin data minimisation policy {minimal}.' }, ({ store }) => ({ minimal: ((store.db().settings || {}).adminDataPolicy) === 'minimal' }));
+  client.define('POST', '/admin/data-policy', { roles: A, summary: 'Owner only: {minimal: boolean} — mask customer data for support / moderator ranks.' }, ({ body, actor, store }) => {
+    if (!isOwner(actor)) return fail('FORBIDDEN', 'سياسة البيانات للمالك فقط');
+    if (!body || typeof body.minimal !== 'boolean') return fail('VALIDATION', 'minimal لازم تكون true أو false', { minimal: 'boolean' });
+    const db = store.db(); db.settings = db.settings || {};
+    if (body.minimal) db.settings.adminDataPolicy = 'minimal'; else delete db.settings.adminDataPolicy;
+    if (typeof store.save === 'function') store.save();
+    return { minimal: body.minimal };
+  });
+
   client.define('GET', '/admin/marketing', { roles: A, summary: 'Promo codes, invite reward and packages.' }, ({ actor, store }) =>
     guard(actor, 'services', 'view') || marketingView(store.db().settings || {}));
   client.define('PATCH', '/admin/marketing', { roles: A, summary: 'Replace promo codes / invite reward / packages {promos?, referral?, packages?}.' }, ({ body, actor, store }) => {
@@ -233,6 +271,10 @@
     summary: () => client.get('/admin/summary'),
     controls: () => client.get('/admin/controls'),
     setControl: (key, on, message) => client.post('/admin/controls', { key, on, message }),
+    supportContacts: () => client.get('/admin/support-contacts'),
+    saveSupportContacts: (c) => client.patch('/admin/support-contacts', c),
+    dataPolicy: () => client.get('/admin/data-policy'),
+    setDataPolicy: (minimal) => client.post('/admin/data-policy', { minimal }),
     marketing: () => client.get('/admin/marketing'),
     setReviewHidden: (rid, hidden, reason) => client.post('/admin/reviews/' + id(rid) + '/visibility', { hidden, reason }),
     saveMarketing: patch => client.patch('/admin/marketing', patch),

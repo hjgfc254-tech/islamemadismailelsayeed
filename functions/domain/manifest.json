@@ -14,7 +14,7 @@
     "services/notifications-api.js": "3db9b04eb3396796eb1a84bc37e87e4d7ba417140251ff5b43024e1af79e41a9",
     "services/support-api.js": "8e52c5cb211d4e6096c07261aca9470f2914f5a1eac6347d2eb59d98b0d552cc",
     "services/finance-api.js": "a6b72cb665c2264be3fdd6f3c1792db747a5414534231ee4c5e9f01098f2f565",
-    "services/admin-api.js": "2ac89aab819ff5dd656ba16653391861c4b0f4b2bba9bda4df6bd781973ef876",
+    "services/admin-api.js": "70a77f02e7398d3eb10f6b2d72ec3a7df236c3ea8c08bdde1ba4c971eb1568d4",
     "apps/admin/rbac-store.js": "2918676004f85d5e514d0cb579522f4e28fa5c2053ab9cb068c563119d8a15bf",
     "apps/admin/permission-guard.js": "d49dc2e69023f2b33e23f979671c1e0335eb3503567fca997a442130ac336209",
     "apps/admin/modules/workforce/employee-status.js": "f61a20957671b072818ee6704346fa087f7f3dace03537b6c6bfdac420437472",

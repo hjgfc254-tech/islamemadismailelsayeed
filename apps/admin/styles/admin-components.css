@@ -421,3 +421,7 @@ label.hs-grid-field:has(> input[type=checkbox])>span{flex:1}
 .mk-caps summary{cursor:pointer;font-weight:700}
 .mk-cap-item{display:grid;gap:var(--sp-1);margin-top:var(--sp-2);padding-inline-start:var(--sp-3);border-inline-start:2px solid var(--border-subtle)}
 .mk-cap-prob{padding-inline-start:var(--sp-3)}
+/* support-settings.js */
+.sup-set{display:grid;gap:var(--sp-2);margin-bottom:var(--sp-5);padding:var(--sp-4);border:1px solid var(--border-subtle);border-radius:var(--r-lg);background:var(--surface-primary)}
+.sup-set h3{margin:0;font-size:var(--fs-lg)}
+.sup-set p{margin:0}

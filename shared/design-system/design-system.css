@@ -568,3 +568,12 @@ bdi.code,.code-ltr{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabul
 :root{--fs-base:16px;--fs-lg-plus:20px;--fs-3xl:34px;--fs-4xl:44px}
 :root{--fs-fluid-h2:clamp(var(--fs-lg),5vw,var(--fs-xl));--fs-fluid-h1:clamp(var(--fs-xl),6.5vw,var(--fs-2xl));--fs-fluid-display:clamp(var(--fs-2xl),8vw,var(--fs-4xl))}
 :root{--shadow-up:0 -6px 20px color-mix(in srgb,var(--text-primary) 8%,transparent)}   /* bars and sheets that sit at the bottom */
+
+/* support-contacts.js: support channels set by the admin (customer «المساعدة» sheet, provider «حسابي») */
+.hs-contacts{display:grid;gap:var(--sp-2);margin-top:var(--sp-2)}
+.hs-contact,.pv-contact{display:flex;align-items:center;gap:var(--sp-3);min-height:52px;padding:var(--sp-2) var(--sp-3);border:1px solid var(--border-subtle);border-radius:var(--r-md);background:var(--surface-primary);color:var(--text-primary);text-decoration:none}
+.hs-contact span,.pv-contact span{display:grid;gap:2px}
+.hs-contact small,.pv-contact small{color:var(--text-secondary);direction:ltr;text-align:right;font-size:var(--fs-sm)}
+.hs-contact svg.i,.pv-contact svg.i{font-size:20px;color:var(--brand-primary)}
+.hs-contact-hours{margin:var(--sp-2) 0 0;color:var(--text-secondary);font-size:var(--fs-sm)}
+.pv-support{margin-top:var(--sp-4)}.pv-support h2{margin:0 0 var(--sp-2);font-size:var(--fs-lg)}

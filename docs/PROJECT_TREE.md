@@ -36,7 +36,8 @@ hansalhlak/
 │   │   │   ├── command-palette.js
 │   │   │   ├── marketing-editor.js
 │   │   │   ├── mini-charts.js
-│   │   │   └── site-content-editor.js
+│   │   │   ├── site-content-editor.js
+│   │   │   └── support-settings.js
 │   │   ├── pages/
 │   │   │   ├── admin-dashboard.page.js
 │   │   │   ├── audit-log.page.js
@@ -532,6 +533,7 @@ hansalhlak/
 │   │   ├── notification-center.js
 │   │   ├── platform-status.js
 │   │   ├── status-badge.js
+│   │   ├── support-contacts.js
 │   │   ├── tables.js
 │   │   └── ui-kit.js
 │   ├── config/
@@ -687,6 +689,7 @@ hansalhlak/
 │       ├── static-audit.test.js
 │       ├── status-badge.test.js
 │       ├── super-dashboard.test.js
+│       ├── support-contacts-policy.test.js
 │       ├── sw-cache-guard.test.js
 │       ├── system-settings.test.js
 │       ├── tree.test.js

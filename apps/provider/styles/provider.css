@@ -265,3 +265,6 @@
 /* closed «خيارات تانية»: its actions take no layout space (they were measured off-screen while hidden) */
 .pv-more-actions:not([open])>.pv-actions{display:none}
 .pv-lib-hint{margin:0;font-size:var(--fs-sm)}
+/* support channels in «حسابي» (shared/components/support-contacts.js; base look in design-system.css) */
+.pv-support{margin-top:var(--sp-4)}.pv-support h2{margin:0 0 var(--sp-2);font-size:var(--fs-lg)}
+.pv-contact{min-height:52px}
