@@ -1,21 +1,11 @@
 # HANSALEHLAK V8 — START HERE
 
 **Current phase:** FRONTEND ONLY (no backend, database, real auth, payments or network APIs).  
-**Latest verified baseline (2026-11-20):**
-- `npm test`: 484/484 passed (includes the service-worker cache guard: after any UI change run `npm run sw:bump`). Coverage map: `npm run coverage:map`.
-- New runners: `perf.cdp.js` (load budgets, self-served gzip), `client-errors.cdp.js`, `offer-alerts.cdp.js`. Deploy steps: `docs/DEPLOY_CHECKLIST.md`.
-- Real-browser CDP runners (`tests/e2e/*.cdp.js`):
-
-  | Runner | Checks |
-  |---|---|
-  | Customer | 160 |
-  | Guest | 165 |
-  | Provider | 261 |
-  | Admin | 124 |
-  | Accessibility | 112 |
-  | Responsive sweep (5 widths) | 280 |
-  | Interaction QA | 239 distinct controls, 0 inert |
-
+**Latest verified baseline (2026-11-21, deep audit at 31a68b3 — production = this commit):**
+- `npm test` 505/505 · emulators 3/3 · emulator E2E 59/59 · browser runners: customer 160, guest 165, provider 286, admin 124, admin-controls 21, offers-cycle 51, offer-alerts 12, client-errors 8, a11y 112, responsive sweep 280 (5 widths), interaction QA 0 inert.
+- Production (Firebase Hosting + GitHub Pages) serves SW cache firebase-60; functions api / session / offersClock match the repo; prod deps 0 vulnerabilities; CI green.
+- Known open: perf budget on the Fast-3G profile (customer LCP ~5–6 s; bundling work unfinished in a worktree). Owner decisions pending: adminDataPolicy 'minimal' (ready, off), support contact numbers, auto-pick when offers are not chosen, App Check key, payment provider.
+- New runners: `perf.cdp.js`, `client-errors.cdp.js`, `offer-alerts.cdp.js`, `admin-controls.cdp.js`. Deploy steps: `docs/DEPLOY_CHECKLIST.md` (standing approval: push + deploy after each change).
 - Inventory reproduces from a clean clone (0/0/0).
 
 **Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md` · **Handoff:** `docs/HANDOFF_NEXT_AI.md` (newest entry on top)  
