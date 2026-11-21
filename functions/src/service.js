@@ -170,7 +170,7 @@ async function linkUser(backend, uid, actor, app) {
 function redactForProvider(data, actor, db) {
   if (!actor || actor.role !== 'provider' || data == null) return data;
   const accepted = new Set((db.assignments || []).filter(a => a.providerId === actor.id && a.status === 'accepted').map(a => a.reqId));
-  const fix = r => (r && typeof r === 'object' && r.no && r.customerId && !accepted.has(r.id) ? { ...r, phone: '', addr: '', geo: null, chat: [], pin: undefined } : (r && r.pin ? { ...r, pin: undefined } : r));
+  const fix = r => (r && typeof r === 'object' && r.no && r.customerId && !accepted.has(r.id) ? { ...r, phone: '', addr: '', geo: null, liveGeo: null, chat: [], pin: undefined } : (r && r.pin ? { ...r, pin: undefined } : r));
   if (Array.isArray(data)) return data.map(fix);
   if (data && Array.isArray(data.items)) return { ...data, items: data.items.map(fix) };
   return fix(data);
@@ -284,8 +284,10 @@ async function api(backend, { auth, data, ip }) {
   if (out.contentV && backend.setPublic) {
     try { await backend.setPublic('public/content', { v: out.contentV, at: Date.now() }); } catch (e) { if (backend.log) backend.log('content signal failed', e && e.message); }
   }
+  /* live tracking points change every ~30 s: no audit row per point (the change signal still reaches the customer) */
+  const liveTrack = req.method === 'POST' && /^\/requests\/[^/]+\/location$/.test(req.path);
   if (Object.keys(out.changes).length) {
-    await backend.addDoc('audit', {
+    if (!liveTrack) await backend.addDoc('audit', {
       at: new Date().toISOString(), uid: token ? token.uid : null, actor: out.actor ? { role: out.actor.role, id: out.actor.id, adminRole: out.actor.adminRole || null } : null,
       app: req.app, method: req.method, path: req.path, status: out.envelope.status,
       changes: Object.fromEntries(Object.entries(out.changes).map(([k, c]) => [k, { set: c.set.length, del: c.del.length }]))

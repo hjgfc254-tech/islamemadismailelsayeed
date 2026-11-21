@@ -225,7 +225,7 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
     }
     if(!prim.length&&more.length) prim.push(more.shift());
     const actionsHtml=`${prim.length||pair.length?`<div class="pv-actions pv-actions-main">${prim.join('')}${pair.join('')}</div>`:''}<div class="pv-card-links"><button class="pv-link" type="button" data-pv-route="request/${encodeURIComponent(r.id)}">التفاصيل${chatCount?` · ${num(chatCount)} رسالة`:''}</button>${quick.join('')}${more.length?`<details class="pv-more-actions"><summary>خيارات تانية (${num(more.length)})</summary><div class="pv-actions">${more.join('')}</div></details>`:''}</div>`;
-    return `<article class="pv-request"${a.status==='offered'?` data-swipe-id="${esc(r.id)}"`:''}><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header>${journey}<p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.pricing&&r.pricing.providerAmount!=null?`<p class="pv-note">مبلغك المحدد عند الحجز: <b>${money(r.pricing.providerAmount)}</b> — يدفع العميل ${money(r.pricing.customerPrice)} شاملًا رسوم المنصة</p>`:''}${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${bidNote}${inspNote}${cancelNote}${warrantyNote}${tipNote}${pkgNote}${custNote}${promoNote}${rateNote}${swipeHint}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}${actionsHtml}${locPanel(r,a)}</article>`;
+    return `<article class="pv-request"${a.status==='offered'?` data-swipe-id="${esc(r.id)}"`:''}><header><div><span class="pv-order-no">${esc(r.no||r.id)}</span><h3>${esc(r.serviceName||'طلب خدمة')}</h3></div><span class="pv-status">${esc(STATUS_LABEL[r.status]||r.status)}</span></header>${journey}<p>${esc(r.desc||'لا يوجد وصف إضافي')}</p><div class="pv-meta"><span>${icon('calendar')} ${date(r.agreedAt||r.when)}</span><span>${icon('pin')} ${address}</span></div>${r.pricing&&r.pricing.providerAmount!=null?`<p class="pv-note">مبلغك المحدد عند الحجز: <b>${money(r.pricing.providerAmount)}</b> — يدفع العميل ${money(r.pricing.customerPrice)} شاملًا رسوم المنصة</p>`:''}${r.proposal?`<p class="pv-note">اقتراح الموعد: ${date(r.proposal.at)} — بانتظار العميل</p>`:''}${freeNote}${bidNote}${inspNote}${cancelNote}${warrantyNote}${tipNote}${pkgNote}${custNote}${promoNote}${rateNote}${swipeHint}${quote?`<div class="pv-quote"><b>عرض السعر: ${money(quote.total)}</b><span>${quote.status==='approved'?'مقبول':quote.status==='rejected'?'مرفوض':'بانتظار العميل'}</span></div>`:''}${liveHtml(r,a)}${actionsHtml}${locPanel(r,a)}</article>`;
   }
 
   /* Empty states: an icon, the (unchanged) message, one line on what fills this screen, and the next step when there is one. */
@@ -276,6 +276,31 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
      allows audio), a vibration on phones, a polite toast and the tab title, until the provider looks at the app. */
   /* ── round 8: arrival code, before/after photos, read receipts + typing ── */
   const pinOn=()=>!!((MP.db().settings||{}).arrivalPin);
+  /* ── live tracking: while «في الطريق» the provider may share their position with the customer (asked by a button,
+     never automatically). First fix, then at most every 30 s or after ~150 m. Stops on «وصلت»/start, on «إيقاف»,
+     when the page is closed, or when the job leaves enroute / arrived. Only the latest point is stored server-side. ── */
+  let live=null;   // {reqId, watch, lastAt, lastLat, lastLng}
+  const metres=(a,b,c,d)=>{const R=6371e3,r=x=>x*Math.PI/180,dl=r(c-a),dn=r(d-b);const h=Math.sin(dl/2)**2+Math.cos(r(a))*Math.cos(r(c))*Math.sin(dn/2)**2;return 2*R*Math.asin(Math.sqrt(h));};
+  function liveStop(silent){ if(!live)return; try{ if(live.watch!=null&&navigator.geolocation) navigator.geolocation.clearWatch(live.watch);}catch(e){} live=null; if(!silent){ render(); toast('وقفت مشاركة موقعك'); } }
+  function liveStart(reqId){
+    if(!navigator.geolocation){ toast('الجهاز ده مش بيدعم تحديد الموقع'); return; }
+    liveStop(true);
+    live={reqId,watch:null,lastAt:0,lastLat:null,lastLng:null};
+    const send=(pos)=>{ if(!live||live.reqId!==reqId)return; const {latitude:lat,longitude:lng,accuracy:acc}=pos.coords, now=Date.now();
+      const moved=live.lastLat==null?Infinity:metres(live.lastLat,live.lastLng,lat,lng);
+      if(now-live.lastAt<30000&&moved<150)return;
+      live.lastAt=now; live.lastLat=lat; live.lastLng=lng;
+      Promise.resolve(root.HSOrdersApi.shareLocation(reqId,lat,lng,acc)).then(res=>{ if(res&&!res.ok&&res.status===409) liveStop(true); }).catch(()=>{}); };
+    live.watch=navigator.geolocation.watchPosition(send,(err)=>{ toast(err&&err.code===1?'محتاج تسمح بالموقع عشان العميل يشوفك في الطريق':'تعذّر تحديد موقعك'); liveStop(true); render(); },{enableHighAccuracy:true,maximumAge:15000,timeout:20000});
+    render(); toast('بتشارك موقعك مع العميل دلوقتي');
+  }
+  try{ root.addEventListener('pagehide',()=>liveStop(true)); }catch(e){}
+  function liveHtml(r,a){
+    if(a.status!=='accepted'||!['enroute','arrived'].includes(r.status)) { if(live&&live.reqId===r.id) liveStop(true); return ''; }
+    const on=!!(live&&live.reqId===r.id);
+    return on?`<p class="pv-live is-on" role="status">${icon('pin')} بتشارك موقعك مع العميل <button type="button" class="pv-link" data-pv-action="live-stop" data-id="${esc(r.id)}">إيقاف</button></p>`
+      :`<p class="pv-live">${icon('pin')} العميل يقدر يتابعك على الخريطة وانت جاي <button type="button" class="pv-btn" data-pv-action="live-share" data-id="${esc(r.id)}">شارك موقعك</button></p>`;
+  }
   /* photo → compressed webp/jpeg data URL (≤ ~170 KB of text) */
   function compressPhoto(file){
     return new Promise((resolve,reject)=>{
@@ -438,6 +463,8 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
     const route=event.target.closest('[data-pv-route]'); if(route){const [page,id='']=route.dataset.pvRoute.split('/');router.navigate(page,id);return;}
     const button=event.target.closest('[data-pv-action]'); if(!button)return;
     const {pvAction:action,id,next}=button.dataset;
+    if(action==='live-share'){ liveStart(id); return; }
+    if(action==='live-stop'){ liveStop(false); return; }
     if(action==='delete-account') {   /* store requirement: delete my account (refused while a job is open) */
       const msg='حذف الحساب نهائي: هتتشال بياناتك وهتخرج من التطبيق. اكتب «حذف» للتأكيد';
       (root.HSUiDialog?root.HSUiDialog.prompt(msg,{title:'حذف الحساب',expect:'حذف',ok:'حذف نهائي',danger:true}):Promise.resolve(root.prompt?root.prompt(msg):'')).then(w=>{

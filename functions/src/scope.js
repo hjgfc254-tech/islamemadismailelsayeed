@@ -79,7 +79,7 @@ function scopeFor(db, actor) {
     out.serviceRequests = reqs.map(r => {
       const chat = Array.isArray(r.chat) ? r.chat.filter(m => m.pid === actor.id) : [];   // only this provider's own conversation
       const { pin, ...rest } = r;            // the arrival code is shown to the customer only
-      return accepted.has(r.id) ? { ...rest, chat } : { ...rest, phone: '', addr: '', geo: null, chat: [] };
+      return accepted.has(r.id) ? { ...rest, chat } : { ...rest, phone: '', addr: '', geo: null, liveGeo: null, chat: [] };
     });
     const custIds = new Set(reqs.filter(r => accepted.has(r.id)).map(r => r.customerId));
     out.customers = (db.customers || []).filter(c => custIds.has(c.id)).map(c => pick(c, ['id', 'name', 'phone', 'status', 'rating', 'ratingCount']));

@@ -190,6 +190,7 @@
       ${journey}
       ${statusBar}
       ${T ? T.arrivalCard(r) : etaBlock}
+      ${['enroute', 'arrived'].includes(r.status) && p ? `<section class="live-map-card" aria-label="مكان الفني"><div class="live-map" data-live-map="${esc(r.id)}" data-live="${esc(JSON.stringify(r.liveGeo || null))}" data-home="${esc(JSON.stringify(r.geo || null))}"></div><p class="live-map-note" data-live-note>${r.liveGeo ? '' : 'لما الفني يشارك موقعه هيظهر هنا على الخريطة.'}</p></section>` : ''}
       ${T ? T.warrantyStrip(r) + (T.warrantyCert ? T.warrantyCert(r) : '') : ''}
       ${root.HSOffers ? root.HSOffers.block(r) + root.HSOffers.cashCard(r) : ''}
       ${r.warrantyOf ? `<div class="need promo-note">${ic('shield')}<span>طلب ضمان — مش هتدفع حاجة على المصنعية.</span></div>` : ''}

@@ -3,10 +3,10 @@
   "files": {
     "shared/config/legacy-data.js": "39f50b5456f3d685c3f1c06f477e7d90f835d58d850cfee151d1a9fa673dbfff",
     "services/local-catalog.js": "de3fcd80ef8de84667bada846d511897d05e285048cad59b10d9d6fdb69e8151",
-    "services/local-market-store.js": "e7733c97904e665eb994ab005be4d0c5f963c31d22028acf2aa94b88f62909b7",
+    "services/local-market-store.js": "b775a3086d23f537ef0d95640d82e22e1ccee5fe67b7cd81f4bd70d4d13a57da",
     "services/api-client.js": "331f7fe2216cb88724b10846b016760e8ab6915de68931f632d34bdb45dcd069",
     "services/auth-api.js": "7221c02eb6559ce21c465fc5f1987ca47ce43ecefdf963fc901a8e2b3bfd587b",
-    "services/orders-api.js": "a6b5db762e0db68263a6009a9d9677fa4713a4074fca21a709a19414a1d06f2d",
+    "services/orders-api.js": "0302bff50ea988656b547c5b531215faad7a86fbc30a5ff91e87e4b107165915",
     "services/quotes-api.js": "81629b0682010cfef34d798ce60bbbe60ff77f5ef8471ba4bf21e995b5f4000f",
     "services/catalog-api.js": "b849ea9b4ddbaedde173a6033e2e2229acdbb16c1c5c7326cdcb3e3dbb506a8d",
     "services/provider-api.js": "ce6ae58aaca6a81a179292603000360bdb1f614842e7ab392be401980cf500d3",

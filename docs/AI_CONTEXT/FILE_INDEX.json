@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 614,
+  "file_count": 616,
   "files": [
     {
       "path": "_redirects",
@@ -517,8 +517,8 @@
       "path": "apps/customer/index.html",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 8754,
-      "sha256": "5fcdebbc9425bfbc0f5d499bc513f5d33ce80b22f47db42d20b5433b227e61b7"
+      "bytes": 8796,
+      "sha256": "142c85eca94530f05233751f896078d6a058207cb1e9cd6d6b9c02a9f2101e22"
     },
     {
       "path": "apps/customer/pages/account.page.js",
@@ -556,6 +556,13 @@
       "sha256": "474c3c7ea898d49fa75c72bffcf9d3fcacae7f401e917564874478aab04e1646"
     },
     {
+      "path": "apps/customer/pages/live-map.js",
+      "area": "apps/customer",
+      "status": "NEEDS_REVIEW",
+      "bytes": 5464,
+      "sha256": "d3b9267d60cc1ff1087f50b51abdaa7536daa9cfa71a2535b38cb9c9440723a8"
+    },
+    {
       "path": "apps/customer/pages/market-ui.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
@@ -587,8 +594,8 @@
       "path": "apps/customer/pages/order-details.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 19126,
-      "sha256": "384afecaeb071dda5019f87281dbde0aad21fda76fd53f47e45f03a989a2d03c"
+      "bytes": 19573,
+      "sha256": "abfe092aa989927a12628bdf3d8cb91e64f808a901afcd041ea5419edd63d8de"
     },
     {
       "path": "apps/customer/pages/orders.page.js",
@@ -650,8 +657,8 @@
       "path": "apps/customer/styles/customer.css",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 153807,
-      "sha256": "c074cedd1b87539e0cbd6cb87a673c1a27455bd1fe55f189c688449af7fba7c0"
+      "bytes": 155043,
+      "sha256": "bb61e65765dce20924a1e63960b26d134a599f99b5d481c43e1d7379ead5918e"
     },
     {
       "path": "apps/customer/styles/overrides.css",
@@ -685,8 +692,8 @@
       "path": "apps/provider/app.js",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 75438,
-      "sha256": "063b196cb109aaf39e173cdba689b6f929d54ce0795cf3340c7f145ba59efc65"
+      "bytes": 78279,
+      "sha256": "e24abf1c7a2ea876728ddf331186289050cb56e2cf9044a27d15ecfd586020e3"
     },
     {
       "path": "apps/provider/index.html",
@@ -853,8 +860,8 @@
       "path": "apps/provider/styles/provider.css",
       "area": "apps/provider",
       "status": "IMPLEMENTED (RESPONSIVE FRONTEND)",
-      "bytes": 39640,
-      "sha256": "a6d4a71b2818b6d19fd4d52cffb931b7d408e0df2b196ab5532c867cac7e365f"
+      "bytes": 40143,
+      "sha256": "0e7e73da83dc80dc39a2438515ebda2e4bf7992146e02c4eb241a0fe97b74568"
     },
     {
       "path": "assets/app-icon-192.png",
@@ -2127,8 +2134,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 284796,
-      "sha256": "12b43fc78628d4dae5addd70ca4546499ac884f8265ffef8eb2c1271e1f4aafb"
+      "bytes": 285271,
+      "sha256": "e35a0428ed600702f4fe57bd4c864db6bb8db67496f6e40c1d21848ea737e485"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2141,15 +2148,15 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 155574,
-      "sha256": "4df279d7ad4618c14b5a7db972537479d4e3ed6e8ddb0c28b0d42bd43f2841f4"
+      "bytes": 156001,
+      "sha256": "20c41bd13125f079c138f08e667e71f425367ffc0c356e3d993d92756f6e9047"
     },
     {
       "path": "docs/API_CONTRACTS.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 20066,
-      "sha256": "951aec34306c614bc57a52c0f0d884060da593ea86dd72837b67d95acbf5e9ef"
+      "bytes": 20227,
+      "sha256": "ec62b0454b2825155810652b00d1de313a12cf2ccd099e12b2bcf4b503ca265c"
     },
     {
       "path": "docs/ARCHITECTURE.md",
@@ -2561,8 +2568,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 29299,
-      "sha256": "0a9a5e3c626357de269defa63931bb793aac34a62c58a77e50e32f2c97162ff1"
+      "bytes": 29381,
+      "sha256": "5525b2008fbc131336c4ccb494c29d9d80622f9fd0d46246e0bbf215b39a1ab6"
     },
     {
       "path": "docs/README.md",
@@ -2667,7 +2674,7 @@
       "area": "functions",
       "status": "NEEDS_REVIEW",
       "bytes": 2051,
-      "sha256": "0f1a50dfb10fe28144f45337fc43a01e50623cca75ce7c8a18d8becba38b8c30"
+      "sha256": "369e37c7d097569cb0790f519c1587f1eceaf5dbe6d966e53f54128590f4c75f"
     },
     {
       "path": "functions/domain/services/admin-api.js",
@@ -2722,8 +2729,8 @@
       "path": "functions/domain/services/local-market-store.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 84028,
-      "sha256": "e7733c97904e665eb994ab005be4d0c5f963c31d22028acf2aa94b88f62909b7"
+      "bytes": 85029,
+      "sha256": "b775a3086d23f537ef0d95640d82e22e1ccee5fe67b7cd81f4bd70d4d13a57da"
     },
     {
       "path": "functions/domain/services/notifications-api.js",
@@ -2736,8 +2743,8 @@
       "path": "functions/domain/services/orders-api.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 27790,
-      "sha256": "a6b5db762e0db68263a6009a9d9677fa4713a4074fca21a709a19414a1d06f2d"
+      "bytes": 28939,
+      "sha256": "0302bff50ea988656b547c5b531215faad7a86fbc30a5ff91e87e4b107165915"
     },
     {
       "path": "functions/domain/services/provider-api.js",
@@ -2862,15 +2869,15 @@
       "path": "functions/src/scope.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 7290,
-      "sha256": "32a13618c02c95bd73a0eadf178ee9f3197f38593a857f4e2cac775605a2d24d"
+      "bytes": 7305,
+      "sha256": "81cc7c78232db6317cef39c64f849743313aaa202653d061a68947466a761e38"
     },
     {
       "path": "functions/src/service.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 38306,
-      "sha256": "20577fb508a17bf8a68a434282e6d0fc0dcbf677ce54b6f246098fef9cc17fb7"
+      "bytes": 38549,
+      "sha256": "45a80e12b03fe1f06bba1d68d48d59a17e184fb29c52826e696f66e89768861f"
     },
     {
       "path": "functions/src/store.js",
@@ -2918,8 +2925,8 @@
       "path": "legal/privacy.html",
       "area": "legal",
       "status": "NEEDS_REVIEW",
-      "bytes": 9160,
-      "sha256": "cc2ce95913e729fc61e017fd5f07e0ab7c175e4b4d8d348c2621b5d35adec737"
+      "bytes": 9519,
+      "sha256": "6655cd72ac8aee50649141fdb9306630a1747092b78cb4e6c8e2be47ff5f25f8"
     },
     {
       "path": "legal/terms.html",
@@ -3016,15 +3023,15 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 11030,
-      "sha256": "d833809026edebe933bbbacd06a9ef47986089e5f5bbe39ebbab57360242cd17"
+      "bytes": 11067,
+      "sha256": "8c1a57893e16e27f86b18cbac09733a32bc712873abe774ca75aae560c41bdca"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "eb89041807151207a9a8d1f40e6a09f286f2ff1acea2c76b79d582ab44d9350b"
+      "sha256": "8910faa68d721084e0691605fa83559054a334226e8a4f1c1a9715f09848cb81"
     },
     {
       "path": "services/admin-api.js",
@@ -3100,8 +3107,8 @@
       "path": "services/local-market-store.js",
       "area": "services",
       "status": "IMPLEMENTED",
-      "bytes": 84028,
-      "sha256": "e7733c97904e665eb994ab005be4d0c5f963c31d22028acf2aa94b88f62909b7"
+      "bytes": 85029,
+      "sha256": "b775a3086d23f537ef0d95640d82e22e1ccee5fe67b7cd81f4bd70d4d13a57da"
     },
     {
       "path": "services/notifications-api.js",
@@ -3114,8 +3121,8 @@
       "path": "services/orders-api.js",
       "area": "services",
       "status": "IMPLEMENTED (MOCK ADAPTER)",
-      "bytes": 27790,
-      "sha256": "a6b5db762e0db68263a6009a9d9677fa4713a4074fca21a709a19414a1d06f2d"
+      "bytes": 28939,
+      "sha256": "0302bff50ea988656b547c5b531215faad7a86fbc30a5ff91e87e4b107165915"
     },
     {
       "path": "services/provider-api.js",
@@ -3935,6 +3942,13 @@
       "status": "TEST",
       "bytes": 7717,
       "sha256": "cfc19008d718f3ea1ea13077622c39967783b9628b5f4389420c23beebf1c6d7"
+    },
+    {
+      "path": "tests/unit/live-tracking.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 9435,
+      "sha256": "f8958034ea2b7621b0aed3dbe60845cbe4fee8e0bcc3399bad728d1431b14764"
     },
     {
       "path": "tests/unit/local-attachments.test.js",

@@ -88,6 +88,7 @@ hansalhlak/
 │   │   │   ├── ai-assist.js
 │   │   │   ├── discover.page.js
 │   │   │   ├── home.page.js
+│   │   │   ├── live-map.js
 │   │   │   ├── market-ui.page.js
 │   │   │   ├── offer-alerts.js
 │   │   │   ├── offers.js
@@ -649,6 +650,7 @@ hansalhlak/
 │       ├── icon-asset-audit.test.js
 │       ├── inventory-reproducibility.test.js
 │       ├── legacy-migration.test.js
+│       ├── live-tracking.test.js
 │       ├── local-attachments.test.js
 │       ├── marketplace-mechanisms.test.js
 │       ├── marketplace-rules.test.js
