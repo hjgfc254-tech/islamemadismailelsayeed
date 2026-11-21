@@ -190,7 +190,8 @@ const MP = (() => {
 
   const get = (col,id) => db[col].find(x=>x.id===id);
   const notify = (to,text,reqId) => { db.notifications.unshift({id:uid('n'),to,text,reqId:reqId||null,at:now(),read:false}); };
-  const log = (r,s,note) => { r.status = s; r.history.push({s,at:now(),note:note||''}); };
+  /* live tracking: the latest technician point lives only while the job is enroute / arrived (no history kept) */
+  const log = (r,s,note) => { r.status = s; r.history.push({s,at:now(),note:note||''}); if (s !== 'enroute' && s !== 'arrived' && r.liveGeo) delete r.liveGeo; };
   const catName = c => (typeof DEVICES!=='undefined' && DEVICES[c]) ? DEVICES[c].name : c;
 
   /* ═════════ العمولة ═════════ */
@@ -406,6 +407,17 @@ const MP = (() => {
 
     /* ═════════ التقدم بين الحالات (يسمح بالتخطي للأمام بمقدار واحد فقط) ═════════
        التوافق الخلفي محفوظ: التوقيع (reqId, to) بنفس السلوك القديم. */
+    /** Live tracking: the assigned provider's latest position while enroute / arrived, rounded to ~10 m (4 decimals).
+        Returns false when not allowed. Only the latest point is kept. */
+    setLiveGeo(reqId, providerId, lat, lng, acc){
+      const r = get('serviceRequests', reqId); if (!r) return false;
+      if (!['enroute', 'arrived'].includes(r.status)) return false;
+      const p = api.providerOf(reqId); if (!p || p.id !== providerId) return false;
+      lat = +lat; lng = +lng; if (!Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) return false;
+      const round = v => Math.round(v * 1e4) / 1e4;
+      r.liveGeo = { lat: round(lat), lng: round(lng), acc: Math.min(5000, Math.max(0, Math.round(+acc || 0))), at: now() };
+      save(); return true;
+    },
     advance(reqId, to){
       const r = get('serviceRequests',reqId); if(!r) return false;
       const i = k => FLOW.findIndex(f=>f[0]===k);

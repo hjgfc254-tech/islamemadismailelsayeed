@@ -160,6 +160,15 @@
     return done ? view(store, r, actor) : fail('CONFLICT', 'حالة الطلب لا تسمح بتحديد الموعد');
   });
 
+  /* live tracking (enroute / arrived): the assigned provider posts the latest point; at most one update per 10 s */
+  client.define('POST', '/requests/:id/location', { roles: ['provider'], summary: 'Live tracking: latest position {lat, lng, acc?} while enroute / arrived (assigned provider only).' }, ({ params, body, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    const p = store.providerOf(r.id); if (!p || p.id !== actor.id) return fail('FORBIDDEN', 'الطلب مش مسند ليك');
+    if (!['enroute', 'arrived'].includes(r.status)) return fail('CONFLICT', 'مشاركة الموقع متاحة وانت في الطريق بس');
+    if (r.liveGeo && Date.now() - Date.parse(r.liveGeo.at) < 10000) return { ok: true, throttled: true };
+    if (!store.setLiveGeo(r.id, actor.id, body && body.lat, body && body.lng, body && body.acc)) return fail('VALIDATION', 'موقع غير صالح', { lat: 'number', lng: 'number' });
+    return { ok: true, liveGeo: r.liveGeo };
+  });
   client.define('POST', '/requests/:id/advance', { roles: ['provider'], summary: 'Move to the next FLOW status {to}.' }, ({ params, body, actor, store }) => {
     const r = load(store, actor, params.id); if (!r) return notFound();
     if (!store.providerOf(r.id)) return fail('FORBIDDEN', 'اقبل الطلب أولًا');
@@ -299,6 +308,7 @@
     chooseProvider: (reqId, providerId) => client.post('/requests/' + id(reqId) + '/provider', { providerId }),
     respond: (reqId, accept, reason) => client.post('/requests/' + id(reqId) + '/respond', { accept, reason }),
     schedule: (reqId, at) => client.post('/requests/' + id(reqId) + '/schedule', at ? { at } : {}),
+    shareLocation: (reqId, lat, lng, acc) => client.post('/requests/' + id(reqId) + '/location', { lat, lng, acc }),
     advance: (reqId, to, eta, pin) => client.post('/requests/' + id(reqId) + '/advance', Object.assign({ to }, eta ? { eta } : {}, pin ? { pin } : {})),
     widen: reqId => client.post('/requests/' + id(reqId) + '/widen', {}),
     cash: (reqId, paid) => client.post('/requests/' + id(reqId) + '/cash', { paid }),

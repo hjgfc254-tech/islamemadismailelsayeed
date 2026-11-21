@@ -264,3 +264,9 @@
 .pv-panel h1,.pv-panel h2,.pv-hero h1,.pv-hero h2,.pv-gate h1{letter-spacing:0}
 /* closed «خيارات تانية»: its actions take no layout space (they were measured off-screen while hidden) */
 .pv-more-actions:not([open])>.pv-actions{display:none}
+
+/* live tracking share row (liveHtml in app.js) */
+.pv-live{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-2,8px);margin:10px 0 0;padding:10px 12px;border-radius:var(--r-md,12px);background:var(--surface-sunken);color:var(--text-secondary);font-size:var(--fs-sm,14px)}
+.pv-live .pv-btn{margin-inline-start:auto;min-height:40px}
+.pv-live.is-on{background:color-mix(in srgb,var(--success,#2B6B40) 12%,transparent);color:var(--text-primary)}
+.pv-live.is-on .pv-link{margin-inline-start:auto}

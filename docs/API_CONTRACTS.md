@@ -111,6 +111,7 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /requests/:id/provider` | customer | orders-api.js | Customer picks a provider for an own unassigned request {providerId}. |
 | `POST /requests/:id/respond` | provider | orders-api.js | Accept or decline an offered assignment. |
 | `POST /requests/:id/schedule` | provider, customer | orders-api.js | Provider proposes {at}; either side confirms. |
+| `POST /requests/:id/location` | provider | orders-api.js | Live tracking: latest position {lat, lng, acc?} while enroute / arrived (assigned provider only). |
 | `POST /requests/:id/advance` | provider | orders-api.js | Move to the next FLOW status {to}. |
 | `POST /requests/:id/complete` | provider | orders-api.js | Complete a paid job: {value>0, deductions} or the approved quote. |
 | `POST /requests/:id/close` | customer | orders-api.js | Customer confirms completion. |
