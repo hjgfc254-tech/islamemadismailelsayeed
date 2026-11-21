@@ -12,6 +12,9 @@ hansalhlak/
 │       │   └── SKILL.md
 │       └── vm-script-test/
 │           └── SKILL.md
+├── .githooks/
+│   ├── pre-commit
+│   └── pre-push
 ├── .github/
 │   └── workflows/
 │       └── ci.yml
@@ -500,6 +503,7 @@ hansalhlak/
 │   ├── privacy.html
 │   └── terms.html
 ├── scripts/
+│   ├── agent-guard.cjs
 │   ├── build-lucide-icons.cjs
 │   ├── build-project-reference.cjs
 │   ├── coverage-map.cjs

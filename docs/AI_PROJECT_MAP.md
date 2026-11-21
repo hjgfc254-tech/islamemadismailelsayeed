@@ -11,6 +11,8 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | .editorconfig | CONFIGURATION | Current inventory entry; inspect file for exact behavior. | Read when relevant; do not duplicate behavior. |
 | .firebaserc | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | .gitattributes | IMPLEMENTED | Pins LF line endings for text files (CSV inventory stored byte-for-byte) so every checkout matches the index and the SHA-256 inventory reproduces from a clean clone on any OS/core.autocrlf. | Done. |
+| .githooks/pre-commit | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| .githooks/pre-push | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | .github/workflows/ci.yml | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | .gitignore | CONFIGURATION | Current inventory entry; inspect file for exact behavior. | Read when relevant; do not duplicate behavior. |
 | .graphifyignore | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
@@ -431,6 +433,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | manifest.json | CONFIGURATION | PWA metadata, launch path and icon declaration. | Update only when related implementation changes. |
 | package.json | CONFIGURATION | Configuration or metadata for package | Update only when related implementation changes. |
 | README.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
+| scripts/agent-guard.cjs | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | scripts/build-lucide-icons.cjs | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | scripts/build-project-reference.cjs | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | scripts/coverage-map.cjs | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |

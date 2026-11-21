@@ -26,6 +26,11 @@ $exists = git branch --list deepseek-work
 if ($exists) { git switch deepseek-work | Out-Null } else { git switch -c deepseek-work | Out-Null }
 Write-Host "Working on branch: $(git branch --show-current)" -ForegroundColor Green
 
+# 2b) Guard rails enforced by git itself (scripts/agent-guard.cjs): commits only on deepseek-work, protected files
+#     refused, tests / cache / domain copy must be green before any commit, no push to main.
+git config core.hooksPath .githooks
+$env:HS_AGENT = 'deepseek'
+
 # 3) Point Claude Code at DeepSeek for this window only
 $env:ANTHROPIC_BASE_URL = 'https://api.deepseek.com/anthropic'
 $env:ANTHROPIC_AUTH_TOKEN = $key
@@ -35,8 +40,9 @@ $env:API_TIMEOUT_MS = '600000'
 $env:CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC = '1'
 
 # 4) Launch with the handoff as the first instruction
-claude "اقرأ docs/DEEPSEEK_HANDOFF.md و CLAUDE.md و docs/AI_CONTEXT/START_HERE.md الأول، والتزم بالقواعد اللي فيهم. بعدها اسألني عايز تبدأ بأنهي مهمة."
+claude --disallowedTools "Bash(firebase deploy*)" "PowerShell(firebase deploy*)" "Bash(*--no-verify*)" "PowerShell(*--no-verify*)" "Bash(git push --force*)" "PowerShell(git push --force*)" "Bash(git reset --hard*)" "PowerShell(git reset --hard*)" "Bash(git config core.hooksPath*)" "PowerShell(git config core.hooksPath*)" --append-system-prompt (Get-Content -Raw -Encoding UTF8 docs/DEEPSEEK_HANDOFF.md) "اقرأ CLAUDE.md و docs/AI_CONTEXT/START_HERE.md الأول. اتبع «طريقة الشغل» في التسليم خطوة بخطوة في كل مهمة. بعدها اسألني عايز تبدأ بأنهي مهمة."
 
 # 5) Back to main when the session ends (DeepSeek's work stays on deepseek-work for Claude to review)
+$env:HS_AGENT = $null
 git switch main | Out-Null
 Write-Host 'Back on main. DeepSeek commits are on the deepseek-work branch.' -ForegroundColor Green
