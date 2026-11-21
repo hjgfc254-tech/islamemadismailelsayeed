@@ -97,6 +97,7 @@
     const wrap = root.document.createElement('div'); wrap.className = 'ord set';
     wrap.innerHTML = `<div class="fin-banner" role="note">${icon('info')}<span>إعدادات تجريبية محلية — لا يُحفظ شيء ولا يتأثر أي تطبيق: وضع الصيانة والضريبة والمهل والحدود غير مطبَّقة فعليًا، ولا تُحمى الصلاحيات من الواجهة. قواعد العمولة في صفحة «العمولات». تاريخ العرض الثابت: ${esc(dt(DEMO_NOW))}.</span></div>
       <p class="stl-result" id="set-result" tabindex="-1" role="status" hidden></p>
+      <div data-support-settings></div>
       <form id="set-form" novalidate></form><div id="set-log"></div><dialog class="ord-dlg" id="set-dlg" aria-labelledby="ord-dlg-t"></dialog>`;
     const form = wrap.querySelector('#set-form'), dlgEl = wrap.querySelector('#set-dlg'), res = wrap.querySelector('#set-result');
     let pending = null;
@@ -104,6 +105,7 @@
     const paintLog = () => { wrap.querySelector('#set-log').innerHTML = logHtml(); };
     const readForm = () => { const v = {}; FIELDS.forEach((f) => { const el = form.elements[f.key]; v[f.key] = coerce(f, f.type === 'bool' ? !!(el && el.checked) : el && el.value); }); return v; };
     paintForm(current); paintLog();
+    { const sup = wrap.querySelector('[data-support-settings]'); if (sup && root.HSAdminSupportSettings) root.HSAdminSupportSettings.mount(sup).catch(() => {}); }
     const d = root.HSDialog.attach(dlgEl, { closeSelector: '[data-ord-close]', focusSelector: '#set-note', fallbackFocus: () => form.querySelector('button[type=submit]'), onClose: () => { pending = null; } });
     form.addEventListener('submit', (e) => {
       e.preventDefault(); const v = readForm(), errs = validate(v);

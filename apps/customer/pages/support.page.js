@@ -194,25 +194,16 @@ const Support = (() => {
   };
 
   /* ═════════ التواصل ═════════ */
-  const openContact = () => {
+  /* Support channels come from Admin › الإعدادات (settings.support via shared/components/support-contacts.js); only the
+     ones that are set are shown. The in-app message to support is always available. orderNo prefills WhatsApp. */
+  const openContact = (orderNo) => {
     if (typeof sheet !== 'function') return;
+    const SC = globalThis.HSSupportContacts;
+    const channels = SC ? SC.html({ orderNo: orderNo || '', who: 'customer', cls: 'hs-contact', icon: safeIc }) : '';
     sheet(`<h4>${safeIc('chat')} التواصل مع الدعم</h4>
-      ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?`<div class="sub">ابعتلنا استفسارك أو شكوتك من هنا، وفريق الدعم بيرد عليك في الإشعارات.</div><button type="button" class="cta" data-support="complaint">${safeIc('send')} ابعت للدعم</button>`:`<div class="sub">في الوضع التجريبي، هذه قنوات محاكاة فقط</div>`}
-      <div class="card2 glass neon" ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'hidden':''}>
-        <div class="top"><b>${safeIc('call')} هاتف</b></div>
-        <small>متاح تجريبيًا: 9 صباحًا - 9 مساءً</small>
-        <div class="kv">01234567890</div>
-      </div>
-      <div class="card2 glass neon" ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'hidden':''}>
-        <div class="top"><b>${safeIc('chat')} واتساب</b></div>
-        <small>تواصل سريع عبر واتساب</small>
-        <div class="kv">01234567890</div>
-      </div>
-      <div class="card2 glass neon" ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'hidden':''}>
-        <div class="top"><b>${safeIc('send')} بريد إلكتروني</b></div>
-        <small>support@hansalhak.demo</small>
-      </div>
-      <div class="demo-banner">${safeIc('info')}<span>عند التكامل مع Backend، ستظهر أرقام الدعم الفعلية.</span></div>`);
+      <div class="sub">ابعتلنا استفسارك أو شكوتك من هنا، وفريق الدعم بيرد عليك في الإشعارات.</div>
+      <button type="button" class="cta" data-support="complaint">${safeIc('send')} ابعت للدعم من التطبيق</button>
+      ${channels ? `<div class="sub" style="margin-top:12px">أو كلّمنا مباشرة:</div>${channels}` : ''}`);
   };
 
   /* ═════════ السياسات ═════════ */
@@ -256,7 +247,7 @@ const Support = (() => {
       case 'complaint': openComplaint(); break;
       case 'report': openReport(); break;
       case 'history': openHistory(); break;
-      case 'contact': openContact(); break;
+      case 'contact': openContact(d.orderNo || ''); break;
       case 'policy-cancel': openPolicy('cancel'); break;
       case 'policy-privacy': openPolicy('privacy'); break;
       case 'policy-terms': openPolicy('terms'); break;

@@ -184,6 +184,10 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /admin/reviews/:id/visibility` | admin | admin-api.js | Hide or re-publish a review {hidden, reason}. |
 | `GET /admin/controls` | admin | admin-api.js | Emergency switches (maintenance, pause new requests, pause provider sign-ups). |
 | `POST /admin/controls` | admin | admin-api.js | Owner only: turn a switch on/off {key, on, message?}. Customers / providers get 503 on blocked mutations. |
+| `GET /admin/support-contacts` | admin | admin-api.js | Support phone / WhatsApp / email / hours shown to customers and providers. |
+| `PATCH /admin/support-contacts` | admin | admin-api.js | Owner or manager: set support contacts {phone?, whatsapp?, email?, hours?} (empty clears). |
+| `GET /admin/data-policy` | admin | admin-api.js | Admin data minimisation policy {minimal}. |
+| `POST /admin/data-policy` | admin | admin-api.js | Owner only: {minimal: boolean} — mask customer data for support / moderator ranks. |
 | `GET /admin/marketing` | admin | admin-api.js | Promo codes, invite reward and packages. |
 | `PATCH /admin/marketing` | admin | admin-api.js | Replace promo codes / invite reward / packages {promos?, referral?, packages?}. |
 

@@ -179,6 +179,7 @@
     }
     if (canComplain) {
       actions.push(`<button class="cta ghost" data-act="complain" data-id="${id}">${ic('warn')} تقديم شكوى</button>`);
+    if (globalThis.HSSupportContacts && HSSupportContacts.any(HSSupportContacts.get())) actions.push(`<button class="cta ghost" data-support="contact" data-order-no="${esc(r.no || '')}">${ic('chat')} كلّم الدعم بخصوص الطلب</button>`);
     }
 
     /* Progress is driven by the provider from the Provider app (shared store); the customer has no provider-side controls. */

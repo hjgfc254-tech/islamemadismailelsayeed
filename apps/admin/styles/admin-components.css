@@ -413,3 +413,8 @@ label.hs-grid-field:has(> input[type=checkbox])>span{flex:1}
 .dash-qlist li.is-danger::before{background:var(--danger)}
 .dash-qlist li.is-warning::before{background:var(--accent)}
 .dash-qlist li b{font-size:var(--fs-2xl)}
+
+/* support-settings.js */
+.sup-set{display:grid;gap:var(--sp-2);margin-bottom:var(--sp-5);padding:var(--sp-4);border:1px solid var(--border-subtle);border-radius:var(--r-lg);background:var(--surface-primary)}
+.sup-set h3{margin:0;font-size:var(--fs-lg)}
+.sup-set p{margin:0}
