@@ -2529,7 +2529,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md). Also holds .hs-badge styles for shared/components/status-badge.js. Also holds .hs-grid styles for shared/components/data-grid.js.",
-      "sha256": "f08ba0147547c87cb62416dcbd2a1c48760c12554eca54ef477e829f6f8ec42d",
+      "sha256": "d496e324ec64c9bb25d15ad5087809bfbc7362487c621a40ef365cb13e0d2028",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2566,7 +2566,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 40955
+      "bytes": 41950
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -2578,7 +2578,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md).",
-      "sha256": "060589c6eb70613394472e23b0dd82fc919c169e31e1fe02b703839ecbee90ba",
+      "sha256": "44bc53e218c8efc7f1a2dea1fa6fa650ad13a35d41266661ce041a4ecb916e2b",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2615,7 +2615,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 1708
+      "bytes": 1790
     },
     {
       "path": "apps/admin/styles/admin.css",
@@ -2627,7 +2627,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md).",
-      "sha256": "fddad7836c7844a55c101ae0f764ffb73add5e74c775c837a332c57be4da173f",
+      "sha256": "9327f08fd1b4743a860945a31c55f4d2a597b069f034cb7f616804781253337c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2666,7 +2666,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 5444
+      "bytes": 5575
     },
     {
       "path": "apps/admin/styles/overrides.css",
@@ -3632,7 +3632,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "6dccf9832a57eb6bfaf79dc107b9c4cd3511efc03112161daa8e79ddd8212ff3",
+      "sha256": "474ddbfad651a0ed2bdb72dc49a119e90effefe1adcd9f7abe929082e0397da3",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3671,7 +3671,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 145735
+      "bytes": 153689
     },
     {
       "path": "apps/customer/styles/overrides.css",
@@ -4873,7 +4873,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "b0282641aa7a4737a572d645ff538ebdcb0b1569b4622bc25bbba8d7ae5bd22f",
+      "sha256": "d9e1fce4c9787aa52511248f66f60fddec94da64922e76e90ed9aa212f169cc1",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -4912,7 +4912,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 37011
+      "bytes": 39180
     },
     {
       "path": "assets/app-icon-192.png",
@@ -11790,7 +11790,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "43e85e64820c6d4186d58fd1976b2806ae05279b3a78bab42bbc60f6a73079b8",
+      "sha256": "12229a8b44cc8d53393a504c3fab7ed24a8ed275313d06e103f1fbd1be9dc0c5",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11838,7 +11838,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "8a0aab0edb1cc62d094e3386b7a7e67f4e788fdb8f642fb7a90b1eb0fa99eee7",
+      "sha256": "5b6cc53651745a24da42a14f8761f58d57dbcd8172358f829bc0c436bb928540",
       "bytes": 195
     },
     {
@@ -13422,7 +13422,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "1c71cbb75c53bfc1f7f2cab4871b3146d9641cef9226856fbbfbe2146d95695c",
+      "sha256": "f1b447f99be79072cadbf0ec1e1ff35ab74d7239602884adbe0ba39056a1f3b7",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -13461,7 +13461,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 54221
+      "bytes": 56098
     },
     {
       "path": "shared/design-system/layout.css",
@@ -15443,8 +15443,8 @@
       "file_behavior": "Unit tests source wiring and Admin CSS literal count.",
       "completion_definition": "All checks pass and Admin count is no greater than 163 unless baseline change is explicitly reviewed.",
       "actual_status_ar": "منفذ: اختبار حارس لعدد القيم الحرفية في CSS الإدارة.",
-      "bytes": 3022,
-      "sha256": "ac2625430230d20920ca7e6ad841f20676ff11ce0dc1d6dff2fec82029eaebcf"
+      "bytes": 3342,
+      "sha256": "80e0b66a3ac6058e4251bf6363df4934e047e40fd470dae4109dfc9b5bc6e89c"
     },
     {
       "path": "tests/unit/dialogs.test.js",
