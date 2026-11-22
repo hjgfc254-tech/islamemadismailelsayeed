@@ -361,6 +361,11 @@ hansalhlak/
 │   │   └── README.md
 │   └── README.md
 ├── docs/
+│   ├── agent-briefs/
+│   │   ├── digest.md
+│   │   ├── README.md
+│   │   ├── teams-alerts.md
+│   │   └── tech-center.md
 │   ├── AI_CONTEXT/
 │   │   ├── DOMAIN_MAPS/
 │   │   │   ├── ADMIN.md
@@ -440,6 +445,7 @@ hansalhlak/
 │   ├── HANDOFF_NEXT_AI.md
 │   ├── HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md
 │   ├── MIGRATION_PLAN.md
+│   ├── NEXT_SESSION.md
 │   ├── PERMISSIONS.md
 │   ├── PLAYBOOKS.md
 │   ├── PROJECT_REFERENCE.md
@@ -725,6 +731,7 @@ hansalhlak/
 ├── .gitignore
 ├── .graphifyignore
 ├── .repomixignore
+├── 2026-11-20-231345-this-session-is-being-continued-from-a-previous-c.txt
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── database.rules.json

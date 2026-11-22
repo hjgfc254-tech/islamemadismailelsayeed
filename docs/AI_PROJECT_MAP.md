@@ -17,6 +17,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | .gitignore | CONFIGURATION | Current inventory entry; inspect file for exact behavior. | Read when relevant; do not duplicate behavior. |
 | .graphifyignore | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | .repomixignore | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| 2026-11-20-231345-this-session-is-being-continued-from-a-previous-c.txt | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | AGENTS.md | DOCUMENTATION | Added to the normalized current inventory; inspect source for exact behavior. | Read only when relevant to the task; do not duplicate existing behavior. |
 | apps/admin/admin-auth.js | IMPLEMENTED (FRONTEND DEMO) | HSAdminAuth: demo account list/resolve from the active RBAC roster. Not authentication. | Read when relevant; keep tests/docs aligned with behavior changes. |
 | apps/admin/admin-router.js | IMPLEMENTED (FRONTEND DEMO) | HSAdminRouter: hash parse/format and breadcrumbs (extracted from admin-shell). | Read when relevant; keep tests/docs aligned with behavior changes. |
@@ -300,6 +301,10 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | database/schema/transactions.schema.js | PLACEHOLDER | Proposed transactions data schema. No production database schema/migration is implemented. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
 | database/seeds/README.md | CONFIGURATION | Documentation for README | Update only when related implementation changes. |
 | docs/ADMIN_MODULES.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
+| docs/agent-briefs/digest.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| docs/agent-briefs/README.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| docs/agent-briefs/teams-alerts.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| docs/agent-briefs/tech-center.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | docs/AI_AGENT_CONTINUATION_PROTOCOL.md | DOCUMENTATION | Canonical operational handoff for any new ChatGPT conversation, Claude/Claude Code session, coding agent or human contributor; defines frontend-only boundaries, bootstrap order, implementation gates, Provider contracts, task queue, map integrity and handoff report. | Read before continuing work in a new agent/session; update when workflow or project scope changes. |
 | docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md | DOCUMENTATION | Added to the normalized current inventory; inspect source for exact behavior. | Read only when relevant to the task; do not duplicate existing behavior. |
 | docs/AI_CONTEXT/DOMAIN_MAPS/CUSTOMER.md | DOCUMENTATION | Added to the normalized current inventory; inspect source for exact behavior. | Read only when relevant to the task; do not duplicate existing behavior. |
@@ -374,6 +379,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | docs/HANDOFF_NEXT_AI.md | DOCUMENTATION | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
 | docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md | DOCUMENTATION | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
 | docs/MIGRATION_PLAN.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
+| docs/NEXT_SESSION.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | docs/PERMISSIONS.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
 | docs/PLAYBOOKS.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | docs/PROJECT_REFERENCE.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
