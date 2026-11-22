@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 640,
+  "file_count": 646,
   "files": [
     {
       "path": "_redirects",
@@ -132,8 +132,8 @@
       "path": "apps/admin/admin-shell.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL, DEMO)",
-      "bytes": 26225,
-      "sha256": "22bec5fd7619d065d9c76ad9b332b94fae6754aeda29577335b0adfb604568b0"
+      "bytes": 26319,
+      "sha256": "f0a81063c2cc017a4efe267510ee0e9f6f10e903c2051f9977ce370d481d68dd"
     },
     {
       "path": "apps/admin/app.js",
@@ -146,8 +146,8 @@
       "path": "apps/admin/index.html",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL HOST)",
-      "bytes": 6337,
-      "sha256": "5a5881625815935a62267b416236fb5453228a1751b22725945743b91eb40a56"
+      "bytes": 6387,
+      "sha256": "28b73532442a3e9ff171f1e8e083c2c33901c2063c4bf42fd70dcd10d22f2b1b"
     },
     {
       "path": "apps/admin/login.html",
@@ -465,6 +465,13 @@
       "sha256": "c6cbc53c7abad350b374090f2e814abf59eabb098cfd6344d325a01a87613f4b"
     },
     {
+      "path": "apps/admin/pages/tech-center.page.js",
+      "area": "apps/admin",
+      "status": "NEEDS_REVIEW",
+      "bytes": 18071,
+      "sha256": "2f3b27458b732cbebd4bc49c20a933a6b923eb206136f21bc955a7809ae6ee35"
+    },
+    {
       "path": "apps/admin/pages/workforce.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
@@ -475,8 +482,8 @@
       "path": "apps/admin/permission-guard.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 3765,
-      "sha256": "d49dc2e69023f2b33e23f979671c1e0335eb3503567fca997a442130ac336209"
+      "bytes": 3944,
+      "sha256": "aedfd61011cc1df9ab3bb53a5f61aab0f55f7f8362abade27ee89bc0f24913ff"
     },
     {
       "path": "apps/admin/rbac-store.js",
@@ -496,8 +503,8 @@
       "path": "apps/admin/styles/admin-components.css",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL PARTS)",
-      "bytes": 43411,
-      "sha256": "dbb18e78dd8311f2077da4249463ebfbaa084184e129b0f65fcc31364228cf44"
+      "bytes": 47911,
+      "sha256": "808e0021f40855d2d2aa1f93fb2700fb5d1805dd11aa4ca9f3b69c096b6bd822"
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -2218,8 +2225,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 290978,
-      "sha256": "a750fb3db199a33d502bf65cf967297e7059b1f1d69a95205b0f7e05373138ef"
+      "bytes": 292379,
+      "sha256": "a6411a6bf1ce1e84bcf2fe5d22af6ca724824420033d3320c4d838f624ec812d"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2232,15 +2239,15 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 161114,
-      "sha256": "634b347239cda6cc47041b0f226087e8ca3bd6247907ef19bb5acf76e2d6eced"
+      "bytes": 162378,
+      "sha256": "244d517611b9ec66d6d3bfc2dfd8230489714e592a77430055ae1ceda430b7b6"
     },
     {
       "path": "docs/API_CONTRACTS.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 21752,
-      "sha256": "db28c92c9ba94d45d552165d4bc289ae0ada8f83e59d06bb686a0e4f84f1a7a4"
+      "bytes": 22474,
+      "sha256": "1df504445ec21a3e8434ad830e935458ddb9eb852e4e3051c769e0366a62c1ce"
     },
     {
       "path": "docs/ARCHITECTURE.md",
@@ -2526,8 +2533,8 @@
       "path": "docs/DEPLOY_CHECKLIST.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 5365,
-      "sha256": "85be50a56ec4c0244dd488ecb376d0f02bb9234b6abbb09f929bf73cfb866536"
+      "bytes": 6233,
+      "sha256": "dc20a5e664062ce447d8a5a163d43a6326c71bfd703b9b502bf091cd7fdf2ed8"
     },
     {
       "path": "docs/DESIGN_MAP.md",
@@ -2638,8 +2645,8 @@
       "path": "docs/NEXT_SESSION.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 2698,
-      "sha256": "b3d553df0bae499aeb9c84d51d260546cf7c40a33c150c6a33b8231c35809749"
+      "bytes": 2548,
+      "sha256": "38c0425b989a25a424d56158210692e2aa0fcfb32303f370c0e75605068d4f88"
     },
     {
       "path": "docs/PERMISSIONS.md",
@@ -2666,8 +2673,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 30430,
-      "sha256": "18872fd321bfa49406291d45f6382277cd1247a714f921cbe5ff7d5272b1142a"
+      "bytes": 30660,
+      "sha256": "5d412eb818fb1301c711aa4be13eea7321d14b3fb0fc908138146d6bdef42b2e"
     },
     {
       "path": "docs/README.md",
@@ -2708,8 +2715,8 @@
       "path": "firestore.indexes.json",
       "area": "firestore.indexes.json",
       "status": "NEEDS_REVIEW",
-      "bytes": 5005,
-      "sha256": "07ded9fc6fd8c6457a94cbbd342dced5567b1943b0dd94640d1b15145cf3c79d"
+      "bytes": 5405,
+      "sha256": "9abcc301d8922a3f80709d0dfbfa676851747c5b9b77c813cf0c0961a32a2d20"
     },
     {
       "path": "firestore.rules",
@@ -2757,8 +2764,8 @@
       "path": "functions/domain/apps/admin/permission-guard.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 3765,
-      "sha256": "d49dc2e69023f2b33e23f979671c1e0335eb3503567fca997a442130ac336209"
+      "bytes": 3944,
+      "sha256": "aedfd61011cc1df9ab3bb53a5f61aab0f55f7f8362abade27ee89bc0f24913ff"
     },
     {
       "path": "functions/domain/apps/admin/rbac-store.js",
@@ -2772,7 +2779,7 @@
       "area": "functions",
       "status": "NEEDS_REVIEW",
       "bytes": 2051,
-      "sha256": "369e37c7d097569cb0790f519c1587f1eceaf5dbe6d966e53f54128590f4c75f"
+      "sha256": "6de74bceceea1aa633d2aaa95ae3421fc4dee2e6fa4bad8a74ea485f45212c3c"
     },
     {
       "path": "functions/domain/services/admin-api.js",
@@ -2876,8 +2883,8 @@
       "path": "functions/index.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 7144,
-      "sha256": "2abf54ec3fcd35bb8f127f1e88a7cc5887713076f237e89092ab07a44c18e766"
+      "bytes": 9247,
+      "sha256": "77df34d7ca91f4887cd01da9edee8d796e98a2324d505677cab65393d7776dae"
     },
     {
       "path": "functions/package-lock.json",
@@ -2913,6 +2920,13 @@
       "status": "NEEDS_REVIEW",
       "bytes": 14736,
       "sha256": "40087173418d1d7d9a1212623b2cf70af7bde150178a230ccb84ff6006928544"
+    },
+    {
+      "path": "functions/src/alerts-adapter.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 1283,
+      "sha256": "0bd08204c51b4c05b0f983063f7ad3f26c8f282d95d866ed15b68cf2714cf6b5"
     },
     {
       "path": "functions/src/content.js",
@@ -2995,8 +3009,8 @@
       "path": "functions/src/service.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 39570,
-      "sha256": "9eac5908367a7170ca1c52eb30fc1c6fcb0a8acbd6e628343eb7afb5e38fdf07"
+      "bytes": 40102,
+      "sha256": "08ea9a0ca249fc02c481cd18fa416283eb99ea57bbe45aeed4b5e2c28c5e842e"
     },
     {
       "path": "functions/src/store.js",
@@ -3006,11 +3020,25 @@
       "sha256": "fabc05e6c6e19bd649a8a54a972c98562ce2d2c136e8486ca3b5a1b8ec716969"
     },
     {
+      "path": "functions/src/tech-status.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 15673,
+      "sha256": "172c80fdb654db9f3ee61d39a26c1efc4212f1acc480a6bf125d1cc955a39aed"
+    },
+    {
       "path": "functions/src/telemetry.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 5437,
-      "sha256": "45ae622bca8daf6164ff6b7b245b9e52a5c50e247278cef6857af8bc80c924b1"
+      "bytes": 5737,
+      "sha256": "d71e2412ecdd36f680afa00d2895a48696af43b2dde89fa956994ef66ad31bfb"
+    },
+    {
+      "path": "functions/src/usage.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 8040,
+      "sha256": "a8a1c5d4873a2c3d09756d3786c804f1ed74c2595f2daec4d87c00881535bd56"
     },
     {
       "path": "functions/src/workforce.js",
@@ -3065,8 +3093,8 @@
       "path": "package.json",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 1408,
-      "sha256": "ebfb1bf8888faa7baf0567d3117fe3e989c9a1890699b5452ebad3f2c9cbec4b"
+      "bytes": 1464,
+      "sha256": "21a2c36f18e2a4c36f40be5828985851fea5ccd923863371b0b8a01b5ae6b5d7"
     },
     {
       "path": "README.md",
@@ -3118,6 +3146,13 @@
       "sha256": "af99584d8cb2e8085b407309c04ce808ebba95babfdd8afd8d10ace888ef3614"
     },
     {
+      "path": "scripts/record-deploy.cjs",
+      "area": "scripts",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2717,
+      "sha256": "68d63b73e1b6adaca9a1a4d61cde35944ed4cd81785637f9ddca2de3c9a84352"
+    },
+    {
       "path": "scripts/refresh-project-inventory.mjs",
       "area": "scripts",
       "status": "CONFIGURATION",
@@ -3149,15 +3184,15 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 11143,
-      "sha256": "f960268e5d4cb2426ed5f8b1a2303f3892fef2534a38c63b85aba0692cf94392"
+      "bytes": 11185,
+      "sha256": "1213491cb79ac4f1471d1366a708aaa8b037286e073fc7729a97be3048d67da6"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "a5ff69d034f91977aba812a4b723a4f6e028430af7ea05a78544ba925cda46f8"
+      "sha256": "93dce9d2e8d2f01d75db52b80e9aed7b1647eeb075ee47e3a9d8813573560510"
     },
     {
       "path": "services/admin-api.js",
@@ -3849,8 +3884,8 @@
       "path": "tests/unit/admin-platform-controls.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 14846,
-      "sha256": "70d293e2cd2c6c23533486658c8048f97f411770162b43ae99f6ebf40e4c3d15"
+      "bytes": 14852,
+      "sha256": "1700c11bc7c40df8b84049ff0705346b7cc5774214fec9afb04ddffca5bc286d"
     },
     {
       "path": "tests/unit/admin-runtime.test.js",
@@ -3863,8 +3898,8 @@
       "path": "tests/unit/admin-shell.test.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 2991,
-      "sha256": "2b1fcdc134d081dce3a14a79f752d9b512492f432fdbdf79d2f4e67b979e3e6b"
+      "bytes": 3012,
+      "sha256": "236f8f207fa1a89ebf3a0d88d19f1773d813573b5bbb85896ef6bc20a2176766"
     },
     {
       "path": "tests/unit/api-adapters.test.js",
@@ -4010,8 +4045,8 @@
       "path": "tests/unit/design-token-audit.test.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 3574,
-      "sha256": "f7005cd65968ba75d3cdf95f55bb35cbfc96f9567a1314dd07cf32b7daa562b3"
+      "bytes": 3707,
+      "sha256": "8d68b9f8c725dd776a592e423d02fbbe5ed8895206c1398adc096b053d05962f"
     },
     {
       "path": "tests/unit/dialogs.test.js",
@@ -4066,8 +4101,8 @@
       "path": "tests/unit/firebase-mode-data.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 16239,
-      "sha256": "fa82ca688d8d1ee8081272ac5fcc0c672229e276c8de269ce4f09038119e6d5d"
+      "bytes": 16261,
+      "sha256": "1b7995b68ab8ae4b7255a01d5d411808eb64e0e7f16551c47d2fe8c428069c06"
     },
     {
       "path": "tests/unit/frontend-contracts.test.js",
@@ -4418,6 +4453,13 @@
       "status": "TEST",
       "bytes": 5040,
       "sha256": "caf68736109ae2132d856b6a18977bab9f1b18fd742e67a3969266fdf94a6bac"
+    },
+    {
+      "path": "tests/unit/tech-center.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 17724,
+      "sha256": "c203005369ec4f92f3c609b82018357c46cd7b5de548d36a9429c3cae9fc385c"
     },
     {
       "path": "tests/unit/tree.test.js",

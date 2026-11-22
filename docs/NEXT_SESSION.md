@@ -24,8 +24,8 @@ alerts in-app + mobile push now (WhatsApp later); daily + weekly email digests.
 Three parts, do in this order (task notes in `docs/agent-briefs/`):
 1. **Email digests** — DONE 2026-11-22, merged into main and deployed (Admin › الإعدادات + header «الملخصات»).
    Default OFF; sending needs the owner's mail transport (RESEND_API_KEY or SMTP_* + MAIL_FROM, see DEPLOY_CHECKLIST).
-2. **Tech center («مركز التقنية»)** — `docs/agent-briefs/tech-center.md`. Partial work saved as WIP commit
-   1d7e27b on branch `worktree-agent-a7c624f5107c436b3`. Finish, test, merge.
+2. **Tech center («مركز التقنية»)** — DONE 2026-11-22, merged into main and deployed (Admin route `#/tech`).
+   Optional after each deploy: `npm run deploy:record` (needs `gcloud auth application-default login` once).
 3. **Teams / data separation / alerts / tickets** — `docs/agent-briefs/teams-alerts.md`. Almost nothing done
    (branch `worktree-agent-a89a53045aff8ab28`); start from main.
 

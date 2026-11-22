@@ -68,6 +68,7 @@ hansalhlak/
 │   │   │   ├── settlements.page.js
 │   │   │   ├── super-dashboard.page.js
 │   │   │   ├── system-settings.page.js
+│   │   │   ├── tech-center.page.js
 │   │   │   └── workforce.page.js
 │   │   ├── styles/
 │   │   │   ├── admin-components.css
@@ -488,6 +489,7 @@ hansalhlak/
 │   │   ├── admin-code.js
 │   │   ├── admin-extra.js
 │   │   ├── ai.js
+│   │   ├── alerts-adapter.js
 │   │   ├── content.js
 │   │   ├── digest-admin.js
 │   │   ├── digest.js
@@ -501,7 +503,9 @@ hansalhlak/
 │   │   ├── scope.js
 │   │   ├── service.js
 │   │   ├── store.js
+│   │   ├── tech-status.js
 │   │   ├── telemetry.js
+│   │   ├── usage.js
 │   │   └── workforce.js
 │   ├── .env.example
 │   ├── .gitignore
@@ -519,6 +523,7 @@ hansalhlak/
 │   ├── coverage-map.cjs
 │   ├── coverage-run.cjs
 │   ├── inventory-files.mjs
+│   ├── record-deploy.cjs
 │   ├── refresh-project-inventory.mjs
 │   ├── sw-cache.cjs
 │   ├── sync-functions-domain.cjs
@@ -720,6 +725,7 @@ hansalhlak/
 │       ├── support-contacts-policy.test.js
 │       ├── sw-cache-guard.test.js
 │       ├── system-settings.test.js
+│       ├── tech-center.test.js
 │       ├── tree.test.js
 │       ├── trust-ui.test.js
 │       ├── ui-adapter-integration.test.js
