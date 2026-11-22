@@ -37,6 +37,7 @@ hansalhlak/
 │   │   │   ├── ai-settings.js
 │   │   │   ├── client-errors.js
 │   │   │   ├── command-palette.js
+│   │   │   ├── digest-settings.js
 │   │   │   ├── marketing-editor.js
 │   │   │   ├── mini-charts.js
 │   │   │   ├── site-content-editor.js
@@ -67,6 +68,7 @@ hansalhlak/
 │   │   │   ├── settlements.page.js
 │   │   │   ├── super-dashboard.page.js
 │   │   │   ├── system-settings.page.js
+│   │   │   ├── tech-center.page.js
 │   │   │   └── workforce.page.js
 │   │   ├── styles/
 │   │   │   ├── admin-components.css
@@ -361,6 +363,11 @@ hansalhlak/
 │   │   └── README.md
 │   └── README.md
 ├── docs/
+│   ├── agent-briefs/
+│   │   ├── digest.md
+│   │   ├── README.md
+│   │   ├── teams-alerts.md
+│   │   └── tech-center.md
 │   ├── AI_CONTEXT/
 │   │   ├── DOMAIN_MAPS/
 │   │   │   ├── ADMIN.md
@@ -440,6 +447,7 @@ hansalhlak/
 │   ├── HANDOFF_NEXT_AI.md
 │   ├── HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md
 │   ├── MIGRATION_PLAN.md
+│   ├── NEXT_SESSION.md
 │   ├── PERMISSIONS.md
 │   ├── PLAYBOOKS.md
 │   ├── PROJECT_REFERENCE.md
@@ -481,9 +489,13 @@ hansalhlak/
 │   │   ├── admin-code.js
 │   │   ├── admin-extra.js
 │   │   ├── ai.js
+│   │   ├── alerts-adapter.js
 │   │   ├── content.js
+│   │   ├── digest-admin.js
+│   │   ├── digest.js
 │   │   ├── identity.js
 │   │   ├── limits.js
+│   │   ├── mailer.js
 │   │   ├── owner-alerts.js
 │   │   ├── partial.js
 │   │   ├── plan.js
@@ -491,7 +503,9 @@ hansalhlak/
 │   │   ├── scope.js
 │   │   ├── service.js
 │   │   ├── store.js
+│   │   ├── tech-status.js
 │   │   ├── telemetry.js
+│   │   ├── usage.js
 │   │   └── workforce.js
 │   ├── .env.example
 │   ├── .gitignore
@@ -509,6 +523,7 @@ hansalhlak/
 │   ├── coverage-map.cjs
 │   ├── coverage-run.cjs
 │   ├── inventory-files.mjs
+│   ├── record-deploy.cjs
 │   ├── refresh-project-inventory.mjs
 │   ├── sw-cache.cjs
 │   ├── sync-functions-domain.cjs
@@ -615,6 +630,7 @@ hansalhlak/
 │   │   ├── customer-app-harness.js
 │   │   ├── design-token-audit.js
 │   │   ├── domain-harness.js
+│   │   ├── memory-backend.js
 │   │   └── provider-app-harness.js
 │   ├── integration/
 │   │   └── README.md
@@ -652,6 +668,8 @@ hansalhlak/
 │       ├── design-system.test.js
 │       ├── design-token-audit.test.js
 │       ├── dialogs.test.js
+│       ├── digest-admin.test.js
+│       ├── digest.test.js
 │       ├── discover.test.js
 │       ├── finance-dashboard.test.js
 │       ├── firebase-backend.test.js
@@ -664,6 +682,7 @@ hansalhlak/
 │       ├── legacy-migration.test.js
 │       ├── live-tracking.test.js
 │       ├── local-attachments.test.js
+│       ├── mailer.test.js
 │       ├── marketplace-mechanisms.test.js
 │       ├── marketplace-rules.test.js
 │       ├── notifications-management.test.js
@@ -706,6 +725,7 @@ hansalhlak/
 │       ├── support-contacts-policy.test.js
 │       ├── sw-cache-guard.test.js
 │       ├── system-settings.test.js
+│       ├── tech-center.test.js
 │       ├── tree.test.js
 │       ├── trust-ui.test.js
 │       ├── ui-adapter-integration.test.js
@@ -725,6 +745,7 @@ hansalhlak/
 ├── .gitignore
 ├── .graphifyignore
 ├── .repomixignore
+├── 2026-11-20-231345-this-session-is-being-continued-from-a-previous-c.txt
 ├── AGENTS.md
 ├── CLAUDE.md
 ├── database.rules.json

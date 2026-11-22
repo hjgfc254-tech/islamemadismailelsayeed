@@ -24,7 +24,7 @@
   function accountHtml(e, roleName) {
     const live = !!(root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase');
     /* live: each admin changes their own 8-digit code; signing out also ends the code unlock (functions/src/admin-code.js) */
-    return `<span class="adm-acc-name"><b>${esc(e.name)}</b><small>${esc(roleName)}</small></span>${live ? '<button type="button" class="adm-btn" data-adm-code>تغيير الكود</button><button type="button" class="adm-btn" data-adm-signout>خروج</button>' : '<button type="button" class="adm-btn" data-adm-switch>تبديل الحساب</button>'}`;
+    return `<span class="adm-acc-name"><b>${esc(e.name)}</b><small>${esc(roleName)}</small></span>${live ? '<button type="button" class="adm-btn" data-adm-digest>الملخصات</button><button type="button" class="adm-btn" data-adm-code>تغيير الكود</button><button type="button" class="adm-btn" data-adm-signout>خروج</button>' : '<button type="button" class="adm-btn" data-adm-switch>تبديل الحساب</button>'}`;
   }
 
   /** Mount the shell for the signed-in demo employee. */
@@ -51,6 +51,7 @@
       if (emp) startShell(host, emp);
       return;
     }
+    if (e.target.closest('[data-adm-digest]') && root.HSDigestSettings) { root.HSDigestSettings.openMine(); return; }   /* my own e-mail digest: stop / preview / test */
     if (e.target.closest('[data-adm-code]') && root.HSBackend && root.HSBackend.changeAdminCode) { root.HSBackend.changeAdminCode(); return; }
     if (e.target.closest('[data-adm-signout]') && root.HSBackend) { root.HSBackend.signOut().then(() => root.location.reload()); return; }
     if (e.target.closest('[data-adm-switch]')) {

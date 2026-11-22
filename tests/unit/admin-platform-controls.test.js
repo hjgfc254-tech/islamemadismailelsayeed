@@ -69,7 +69,7 @@ test('navigation: grouped by responsibility; one statistics page; owner area hol
   const groups = shell.NAV.map((g) => g.label);
   assert.deepEqual(groups, ['اليوم', 'التشغيل', 'الدعم والجودة', 'الكتالوج والأسعار', 'المالية', 'الأرقام', 'إدارة المنصة']);
   const platform = shell.NAV.find((g) => g.id === 'platform').items.map((i) => i.id);
-  assert.deepEqual(platform, ['controls', 'workforce', 'departments', 'roles', 'permissions', 'security', 'audit', 'settings']);
+  assert.deepEqual(platform, ['controls', 'tech', 'workforce', 'departments', 'roles', 'permissions', 'security', 'audit', 'settings']);
   const flat = shell._internals.flatItems().map((i) => i.id);
   for (const statsPage of ['finance', 'reports', 'super-dashboard']) assert.ok(!flat.includes(statsPage) && shell._internals.HIDDEN_PAGES[statsPage].parent === 'insights', statsPage + ' lives under «الإحصائيات»');
   const G = require(path.join(ROOT, 'apps/admin/permission-guard.js'));

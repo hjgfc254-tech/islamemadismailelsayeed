@@ -21,7 +21,9 @@ const { scopeFor, customerRequestView, customerQuote } = require('./scope');
 const workforce = require('./workforce');
 const adminExtra = require('./admin-extra');
 const telemetry = require('./telemetry');
+const techStatus = require('./tech-status');
 const adminCode = require('./admin-code');
+const digestAdmin = require('./digest-admin');
 /* admin-code errors carry a callable error code: rethrow them as ServiceError (index.js maps those to HttpsError) */
 const viaCode = async (p) => { try { return await p; } catch (e) { if (e && e.isServiceError) fail(e.code, e.message); throw e; } };
 const content = require('./content');
@@ -204,6 +206,19 @@ async function api(backend, { auth, data, ip }) {
     const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
     const actor = adm && adm.status === 'active' && adminCode.isUnlocked(adm) ? { role: 'admin', id: token.uid, adminRole: adm.role } : null;
     return telemetry.handle({ backend, method: req.method, path: req.path, query: req.query, body: req.body, app: req.app, actor, token });
+  }
+  if (digestAdmin.PATH_RE.test(req.path)) {        // owner / manager e-mail digests (digest-admin.js): code-unlocked admins only
+    const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
+    if (!token || !adm || adm.status !== 'active' || !adminCode.isUnlocked(adm)) return { ok: false, status: token ? 403 : 401, error: { code: token ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } };
+    if (!isRead) await rateLimit(backend, token.uid);
+    const out = await digestAdmin.handle({ backend, method: req.method, path: req.path, query: req.query, body: req.body, admin: adm, uid: token.uid, deps: backend.digestDeps });
+    if (!isRead && out.ok) await backend.addDoc('audit', { at: new Date().toISOString(), uid: token.uid, actor: { role: 'admin', id: token.uid, adminRole: adm.role }, app: 'admin', method: req.method, path: req.path, status: out.status, changes: { digest: { set: 1, del: 0 } } });
+    return out;
+  }
+  if (techStatus.PATH_RE.test(req.path)) {       /* Tech Center: system information only, owner / tech roles, never inside a transaction */
+    const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
+    const actor = adm && adm.status === 'active' && adminCode.isUnlocked(adm) ? { role: 'admin', id: token.uid, adminRole: adm.role } : null;
+    return techStatus.handle({ backend, method: req.method, path: req.path, body: req.body, actor });
   }
   if (!isRead) await rateLimit(backend, token ? token.uid : 'anon_' + String(ip || 'unknown').replace(/[^\w.:-]/g, '_').slice(0, 60));   /* M2: per IP, not one shared bucket */
   if (req.method === 'POST' && req.path === '/providers/register' && !(token && token.phone_number)) {

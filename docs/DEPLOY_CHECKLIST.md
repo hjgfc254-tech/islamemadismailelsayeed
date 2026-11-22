@@ -42,6 +42,12 @@ quietly (by design), and offers / bonus actions return the server's «route not 
 - **Firestore → TTL policies:** field `expiresAt` on collection groups `idempotency`, `rateLimits` and **`clientErrors`**
   (error groups expire after 30 days).
 - Authentication providers Anonymous and Email/Password enabled (customer quick / email sign-in).
+- **E-mail digests (optional, owner input):** put ONE transport in `functions/.env` (git-ignored) or as Firebase secrets
+  bound to `digestClock` / `api` — never in the repository:
+  - Resend: `RESEND_API_KEY`, `MAIL_FROM` (a verified sender, e.g. `HANSALEHLAK <digest@your-domain>`).
+  - SMTP: `SMTP_HOST`, `SMTP_PORT` (465 = TLS), `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM`.
+  Without them the digests are generated and stored but not sent; Admin › الإعدادات › الملخصات lists what is missing.
+  Digests are OFF by default — the owner turns daily / weekly on there.
 
 ## Deploy
 ```
@@ -54,6 +60,11 @@ firebase deploy --only functions,firestore,database --project hansalahlak
 2. Admin › سجل التدقيق: «أخطاء عند المستخدمين» loads (empty is fine).
 3. Functions logs: no `internal` errors in the first 15 minutes
    (`firebase functions:log --project hansalahlak`).
+
+## Tech Center («مركز التقنية»)
+- After every `firebase deploy` run `npm run deploy:record` (needs `gcloud auth application-default login` once, or GOOGLE_APPLICATION_CREDENTIALS): it writes `system/deploy.release` {commit, cache, at}. The functions also record the deployed function revision and when it was first seen (`healthClock`), so a deploy time shows even without the script.
+- New scheduled function `healthClock` (every 10 min) and collection `usage` (one counter document per instance and day, 45-day TTL — `firestore.indexes.json` carries the TTL override; deploy with `--only firestore`). Docs `system/health`, `system/clocks`, `system/deploy`, `system/tech` are server-only.
+- Alerts: `functions/src/alerts-adapter.js` calls `notifyTeam('tech', level, payload)` from the team alerts engine when it exists, otherwise pushes to the owner.
 
 ## Roll back
 Functions keep no data migrations in this batch, so rolling back is a redeploy of the previous server code:

@@ -18,6 +18,8 @@ const { getDatabase } = require('firebase-admin/database');
 const { getMessaging } = require('firebase-admin/messaging');
 const { createLimiter, createTelemetryLimiter, isTelemetryCall, clientIp, isReadCall } = require('./src/limits');
 const service = require('./src/service');
+const usage = require('./src/usage');
+const techStatus = require('./src/tech-status');
 const { firestoreAdapter } = require('./src/partial');
 
 initializeApp();
@@ -27,12 +29,18 @@ fs.settings({ ignoreUndefinedProperties: true });
 setGlobalOptions({ region: 'me-central1', maxInstances: 10 });
 
 const backend = {
-  adapter: firestoreAdapter(fs, FieldPath),
+  adapter: usage.countAdapter(firestoreAdapter(fs, FieldPath)),   /* counted reads / writes feed the Tech Center usage & cost estimate */
   runTransaction: fn => fs.runTransaction(fn),
-  async getDoc(p) { const s = await fs.doc(p).get(); return s.exists ? s.data() : null; },
-  async setDoc(p, data, merge) { await fs.doc(p).set(data, { merge: !!merge }); },
-  async addDoc(col, data) { await fs.collection(col).add(data); },
-  async queryDocs(col, field, op, value) { const s = await fs.collection(col).where(field, op, value).get(); return s.docs.map(d => ({ id: d.id, data: d.data() })); },
+  async getDoc(p) { usage.addReads(1); const s = await fs.doc(p).get(); return s.exists ? s.data() : null; },
+  async setDoc(p, data, merge) { usage.addWrites(1); await fs.doc(p).set(data, { merge: !!merge }); },
+  async addDoc(col, data) { usage.addWrites(1); await fs.collection(col).add(data); },
+  async queryDocs(col, field, op, value) { const s = await fs.collection(col).where(field, op, value).get(); usage.addReads(Math.max(1, s.docs.length)); return s.docs.map(d => ({ id: d.id, data: d.data() })); },
+  /** health probes for the Tech Center: one tiny read per service (throws when unreachable) */
+  async ping(kind) {
+    if (kind === 'rtdb') { await getDatabase().ref('public/content').once('value'); return; }
+    if (kind === 'auth') { try { await getAuth().getUser('__health_probe__'); } catch (e) { if (e && e.code === 'auth/user-not-found') return; throw e; } return; }
+    throw new Error('unknown probe');
+  },
   async signal(uids) {
     const at = Date.now();
     await getDatabase().ref('signals').update(Object.fromEntries(uids.map(u => [u, { at }])));
@@ -44,13 +52,14 @@ const backend = {
     return out;
   },
   async revokeSessions(uid) { await getAuth().revokeRefreshTokens(uid); },
-  async deleteDoc(p) { await fs.doc(p).delete(); },
+  async deleteDoc(p) { usage.addDeletes(1); await fs.doc(p).delete(); },
   /** Public RTDB value (rules: read-only to clients), e.g. public/content {v, at} for live site-content updates. */
   async setPublic(p, value) { await getDatabase().ref(p).set(value); },
   log: (msg, detail) => logger.warn(msg, { detail }),
   /** FCM web push, data-only (the service worker renders it). Returns tokens FCM reports as dead, for cleanup. */
   async sendPush(tokens, msg) {
     if (!tokens.length) return [];
+    usage.addPushes(Math.min(tokens.length, 500));
     const res = await getMessaging().sendEachForMulticast({
       tokens: tokens.slice(0, 500),
       data: { title: msg.title, body: msg.body, link: msg.link, tag: msg.tag || 'hs' },
@@ -77,13 +86,21 @@ function wrap(name, fn) {
   return onCall(OPTS, async request => {
     if (isTelemetryCall(name, request.data)) {
       /* error reports are best-effort: over the limit they are dropped quietly (the client never retries) */
-      if (!telemetryLimiter.allow({ uid: request.auth && request.auth.uid, ip: clientIp(request.rawRequest) })) return { ok: true, status: 202, data: { stored: 0, dropped: true } };
+      if (!telemetryLimiter.allow({ uid: request.auth && request.auth.uid, ip: clientIp(request.rawRequest) })) { usage.addRateLimited(); return { ok: true, status: 202, data: { stored: 0, dropped: true } }; }
     }
     if (isReadCall(name, request.data) && !readLimiter.allowRead({ uid: request.auth && request.auth.uid, ip: clientIp(request.rawRequest) })) {
+      usage.record({ kind: name, path: request.data && request.data.path, ms: 0, status: 429, rateLimited: true });
       throw new HttpsError('resource-exhausted', 'طلبات كثيرة — حاول بعد دقيقة');
     }
-    try { return await fn(backend, { auth: request.auth, data: request.data, ip: clientIp(request.rawRequest) }); }
+    const t0 = Date.now(), path = request.data && request.data.path;
+    try {
+      const out = await fn(backend, { auth: request.auth, data: request.data, ip: clientIp(request.rawRequest) });
+      usage.record({ kind: name, path, ms: Date.now() - t0, status: (out && typeof out.status === 'number') ? out.status : 200 });
+      await usage.maybeFlush(backend);   /* at most one tiny write a minute per instance */
+      return out;
+    }
     catch (e) {
+      usage.record({ kind: name, path, ms: Date.now() - t0, status: 500, rateLimited: e instanceof service.ServiceError && e.code === 'resource-exhausted' });
       if (e instanceof service.ServiceError) throw new HttpsError(e.code, e.message);
       logger.error(name + ' failed', { error: e && e.message, stack: e && e.stack });
       /* unexpected server errors join «أخطاء عند المستخدمين» as app «server» (scrubbed and grouped like client reports) */
@@ -99,6 +116,22 @@ exports.session = wrap('session', service.session);
 /* offers-round clock: every 5 minutes (Cloud Scheduler); see service.tickOffers */
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 exports.offersClock = onSchedule({ schedule: 'every 5 minutes', region: OPTS.region || 'me-central1', timeoutSeconds: 120 }, async () => {
-  try { const r = await service.tickOffers(backend); if (r.changed) logger.info('offersClock', r); }
-  catch (e) { logger.error('offersClock failed', { error: e && e.message }); }
+  try { const r = await service.tickOffers(backend); await techStatus.recordClock(backend, 'offers', { ok: true, changed: r.changed }); if (r.changed) logger.info('offersClock', r); }
+  catch (e) { await techStatus.recordClock(backend, 'offers', { ok: false }); logger.error('offersClock failed', { error: e && e.message }); }
+});
+
+/* Tech Center health probe: every 10 minutes — stores system/health, tracks the deployed revision, evaluates thresholds and
+   alerts the tech team (functions/src/tech-status.js healthTick; alerts via alerts-adapter.js). */
+exports.healthClock = onSchedule({ schedule: 'every 10 minutes', region: OPTS.region || 'me-central1', timeoutSeconds: 120 }, async () => {
+  try { const r = await techStatus.healthTick(backend); if (r.alerts) logger.warn('healthClock', r); }
+  catch (e) { logger.error('healthClock failed', { error: e && e.message }); }
+});
+
+/* e-mail digests: every hour at :05 (Cairo time); digest-admin.tick sends the daily / weekly digest once per Cairo day
+   when the configured hour is reached (idempotent across instances). Mail credentials: functions/.env or Firebase
+   secrets (docs/DEPLOY_CHECKLIST.md); without them digests are generated and stored but not sent. */
+const digestAdmin = require('./src/digest-admin');
+exports.digestClock = onSchedule({ schedule: '5 * * * *', timeZone: 'Africa/Cairo', region: 'me-central1', timeoutSeconds: 300 }, async () => {
+  try { const r = await digestAdmin.tick(backend); if (Object.keys(r).length) logger.info('digestClock', r); }
+  catch (e) { logger.error('digestClock failed', { error: e && e.message }); }
 });

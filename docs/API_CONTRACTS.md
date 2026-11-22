@@ -183,6 +183,10 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /admin/requests/:id/assign` | admin | admin-api.js | Assign manually {providerId} or auto-match. |
 | `POST /admin/customers/:id/status` | admin | admin-api.js | Suspend / reactivate a customer. |
 | `POST /admin/reviews/:id/visibility` | admin | admin-api.js | Hide or re-publish a review {hidden, reason}. |
+| `GET /admin/tech/status` | admin (owner, tech) | functions/src/tech-status.js | Tech Center: health (Firestore / RTDB / Auth latency), clocks, deploy info, grouped errors (top 20), usage + cost vs budget, p50/p95 per route group, limits. System information only — never personal data (server-only route, not in the shared domain). |
+| `POST /admin/tech/check` | admin (owner, tech) | tech-status.js | Run the health probe now (10 s cooldown). |
+| `POST /admin/tech/errors/:id` | admin (owner, tech) | tech-status.js | {status: open\|resolved\|ignored} for one error group; audited. |
+| `POST /admin/tech/config` | admin (owner) | tech-status.js | {budgetEGP, usdToEgp} monthly budget for the cost estimate; audited. |
 | `GET /admin/controls` | admin | admin-api.js | Emergency switches (maintenance, pause new requests, pause provider sign-ups). |
 | `POST /admin/controls` | admin | admin-api.js | Owner only: turn a switch on/off {key, on, message?}. Customers / providers get 503 on blocked mutations. |
 | `GET /admin/support-contacts` | admin | admin-api.js | Support phone / WhatsApp / email / hours shown to customers and providers. |
@@ -191,6 +195,15 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /admin/data-policy` | admin | admin-api.js | Owner only: {minimal: boolean} — mask customer data for support / moderator ranks. |
 | `GET /admin/marketing` | admin | admin-api.js | Promo codes, invite reward and packages. |
 | `PATCH /admin/marketing` | admin | admin-api.js | Replace promo codes / invite reward / packages {promos?, referral?, packages?}. |
+| `GET /admin/digest/config` | admin (owner) | functions/src/digest-admin.js | E-mail digest settings `{daily:{on,hour}, weekly:{on,weekday,hour}, extraRecipients:[{email,team}]}` (default all OFF), last run state, transport status (missing env names, never secret values), recipients with masked e-mails. |
+| `POST /admin/digest/config` | admin (owner) | functions/src/digest-admin.js | Save `{daily?, weekly?, extraRecipients?}`; field errors on invalid hour / weekday / e-mail / team. Audited. |
+| `GET /admin/digest/preview` | admin | functions/src/digest-admin.js | `?type=daily\|weekly&team=owner\|ops\|finance\|content\|tech` → `{type, team, label, subject, html, text}`. Owner may pick any team; other roles get their own team only. Counts and aggregates only, no personal data. |
+| `POST /admin/digest/test` | admin | functions/src/digest-admin.js | Send that digest to the caller's own e-mail (once per minute). No transport configured → explained in the response, not sent. |
+| `GET /admin/digest/me` · `POST /admin/digest/me` | admin | functions/src/digest-admin.js | Any admin: read / set `{off: boolean}` to stop or resume their own digest (`digestPrefs/{uid}`). |
+
+Scheduled: `digestClock` (functions/index.js) runs hourly at :05 Africa/Cairo and sends each enabled digest once per
+Cairo day / week when its hour is reached; `system/digestState` makes it idempotent across instances (claim + max 3
+retries). Rendered digests are stored in `digests/{type}_{key}` (30 days) even when nothing could be sent.
 
 Route matching prefers the most specific pattern, so `GET /providers/me` wins over `GET /providers/:id`.
 
