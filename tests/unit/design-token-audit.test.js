@@ -20,7 +20,8 @@ const ROOT = path.resolve(__dirname, '../..');
 /* 180 → 122 (2026-11-20 token migration, explicit audit): font sizes, radii, drop shadows and colour literals were snapped onto
    the design tokens (type scale --fs-xs…--fs-4xl, --r-sm…--r-pill, --shadow-1/2/3/up, colour roles); what remains are
    layout dimensions and breakpoints with no token equivalent. */
-const ADMIN_HARDCODED_BASELINE = 122;
+/* 122 → 123 (2026-11-21, explicit audit): the Tech Center fact columns use a 16rem minimum width (layout dimension, no token). */
+const ADMIN_HARDCODED_BASELINE = 123;
 
 test('the live shared design-system stylesheet is loaded by Admin and Customer', () => {
   const admin = fs.readFileSync(path.join(ROOT, 'apps/admin/index.html'), 'utf8');

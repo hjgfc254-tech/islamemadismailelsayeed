@@ -15,6 +15,7 @@
                     "functions:check":  "node scripts/sync-functions-domain.cjs --check",
                     "sw:check":  "node scripts/sw-cache.cjs --check",
                     "sw:bump":  "node scripts/sw-cache.cjs --bump",
+                    "deploy:record":  "node scripts/record-deploy.cjs",
                     "test:emulators":  "firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak \"node --test tests/emulator/\"",
                     "test:emulators:e2e":  "firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak \"node tests/e2e/firebase-emulator.cdp.js\""
                 }

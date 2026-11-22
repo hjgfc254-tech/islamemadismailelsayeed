@@ -55,6 +55,11 @@ firebase deploy --only functions,firestore,database --project hansalahlak
 3. Functions logs: no `internal` errors in the first 15 minutes
    (`firebase functions:log --project hansalahlak`).
 
+## Tech Center («مركز التقنية»)
+- After every `firebase deploy` run `npm run deploy:record` (needs `gcloud auth application-default login` once, or GOOGLE_APPLICATION_CREDENTIALS): it writes `system/deploy.release` {commit, cache, at}. The functions also record the deployed function revision and when it was first seen (`healthClock`), so a deploy time shows even without the script.
+- New scheduled function `healthClock` (every 10 min) and collection `usage` (one counter document per instance and day, 45-day TTL — `firestore.indexes.json` carries the TTL override; deploy with `--only firestore`). Docs `system/health`, `system/clocks`, `system/deploy`, `system/tech` are server-only.
+- Alerts: `functions/src/alerts-adapter.js` calls `notifyTeam('tech', level, payload)` from the team alerts engine when it exists, otherwise pushes to the owner.
+
 ## Roll back
 Functions keep no data migrations in this batch, so rolling back is a redeploy of the previous server code:
 ```
