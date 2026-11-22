@@ -60,6 +60,8 @@ async function report(backend, app, body, uid) {
     if (uid && !users.includes(uid) && users.length < 50) users.push(uid);
     await backend.setDoc(path, {
       ...c, first: cur ? cur.first : iso, last: iso, count: (cur ? +cur.count || 0 : 0) + 1, users, userCount: users.length,
+      /* Tech Center triage: a resolved group that happens again re-opens; an ignored one stays ignored */
+      status: cur && cur.status === 'ignored' ? 'ignored' : 'open', ...(cur && cur.status === 'resolved' ? { reopenedAt: iso } : (cur && cur.reopenedAt ? { reopenedAt: cur.reopenedAt } : {})),
       expiresAt: new Date(now.getTime() + TTL_MS)
     }, false);
     stored++;

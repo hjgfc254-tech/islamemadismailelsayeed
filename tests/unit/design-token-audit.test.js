@@ -22,7 +22,8 @@ const ROOT = path.resolve(__dirname, '../..');
    layout dimensions and breakpoints with no token equivalent. */
 /* 122 → 124 (2026-11-22, explicit audit): the e-mail digest settings preview frame height 70vh and its dialog max
    width 44rem are layout dimensions with no token equivalent; its colours use --warning-soft / --success-soft. */
-const ADMIN_HARDCODED_BASELINE = 124;
+/* 124 → 125 (2026-11-21, explicit audit): the Tech Center fact columns use a 16rem minimum width (layout dimension, no token). */
+const ADMIN_HARDCODED_BASELINE = 125;
 
 test('the live shared design-system stylesheet is loaded by Admin and Customer', () => {
   const admin = fs.readFileSync(path.join(ROOT, 'apps/admin/index.html'), 'utf8');

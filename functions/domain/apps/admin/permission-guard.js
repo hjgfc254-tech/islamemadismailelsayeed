@@ -39,6 +39,7 @@
   /** canView(routeId, employee) — owner-only pages need the owner; uncatalogued routes are open; catalogued ones need `<module>.view`. */
   function canView(routeId, employee) {
     if (OWNER_ONLY.includes(routeId)) return !!employee && employee.role === 'owner';
+    if (routeId === 'tech') return !!employee && ['owner', 'tech'].includes(employee.role);   /* Tech Center: owner + the `tech` role (who else is defined with the roles work) */
     const module = ROUTE_MODULE[routeId];
     if (!module) return true;
     return can(employee, module, 'view');
