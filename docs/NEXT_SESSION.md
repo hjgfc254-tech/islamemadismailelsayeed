@@ -22,10 +22,8 @@ Owner decisions: 4 staff (internal or external) — sensitive data always separa
 alerts in-app + mobile push now (WhatsApp later); daily + weekly email digests.
 
 Three parts, do in this order (task notes in `docs/agent-briefs/`):
-1. **Email digests** — `docs/agent-briefs/digest.md`. Partial work (≈1100 lines: digest.js, mailer.js,
-   digest-admin.js, digest-settings.js, tests) saved as WIP commit 9345afb on branch
-   `worktree-agent-a0c5922f20c46419f` (folder `.claude/worktrees/agent-a0c5922f20c46419f`). `npm test` there
-   currently FAILS — find the failing test first, fix, finish UI wiring/docs, then merge into main.
+1. **Email digests** — DONE 2026-11-22, merged into main and deployed (Admin › الإعدادات + header «الملخصات»).
+   Default OFF; sending needs the owner's mail transport (RESEND_API_KEY or SMTP_* + MAIL_FROM, see DEPLOY_CHECKLIST).
 2. **Tech center («مركز التقنية»)** — `docs/agent-briefs/tech-center.md`. Partial work saved as WIP commit
    1d7e27b on branch `worktree-agent-a7c624f5107c436b3`. Finish, test, merge.
 3. **Teams / data separation / alerts / tickets** — `docs/agent-briefs/teams-alerts.md`. Almost nothing done

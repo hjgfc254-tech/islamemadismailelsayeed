@@ -37,6 +37,7 @@ hansalhlak/
 │   │   │   ├── ai-settings.js
 │   │   │   ├── client-errors.js
 │   │   │   ├── command-palette.js
+│   │   │   ├── digest-settings.js
 │   │   │   ├── marketing-editor.js
 │   │   │   ├── mini-charts.js
 │   │   │   ├── site-content-editor.js
@@ -488,8 +489,11 @@ hansalhlak/
 │   │   ├── admin-extra.js
 │   │   ├── ai.js
 │   │   ├── content.js
+│   │   ├── digest-admin.js
+│   │   ├── digest.js
 │   │   ├── identity.js
 │   │   ├── limits.js
+│   │   ├── mailer.js
 │   │   ├── owner-alerts.js
 │   │   ├── partial.js
 │   │   ├── plan.js
@@ -621,6 +625,7 @@ hansalhlak/
 │   │   ├── customer-app-harness.js
 │   │   ├── design-token-audit.js
 │   │   ├── domain-harness.js
+│   │   ├── memory-backend.js
 │   │   └── provider-app-harness.js
 │   ├── integration/
 │   │   └── README.md
@@ -658,6 +663,8 @@ hansalhlak/
 │       ├── design-system.test.js
 │       ├── design-token-audit.test.js
 │       ├── dialogs.test.js
+│       ├── digest-admin.test.js
+│       ├── digest.test.js
 │       ├── discover.test.js
 │       ├── finance-dashboard.test.js
 │       ├── firebase-backend.test.js
@@ -670,6 +677,7 @@ hansalhlak/
 │       ├── legacy-migration.test.js
 │       ├── live-tracking.test.js
 │       ├── local-attachments.test.js
+│       ├── mailer.test.js
 │       ├── marketplace-mechanisms.test.js
 │       ├── marketplace-rules.test.js
 │       ├── notifications-management.test.js
