@@ -425,3 +425,13 @@ label.hs-grid-field:has(> input[type=checkbox])>span{flex:1}
 .sup-set{display:grid;gap:var(--sp-2);margin-bottom:var(--sp-5);padding:var(--sp-4);border:1px solid var(--border-subtle);border-radius:var(--r-lg);background:var(--surface-primary)}
 .sup-set h3{margin:0;font-size:var(--fs-lg)}
 .sup-set p{margin:0}
+
+/* digest-settings.js — daily / weekly e-mail digests */
+.dg-set{display:grid;gap:var(--sp-3)}
+.dg-transport{margin:0;padding:var(--sp-3) var(--sp-4);border-radius:var(--r-md);background:var(--surface-secondary)}
+.dg-transport.is-warn{background:color-mix(in srgb,var(--warning,#B4511C) 12%,var(--surface-primary))}
+.dg-transport.is-ok{background:color-mix(in srgb,var(--success,#2B6B40) 12%,var(--surface-primary))}
+.dg-actions{display:flex;flex-wrap:wrap;align-items:end;gap:var(--sp-2)}
+.dg-frame{width:100%;height:70vh;border:1px solid var(--border-default);border-radius:var(--r-md);background:#fff}
+.dg-table caption{text-align:start;font-weight:700;padding-bottom:var(--sp-1)}
+.dg-dialog{max-width:min(100%,44rem)}
