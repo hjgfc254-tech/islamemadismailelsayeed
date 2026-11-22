@@ -11,9 +11,13 @@
 'use strict';
 (function (root) {
   const MODULES = { orders: 'الطلبات', customers: 'العملاء', providers: 'مقدمو الخدمة', services: 'الخدمات', categories: 'التصنيفات', complaints: 'الشكاوى', reviews: 'التقييمات',
-    notifications: 'الإشعارات', workforce: 'فريق العمل', departments: 'الإدارات', roles: 'الأدوار', permissions: 'الصلاحيات' };
+    notifications: 'الإشعارات', workforce: 'فريق العمل', departments: 'الإدارات', roles: 'الأدوار', permissions: 'الصلاحيات',
+    /* teams release (2026-11-22): money, offers/content, the privacy line, the tech centre, alerts and internal tickets */
+    finance: 'المالية', marketing: 'العروض والمحتوى', pii: 'بيانات العملاء الشخصية', tech: 'التقنية', alerts: 'التنبيهات', tickets: 'البلاغات' };
+  /* modules added after the first catalogue: stored catalogues (production) get them through mergePresets() */
+  const NEW_MODULES = ['finance', 'marketing', 'pii', 'tech', 'alerts', 'tickets'];
   const ACTIONS = { view: 'عرض', create: 'إضافة', edit: 'تعديل', decide: 'قرار/تغيير حالة' };
-  const DEPARTMENTS = { ops: 'العمليات', support: 'الدعم', finance: 'المالية', content: 'المحتوى', exec: 'الإدارة العليا' };
+  const DEPARTMENTS = { ops: 'العمليات', support: 'الدعم', finance: 'المالية', content: 'المحتوى', tech: 'التقنية', exec: 'الإدارة العليا' };
   const STATUS_LABEL = { active: 'مفعّل', invited: 'دعوة معلّقة', disabled: 'معطّل' };
   const LIMITS = { name: 40, description: 120 };
   const norm = (v) => String(v == null ? '' : v).replace(/\s+/g, ' ').trim().toLowerCase();
@@ -31,15 +35,24 @@
     const v = (...ms) => ms.map((m) => key(m, 'view'));
     const all = (ms, as) => ms.reduce((a, m) => a.concat(as.map((x) => key(m, x))), []);
     const ops = ['orders', 'customers', 'providers', 'services', 'categories', 'complaints', 'reviews', 'notifications'];
+    const FOUR = ['view', 'create', 'edit', 'decide'];
+    const work = [key('alerts', 'view'), key('alerts', 'decide'), key('tickets', 'view'), key('tickets', 'create'), key('tickets', 'edit')];   // every team: see its alerts, claim / resolve them, use tickets
     return [
       { id: 'owner', name: 'المالك', description: 'صلاحيات كاملة (دور نظام محمي).', inherits: null, system: true, permissions: ALL_KEYS.slice() },
-      { id: 'admin', name: 'مدير', description: 'إدارة التشغيل والمحتوى مع عرض الفريق.', inherits: null, system: false,
-        permissions: sortKeys(all(ops, ['view', 'create', 'edit', 'decide']).concat(all(['workforce'], ['view', 'create', 'edit']), [key('departments', 'view'), key('departments', 'edit')], v('roles', 'permissions'))) },
+      { id: 'admin', name: 'مدير', description: 'إدارة التشغيل والمحتوى والمالية مع عرض الفريق.', inherits: null, system: false,
+        permissions: sortKeys(all(ops, FOUR).concat(all(['workforce'], ['view', 'create', 'edit']), [key('departments', 'view'), key('departments', 'edit')], v('roles', 'permissions', 'pii'), all(['finance', 'marketing', 'alerts', 'tickets'], FOUR))) },
       { id: 'support', name: 'دعم فني', description: 'متابعة العملاء والشكاوى.', inherits: null, system: false,
-        permissions: sortKeys(v('orders', 'customers', 'providers', 'complaints', 'reviews').concat([key('complaints', 'edit'), key('complaints', 'decide')])) },
-      { id: 'finance', name: 'مالية', description: 'عرض الطلبات والخدمات للمتابعة المالية.', inherits: null, system: false, permissions: sortKeys(v('orders', 'customers', 'providers', 'services')) },
+        permissions: sortKeys(v('orders', 'customers', 'providers', 'complaints', 'reviews', 'pii').concat([key('complaints', 'edit'), key('complaints', 'decide')], work)) },
+      { id: 'finance', name: 'المالية', description: 'العمولات والتسويات والتحصيل — أرقام التليفونات والعناوين مخفية.', inherits: null, system: false, permissions: sortKeys(v('orders', 'customers', 'providers', 'services').concat(all(['finance'], FOUR), work)) },
       { id: 'moderator', name: 'مراقب محتوى', description: 'يرث الدعم الفني ويضيف إشراف التقييمات.', inherits: 'support', system: false,
-        permissions: sortKeys([key('reviews', 'edit'), key('reviews', 'decide'), key('categories', 'view'), key('services', 'view'), key('notifications', 'view')]) }
+        permissions: sortKeys([key('reviews', 'edit'), key('reviews', 'decide'), key('categories', 'view'), key('services', 'view'), key('notifications', 'view')]) },
+      /* team presets (2026-11-22) — the owner + 4 staff: عمليات ودعم · المالية · المحتوى والأسعار · التقنية */
+      { id: 'ops', name: 'عمليات ودعم', description: 'الطلبات، واعتماد مقدمي الخدمة وإسنادهم، والشكاوى، وإشراف التقييمات.', inherits: null, system: false,
+        permissions: sortKeys(all(['orders', 'customers', 'providers', 'complaints', 'reviews'], FOUR).concat(v('services', 'categories', 'notifications', 'pii'), work)) },
+      { id: 'content', name: 'المحتوى والأسعار', description: 'الكتالوج والأسعار والعروض والإشعارات الجماعية ومحتوى الواجهة — بدون بيانات عملاء شخصية.', inherits: null, system: false,
+        permissions: sortKeys(all(['services', 'categories', 'marketing', 'notifications'], FOUR).concat(v('reviews'), work)) },
+      { id: 'tech', name: 'التقنية', description: 'حالة النظام والأخطاء والتكلفة — بدون أي بيانات عملاء أو مقدمي خدمة أو طلبات (مفروض من السيرفر).', inherits: null, system: false,
+        permissions: sortKeys(all(['tech'], FOUR).concat(work)) }
     ];
   };
   const buildRoster = () => [['exec', 'owner', 'active'], ['ops', 'admin', 'active'], ['support', 'support', 'active'], ['finance', 'finance', 'active'], ['content', 'moderator', 'active'], ['support', 'support', 'invited'],
@@ -50,7 +63,7 @@
   const roleById = (roles, id) => roles.find((r) => r.id === id) || null;
   const chain = (roles, id) => { const out = []; let c = roleById(roles, id), g = 0; while (c && g++ < GUARD && !out.includes(c.id)) { out.push(c.id); c = c.inherits ? roleById(roles, c.inherits) : null; } return out; };
   /** All permissions a role has: its own plus everything inherited along its chain. */
-  const effective = (roles, id) => sortKeys(chain(roles, id).reduce((a, rid) => a.concat(roleById(roles, rid).permissions), []));
+  const effective = (roles, id) => (id === 'owner' ? ALL_KEYS.slice() : sortKeys(chain(roles, id).reduce((a, rid) => a.concat(roleById(roles, rid).permissions), [])));   /* the owner always holds the whole catalogue, even a stored one from before new modules existed */
   /** Permissions that come ONLY from ancestors (shown as «موروثة»). */
   const inherited = (roles, id) => { const r = roleById(roles, id); return r && r.inherits ? effective(roles, r.inherits) : []; };
   const descendants = (roles, id) => { const out = []; const walk = (p, n) => { if (n > GUARD) return; roles.filter((r) => r.inherits === p).forEach((r) => { if (r.id !== id && !out.includes(r.id)) { out.push(r.id); walk(r.id, n + 1); } }); }; walk(id, 0); return out; };
@@ -135,17 +148,19 @@
      1 دعم · 2 مشرف (مالية / مراقب محتوى) · 3 مدير · 4 المالك. A custom role may declare `level`; otherwise it takes the
      highest level along its inheritance chain, and never more than 3 (only the owner role is 4). */
   const LEVELS = { 1: 'دعم', 2: 'مشرف', 3: 'مدير', 4: 'المالك' };
-  const ROLE_LEVEL = { owner: 4, admin: 3, finance: 2, moderator: 2, support: 1 };
+  const ROLE_LEVEL = { owner: 4, admin: 3, content: 3, ops: 2, finance: 2, moderator: 2, support: 1, tech: 1 };
   const RISK = Object.freeze({
     'complaints.resolve': 1, 'requests.assign': 1,
     'providers.warn': 2, 'providers.approve': 2, 'providers.reject': 2, 'reviews.hide': 2, 'finance.collection': 2,
     'providers.suspend': 3, 'customers.suspend': 3, 'marketing.edit': 3, 'notifications.broadcast': 3,
-    'providers.rate': 4, 'finance.commission': 4, 'finance.pricing': 4
+    'providers.rate': 4, 'finance.commission': 4, 'finance.pricing': 4,
+    'alerts.claim': 1, 'alerts.resolve': 1, 'tickets.create': 1, 'tickets.assign': 2
   });
   const RISK_LABEL = { 'complaints.resolve': 'حل شكوى', 'requests.assign': 'إسناد طلب يدويًا', 'providers.warn': 'إنذار مقدم خدمة', 'providers.approve': 'قبول مقدم خدمة',
     'providers.reject': 'رفض مقدم خدمة', 'reviews.hide': 'إخفاء تقييم', 'finance.collection': 'تسجيل تحصيل عمولة', 'providers.suspend': 'تعليق مقدم خدمة',
     'customers.suspend': 'إيقاف عميل', 'marketing.edit': 'العروض والخصومات', 'notifications.broadcast': 'إشعار جماعي', 'providers.rate': 'نسبة خاصة لمقدم خدمة',
-    'finance.commission': 'نسبة العمولة', 'finance.pricing': 'أسعار الخدمات' };
+    'finance.commission': 'نسبة العمولة', 'finance.pricing': 'أسعار الخدمات',
+    'alerts.claim': 'استلام تنبيه', 'alerts.resolve': 'إغلاق تنبيه', 'tickets.create': 'فتح بلاغ', 'tickets.assign': 'إسناد بلاغ لزميل' };
   function levelOf(roles, roleId) {
     if (roleId === 'owner') return 4;
     let best = 0;
@@ -154,7 +169,20 @@
   }
   const riskNeed = (k) => RISK[k] || 1;
 
-  const api = { LEVELS, ROLE_LEVEL, RISK, RISK_LABEL, levelOf, riskNeed, MODULES, ACTIONS, DEPARTMENTS, STATUS_LABEL, LIMITS, ALL_KEYS, key, keyLabel, isKey, sortKeys, buildRoles, buildRoster, roleById, chain, effective, inherited, descendants, validParents, roleEmployees,
+  /** A stored catalogue (production `system/rbac`) predates newer presets/modules. Adds missing preset roles, gives the owner the
+      whole catalogue and, ONCE per stored preset role (marker catalogV), the permissions of the modules added since. */
+  const mergePresets = (roles) => {
+    const fresh = buildRoles(), list = (Array.isArray(roles) ? roles : []).map((r) => Object.assign({}, r, { permissions: (r.permissions || []).slice() }));
+    for (const p of fresh) {
+      const cur = list.find((r) => r.id === p.id);
+      if (!cur) { list.push(Object.assign({}, p, { catalogV: 2 })); continue; }
+      if (p.id === 'owner') { cur.permissions = ALL_KEYS.slice(); cur.catalogV = 2; continue; }
+      if (!cur.catalogV) { cur.permissions = sortKeys(cur.permissions.concat(p.permissions.filter((k) => NEW_MODULES.includes(k.split('.')[0])))); cur.catalogV = 2; }
+    }
+    return list;
+  };
+
+  const api = { mergePresets, NEW_MODULES, LEVELS, ROLE_LEVEL, RISK, RISK_LABEL, levelOf, riskNeed, MODULES, ACTIONS, DEPARTMENTS, STATUS_LABEL, LIMITS, ALL_KEYS, key, keyLabel, isKey, sortKeys, buildRoles, buildRoster, roleById, chain, effective, inherited, descendants, validParents, roleEmployees,
     validateRole, grantViolations, impact, createRole, updateRole, employeeEffective, setOverrides, isLastActiveOwner, changeEmployee, state, reset, addAudit, auditFor };
   root.HSAdminRbac = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

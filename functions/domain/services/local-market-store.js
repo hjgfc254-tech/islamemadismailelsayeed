@@ -189,6 +189,20 @@ const MP = (() => {
   load();
 
   const get = (col,id) => db[col].find(x=>x.id===id);
+  /* ── ops alerts (teams release): an event for the team that must act. Local demo → db.alertEvents (the Admin app folds
+     them into alerts: apps/admin/modules/ops-core.js); on the server the runtime provides HS_ALERT_OUTBOX and
+     functions/src/alerts.js persists, de-duplicates and delivers them. No personal data in title/body — ids and numbers only. ── */
+  const ALERT_TEAMS = ['ops', 'finance', 'content', 'tech', 'owner'];
+  const raiseAlert = (a) => {
+    const ev = { team: ALERT_TEAMS.includes(a && a.team) ? a.team : 'ops', severity: ['critical', 'normal', 'info'].includes(a && a.severity) ? a.severity : 'normal',
+      kind: String((a && a.kind) || 'general').slice(0, 40), title: String((a && a.title) || '').slice(0, 120), body: String((a && a.body) || '').slice(0, 400),
+      link: String((a && a.link) || '').slice(0, 200), dedupeKey: String((a && a.dedupeKey) || ((a && a.kind) || 'general')).slice(0, 120), at: now() };
+    if (!ev.title) return null;
+    const box = typeof globalThis !== 'undefined' && globalThis.HS_ALERT_OUTBOX;
+    if (Array.isArray(box)) box.push(ev);
+    else { db.alertEvents = Array.isArray(db.alertEvents) ? db.alertEvents : []; db.alertEvents.push(ev); if (db.alertEvents.length > 200) db.alertEvents.splice(0, db.alertEvents.length - 200); }
+    return ev;
+  };
   const notify = (to,text,reqId) => { db.notifications.unshift({id:uid('n'),to,text,reqId:reqId||null,at:now(),read:false}); };
   /* live tracking: the latest technician point lives only while the job is enroute / arrived (no history kept) */
   const log = (r,s,note) => { r.status = s; r.history.push({s,at:now(),note:note||''}); if (s !== 'enroute' && s !== 'arrived' && r.liveGeo) delete r.liveGeo; };
@@ -848,6 +862,23 @@ const MP = (() => {
       const r = s.recent.slice().sort((a, b) => a - b), at = q => r[Math.min(r.length - 1, Math.max(0, Math.round(q * (r.length - 1))))];
       return { n: s.n, low: at(.25), high: at(.75), median: at(.5), avg: Math.round(s.sum / s.n), min: s.min, max: s.max };
     },
+    /** Raises the time-based ops alerts from the current records (called by the server clock every 5 min and by the local Admin app):
+        requests without a provider > 30 min (critical after 2 h), providers waiting for review > 24 h, commissions uncollected > 7 days. */
+    opsScan(at){
+      const nowMs = at || Date.now(), min = (iso) => (nowMs - (Date.parse(iso) || nowMs)) / 60000;
+      let n = 0;
+      for (const r of db.serviceRequests) {
+        if (!['received', 'searching'].includes(r.status) || api.providerOf(r.id)) continue;
+        const age = min(r.createdAt); if (age < 30) continue;
+        raiseAlert({ team:'ops', severity: age >= 120 ? 'critical' : 'normal', kind:'request.unassigned', title:'طلب من غير مقدم خدمة', body:'الطلب ' + (r.no || r.id) + ' من ' + Math.round(age) + ' دقيقة من غير مقدم خدمة', link:'#/orders', dedupeKey:'req-unassigned:' + r.id }); n++;
+      }
+      const pend = db.providers.filter(p => p.status === 'pending' && min(p.createdAt) >= 1440);
+      if (pend.length) { raiseAlert({ team:'ops', severity:'normal', kind:'provider.pending', title:'طلبات انضمام مستنية مراجعة', body: pend.length + ' مقدم خدمة مستني المراجعة من أكتر من يوم', link:'#/providers', dedupeKey:'providers-pending' }); n++; }
+      const due = db.transactions.filter(t => !t.free && t.collection === 'pending' && min(t.at) >= 7 * 1440);
+      if (due.length) { raiseAlert({ team:'finance', severity:'normal', kind:'collection.overdue', title:'عمولات متأخرة التحصيل', body: due.length + ' عمولة لسه ما اتحصّلتش من أكتر من ٧ أيام', link:'#/settlements', dedupeKey:'collection-overdue' }); n++; }
+      return n;
+    },
+    raiseAlert,
     tickBidding(at){
       const nowMs = at || Date.now(), changed = [];
       for (const r of db.serviceRequests) {
@@ -876,6 +907,7 @@ const MP = (() => {
           r.status = 'searching';
           notify('customer:' + r.customerId, 'مفيش فنيين قدروا يردّوا على طلبك ' + r.no + ' — فريقنا هيدوّرلك على فني بنفسه', r.id);
           notify('admin', 'جولة العروض على الطلب ' + r.no + ' خلصت من غير عروض — محتاج إسناد يدوي', r.id);
+          raiseAlert({ team:'ops', severity:'normal', kind:'bidding.empty', title:'جولة العروض خلصت من غير عروض', body:'الطلب ' + r.no + ' محتاج إسناد يدوي لمقدم خدمة', link:'#/orders', dedupeKey:'bidding-empty:' + r.id });
           changed.push(r.id);
         }
       }
@@ -1005,6 +1037,9 @@ const MP = (() => {
         kind:(meta&&meta.kind)||'', attachments:(meta&&meta.attachments)||[]
       });
       notify('admin','شكوى جديدة على الطلب '+(reqId||''), reqId);
+      { const pay = /payment|cash/i.test(String((meta&&meta.kind)||''));
+        raiseAlert({ team:'ops', severity: pay ? 'critical' : 'normal', kind: pay ? 'cash.dispute' : 'complaint.new', title: pay ? 'خلاف على الدفع' : 'شكوى جديدة',
+          body: (pay ? 'خلاف بين العميل والفني على استلام الحساب' : 'شكوى مفتوحة محتاجة رد') + (reqId ? ' — الطلب ' + ((get('serviceRequests', reqId)||{}).no || reqId) : ''), link:'#/complaints', dedupeKey:'complaint:' + db.complaints[0].id }); }
       save();
       return db.complaints[0];
     },

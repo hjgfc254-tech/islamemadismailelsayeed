@@ -70,7 +70,9 @@ test('permission guard follows the RBAC demo catalog for the employee (role chai
   }
   const support = roster.find(e => e.role === 'support');
   assert.equal(G.canView('roles', support), false, 'support role has no roles.view in the demo catalog');
-  for (const open of ['dashboard', 'finance', 'insights']) assert.equal(G.canView(open, support), true, `${open} is outside the catalog → open`);
+  for (const open of ['dashboard']) assert.equal(G.canView(open, support), true, `${open} is outside the catalog → open`);
+  /* teams release: money pages need the finance module, the insights page needs orders.view */
+  assert.equal(G.canView('finance', support), false); assert.equal(G.canView('insights', support), true);
   for (const own of ['controls', 'security', 'audit', 'settings', 'super-dashboard']) assert.equal(G.canView(own, support), false, `${own} is owner-only`);
   assert.equal(G.canView('orders', null), false, 'no employee → guarded routes hidden');
   R.state.overrides[support.id] = ['roles.view'];

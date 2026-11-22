@@ -132,6 +132,12 @@
       if (!actor || !actor.role) return fail('UNAUTHENTICATED');
       if (!route.roles.includes(actor.role)) return fail('FORBIDDEN');
     }
+    if (actor && actor.role === 'admin' && !route.roles.includes('public')) {
+      /* teams: the admin's role decides which routes answer (apps/admin/permission-guard.js apiDenied; same on the server) */
+      const G = (typeof globalThis !== 'undefined' && globalThis.HSAdminPermissionGuard) || null;
+      const denied = G && G.apiDenied ? G.apiDenied(actor, m, route.pattern) : '';
+      if (denied) return fail('FORBIDDEN', denied);
+    }
     const s = store();
     if (!s) return fail('UNAVAILABLE');
     /* Owner emergency switches (settings.controls, set by POST /admin/controls): customers and providers cannot change
