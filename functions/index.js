@@ -102,3 +102,12 @@ exports.offersClock = onSchedule({ schedule: 'every 5 minutes', region: OPTS.reg
   try { const r = await service.tickOffers(backend); if (r.changed) logger.info('offersClock', r); }
   catch (e) { logger.error('offersClock failed', { error: e && e.message }); }
 });
+
+/* e-mail digests: every hour at :05 (Cairo time); digest-admin.tick sends the daily / weekly digest once per Cairo day
+   when the configured hour is reached (idempotent across instances). Mail credentials: functions/.env or Firebase
+   secrets (docs/DEPLOY_CHECKLIST.md); without them digests are generated and stored but not sent. */
+const digestAdmin = require('./src/digest-admin');
+exports.digestClock = onSchedule({ schedule: '5 * * * *', timeZone: 'Africa/Cairo', region: 'me-central1', timeoutSeconds: 300 }, async () => {
+  try { const r = await digestAdmin.tick(backend); if (Object.keys(r).length) logger.info('digestClock', r); }
+  catch (e) { logger.error('digestClock failed', { error: e && e.message }); }
+});

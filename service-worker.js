@@ -18,7 +18,7 @@
    • CLEAR_CACHE  — مسح كل الكاش (لأدوات العرض التجريبي).
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'hansalhlak-v11-firebase-66';
+const CACHE = 'hansalhlak-v11-firebase-67';
 
 /* الملفات الأساسية — يجب أن تعمل offline بعد أول زيارة */
 const FILES = [
@@ -47,6 +47,7 @@ const FILES = [
   'shared/components/live-clean.js',
   'shared/components/support-contacts.js',
   'apps/admin/modules/support-settings.js',
+  'apps/admin/modules/digest-settings.js',
   'shared/components/hs-dialog.js',
   'apps/admin/pages/insights.page.js',
   'apps/admin/pages/controls.page.js',
