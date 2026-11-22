@@ -42,6 +42,12 @@ quietly (by design), and offers / bonus actions return the server's «route not 
 - **Firestore → TTL policies:** field `expiresAt` on collection groups `idempotency`, `rateLimits` and **`clientErrors`**
   (error groups expire after 30 days).
 - Authentication providers Anonymous and Email/Password enabled (customer quick / email sign-in).
+- **E-mail digests (optional, owner input):** put ONE transport in `functions/.env` (git-ignored) or as Firebase secrets
+  bound to `digestClock` / `api` — never in the repository:
+  - Resend: `RESEND_API_KEY`, `MAIL_FROM` (a verified sender, e.g. `HANSALEHLAK <digest@your-domain>`).
+  - SMTP: `SMTP_HOST`, `SMTP_PORT` (465 = TLS), `SMTP_USER`, `SMTP_PASS`, `MAIL_FROM`.
+  Without them the digests are generated and stored but not sent; Admin › الإعدادات › الملخصات lists what is missing.
+  Digests are OFF by default — the owner turns daily / weekly on there.
 
 ## Deploy
 ```

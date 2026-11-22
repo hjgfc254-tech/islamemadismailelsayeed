@@ -191,6 +191,15 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /admin/data-policy` | admin | admin-api.js | Owner only: {minimal: boolean} — mask customer data for support / moderator ranks. |
 | `GET /admin/marketing` | admin | admin-api.js | Promo codes, invite reward and packages. |
 | `PATCH /admin/marketing` | admin | admin-api.js | Replace promo codes / invite reward / packages {promos?, referral?, packages?}. |
+| `GET /admin/digest/config` | admin (owner) | functions/src/digest-admin.js | E-mail digest settings `{daily:{on,hour}, weekly:{on,weekday,hour}, extraRecipients:[{email,team}]}` (default all OFF), last run state, transport status (missing env names, never secret values), recipients with masked e-mails. |
+| `POST /admin/digest/config` | admin (owner) | functions/src/digest-admin.js | Save `{daily?, weekly?, extraRecipients?}`; field errors on invalid hour / weekday / e-mail / team. Audited. |
+| `GET /admin/digest/preview` | admin | functions/src/digest-admin.js | `?type=daily\|weekly&team=owner\|ops\|finance\|content\|tech` → `{type, team, label, subject, html, text}`. Owner may pick any team; other roles get their own team only. Counts and aggregates only, no personal data. |
+| `POST /admin/digest/test` | admin | functions/src/digest-admin.js | Send that digest to the caller's own e-mail (once per minute). No transport configured → explained in the response, not sent. |
+| `GET /admin/digest/me` · `POST /admin/digest/me` | admin | functions/src/digest-admin.js | Any admin: read / set `{off: boolean}` to stop or resume their own digest (`digestPrefs/{uid}`). |
+
+Scheduled: `digestClock` (functions/index.js) runs hourly at :05 Africa/Cairo and sends each enabled digest once per
+Cairo day / week when its hour is reached; `system/digestState` makes it idempotent across instances (claim + max 3
+retries). Rendered digests are stored in `digests/{type}_{key}` (30 days) even when nothing could be sent.
 
 Route matching prefers the most specific pattern, so `GET /providers/me` wins over `GET /providers/:id`.
 
