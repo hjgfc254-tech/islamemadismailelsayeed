@@ -23,3 +23,19 @@ separate task (do not build email).
    alert or manually; filter by team/status/mine; admin page + «صندوق الشغل» widget on each home. Audited.
 Routes documented in docs/API_CONTRACTS.md. Tests for domain + server path (in-memory backend). Follow
 docs/agent-briefs/README.md rules.
+
+## Progress (2026-11-22, main merged into this branch, npm test green before alerts.js)
+Done: roles/presets + mergePresets (rbac-store), apiDenied API gate (permission-guard + api-client), ops-core / ops-routes /
+ops-api (demo), MP.raiseAlert + opsScan + events (local-market-store), runtime HS_ALERT_OUTBOX,
+functions/src/alerts.js (storage, delivery inApp+push, notifyTeam, handle, tick/escalate) — NOT wired or tested yet.
+Left, in order:
+1. service.js: intercept alerts.PATH_RE like digest (unlocked admin) → alerts.handle; after runtime.request / tickOffers
+   call alerts.ingest(res.alerts); runtime.createContext: roles = HSAdminRbac.mergePresets(stored roles).
+2. index.js alertsClock every 5 min → alerts.tick(backend, op running MP.opsScan over open requests/pending providers/
+   pending transactions); owner-alerts.notifyOwner also ingest an 'owner' alert; telemetry repeated errors → team tech.
+3. scope.js adminView per role: tech → no customers/providers/requests/transactions/complaints/addresses/reviews;
+   content → no PII; finance → masked phones/addresses; + response scrub in service.js for those roles;
+   API_NEEDS add 'GET /admin/providers', 'GET /admin/requests/:id/candidates'.
+4. Admin UI: index.html scripts (ops-core, ops-routes, ops-api) + SW precache; bell with unread in admin-shell header;
+   pages alerts + tickets (NAV, LIVE_PAGES); work-box widget on home; role home route (tech→#/tech).
+5. Tests (ops-core, ops-routes, alerts server via tests/helpers/memory-backend.js, tech gets zero PII), API_CONTRACTS docs.
