@@ -28,8 +28,9 @@
        (draft / active requests), popular services, governorate banner, how it works — then the rest, shorter */
     const heroImg=h&&h.img?e(h.img):'../../assets/brand/hero-tech-v3.jpg';
     const heroTitle=h?title:'كل خدمة<br>تصليح وصيانة', heroAccent=h?accent:'في مكان واحد', heroSub=h?sub:'فنيين بتراجعهم الإدارة • سعر واضح قبل ما توافق';
-    const steps=[['grid','اختار الخدمة'],['calendar','حدّد الموعد'],['user','يوصلك الفني'],['star','قيّم الخدمة']];
-    const how4=ctx.firstVisit===false?'':`<section class="how-v3" aria-labelledby="howT"><h2 id="howT">إزاي هنصلحلك بتشتغل؟</h2><ol>${steps.map(([i,t])=>`<li><i>${ic(i)}</i><span>${t}</span></li>`).join('')}</ol></section>`;
+    const bi=(n,fb)=>(root.HSBrandIcons&&root.HSBrandIcons.svg(n))||ic(fb);   // 2026 two-tone icons (brand-icons.js), old icon as fallback
+    const steps=[['choose','grid','اختار الخدمة'],['schedule','calendar','حدّد الموعد'],['arrive','user','يوصلك الفني'],['rate','star','قيّم الخدمة']];
+    const how4=ctx.firstVisit===false?'':`<section class="how-v3" aria-labelledby="howT"><h2 id="howT">إزاي هنصلحلك بتشتغل؟</h2><ol>${steps.map(([b,i,t])=>`<li><i>${bi(b,i)}</i><span>${t}</span></li>`).join('')}</ol></section>`;
     /* the customer's own work comes first: an active request / unfinished draft sits above the hero; the greeting is a
        slim line under the trust strip so the header flows straight into the photo (owner mock-up). Rendered in this
        order (greeting → draft → active) so the dependency call order stays stable. */
@@ -47,9 +48,9 @@
     </div>
   </section>
   <ul class="trust-strip" aria-label="ليه هنصلحلك">
-    <li>${ic('shield')}<span>فنيين بتراجعهم الإدارة</span></li>
-    <li>${ic('wallet')}<span>سعر واضح قبل الحجز</span></li>
-    <li>${ic('clock')}<span>تابع طلبك خطوة بخطوة</span></li>
+    <li>${bi('verified','shield')}<span>فنيين بتراجعهم الإدارة</span></li>
+    <li>${bi('price','wallet')}<span>سعر واضح قبل الحجز</span></li>
+    <li>${bi('track','clock')}<span>تابع طلبك خطوة بخطوة</span></li>
   </ul>
   ${greetHtml}
   <div class="search hero-search">
@@ -60,8 +61,8 @@
   ${ctx.addressBar||''}
   ${ctx.care||''}
   <section aria-labelledby="tilesT">
-    <div class="sec-head"><h2 id="tilesT">أشهر الخدمات</h2><button type="button" class="more" data-go="sections">عرض الكل ${ic('back')}</button></div>
-    ${String(tiles()).replace(/<\/div>\s*$/,`<button type="button" class="tile all-tile" data-go="sections" aria-label="كل الأقسام"><span class="tart" aria-hidden="true">${ic('grid')}</span><span class="tl">كل الأقسام</span></button></div>`)}
+    <div class="sec-head"><h2 id="tilesT">أشهر الخدمات</h2><button type="button" class="more" data-go="sections">عرض الكل <span aria-hidden="true">←</span></button></div>
+    ${String(tiles()).replace(/<\/div>\s*$/,`<button type="button" class="tile all-tile" data-go="sections" aria-label="كل الأقسام"><span class="tart brand" aria-hidden="true">${bi('all','grid')}</span><span class="tl">كل الأقسام</span></button></div>`)}
   </section>
   <button type="button" class="gov-banner" data-go="sections">
     <span class="gb-pin" aria-hidden="true">${ic('pin')}</span>

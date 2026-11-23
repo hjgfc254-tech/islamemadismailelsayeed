@@ -115,6 +115,7 @@ hansalhlak/
 │   │   │   ├── customer.css
 │   │   │   └── overrides.css
 │   │   ├── app.js
+│   │   ├── brand-icons.js
 │   │   ├── customer-router.js
 │   │   ├── customer-session.js
 │   │   ├── index.html

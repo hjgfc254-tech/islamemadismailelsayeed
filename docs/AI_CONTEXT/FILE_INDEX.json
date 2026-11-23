@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 665,
+  "file_count": 666,
   "files": [
     {
       "path": "_redirects",
@@ -559,8 +559,15 @@
       "path": "apps/customer/app.js",
       "area": "apps/customer",
       "status": "PARTIALLY IMPLEMENTED",
-      "bytes": 101775,
-      "sha256": "1213371081c2fa1eef6cb546327b990bdf083a1365d67f5c89208673039fb779"
+      "bytes": 101977,
+      "sha256": "6a60b3ec00f89520510ce4e408ffc5f9145100ffcd7e0fb60263df57d57dea48"
+    },
+    {
+      "path": "apps/customer/brand-icons.js",
+      "area": "apps/customer",
+      "status": "NEEDS_REVIEW",
+      "bytes": 3693,
+      "sha256": "c44d9193da8f5b0f06b3749699e0b1828fa4ed72446fc1f9ded9265fab6e82ed"
     },
     {
       "path": "apps/customer/customer-router.js",
@@ -580,8 +587,8 @@
       "path": "apps/customer/index.html",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 8959,
-      "sha256": "91724eb09f2c4122adca100d6236d9ce781bbba466812ded4f46929f90b8e9f3"
+      "bytes": 8997,
+      "sha256": "a833d2f7dad6bdcff723dd3452edcf8c320bcbe11de9c3c80c9d1163f52003aa"
     },
     {
       "path": "apps/customer/pages/account.page.js",
@@ -615,8 +622,8 @@
       "path": "apps/customer/pages/home.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 10312,
-      "sha256": "0fd985fd91a4ce895b5d599401972a762e9f9395c6b3e67beb166eef57e08819"
+      "bytes": 10553,
+      "sha256": "d179510e46481c69c970af82a6c90eead63cfee7569acff7371da0077f04b532"
     },
     {
       "path": "apps/customer/pages/live-map.js",
@@ -720,8 +727,8 @@
       "path": "apps/customer/styles/brand-2026.css",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 13460,
-      "sha256": "9a9c8e9570e4ba52c45dd5ec8e61c9a310a909c3b0ffa80ff304561759c3b8c6"
+      "bytes": 16564,
+      "sha256": "57e3390bf6e36dac02c637565e1f7c10a74f1466d8d06fd45ea461f8a90c1868"
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -2281,8 +2288,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 296902,
-      "sha256": "bfee89ce8b234d3772768578990e4e4146164c5c166f6d57909a528b316a7087"
+      "bytes": 297138,
+      "sha256": "8df71cba81d7b103f79e1d7c3f7efebb564e67c4fdc9281cd59b489b99265c91"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2295,8 +2302,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 166464,
-      "sha256": "20ba54db5044f1d2006244c73b376f4ac0d9bb27c522462d5f16cd49e591bf0a"
+      "bytes": 166674,
+      "sha256": "dd25b81246a4239e36b58d2b91f368c85bdabea811cca249fb19d8084ce41b91"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2729,8 +2736,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 31455,
-      "sha256": "a7edb15487dfeb6f2bcd846da04cc379dac79b198d0a2c28111da3a7cf819590"
+      "bytes": 31492,
+      "sha256": "95bf73c8b3a3e90cf16ec763c94a1eb6b4a1852adfa11eff1c025db4b158452c"
     },
     {
       "path": "docs/README.md",
@@ -3289,15 +3296,15 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 11466,
-      "sha256": "06050c6c87662235677118c806af4e14ddcb8c31db2eef8cd42d0f3e4fbaf446"
+      "bytes": 11500,
+      "sha256": "678c9e88d13027dc1675246b4385a232a6456adcb6b536be6013f40b65c63495"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "ae6bc9e79e312b623a1d7905e4606d5315e6d0d8c7bdda975caa8a23a765920b"
+      "sha256": "e690ea3c9b4b344abff09ad412e44910988563b8267355a45f765c5909e1aba2"
     },
     {
       "path": "services/admin-api.js",

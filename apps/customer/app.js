@@ -219,7 +219,7 @@ const tile = (k, small) => {
   let viaCat = false;
   try { const c = CAT.category(k); viaCat = !!(c && c.active); } catch {}
   const target = viaCat ? `data-wz-hit="cat|${k}"` : `data-dev="${k}"`;
-  return `<button class="tile glass neon ${small?'small':''}" ${target} aria-label="${DEVICES[k].name}"><span class="tart ${typeof icImg==='function'&&icImg('c-'+k)?'ph':''}" aria-hidden="true">${(typeof icImg==='function'&&icImg('c-'+k)) || ic(icExists('c-'+k) ? 'c-'+k : (DEVICES[k].icon || 'p-service'))}</span><span class="tl">${DEVICES[k].cat}</span><span class="tfrom" data-from-cat="${k}" hidden></span></button>`;
+  return `<button class="tile glass neon ${small?'small':''}" ${target} aria-label="${DEVICES[k].name}">${(()=>{ const bi = typeof HSBrandIcons!=='undefined' && HSBrandIcons.svg(k); /* 2026 identity: two-tone brand icons */ return bi ? `<span class="tart brand" aria-hidden="true">${bi}</span>` : `<span class="tart ${typeof icImg==='function'&&icImg('c-'+k)?'ph':''}" aria-hidden="true">${(typeof icImg==='function'&&icImg('c-'+k)) || ic(icExists('c-'+k) ? 'c-'+k : (DEVICES[k].icon || 'p-service'))}</span>`; })()}<span class="tl">${DEVICES[k].cat}</span><span class="tfrom" data-from-cat="${k}" hidden></span></button>`;
 };
 const tiles = (small) => `<div class="grid fit">${HOME_ORDER.map(k=>tile(k,small)).join('')}</div>`;
 const head = (title, back) => `<div class="dhead">${back?`<button class="back" data-back aria-label="رجوع">${ic('back')}</button>`:'<span></span>'}<h2 tabindex="-1">${title}</h2><span></span></div>`;
