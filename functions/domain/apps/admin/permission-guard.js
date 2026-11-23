@@ -16,7 +16,10 @@
     marketplace: 'providers',   /* live marketplace operations; each tab additionally gates its actions by its own module */
     orders: 'orders', customers: 'customers', providers: 'providers', services: 'services', categories: 'categories',
     complaints: 'complaints', reviews: 'reviews', notifications: 'notifications',
-    workforce: 'workforce', 'employee-details': 'workforce', departments: 'departments', roles: 'roles', permissions: 'permissions'
+    workforce: 'workforce', 'employee-details': 'workforce', departments: 'departments', roles: 'roles', permissions: 'permissions',
+    /* teams release (2026-11-22): money pages need the finance module, the rest follow their team */
+    finance: 'finance', commissions: 'finance', settlements: 'finance', reports: 'finance', quotes: 'orders', insights: 'orders',
+    tickets: 'tickets', alerts: 'alerts', tech: 'tech', 'content-studio': 'marketing'
   });
   const rbac = () => root.HSAdminRbac || null;
 
@@ -59,7 +62,27 @@
     return have >= need ? '' : `«${r.RISK_LABEL[riskKey] || riskKey}» محتاج رتبة ${r.LEVELS[need]} أو أعلى`;
   }
 
-  const api = Object.freeze({ ROUTE_MODULE, OWNER_ONLY, employeeOf, riskDenied, permissionsOf, can, canView, isGuarded: (id) => !!ROUTE_MODULE[id] });
+  /* ── API gate for admin actors (api-client.js calls it for every non-public route; the server runs the same code) ──
+     Routes that used to be open to any admin now need the module of their team. The `tech` role is locked to an
+     allow-list: no customer / provider / request / complaint / money route, whatever overrides it was given. */
+  const API_NEEDS = Object.freeze({
+    'GET /requests': 'orders.view', 'GET /requests/:id': 'orders.view', 'GET /requests/:id/photos': 'orders.view', 'POST /requests/:id/cancel': 'orders.decide',
+    'GET /complaints': 'complaints.view', 'POST /complaints/:id/resolve': 'complaints.decide',
+    'GET /admin/transactions': 'finance.view', 'GET /admin/commission': 'finance.view',
+    'GET /admin/providers': 'providers.view', 'GET /admin/requests/:id/candidates': 'orders.view'
+  });
+  const TECH_API = Object.freeze(['GET /admin/summary', 'GET /notifications', 'POST /notifications/read', 'GET /admin/controls', 'GET /admin/support-contacts']);
+  function apiDenied(actor, method, pattern) {
+    if (!actor || actor.role !== 'admin' || !actor.adminRole) return '';
+    const sig = String(method).toUpperCase() + ' ' + pattern;
+    if (actor.adminRole === 'tech') return TECH_API.includes(sig) ? '' : 'دور التقنية مالوش وصول لبيانات العملاء ومقدمي الخدمة والطلبات والماليات';
+    const need = API_NEEDS[sig]; if (!need) return '';
+    const emp = employeeOf(actor); if (!emp) return '';
+    const [m, a] = need.split('.');
+    return can(emp, m, a) ? '' : 'ده خارج صلاحيات دورك';
+  }
+
+  const api = Object.freeze({ ROUTE_MODULE, OWNER_ONLY, API_NEEDS, TECH_API, apiDenied, employeeOf, riskDenied, permissionsOf, can, canView, isGuarded: (id) => !!ROUTE_MODULE[id] });
   root.HSAdminPermissionGuard = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

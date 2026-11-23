@@ -23,7 +23,8 @@ const ROOT = path.resolve(__dirname, '../..');
 /* 122 → 124 (2026-11-22, explicit audit): the e-mail digest settings preview frame height 70vh and its dialog max
    width 44rem are layout dimensions with no token equivalent; its colours use --warning-soft / --success-soft. */
 /* 124 → 125 (2026-11-21, explicit audit): the Tech Center fact columns use a 16rem minimum width (layout dimension, no token). */
-const ADMIN_HARDCODED_BASELINE = 125;
+/* 125 → 126 (2026-11-23, explicit audit): the alert bell counter min-width 1.25em / line-height (badge geometry, no token). */
+const ADMIN_HARDCODED_BASELINE = 126;
 
 test('the live shared design-system stylesheet is loaded by Admin and Customer', () => {
   const admin = fs.readFileSync(path.join(ROOT, 'apps/admin/index.html'), 'utf8');

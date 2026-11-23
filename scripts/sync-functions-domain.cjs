@@ -14,6 +14,7 @@ const FILES = [
   'services/api-client.js', 'services/auth-api.js', 'services/orders-api.js', 'services/quotes-api.js',
   'services/catalog-api.js', 'services/provider-api.js', 'services/customer-api.js', 'services/notifications-api.js',
   'services/support-api.js', 'services/finance-api.js', 'services/admin-api.js',
+  'apps/admin/modules/ops-core.js', 'apps/admin/modules/ops-routes.js', 'services/ops-api.js',
   'apps/admin/rbac-store.js', 'apps/admin/permission-guard.js',
   'apps/admin/modules/workforce/employee-status.js', 'apps/admin/modules/workforce/employee-form.js', 'apps/admin/modules/workforce/employee-invitation.js'
 ];

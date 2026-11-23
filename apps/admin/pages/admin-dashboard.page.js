@@ -185,7 +185,13 @@
       const t = e.target;
       if (t.dataset && t.dataset.task) { state.done[t.dataset.task] = t.checked; paint('[data-task="' + t.dataset.task + '"]'); }
     });
-    return wrap;
+    /* «صندوق الشغل» (modules/ops-center.js): my team's open alerts + my tickets, above the day view */
+    if (!root.HSOpsCenter || !root.HSOpsCenter.mountWorkBox) return wrap;
+    const outer = root.document.createElement('div');
+    const box = root.document.createElement('div');
+    outer.append(box, wrap);
+    root.HSOpsCenter.mountWorkBox(box);
+    return outer;
   };
 
   /* Toolbar actions re-render identical demo data: announce the result so the user gets feedback (shell live region). */

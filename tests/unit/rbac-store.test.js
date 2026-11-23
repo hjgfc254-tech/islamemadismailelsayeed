@@ -7,9 +7,9 @@ globalThis.HSStatusBadge=require(path.join(root,'shared/components/status-badge.
 const W=require(path.join(root,'apps/admin/pages/workforce.page.js'));
 const F=()=>({roles:R.buildRoles(),roster:R.buildRoster()});
 const ok={name:'دور جديد',description:'',inherits:null,permissions:['orders.view']};
-test('catalog: 12 modules × 4 actions = 48 unique known keys; keyLabel readable',()=>{assert.strictEqual(R.ALL_KEYS.length,48);assert.strictEqual(new Set(R.ALL_KEYS).size,48);assert(R.isKey('orders.view'));assert(!R.isKey('orders.fly'));assert.strictEqual(R.keyLabel('orders.view'),'الطلبات — عرض')});
+test('catalog: 18 modules × 4 actions = 72 unique known keys (6 modules added with the teams release: finance, marketing, pii, tech, alerts, tickets); keyLabel readable',()=>{assert.strictEqual(R.ALL_KEYS.length,72);assert.strictEqual(new Set(R.ALL_KEYS).size,72);assert(R.isKey('orders.view'));assert(!R.isKey('orders.fly'));assert.strictEqual(R.keyLabel('orders.view'),'الطلبات — عرض')});
 test('roles fixtures: owner is a system role with everything; every direct key is known; inheritance targets exist; no cycles',()=>{
-  const {roles}=F();assert.strictEqual(roles.length,5);assert.deepStrictEqual(R.effective(roles,'owner'),R.ALL_KEYS);assert(roles.find(r=>r.id==='owner').system);
+  const {roles}=F();assert.strictEqual(roles.length,8,'5 original roles + ops / content / tech presets');assert.deepStrictEqual(R.effective(roles,'owner'),R.ALL_KEYS);assert(roles.find(r=>r.id==='owner').system);
   roles.forEach(r=>{r.permissions.forEach(k=>assert(R.isKey(k),k));if(r.inherits)assert(R.roleById(roles,r.inherits));assert(R.chain(roles,r.id).length<=roles.length)});
 });
 test('role ids/names match the workforce page ROLES and the roster matches the workforce fixtures (so the demos agree)',()=>{
@@ -23,7 +23,7 @@ test('effective / inherited: moderator = support ∪ own; inherited excludes own
 });
 test('descendants / validParents: no cycles (a role can never inherit from itself or its own descendants)',()=>{
   const {roles}=F();assert.deepStrictEqual(R.descendants(roles,'support'),['moderator']);assert.deepStrictEqual(R.descendants(roles,'moderator'),[]);
-  const vp=(id)=>R.validParents(roles,id).map(r=>r.id);assert(!vp('support').includes('support'));assert(!vp('support').includes('moderator'));assert(vp('support').includes('admin'));assert(vp('moderator').includes('support'));assert(!vp('moderator').includes('moderator'));assert.strictEqual(vp(null).length,5);
+  const vp=(id)=>R.validParents(roles,id).map(r=>r.id);assert(!vp('support').includes('support'));assert(!vp('support').includes('moderator'));assert(vp('support').includes('admin'));assert(vp('moderator').includes('support'));assert(!vp('moderator').includes('moderator'));assert.strictEqual(vp(null).length,8);
   const bad=[{id:'x',inherits:'y',permissions:[]},{id:'y',inherits:'x',permissions:[]}];assert(Array.isArray(R.effective(bad,'x')));assert(Array.isArray(R.descendants(bad,'x')));   // corrupt data must not hang
 });
 test('validateRole: name rules, unique name, description cap, inherit cycle, unknown permission',()=>{
@@ -47,12 +47,12 @@ test('impact: lists added/removed for the role AND roles inheriting from it, wit
   assert.strictEqual(JSON.stringify(roles),JSON.stringify(R.buildRoles()));   // input untouched
 });
 test('createRole: immutable, new id, authority guard (admin cannot create a role holding roles.edit; owner can)',()=>{
-  const {roles}=F(),n=R.createRole(roles,'admin',{...ok,permissions:['orders.view','orders.edit']});assert.strictEqual(roles.length,5);assert.strictEqual(n.length,6);assert(/^r\d+$/.test(n[5].id));assert(!n[5].system);
+  const {roles}=F(),n=R.createRole(roles,'admin',{...ok,permissions:['orders.view','orders.edit']});assert.strictEqual(roles.length,8);assert.strictEqual(n.length,9);assert(/^r\d+$/.test(n[8].id));assert(!n[8].system);
   try{R.createRole(roles,'admin',{...ok,permissions:['roles.edit']});assert.fail('x')}catch(e){assert(e instanceof RangeError&&e.errors.permissions&&/خارج سلطتك/.test(e.errors.permissions))}
-  assert.strictEqual(R.createRole(roles,'owner',{...ok,permissions:['roles.edit']}).length,6);
+  assert.strictEqual(R.createRole(roles,'owner',{...ok,permissions:['roles.edit']}).length,9);
   try{R.createRole(roles,'admin',{...ok,inherits:'owner',permissions:[]});assert.fail('x')}catch(e){assert(e.errors.permissions)}   // inheriting from owner would grant everything
   try{R.createRole(roles,'admin',{...ok,name:''});assert.fail('x')}catch(e){assert(e.errors.name)}
-  const two=R.createRole(n,'admin',{...ok,name:'ثاني'});assert.notStrictEqual(two[6].id,n[5].id);
+  const two=R.createRole(n,'admin',{...ok,name:'ثاني'});assert.notStrictEqual(two[9].id,n[8].id);
 });
 test('updateRole: system role locked; only NEW grants outside the actor\'s authority are blocked; removals and own-held grants are fine; cycles rejected',()=>{
   const {roles}=F(),sup=R.roleById(roles,'support');
@@ -60,7 +60,7 @@ test('updateRole: system role locked; only NEW grants outside the actor\'s autho
   const base={name:sup.name,description:sup.description,inherits:null};
   const good=R.updateRole(roles,'admin','support',{...base,permissions:sup.permissions.concat(['services.view'])});assert(R.effective(good,'support').includes('services.view'));assert(!R.roleById(roles,'support').permissions.includes('services.view'));
   assert.throws(()=>R.updateRole(roles,'admin','support',{...base,permissions:sup.permissions.concat(['roles.edit'])}),/Exceeds authority/);
-  assert.strictEqual(R.updateRole(roles,'owner','support',{...base,permissions:sup.permissions.concat(['roles.edit'])}).length,5);
+  assert.strictEqual(R.updateRole(roles,'owner','support',{...base,permissions:sup.permissions.concat(['roles.edit'])}).length,8);
   assert.doesNotThrow(()=>R.updateRole(roles,'admin','support',{...base,permissions:[]}));   // removals are allowed
   assert.throws(()=>R.updateRole(roles,'admin','support',{...base,inherits:'moderator',permissions:sup.permissions}),RangeError);
 });

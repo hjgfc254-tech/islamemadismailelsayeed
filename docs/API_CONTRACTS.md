@@ -205,6 +205,35 @@ Scheduled: `digestClock` (functions/index.js) runs hourly at :05 Africa/Cairo an
 Cairo day / week when its hour is reached; `system/digestState` makes it idempotent across instances (claim + max 3
 retries). Rendered digests are stored in `digests/{type}_{key}` (30 days) even when nothing could be sent.
 
+### Teams: alerts and tickets (2026-11-23)
+Rules: `apps/admin/modules/ops-core.js` + `ops-routes.js` (shared domain). Server: `functions/src/alerts.js` (Firestore
+`opsAlerts`, `opsTickets`, `alertSeen`; code-unlocked admins only). Local demo: `services/ops-api.js`. Each route needs the
+`alerts` / `tickets` module of the admin's role; an admin only sees the alerts / tickets of their own teams (owner: all).
+
+| Route | Who | Notes |
+|---|---|---|
+| `GET /admin/alerts` | admin | `{items, unread, open, mine, teams}`; `?status=open\|claimed\|resolved&team=&mine=1&all=1` (resolved shown 1 day unless `all`). |
+| `POST /admin/alerts/seen` | admin | Bell read → `unread: 0`. |
+| `POST /admin/alerts/:id/claim` | admin | «أنا هاخده»; 409 when a colleague already has it. Audited. |
+| `POST /admin/alerts/:id/resolve` | admin | «تم». Audited. |
+| `POST /admin/alerts/:id/ticket` | admin | Ticket from the alert (critical → urgent); claims the alert. Audited. |
+| `GET /admin/tickets` | admin | `?team=&status=new\|doing\|done&mine=1&open=1`. |
+| `POST /admin/tickets` | admin | `{title, description?, team?, priority?: low\|normal\|high\|urgent, link?}`; only for own teams. Audited. |
+| `PATCH /admin/tickets/:id` | admin | `{title?, description?, priority?, team?, status?, owner?}`; new → doing → done (done → doing reopens). Audited. |
+| `POST /admin/tickets/:id/notes` | admin | `{text}` (max 50 notes). Audited. |
+
+Alert sources: new complaint / cash dispute, empty offers round (domain `MP.raiseAlert`); requests without a provider
+> 30 min (critical ≥ 2 h), providers pending > 1 day, commissions uncollected > 7 days (`alertsClock`, every 5 min,
+`MP.opsScan`); repeated errors and health problems → team `tech`; emergency switches and admin lockouts → owner.
+Delivery: in-app bell + push to the team (critical also to the owner); `CHANNELS.whatsapp` is a reserved slot.
+An unclaimed critical alert escalates to the owner once after `system/settings.opsAlerts.escalateMin` (default 15) minutes.
+
+### Data separation by role (always on)
+`functions/src/scope.js`: `tech` gets no customers / providers / requests / transactions / complaints / reviews /
+addresses / chats in the sync, and the API gate (`permission-guard.js apiDenied`) answers only its allow-list;
+`content` gets no personal data (public provider profiles, anonymous request facts); `finance` keeps money rows with
+masked phones and no addresses / locations / chats. Every API answer for these roles also passes `scrubForRole`.
+
 Route matching prefers the most specific pattern, so `GET /providers/me` wins over `GET /providers/:id`.
 
 ## Non-JSON adapters

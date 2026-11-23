@@ -17,13 +17,14 @@ const crypto = require('crypto');
 const { PartialDb } = require('./partial');
 const { plan, syncPlan } = require('./plan');
 const { normalizePhone, APPS } = require('./identity');
-const { scopeFor, customerRequestView, customerQuote } = require('./scope');
+const { scopeFor, customerRequestView, customerQuote, scrubForRole } = require('./scope');
 const workforce = require('./workforce');
 const adminExtra = require('./admin-extra');
 const telemetry = require('./telemetry');
 const techStatus = require('./tech-status');
 const adminCode = require('./admin-code');
 const digestAdmin = require('./digest-admin');
+const alerts = require('./alerts');
 /* admin-code errors carry a callable error code: rethrow them as ServiceError (index.js maps those to HttpsError) */
 const viaCode = async (p) => { try { return await p; } catch (e) { if (e && e.isServiceError) fail(e.code, e.message); throw e; } };
 const content = require('./content');
@@ -220,6 +221,12 @@ async function api(backend, { auth, data, ip }) {
     const actor = adm && adm.status === 'active' && adminCode.isUnlocked(adm) ? { role: 'admin', id: token.uid, adminRole: adm.role } : null;
     return techStatus.handle({ backend, method: req.method, path: req.path, body: req.body, actor });
   }
+  if (alerts.PATH_RE.test(req.path)) {           // team alerts + tickets (alerts.js, rules in the shared ops-core / ops-routes): code-unlocked admins only
+    const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
+    if (!token || !adm || adm.status !== 'active' || !adminCode.isUnlocked(adm)) return { ok: false, status: token ? 403 : 401, error: { code: token ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } };
+    if (!isRead) await rateLimit(backend, token.uid);
+    return alerts.handle({ backend, method: req.method, path: req.path, query: req.query, body: req.body, admin: adm, uid: token.uid });
+  }
   if (!isRead) await rateLimit(backend, token ? token.uid : 'anon_' + String(ip || 'unknown').replace(/[^\w.:-]/g, '_').slice(0, 60));   /* M2: per IP, not one shared bucket */
   if (req.method === 'POST' && req.path === '/providers/register' && !(token && token.phone_number)) {
     /* M2: a provider registration is bound to a phone verified by SMS — no anonymous sign-ups with someone else's number */
@@ -262,6 +269,7 @@ async function api(backend, { auth, data, ip }) {
       return { envelope, changes: envelope.ok && !isRead ? { admin: { set: [req.path], del: [] } } : {}, actor, db: {}, quiet: true, contentV: envelope.ok && envelope.data && envelope.data.v };   // audited; clients learn via public/content, no admin re-sync
     }
     if (adminExtra.PATH_RE.test(req.path)) {
+      if (actor && actor.role === 'admin' && actor.adminRole === 'tech' && !/^\/admin\/security(\/|$)/.test(req.path)) return { envelope: { ok: false, status: 403, error: { code: 'FORBIDDEN', message: 'دور التقنية مالوش وصول للسجل والإعدادات والإشعارات الجماعية' } }, changes: {}, actor };
       if (!actor || actor.role !== 'admin') return { envelope: { ok: false, status: actor ? 403 : 401, error: { code: actor ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } }, changes: {}, actor };
       const envelope = await adminExtra.handle({ backend, tx, method: req.method, path: req.path, query: req.query, body: req.body, admin, token });
       if (idemPath && !isRead) backend.adapter.set(tx, idemPath, { envelope, atMs: Date.now(), path: req.path, expiresAt: new Date(Date.now() + IDEMPOTENCY_TTL_MS) });
@@ -288,11 +296,13 @@ async function api(backend, { auth, data, ip }) {
     if (res.envelope.ok && !isRead) changes = ld.commit(res.db).changes;
     if (res.envelope.ok) res.envelope.data = redactForProvider(res.envelope.data, actor, res.db);
     if (res.envelope.ok && actor && actor.role === 'customer') res.envelope.data = redactForCustomer(res.envelope.data);
+    if (res.envelope.ok && actor && actor.role === 'admin') res.envelope.data = scrubForRole(res.envelope.data, actor.adminRole);   // teams: tech / content / finance never receive raw personal data
     if (Object.keys(ld.pages).length && res.envelope.ok) res.envelope.page = { nextCursor: Object.values(ld.pages)[0] };
     if (idemPath && !isRead) backend.adapter.set(tx, idemPath, { envelope: res.envelope, atMs: Date.now(), path: req.path, expiresAt: new Date(Date.now() + IDEMPOTENCY_TTL_MS) });
-    return { envelope: res.envelope, changes, actor, db: res.db, reads: ld.reads };
+    return { envelope: res.envelope, changes, actor, db: res.db, reads: ld.reads, alerts: res.envelope.ok && !isRead ? res.alerts : [] };
   };
   const out = isRead ? await execute(null) : await backend.runTransaction(execute);
+  if (out.alerts && out.alerts.length) await alerts.ingest(backend, out.alerts);   // MP.raiseAlert events (new complaint, cash dispute, …): stored + delivered after commit
   if (!isRead && out.envelope.ok && /^\/admin\/(settings|content|media|ai)(\/|$)/.test(req.path)) {
     invalidateShared(backend.adapter); content.invalidate(backend.adapter);     // system docs changed outside PartialDb.commit
   }
@@ -330,6 +340,20 @@ async function api(backend, { auth, data, ip }) {
   return out.envelope;
 }
 
+/** alertsClock (index.js, every 5 min): MP.opsScan over just the records it needs (read-only) → the raised alert events
+    (requests without a provider > 30 min, providers pending > 1 day, commissions uncollected > 7 days). */
+async function scanOps(backend) {
+  const ld = new PartialDb(backend.adapter, null);
+  await ld.loadSystem();
+  const open = await ld.where('serviceRequests', [['status', 'in', ['received', 'searching']]], { limit: 200 });
+  const ids = open.map(r => r.id);
+  for (let i = 0; i < ids.length; i += 30) await ld.where('assignments', [['reqId', 'in', ids.slice(i, i + 30)]], { limit: 300 });
+  await ld.where('providers', [['status', '==', 'pending']], { limit: 200 });
+  await ld.where('transactions', [['collection', '==', 'pending']], { limit: 300 });
+  const res = runtime.operation({ db: ld.toDb(), roster: [] }, env => env.mp.opsScan());
+  return res.alerts || [];
+}
+
 /** Scheduled every 5 minutes (index.js offersClock): the offers-round clock (MP.tickBidding) over the open bidding
     requests — notify the customer to choose, widen the search, or close the round. Pushes go out like any change. */
 async function tickOffers(backend) {
@@ -345,8 +369,9 @@ async function tickOffers(backend) {
     const res = runtime.operation({ db: ld.toDb(), roster: [] }, env => env.mp.tickBidding());
     if (!res.result || !res.result.length) return { changes: {}, db: null, ids: [] };
     const { changes } = ld.commit(res.db);
-    return { changes, db: res.db, ids: res.result };
+    return { changes, db: res.db, ids: res.result, alerts: res.alerts };
   });
+  if (out.alerts && out.alerts.length) await alerts.ingest(backend, out.alerts);   // «جولة العروض خلصت من غير عروض» → team ops
   if (Object.keys(out.changes).length) {
     await backend.addDoc('audit', { at: new Date().toISOString(), uid: null, actor: null, app: 'system', action: 'offersClock', status: 200, changes: Object.fromEntries(Object.entries(out.changes).map(([k, c]) => [k, { set: c.set.length, del: c.del.length }])) });
     await notifyChanges(backend, out.changes, out.db, null);
@@ -557,4 +582,4 @@ async function importLocal(backend, token, d) {
   return { report, totals: result };
 }
 
-module.exports = { aiIpAllow, AI_IP_DAILY, tickOffers, api, session, importLocal, validateApi, affectedTags, ServiceError, WRITE_LIMIT_PER_MIN };
+module.exports = { aiIpAllow, AI_IP_DAILY, tickOffers, scanOps, api, session, importLocal, validateApi, affectedTags, ServiceError, WRITE_LIMIT_PER_MIN };

@@ -7,7 +7,7 @@ const vm = require('node:vm');
 
 const ROOT = path.resolve(__dirname, '../..');
 const FILES = ['shared/config/legacy-data.js', 'services/local-catalog.js', 'services/local-market-store.js',
-  ...['api-client', 'auth-api', 'orders-api', 'quotes-api', 'catalog-api', 'provider-api', 'customer-api', 'notifications-api', 'support-api', 'finance-api', 'admin-api', 'uploads-api', 'realtime-client'].map(n => `services/${n}.js`)];
+  ...['api-client', 'auth-api', 'orders-api', 'quotes-api', 'catalog-api', 'provider-api', 'customer-api', 'notifications-api', 'support-api', 'finance-api', 'admin-api', 'ops-api', 'uploads-api', 'realtime-client'].map(n => `services/${n}.js`), 'apps/admin/modules/ops-core.js', 'apps/admin/modules/ops-routes.js'];
 const mem = () => { const m = new Map(); return { getItem: k => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), removeItem: k => m.delete(k), clear: () => m.clear() }; };
 
 function boot(extraFiles = [], extraCtx = {}) {

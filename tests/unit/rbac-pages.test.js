@@ -10,8 +10,8 @@ const Emp=require(path.join(root,'apps/admin/pages/employee-details.page.js'));
 const shell=require(path.join(root,'apps/admin/admin-shell.js'));
 const html=fs.readFileSync(path.join(root,'apps/admin/index.html'),'utf8');
 test('roles page rows: one row per role with type, inheritance name, employee count and effective permission count',()=>{
-  R.reset();const rows=Roles.rows();assert.strictEqual(rows.length,5);const m=rows.find(r=>r.id==='moderator');assert.strictEqual(m.inheritsName,'دعم فني');assert.strictEqual(m.typeName,'مخصص');assert.strictEqual(m.employees,2);assert.strictEqual(m.perms,R.effective(R.state.roles,'moderator').length);
-  const o=rows.find(r=>r.id==='owner');assert.strictEqual(o.typeName,'نظام');assert.strictEqual(o.perms,48);assert.strictEqual(rows.reduce((a,r)=>a+r.employees,0),12);assert.strictEqual(rows.find(r=>r.id==='support').inheritsName,'بدون');
+  R.reset();const rows=Roles.rows();assert.strictEqual(rows.length,8,'5 original + ops / content / tech presets');const m=rows.find(r=>r.id==='moderator');assert.strictEqual(m.inheritsName,'دعم فني');assert.strictEqual(m.typeName,'مخصص');assert.strictEqual(m.employees,2);assert.strictEqual(m.perms,R.effective(R.state.roles,'moderator').length);
+  const o=rows.find(r=>r.id==='owner');assert.strictEqual(o.typeName,'نظام');assert.strictEqual(o.perms,72,'18 modules x 4 actions');assert.strictEqual(rows.reduce((a,r)=>a+r.employees,0),12);assert.strictEqual(rows.find(r=>r.id==='support').inheritsName,'بدون');
 });
 test('permissions matrix: one row per module, one column per role, modules/actions labels present, owner column lists all four actions',()=>{
   R.reset();const h=Perm.matrixHtml();assert.strictEqual((h.match(/<tr>/g)||[]).length,1+Object.keys(R.MODULES).length);assert.strictEqual((h.match(/scope="col"/g)||[]).length,1+R.state.roles.length);

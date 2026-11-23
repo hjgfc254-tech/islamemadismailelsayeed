@@ -14,12 +14,13 @@ const ORDER = [
   'services/api-client.js', 'services/auth-api.js', 'services/orders-api.js', 'services/quotes-api.js',
   'services/catalog-api.js', 'services/provider-api.js', 'services/customer-api.js', 'services/notifications-api.js',
   'services/support-api.js', 'services/finance-api.js', 'services/admin-api.js',
+  'apps/admin/modules/ops-core.js', 'apps/admin/modules/ops-routes.js', 'services/ops-api.js',
   'apps/admin/rbac-store.js', 'apps/admin/permission-guard.js',
   'apps/admin/modules/workforce/employee-status.js', 'apps/admin/modules/workforce/employee-form.js', 'apps/admin/modules/workforce/employee-invitation.js'
 ];
 const DB_KEY = 'hs_mp_db';
 /** Collections that are derived at load time and never persisted. */
-const DERIVED = ['services'];
+const DERIVED = ['services', 'alertEvents'];   // alertEvents: demo-only event queue; on the server events leave through HS_ALERT_OUTBOX
 
 let compiled = null;
 function scripts() {
@@ -45,6 +46,7 @@ function createContext(db, roster, rbac) {
     location: { pathname: '/server' }
   };
   ctx.globalThis = ctx;
+  ctx.HS_ALERT_OUTBOX = [];            /* MP.raiseAlert events of this call: functions/src/alerts.js persists and delivers them */
   vm.createContext(ctx);
   for (const s of scripts()) s.runInContext(ctx);
   const run = code => vm.runInContext(code, ctx);
@@ -54,9 +56,9 @@ function createContext(db, roster, rbac) {
     run('(() => { const d = MP.db(); d.providers = []; MP.save ? MP.save() : localStorage.setItem("hs_mp_db", JSON.stringify(d)); })()');
   }
   if (Array.isArray(roster)) ctx.HSAdminRbac.state.roster = roster.map(e => ({ ...e }));
-  if (rbac && Array.isArray(rbac.roles)) ctx.HSAdminRbac.state.roles = JSON.parse(JSON.stringify(rbac.roles));
+  if (rbac && Array.isArray(rbac.roles)) ctx.HSAdminRbac.state.roles = ctx.HSAdminRbac.mergePresets(JSON.parse(JSON.stringify(rbac.roles)));   /* stored catalogues gain the team presets / new modules */
   if (rbac && rbac.overrides) ctx.HSAdminRbac.state.overrides = JSON.parse(JSON.stringify(rbac.overrides));
-  return { ctx, run, mp: run('MP'), client: ctx.HSApiClient };
+  return { ctx, run, mp: run('MP'), client: ctx.HSApiClient, alerts: () => JSON.parse(JSON.stringify(ctx.HS_ALERT_OUTBOX || [])) };
 }
 
 /** The persistable database (derived collections removed) as a plain JSON-safe object. */
@@ -68,19 +70,19 @@ function snapshot(env) {
 
 /**
  * Runs one API request through the app's route table.
- * Returns { envelope, db } where db is the resulting persistable database.
+ * Returns { envelope, db, alerts } where db is the resulting persistable database and alerts the ops-alert events raised.
  */
 async function request({ db, roster, rbac, actor, method, path: p, query, body }) {
   const env = createContext(db, roster, rbac);
   const envelope = await env.client.request(method, p, { query: query || {}, body: body || {}, actor: actor || null });
-  return { envelope: JSON.parse(JSON.stringify(envelope)), db: snapshot(env) };
+  return { envelope: JSON.parse(JSON.stringify(envelope)), db: snapshot(env), alerts: env.alerts() };
 }
 
 /** Runs a named MP operation (used by session bootstrap, e.g. customerFor). */
 function operation({ db, roster, rbac }, fn) {
   const env = createContext(db, roster, rbac);
   const result = fn(env);
-  return { result: result === undefined ? null : JSON.parse(JSON.stringify(result)), db: snapshot(env) };
+  return { result: result === undefined ? null : JSON.parse(JSON.stringify(result)), db: snapshot(env), alerts: env.alerts() };
 }
 
 /** Empty, valid database (what a brand-new backend starts from). */
