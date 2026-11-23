@@ -76,7 +76,7 @@
 /* ════════ Approved identity (Provider Space board): wordmark, deep primary-green sidebar with a lighter
    active pill, light work area; the welcome panel carries the organic green shape. ════════ */
 .pv-brand{font-size:0;color:transparent}
-.pv-brand::before{width:136px;height:36px;border-radius:0;background:url(../../../assets/brand/logo-v10-lockup.webp) no-repeat center/contain;box-shadow:none}
+.pv-brand::before{width:136px;height:36px;border-radius:0;background:url(../../../assets/brand/hsl-lockup.png) no-repeat center/contain;box-shadow:none}
 .pv-brand span{font-size:var(--fs-xs);color:var(--text-muted)}
 @media(min-width:1024px){
   .pv-nav{background:var(--nav-dark-bg);border-inline-end:0}

@@ -9,9 +9,9 @@
   const KEY = 'hs_onboard_v1';
   const IMG = '../../assets/brand/';
   const SLIDES = [
-    { img: 'onboard-1.webp', t: 'فني موثّق لحد باب بيتك', s: 'فنيين بتراجعهم الإدارة قبل ما يشتغلوا، وبيوصلوا في الميعاد اللي اتفقتوا عليه.' },
-    { img: 'onboard-2.webp', t: 'اطلب في دقيقة من مكانك', s: 'اختار المشكلة، واعرف السعر قبل ما تأكد، وتابع الفني خطوة بخطوة.' },
-    { img: 'onboard-3.webp', t: 'شغل نضيف وانت مطمّن', s: 'قيّم الشغل بعد ما يخلص، وادفع كاش للفني — من غير مفاجآت.' }
+    { img: 'hero-tech-v3.jpg', t: 'فني موثّق لحد باب بيتك', s: 'فنيين بتراجعهم الإدارة قبل ما يشتغلوا، وبيوصلوا في الميعاد اللي اتفقتوا عليه.' },
+    { art: ['choose', 'price', 'track'], t: 'اطلب في دقيقة من مكانك', s: 'اختار المشكلة، واعرف السعر قبل ما تأكد، وتابع الفني خطوة بخطوة.' },
+    { art: ['verified', 'rate', 'schedule'], t: 'شغل نضيف وانت مطمّن', s: 'قيّم الشغل بعد ما يخلص، وادفع كاش للفني — من غير مفاجآت.' }
   ];
   const seen = () => { try { return !!localStorage.getItem(KEY); } catch (e) { return true; } };
   const mark = () => { try { localStorage.setItem(KEY, '1'); } catch (e) {} };
@@ -30,7 +30,7 @@
     el.id = 'onboard'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true'); el.setAttribute('aria-label', 'أهلًا بيك في هنصلحلك');
     el.innerHTML = `<div class="ob-track" tabindex="-1">${SLIDES.map((x, i) => `
       <section class="ob-slide" aria-roledescription="شريحة" aria-label="${i + 1} من ${SLIDES.length}">
-        <img src="${IMG + x.img}" alt="" ${i ? 'loading="lazy"' : 'fetchpriority="high"'} decoding="async" draggable="false">
+        ${x.img ? `<img src="${IMG + x.img}" alt="" ${i ? 'loading="lazy"' : 'fetchpriority="high"'} decoding="async" draggable="false">` : `<div class="ob-art" aria-hidden="true">${x.art.map((n) => `<span>${(window.HSBrandIcons && window.HSBrandIcons.svg(n)) || ''}</span>`).join('')}</div>`}   <!-- 2026 identity: brand icons on navy (no old-uniform photos) -->
         <div class="ob-copy"><h2>${x.t}</h2><p>${x.s}</p></div>
       </section>`).join('')}</div>
       <div class="ob-bar">

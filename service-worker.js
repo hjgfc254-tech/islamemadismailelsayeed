@@ -18,7 +18,7 @@
    • CLEAR_CACHE  — مسح كل الكاش (لأدوات العرض التجريبي).
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'hansalhlak-v11-firebase-82';
+const CACHE = 'hansalhlak-v11-firebase-83';
 
 /* الملفات الأساسية — يجب أن تعمل offline بعد أول زيارة */
 const FILES = [
@@ -140,6 +140,10 @@ const FILES = [
   'assets/brand/hero-tech-v2.webp',
   'assets/brand/hero-tech-v3.jpg',
   'assets/brand/hsl-mark.svg',
+  'assets/brand/hsl-lockup.png',
+  'assets/brand/hsl-lockup-light.png',
+  'assets/brand/hsl-word.png',
+  'shared/design-system/brand-2026-tokens.css',
   'assets/brand/onboard-1.webp',
   'assets/brand/trust-handshake.jpg',
 ]

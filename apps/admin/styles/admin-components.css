@@ -277,11 +277,11 @@ th[aria-sort="ascending"] .hs-grid-sort,th[aria-sort="descending"] .hs-grid-sort
 
 /* ════════ Approved identity (Admin Dashboard board): deep primary-green sidebar, light work area,
    pastel panel tints (sand / sage / sky / lilac) on the KPI plates. ════════ */
-.adm-brand-t{display:inline-block;width:128px;height:34px;font-size:0;color:transparent;background:url(../../../assets/brand/logo-v10-lockup.webp) no-repeat center/contain;vertical-align:middle}
+.adm-brand-t{display:inline-block;width:128px;height:34px;font-size:0;color:transparent;background:url(../../../assets/brand/hsl-lockup.png) no-repeat center/contain;vertical-align:middle}
 .adm-side{background:var(--nav-dark-bg);border-inline-end:0;color:var(--on-brand)}
 .adm-side-top{border-bottom-color:var(--nav-dark-line)!important;color:var(--on-brand)}
 .adm-side-top .adm-brand,.adm-side-top .adm-brand small{color:var(--on-brand)}
-.adm-side-top .adm-brand-t{background-image:url(../../../assets/brand/logo-v10-lockup-light.webp)}
+.adm-side-top .adm-brand-t{background-image:url(../../../assets/brand/hsl-lockup-light.png)}
 .adm-group-t{color:var(--nav-dark-muted)}
 .adm-link{color:var(--nav-dark-text)}
 .adm-link svg.i,.adm-link .adm-ico{color:var(--nav-dark-text)}
@@ -405,7 +405,7 @@ label.hs-grid-field:has(> input[type=checkbox])>span{flex:1}
 
 /* 2026-11-20 design pass: (9) live sign-in card with the logo and a solid frame, centred */
 #admin-app>[data-adm-fb-signin],#admin-app>[data-adm-fb-wait]{max-width:var(--adm-signin-w,26rem);margin:12vh auto 0;border:1px solid var(--border-subtle);border-style:solid;box-shadow:var(--shadow-2);background:var(--surface-primary)}
-#admin-app>[data-adm-fb-signin]::before,#admin-app>[data-adm-fb-wait]::before{content:"";display:block;width:var(--sp-8);height:var(--sp-8);margin-inline:auto;background:url(../../../assets/brand/logo-v10-mark.webp) center/contain no-repeat}
+#admin-app>[data-adm-fb-signin]::before,#admin-app>[data-adm-fb-wait]::before{content:"";display:block;width:var(--sp-8);height:var(--sp-8);margin-inline:auto;background:url(../../../assets/brand/hsl-mark.svg) center/contain no-repeat}
 /* (10) the action queue leads «مهام اليوم» */
 .dash-queue{background:var(--surface-secondary);border-color:var(--border-default)}
 .dash-qlist li{position:relative;background:var(--surface-primary);border:1px solid var(--border-subtle)}

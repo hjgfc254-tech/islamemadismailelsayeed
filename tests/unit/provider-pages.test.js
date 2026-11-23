@@ -53,7 +53,7 @@ test('provider stylesheet sizes ic() icons and the entry declares a favicon (P2 
   assert.ok(rule,'provider.css must define the svg.i icon contract');
   for(const decl of ['width:1em','height:1em','fill:none','stroke:currentColor']) assert.ok(rule[1].includes(decl),`svg.i must set ${decl}`);
   const html=fs.readFileSync(path.join(ROOT,'apps/provider/index.html'),'utf8');
-  assert.match(html,/<link rel="icon" type="image\/webp" href="\.\.\/\.\.\/assets\/brand\/logo-v10-mark\.webp">/);   // V10 owner logo mark
+  assert.match(html,/<link rel="icon" type="image\/svg\+xml" href="\.\.\/\.\.\/assets\/brand\/hsl-mark\.svg">/);   // V10 owner logo mark
   assert.ok(fs.existsSync(path.join(ROOT,'assets/brand/logo-v10-mark.webp')));
 });
 

@@ -1,0 +1,31 @@
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════
+   HANSALEHLAK 2026 identity — colour tokens for the WHOLE platform (Customer, Provider, Admin).
+   Navy #0B1F3A + red #E1251B on cool greys (owner decision 2026-11-23). Loaded after design-system.css and
+   each app's own stylesheet, so every component that uses the shared tokens (and their legacy aliases) switches
+   from the V10 ink / copper / cream palette without touching the components themselves.
+   ═══════════════════════════════════════════════════════════════════════════════════════════════ */
+:root{
+  /* legacy palette names → 2026 values */
+  --emerald:#0B1F3A;--emerald-deep:#06142A;--emerald-mid:#15305A;--ivory:#F4F6F9;--mint:#E7EDF6;--mint-strong:#C9D6EA;--charcoal:#0B1F3A;
+  --orange:#E1251B;--sage:#64748B;--sage-ink:#475569;--sage-soft:#EEF2F7;
+  --lavender:#EEF2F7;--lavender-soft:#F7F9FC;
+  --tint-sand:#EEF2F7;--tint-sage:#EDF2F7;--tint-sky:#E7EEF8;--tint-lilac:#FDECEA;
+  /* dark navigation surfaces (Provider / Admin sidebars) */
+  --nav-dark-bg:#0B1F3A;--nav-dark-active:#1E3D6E;--nav-dark-text:rgba(255,255,255,.92);--nav-dark-muted:rgba(255,255,255,.72);
+  --nav-dark-hover:rgba(255,255,255,.08);--nav-dark-line:rgba(255,255,255,.14);--nav-dark-chip:rgba(255,255,255,.12);
+  /* semantic */
+  --brand-primary:#0B1F3A;--brand-primary-strong:#06142A;--brand-primary-hover:#15305A;--brand-primary-soft:#E7EDF6;--on-brand:#FFFFFF;
+  --brand-ink:#0B1F3A;
+  --accent:#E1251B;--accent-hover:#C01810;--accent-soft:#FDECEA;--on-accent:#FFFFFF;--accent-ink:#C01810;
+  --bg-primary:#F4F6F9;--bg-secondary:#EBEFF4;--bg-tertiary:#DFE5EE;
+  --surface-primary:#FFFFFF;--surface-secondary:#F7F9FC;--surface-sunken:#EEF2F7;
+  --text-primary:#0F1B2D;--text-secondary:#3A4A61;--text-muted:#5E6B7E;
+  --border-subtle:#E4E9F0;--border-default:#CBD5E1;--border-strong:#94A3B8;--border-input:#8592A6;
+  --focus-ring:0 0 0 3px rgba(225,37,27,.35);
+  /* legacy aliases */
+  --glow:rgba(11,31,58,.14);--glow-soft:rgba(11,31,58,.07);
+  --canvas:linear-gradient(180deg,#F7F9FC 0,var(--bg-primary) 560px) no-repeat,var(--bg-primary);
+  --blob-accent:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 520' preserveAspectRatio='none'%3E%3Cpath fill='%23E1251B' d='M0 0h520c50 70 90 150 70 250-14 80-40 170 10 270H0z'/%3E%3C/svg%3E");
+  --blob:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 600 520' preserveAspectRatio='none'%3E%3Cpath fill='%230B1F3A' d='M0 0h520c50 70 90 150 70 250-14 80-40 170 10 270H0z'/%3E%3C/svg%3E");
+  --font-display:'Cairo','IBM Plex Sans Arabic',system-ui,sans-serif;
+}

@@ -159,7 +159,10 @@ hansalhlak/
 │   │   │   └── wrench.webp
 │   │   ├── hero-tech-v2.webp
 │   │   ├── hero-tech-v3.jpg
+│   │   ├── hsl-lockup-light.png
+│   │   ├── hsl-lockup.png
 │   │   ├── hsl-mark.svg
+│   │   ├── hsl-word.png
 │   │   ├── logo-v10-lockup-light.webp
 │   │   ├── logo-v10-lockup.webp
 │   │   ├── logo-v10-mark.webp
@@ -589,6 +592,7 @@ hansalhlak/
 │   ├── content/
 │   │   └── site-content.js
 │   ├── design-system/
+│   │   ├── brand-2026-tokens.css
 │   │   ├── components.css
 │   │   ├── design-system.css
 │   │   ├── layout.css

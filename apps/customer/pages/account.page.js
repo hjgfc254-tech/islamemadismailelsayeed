@@ -211,7 +211,7 @@ const Account = (() => {
   /* Sign-in choices are visible up front (owner, 2026-11-15): quick (name + number, no code), email + password, or
      SMS code — plus browsing as a guest. Name + number are always asked (the provider needs a contact). */
   const loginPrompt = () => `<section class="auth-card" aria-labelledby="auth-title">
-    <img class="auth-mark" src="../../assets/brand/logo-v10-mark.webp" alt="" width="56" height="58" decoding="async">
+    <img class="auth-mark" src="../../assets/brand/hsl-mark.svg" alt="" width="56" height="56" decoding="async">
     <h2 id="auth-title" class="auth-title">سجّل دخولك أو أنشئ حسابًا</h2>
     <p class="auth-sub">خطوة واحدة وتقدر تطلب خدمتك وتتابعها.</p>
     <form class="form auth-form" id="loginFormAcc" data-method="quick">

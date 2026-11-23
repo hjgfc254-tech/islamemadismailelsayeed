@@ -3,14 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#1F1B17">
+<meta name="theme-color" content="#0B1F3A">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="هنصلحلك">
 <link rel="apple-touch-icon" href="../../assets/app-icon-192.png">
 <meta name="mobile-web-app-capable" content="yes">
 <title>هنصلحلك — اطلب متخصصًا</title>
 <link rel="manifest" href="../../manifest.json">
-<link rel="icon" type="image/webp" href="../../assets/brand/logo-v10-mark.webp">
+<link rel="icon" type="image/svg+xml" href="../../assets/brand/hsl-mark.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Font CSS loads without blocking the first paint (display=swap shows the system font until it arrives). -->
@@ -19,12 +19,13 @@
 <link rel="stylesheet" href="styles/customer.css">
 <link rel="stylesheet" href="../../shared/design-system/design-system.css">
 <link rel="stylesheet" href="styles/overrides.css">
+<link rel="stylesheet" href="../../shared/design-system/brand-2026-tokens.css">
 <link rel="stylesheet" href="styles/brand-2026.css">
 <script>
 /* الافتتاحية السينمائية: مرة واحدة لكل جلسة. الفحص مبكر لمنع أي وميض عند الدخول الداخلي المتكرر. */
 /* LCP: the home hero photo is rendered by JS after ~45 scripts; preloading it on the home route lets it download in parallel. */
-(function(){try{if(!location.hash||/^#\/?(home)?$/.test(location.hash)){var h=document.createElement('link');h.rel='preload';h.as='image';h.href='../../assets/brand/'+(localStorage.getItem('hs_onboard_v1')?'hero-tech-v2.webp':'onboard-1.webp');   /* first visit: the onboarding photo covers the hero */h.setAttribute('fetchpriority','high');document.head.appendChild(h);}}catch(e){}})();
-(function(){try{var d=document.documentElement;if(sessionStorage.getItem('hs_intro_v1')){d.classList.add('no-intro');}else{sessionStorage.setItem('hs_intro_v1','1');['brand/logo-v10-mark.webp','brand/logo-v10-word.webp'].forEach(function(n){var l=document.createElement('link');l.rel='preload';l.as='image';l.href='../../assets/'+n;document.head.appendChild(l);});}}catch(e){}})();
+(function(){try{if(!location.hash||/^#\/?(home)?$/.test(location.hash)){var h=document.createElement('link');h.rel='preload';h.as='image';h.href='../../assets/brand/'+'hero-tech-v3.jpg';   /* first visit: the onboarding photo covers the hero */h.setAttribute('fetchpriority','high');document.head.appendChild(h);}}catch(e){}})();
+(function(){try{var d=document.documentElement;if(sessionStorage.getItem('hs_intro_v1')){d.classList.add('no-intro');}else{sessionStorage.setItem('hs_intro_v1','1');['brand/hsl-mark.svg','brand/hsl-word.png'].forEach(function(n){var l=document.createElement('link');l.rel='preload';l.as='image';l.href='../../assets/'+n;document.head.appendChild(l);});}}catch(e){}})();
 </script>
 </head>
 <body>
@@ -51,8 +52,8 @@
      Controller: Intro in app.js (once per session, skip, reduced motion). -->
 <div id="intro" role="group" aria-label="هنصلحلك — خدماتك، في تجربة أسهل.">
   <div class="in-stage">
-    <div class="in-markwrap"><div class="in-halo" aria-hidden="true"></div><img class="in-mark main" src="../../assets/brand/logo-v10-mark.webp" alt="" width="368" height="384" decoding="async" draggable="false"></div>
-    <img class="in-word main" src="../../assets/brand/logo-v10-word.webp" alt="هنصلحلك HANSALEHLAK" width="640" height="188" decoding="async" draggable="false">
+    <div class="in-markwrap"><div class="in-halo" aria-hidden="true"></div><img class="in-mark main" src="../../assets/brand/hsl-mark.svg" alt="" width="384" height="384" decoding="async" draggable="false"></div>
+    <img class="in-word main" src="../../assets/brand/hsl-word.png" alt="هنصلحلك HANSALEHLAK" width="288" height="136" decoding="async" draggable="false">
     <p class="in-tag">خدماتك، في تجربة أسهل.</p>
   </div>
   <button type="button" class="in-skip" id="introSkip">تخطي</button>

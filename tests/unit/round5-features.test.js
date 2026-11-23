@@ -320,11 +320,12 @@ test('round 8: an air-conditioner job adds the device to «بيتي» with a mai
 test('first-visit onboarding: three photos, once per device, skipped for returning customers and deep links; new hero photo', () => {
   const src = fs.readFileSync(path.join(ROOT, 'apps/customer/pages/onboarding.js'), 'utf8');
   assert.match(src, /const KEY = 'hs_onboard_v1'/);
-  assert.equal((src.match(/img: 'onboard-\d\.webp'/g) || []).length, 3);
+  /* 2026 identity: slide 1 is the new technician photo, slides 2–3 are brand-icon art (no old-uniform photos) */
+  assert.match(src, /img: 'hero-tech-v3\.jpg'/); assert.equal((src.match(/art: \[/g) || []).length, 2);
   assert.match(src, /track\|provider\|orders/); assert.match(src, /u && u\.phone\) return false/);
-  for (const f of ['onboard-1.webp', 'onboard-2.webp', 'onboard-3.webp', 'hero-tech-v2.webp']) assert.ok(fs.statSync(path.join(ROOT, 'assets/brand', f)).size < 150000, f + ' is light');
+  for (const f of ['hero-tech-v3.jpg', 'hsl-mark.svg', 'hsl-lockup.png']) assert.ok(fs.statSync(path.join(ROOT, 'assets/brand', f)).size < 150000, f + ' is light');
   assert.match(fs.readFileSync(path.join(ROOT, 'apps/customer/index.html'), 'utf8'), /pages\/onboarding\.js/);
-  assert.match(fs.readFileSync(path.join(ROOT, 'apps/customer/app.js'), 'utf8'), /hero-tech-v2\.webp/);
+  assert.match(fs.readFileSync(path.join(ROOT, 'apps/customer/app.js'), 'utf8'), /hero-tech-v3\.jpg/);
 });
 test('AI assist UI: hidden unless the admin enabled it on the real server; admin editors send their data as the request body', () => {
   const src = fs.readFileSync(path.join(ROOT, 'apps/customer/pages/ai-assist.js'), 'utf8');

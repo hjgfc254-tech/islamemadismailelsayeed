@@ -372,7 +372,7 @@ img,svg,video,canvas{max-width:100%}
    underline on the active item, account actions at the end. The bottom bar stays the phone/tablet navigation. */
 @media(min-width:1024px){
   :root{--tab-h:68px}
-  #app:has(>#tabbar)::before{content:"";position:fixed;inset-inline:0;top:0;height:68px;z-index:9;background:var(--surface-primary) url(../../assets/brand/logo-v10-lockup.webp) no-repeat;background-size:auto 40px;background-position:right max(36px,calc((100vw - var(--content-width))/2 + 36px)) center;border-bottom:1px solid var(--border-subtle);box-shadow:var(--shadow-2);pointer-events:none}
+  #app:has(>#tabbar)::before{content:"";position:fixed;inset-inline:0;top:0;height:68px;z-index:9;background:var(--surface-primary) url(../../assets/brand/hsl-lockup.png) no-repeat;background-size:auto 40px;background-position:right max(36px,calc((100vw - var(--content-width))/2 + 36px)) center;border-bottom:1px solid var(--border-subtle);box-shadow:var(--shadow-2);pointer-events:none}
   [dir="ltr"] #app:has(>#tabbar)::before{background-position:left max(36px,calc((100vw - var(--content-width))/2 + 36px)) center}
   #view{padding-top:88px;padding-bottom:48px}
   .topbar{position:fixed;top:12px;left:max(36px,calc((100vw - var(--content-width))/2 + 36px));right:auto;width:auto;height:44px;margin:0;padding:0;display:flex;gap:8px;z-index:31;background:transparent;border:0;-webkit-backdrop-filter:none;backdrop-filter:none;grid-template-columns:1fr auto auto}
