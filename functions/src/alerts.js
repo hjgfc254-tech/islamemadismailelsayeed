@@ -69,30 +69,37 @@ async function pushTo(backend, uids, alert) {
   }
   return sent;
 }
-async function deliver(backend, alert) {
+async function deliver(backend, alert, memo) {
   try {
     if (alert.severity === 'info') return 0;                               // info: in-app only
-    const uids = await teamMembers(backend, alert.team);
-    const owners = alert.team === 'owner' ? [] : alert.severity === 'critical' ? await teamMembers(backend, 'owner') : [];
+    const members = async (t) => { if (memo && memo.has(t)) return memo.get(t); const u = await teamMembers(backend, t); if (memo) memo.set(t, u); return u; };
+    const uids = await members(alert.team);
+    const owners = alert.team === 'owner' ? [] : alert.severity === 'critical' ? await members('owner') : [];
     return await pushTo(backend, [...new Set(uids.concat(owners))], alert);
     /* CHANNELS.whatsapp: send here when the owner enables it (template message to the team's numbers) */
   } catch (e) { log(backend, 'alert delivery failed', e); return 0; }
 }
 
 /** Folds events into opsAlerts (de-duplicated) and delivers the new / upgraded ones. Returns the stored alerts. */
-async function ingest(backend, events) {
+/* opts.quietRepeat (clock scans): a condition that is still true is NOT rewritten every 5 minutes — an open alert with the
+   same or a higher severity is left as it is (cost: the scan used to read + write every open alert on every run). */
+async function ingest(backend, events, opts) {
   const list = (events || []).filter(Boolean);
   if (!list.length) return [];
-  const C = core(), out = [];
+  const C = core(), out = [], quiet = !!(opts && opts.quietRepeat);
+  const memo = new Map();                                   // team → members, computed once per batch
   try {
+    let open = null;
+    if (quiet) open = new Map((await backend.queryDocs('opsAlerts', 'status', 'in', ['open', 'claimed'])).map((x) => [x.id, x.data]));
     for (const ev of list) {
       const e = C.normalizeEvent(ev); if (!e) continue;
       const id = C.alertId(e.dedupeKey);
-      const prev = await backend.getDoc(`opsAlerts/${id}`);
+      const prev = open ? (open.get(id) || null) : await backend.getDoc(`opsAlerts/${id}`);
+      if (quiet && prev && C.SEVERITY_RANK[prev.severity] >= C.SEVERITY_RANK[e.severity]) continue;
       const r = C.upsertAlert(prev, e, Date.now()); if (!r) continue;
       await backend.setDoc(`opsAlerts/${id}`, r.alert);
       out.push(r.alert);
-      if (r.isNew || r.upgraded) await deliver(backend, r.alert);
+      if (r.isNew || r.upgraded) await deliver(backend, r.alert, memo);
     }
   } catch (e) { log(backend, 'alert ingest failed', e); }
   return out;
@@ -157,7 +164,7 @@ async function escalate(backend, now) {
 async function tick(backend, runtimeOp) {
   const out = { raised: 0, escalated: 0 };
   try {
-    if (runtimeOp) { const events = await runtimeOp(); out.raised = (await ingest(backend, events)).length; }
+    if (runtimeOp) { const events = await runtimeOp(); out.raised = (await ingest(backend, events, { quietRepeat: true })).length; }
   } catch (e) { log(backend, 'ops scan failed', e); }
   try { out.escalated = await escalate(backend, Date.now()); } catch (e) { log(backend, 'escalation failed', e); }
   return out;

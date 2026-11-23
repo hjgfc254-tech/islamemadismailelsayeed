@@ -172,7 +172,10 @@ async function syncPlan(ld, actor) {
     await ld.doc('providers', actor.id);
     const as = await ld.where('assignments', [['providerId', '==', actor.id]], { orderBy: ['at', 'desc'], limit: 100 });
     const reqs = await ld.docsIn('serviceRequests', as.map(a => a.reqId));
-    await Promise.all([requestsLite(ld, reqs), ld.docsIn('customers', reqs.map(r => r.customerId)),
+    /* cost: scope.js gives a provider only its own assignments and the customers of jobs it ACCEPTED — other providers'
+       offers on the same requests and the other customers are not read at all */
+    const accepted = new Set(as.filter(a => a.status === 'accepted').map(a => a.reqId));
+    await Promise.all([ld.where('quotes', [['reqId', 'in', reqs.map(r => r.id)]]), ld.docsIn('customers', reqs.filter(r => accepted.has(r.id)).map(r => r.customerId)),
       ld.where('transactions', [['providerId', '==', actor.id]], { orderBy: ['at', 'desc'], limit: 100 }),
       ld.where('reviews', [['providerId', '==', actor.id]], { orderBy: ['at', 'desc'], limit: 50 }), inbox(), filed()]);
   } else if (actor.role === 'admin' && actor.adminRole === 'tech') {
@@ -186,9 +189,16 @@ async function syncPlan(ld, actor) {
       ld.where('notifications', [['to', '==', 'admin']], { orderBy: ['at', 'desc'], limit: 50 })]);
   } else if (actor.role === 'admin') {
     const reqs = await ld.where('serviceRequests', [], { orderBy: ['createdAt', 'desc'], limit: 200 });
-    await Promise.all([requestsLite(ld, reqs), ld.docsIn('customers', reqs.map(r => r.customerId)),
+    /* cost: finished requests (closed / cancelled / failed) bring only their ACCEPTED offer — declined offers of old jobs are
+       not needed on the board; live requests keep every offer. Customers: the latest 300 first, then only the request
+       owners not already loaded (no document read twice). */
+    const done = new Set(['closed', 'cancelled', 'failed']);
+    const live = reqs.filter(r => !done.has(r.status)).map(r => r.id), fin = reqs.filter(r => done.has(r.status)).map(r => r.id);
+    const latestCustomers = ld.where('customers', [], { orderBy: ['createdAt', 'desc'], limit: 300 });
+    const [, asLive, asFin] = await Promise.all([ld.where('quotes', [['reqId', 'in', reqs.map(r => r.id)]]), ld.where('assignments', [['reqId', 'in', live]]),
+      ld.where('assignments', [['reqId', 'in', fin], ['status', '==', 'accepted']]), latestCustomers]);
+    await Promise.all([ld.docsIn('providers', asLive.concat(asFin).filter(a => a.status === 'accepted').map(a => a.providerId)), ld.docsIn('customers', reqs.map(r => r.customerId)),
       ld.where('providers', [], { orderBy: ['createdAt', 'desc'], limit: 300 }),
-      ld.where('customers', [], { orderBy: ['createdAt', 'desc'], limit: 300 }),
       ld.where('complaints', [], { orderBy: ['at', 'desc'], limit: 200 }),
       ld.where('transactions', [], { orderBy: ['at', 'desc'], limit: 200 }),
       ld.where('reviews', [], { orderBy: ['at', 'desc'], limit: 200 }),

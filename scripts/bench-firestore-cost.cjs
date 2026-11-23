@@ -29,7 +29,7 @@ function seed() {
   let a = 0, q = 0;
   for (let i = 0; i < N.requests; i++) {
     const open = i >= N.requests - N.open;
-    s[`requests/r${i}`] = { id: 'r' + i, no: i + 1, customerId: 'c' + (i % N.customers), createdAt: iso(i), status: open ? 'received' : 'completed', cat: 'electric', gov: 'القاهرة', area: 'مدينة نصر', phone: phoneOf('010', i % N.customers), addr: 'شارع ' + i, history: [], chat: [], _k: i };
+    s[`requests/r${i}`] = { id: 'r' + i, no: i + 1, customerId: 'c' + (i % N.customers), createdAt: iso(i), status: open ? 'received' : 'closed', cat: 'electric', gov: 'القاهرة', area: 'مدينة نصر', phone: phoneOf('010', i % N.customers), addr: 'شارع ' + i, history: [], chat: [], _k: i };
     for (let k = 0; k < 3; k++) s[`assignments/a${a}`] = { id: 'a' + a++, reqId: 'r' + i, providerId: 'p' + ((i + k) % 180), status: open ? 'offered' : k === 0 ? 'accepted' : 'declined', at: iso(i), _k: a };
     if (!open) s[`quotes/q${q}`] = { id: 'q' + q++, reqId: 'r' + i, providerId: 'p' + (i % 180), status: 'approved', at: iso(i), _k: q };
   }
@@ -95,15 +95,19 @@ async function main() {
   rows.push(await measure('guest_open', (b) => sync(b, null, 'customer'), warmAll));
   rows.push(await measure('customer_new_request', (b) => service.api(b, { auth: CUSTOMER, data: { app: 'customer', method: 'POST', path: '/requests', body: REQ } }), async (b) => { await warmAll(b); await sync(b, CUSTOMER, 'customer'); }));
   rows.push(await measure('clock_offers_run', (b) => service.tickOffers(b)));
-  rows.push(await measure('clock_ops_scan_run', async (b) => { const ev = await service.scanOps(b); await alerts.ingest(b, ev); }));
+  /* steady state: the second run of a clock (the first one already raised the alerts / stored health) */
+  const opsTick = (b) => (alerts.tick ? alerts.tick(b, () => service.scanOps(b)) : service.scanOps(b).then((ev) => alerts.ingest(b, ev)));
+  rows.push(await measure('clock_ops_scan_run', opsTick, opsTick));
   rows.push(await measure('clock_escalate_run', (b) => alerts.escalate(b, Date.now())));
-  rows.push(await measure('clock_health_run', (b) => tech.healthTick(b, Date.now() + Math.floor(Math.random() * 1000))));
+  const H0 = Date.now();
+  rows.push(await measure('clock_health_hourly', (b) => tech.healthTick(b, H0)));
+  rows.push(await measure('clock_health_run', (b) => tech.healthTick(b, H0 + 10 * 60000), (b) => tech.healthTick(b, H0)));
   return rows;
 }
 
 /* daily model for ~1000 users (assumptions printed with the result) */
 const DAY = { admin_signin: 50, admin_resync_after_change: 2400, customer_signin: 300, provider_signin: 150, guest_open: 500, customer_new_request: 100,
-  clock_offers_run: 288, clock_ops_scan_run: 288, clock_escalate_run: 288, clock_health_run: 144 };
+  clock_offers_run: 288, clock_ops_scan_run: 288, clock_escalate_run: 288, clock_health_hourly: 24, clock_health_run: 120 };
 const PRICE = { read: 0.06 / 100000, write: 0.18 / 100000 };
 
 main().then((rows) => {
