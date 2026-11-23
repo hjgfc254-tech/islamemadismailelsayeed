@@ -40,10 +40,14 @@ hansalhlak/
 │   │   │   ├── digest-settings.js
 │   │   │   ├── marketing-editor.js
 │   │   │   ├── mini-charts.js
+│   │   │   ├── ops-center.js
+│   │   │   ├── ops-core.js
+│   │   │   ├── ops-routes.js
 │   │   │   ├── site-content-editor.js
 │   │   │   └── support-settings.js
 │   │   ├── pages/
 │   │   │   ├── admin-dashboard.page.js
+│   │   │   ├── alerts.page.js
 │   │   │   ├── audit-log.page.js
 │   │   │   ├── categories-management.page.js
 │   │   │   ├── commissions.page.js
@@ -461,10 +465,12 @@ hansalhlak/
 │   │   ├── apps/
 │   │   │   └── admin/
 │   │   │       ├── modules/
-│   │   │       │   └── workforce/
-│   │   │       │       ├── employee-form.js
-│   │   │       │       ├── employee-invitation.js
-│   │   │       │       └── employee-status.js
+│   │   │       │   ├── workforce/
+│   │   │       │   │   ├── employee-form.js
+│   │   │       │   │   ├── employee-invitation.js
+│   │   │       │   │   └── employee-status.js
+│   │   │       │   ├── ops-core.js
+│   │   │       │   └── ops-routes.js
 │   │   │       ├── permission-guard.js
 │   │   │       └── rbac-store.js
 │   │   ├── services/
@@ -477,6 +483,7 @@ hansalhlak/
 │   │   │   ├── local-catalog.js
 │   │   │   ├── local-market-store.js
 │   │   │   ├── notifications-api.js
+│   │   │   ├── ops-api.js
 │   │   │   ├── orders-api.js
 │   │   │   ├── provider-api.js
 │   │   │   ├── quotes-api.js
@@ -490,6 +497,7 @@ hansalhlak/
 │   │   ├── admin-extra.js
 │   │   ├── ai.js
 │   │   ├── alerts-adapter.js
+│   │   ├── alerts.js
 │   │   ├── content.js
 │   │   ├── digest-admin.js
 │   │   ├── digest.js
@@ -541,6 +549,7 @@ hansalhlak/
 │   ├── local-catalog.js
 │   ├── local-market-store.js
 │   ├── notifications-api.js
+│   ├── ops-api.js
 │   ├── orders-api.js
 │   ├── provider-api.js
 │   ├── quotes-api.js
@@ -725,6 +734,7 @@ hansalhlak/
 │       ├── support-contacts-policy.test.js
 │       ├── sw-cache-guard.test.js
 │       ├── system-settings.test.js
+│       ├── teams-alerts.test.js
 │       ├── tech-center.test.js
 │       ├── tree.test.js
 │       ├── trust-ui.test.js
