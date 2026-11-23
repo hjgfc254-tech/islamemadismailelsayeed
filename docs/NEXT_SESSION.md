@@ -49,3 +49,18 @@ tech / content admin syncs skip the records they never receive; alert bell polls
 Next candidates (not done): change signals still wake EVERY active admin for every marketplace change (full admin sync,
 up to ~1.5k reads at scale) — move admins to a delta / "changed collections" sync; rateLimits costs 1 read + 1 write per
 mutation (in-memory limiter would remove it, with weaker cross-instance limits).
+
+## Database re-engineering for cost (2026-11-23) — `npm run bench:cost`
+Benchmark = the real server code over an in-memory marketplace of ~1,000 users (800 customers, 200 providers, 2,400
+requests); daily model: 50 admin sign-ins, 2,400 admin re-syncs, 300 customer / 150 provider sign-ins, 100 new requests,
+all clocks. Before → after: reads/month 188.4M → 6.4M (−96.6 %), writes 227k → 39k (−83 %), ≈ $113 → $4 per month.
+1. Admin delta sync: every committed document carries `_u` (last change, ms); after the first full sync the Admin app
+   asks only for documents with `_u > since` (plan.js deltaPlan; 1 bounded query per collection; overflow / error → full).
+   Deletions and workforce changes send `{full: true}` on the signal. Index: notifications (to, _u). 2,287 → 13 reads.
+2. Provider ranking stats on the provider document (`stats {n,sum,dec,ok}`, functions/src/provider-stats.js), kept
+   exact at commit; history read once per provider (backfill). New request: 5,051 → 111 reads.
+3. Order-insensitive change detection in PartialDb.commit (no rewrite of unchanged documents).
+4. Clock alert repeats are not rewritten; team members / tokens cached per batch; admin list cached 60 s.
+5. Provider sync reads only its own offers + accepted customers (305 → 159); admin full sync reads only the accepted
+   offer of finished requests and no customer twice (2,288 → 1,728).
+Note: finished requests on the Admin board no longer carry their declined offers (only the accepted one).

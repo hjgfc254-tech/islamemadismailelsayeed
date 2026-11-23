@@ -363,10 +363,10 @@ async function api(backend, { auth, data, ip }) {
 
 /** alertsClock (index.js, every 5 min): MP.opsScan over just the records it needs (read-only) → the raised alert events
     (requests without a provider > 30 min, providers pending > 1 day, commissions uncollected > 7 days). */
-async function scanOps(backend) {
+async function scanOps(backend, at) {
   /* cost: every 5 minutes only the open requests are checked; the slow checks (providers waiting > 1 day, commissions
      uncollected > 7 days) run once an hour. Nothing open and not the hourly slot → 1 read, no runtime. */
-  const now = Date.now(), hourly = new Date(now).getUTCMinutes() < 5;
+  const now = at || Date.now(), hourly = new Date(now).getUTCMinutes() < 5;
   const ld = new PartialDb(backend.adapter, null);
   const open = await ld.where('serviceRequests', [['status', 'in', ['received', 'searching']]], { limit: 200 });
   const stale = open.filter(r => now - (Date.parse(r.createdAt) || now) >= 30 * 60000);
@@ -442,7 +442,11 @@ async function session(backend, { auth, data, ip }) {
       /* Admin delta sync: only what changed since the client's previous sync (plan.js deltaPlan); full sync otherwise */
       const since = +d.since || 0;
       let delta = !!(actor && actor.role === 'admin' && since > syncStart - DELTA_MAX_AGE_MS && since < syncStart);
-      if (delta && (await deltaPlan(ld, actor, since)).overflow) { delta = false; ld = new PartialDb(backend.adapter, null); }
+      if (delta) {
+        let overflow = true;
+        try { overflow = (await deltaPlan(ld, actor, since)).overflow; } catch (e) { if (backend.log) backend.log('delta sync fell back to full', e && e.message); }   // e.g. index still building
+        if (overflow) { delta = false; ld = new PartialDb(backend.adapter, null); }
+      }
       if (!delta) await syncPlan(ld, actor);
       if (ld.publicToSave) {     // (re)build of the public summary — one small write, then every sync reads 1 doc
         const snap = ld.publicToSave; ld.publicToSave = null;

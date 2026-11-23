@@ -96,8 +96,10 @@ async function main() {
   rows.push(await measure('customer_new_request', (b) => service.api(b, { auth: CUSTOMER, data: { app: 'customer', method: 'POST', path: '/requests', body: REQ } }), async (b) => { await warmAll(b); await sync(b, CUSTOMER, 'customer'); }));
   rows.push(await measure('clock_offers_run', (b) => service.tickOffers(b)));
   /* steady state: the second run of a clock (the first one already raised the alerts / stored health) */
-  const opsTick = (b) => (alerts.tick ? alerts.tick(b, () => service.scanOps(b)) : service.scanOps(b).then((ev) => alerts.ingest(b, ev)));
-  rows.push(await measure('clock_ops_scan_run', opsTick, opsTick));
+  const MID = Date.UTC(2026, 10, 23, 10, 20), TOP = Date.UTC(2026, 10, 23, 11, 1);   // a normal 5-minute run and the hourly one
+  const opsTick = (at) => (b) => (alerts.tick ? alerts.tick(b, () => service.scanOps(b, at)) : service.scanOps(b, at).then((ev) => alerts.ingest(b, ev)));
+  rows.push(await measure('clock_ops_scan_run', opsTick(MID), opsTick(MID)));
+  rows.push(await measure('clock_ops_scan_hourly', opsTick(TOP), opsTick(MID)));
   rows.push(await measure('clock_escalate_run', (b) => alerts.escalate(b, Date.now())));
   const H0 = Date.now();
   rows.push(await measure('clock_health_hourly', (b) => tech.healthTick(b, H0)));
@@ -107,7 +109,7 @@ async function main() {
 
 /* daily model for ~1000 users (assumptions printed with the result) */
 const DAY = { admin_signin: 50, admin_resync_after_change: 2400, customer_signin: 300, provider_signin: 150, guest_open: 500, customer_new_request: 100,
-  clock_offers_run: 288, clock_ops_scan_run: 288, clock_escalate_run: 288, clock_health_hourly: 24, clock_health_run: 120 };
+  clock_offers_run: 288, clock_ops_scan_run: 264, clock_ops_scan_hourly: 24, clock_escalate_run: 288, clock_health_hourly: 24, clock_health_run: 120 };
 const PRICE = { read: 0.06 / 100000, write: 0.18 / 100000 };
 
 main().then((rows) => {

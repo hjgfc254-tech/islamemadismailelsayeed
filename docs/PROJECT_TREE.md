@@ -507,6 +507,7 @@ hansalhlak/
 │   │   ├── owner-alerts.js
 │   │   ├── partial.js
 │   │   ├── plan.js
+│   │   ├── provider-stats.js
 │   │   ├── runtime.js
 │   │   ├── scope.js
 │   │   ├── service.js
@@ -526,6 +527,7 @@ hansalhlak/
 │   └── terms.html
 ├── scripts/
 │   ├── agent-guard.cjs
+│   ├── bench-firestore-cost.cjs
 │   ├── build-lucide-icons.cjs
 │   ├── build-project-reference.cjs
 │   ├── coverage-map.cjs

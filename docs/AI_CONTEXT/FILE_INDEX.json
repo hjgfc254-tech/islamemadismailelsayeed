@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 657,
+  "file_count": 659,
   "files": [
     {
       "path": "_redirects",
@@ -2253,8 +2253,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 294975,
-      "sha256": "0779851126739cf3069c80e73b862c2fd98e06be840f15d2370365edcef4a3fe"
+      "bytes": 295457,
+      "sha256": "97abb27168c33b674b9eb45af851935d83deb89ac4ab7af33948e678b739000c"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2267,8 +2267,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 164744,
-      "sha256": "35e1f98940a33049fbb765c2623d03c44323d36958b08b56db5d97a821cc035e"
+      "bytes": 165171,
+      "sha256": "a9e8c443e31365f7a50d9a85628966015e56cd6acdc8d09f852c6e8b0746a0b4"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2673,8 +2673,8 @@
       "path": "docs/NEXT_SESSION.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 2964,
-      "sha256": "8edcaf2d6af1515a986da76652277e211907df04a56ce496aa0e10abf3c9e1fa"
+      "bytes": 5536,
+      "sha256": "54b1c56d6e425200266e13468ca7c35df2fc2f6e5892e3976bbc5fa65a340b8f"
     },
     {
       "path": "docs/PERMISSIONS.md",
@@ -2701,8 +2701,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 31118,
-      "sha256": "70dc76e23abee0da0985f5489c54e01771565a60235eb8b6b337aa1358cd8100"
+      "bytes": 31199,
+      "sha256": "c67b6411f12c0d4e65aa2600dd6721e398e8176c122e44ac107ca18e3a9c59bb"
     },
     {
       "path": "docs/README.md",
@@ -2743,8 +2743,8 @@
       "path": "firestore.indexes.json",
       "area": "firestore.indexes.json",
       "status": "NEEDS_REVIEW",
-      "bytes": 5405,
-      "sha256": "9abcc301d8922a3f80709d0dfbfa676851747c5b9b77c813cf0c0961a32a2d20"
+      "bytes": 5681,
+      "sha256": "ac993a2bdfb78c86dcf43fcdc2c30a96095ca21850fe8ee245d1a72db546f339"
     },
     {
       "path": "firestore.rules",
@@ -2821,7 +2821,7 @@
       "area": "functions",
       "status": "NEEDS_REVIEW",
       "bytes": 2360,
-      "sha256": "0c60d012563651d7f3f5ba9c1b0489ccdea23dbb6bd225b95f073b95677d14fa"
+      "sha256": "7e5eba2b82131dab5d22d4e862f4ea5b828226903e4eb66e5650f3293f137440"
     },
     {
       "path": "functions/domain/services/admin-api.js",
@@ -2876,8 +2876,8 @@
       "path": "functions/domain/services/local-market-store.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 89003,
-      "sha256": "d4ff586353354e096e8678fae97265da807ca405b596f7f403f78be5a8d0f7d8"
+      "bytes": 89545,
+      "sha256": "fd247783326eab276f23a0a5f56c708038441f90db973393281aa71c3eca5892"
     },
     {
       "path": "functions/domain/services/notifications-api.js",
@@ -2932,8 +2932,8 @@
       "path": "functions/index.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 9894,
-      "sha256": "2340011742c5d70a4f3acce6d1fdfd77f97220590f03507a4baa5d1355715045"
+      "bytes": 9996,
+      "sha256": "089d71f3465cfdfb4f6081f2b7da5e168bdb6ea98e749cbf3b4aa1b7a208c557"
     },
     {
       "path": "functions/package-lock.json",
@@ -2981,8 +2981,8 @@
       "path": "functions/src/alerts.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 10083,
-      "sha256": "c061fd5771f8b4674214c17e65be803c13e22d7df19fa5b68da52b53944f5ce7"
+      "bytes": 10933,
+      "sha256": "ddce9806994867fd0e21bc721b25e5250d80866ae1d789d250fe289623a77115"
     },
     {
       "path": "functions/src/content.js",
@@ -3037,15 +3037,22 @@
       "path": "functions/src/partial.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 12796,
-      "sha256": "1d1fd20ebada8b79583372ec86c0efb9b9acababf20a621c422541c58fa6917f"
+      "bytes": 13607,
+      "sha256": "7556009f6157cc3d4fc2115d9e63aa2c625f775bbdd47a1079e536c3fee6f242"
     },
     {
       "path": "functions/src/plan.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 13388,
-      "sha256": "f4a2fe7f1b802fcbb92a2096a08ad75ab6cfd64eef14bba46f11e5ea0fc8c66e"
+      "bytes": 16158,
+      "sha256": "61140f0c07371ef9c14c2952b7997df3dda7c3cc43eb4a3aa81257a63f2dabda"
+    },
+    {
+      "path": "functions/src/provider-stats.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 4221,
+      "sha256": "85cb192b29f83a86f61ecbefaecbb1eba39de9610efcc048fc0c19837fc0adc4"
     },
     {
       "path": "functions/src/runtime.js",
@@ -3065,8 +3072,8 @@
       "path": "functions/src/service.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 43675,
-      "sha256": "e118a72d1cdd8eeb66374160f2db0c4829acaf73e98a9751c5e76485d50293ca"
+      "bytes": 45674,
+      "sha256": "db3c7a201c2d8e345e7ece134edbdbf865aafd8a67779e77d3a5eb05601abb3c"
     },
     {
       "path": "functions/src/store.js",
@@ -3149,8 +3156,8 @@
       "path": "package.json",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 1464,
-      "sha256": "21a2c36f18e2a4c36f40be5828985851fea5ccd923863371b0b8a01b5ae6b5d7"
+      "bytes": 1540,
+      "sha256": "69829816c99d7db55d4f68c439f989253f923604a90b3e28c2bdb115b4dc5e4f"
     },
     {
       "path": "README.md",
@@ -3165,6 +3172,13 @@
       "status": "NEEDS_REVIEW",
       "bytes": 2883,
       "sha256": "aac6140740f61e1e0e61faad2c7b89926b14c1f8e05a8fd11a3ed9ba399bc601"
+    },
+    {
+      "path": "scripts/bench-firestore-cost.cjs",
+      "area": "scripts",
+      "status": "NEEDS_REVIEW",
+      "bytes": 10386,
+      "sha256": "fe4d3a539b3eaf5b61357a523904d522be90d785c629af4a02b87291a8045d98"
     },
     {
       "path": "scripts/build-lucide-icons.cjs",
@@ -3241,14 +3255,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 11359,
-      "sha256": "f0f1699d277e02d15d9b38867aea3dbe1b117f1ee3ba0633657da877eb37caf2"
+      "sha256": "e7a07459ae7d020db8ba46bad730b413aefc8f61372cde06297168e4a6ed8723"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "76935474b971f2494f3aa158cd639814d21f464f8391bf0054e2a6faa428f7df"
+      "sha256": "d15fcef3fc48215dfd75922c5b5ad9f75a200ff5aa05d74210d6950e21b97692"
     },
     {
       "path": "services/admin-api.js",
@@ -3296,8 +3310,8 @@
       "path": "services/firebase-backend.js",
       "area": "services",
       "status": "NEEDS_REVIEW",
-      "bytes": 36713,
-      "sha256": "124a7a5e2e0cb6739e594e7aec1cf9d7dc816d96cdddb6926f9963dce4d1f897"
+      "bytes": 38704,
+      "sha256": "9e2ed46591e36035ea86ef4f3f466d0f07f7a24c239eb4ad575207e3c8339bd1"
     },
     {
       "path": "services/firebase-config.js",
@@ -3324,8 +3338,8 @@
       "path": "services/local-market-store.js",
       "area": "services",
       "status": "IMPLEMENTED",
-      "bytes": 89003,
-      "sha256": "d4ff586353354e096e8678fae97265da807ca405b596f7f403f78be5a8d0f7d8"
+      "bytes": 89545,
+      "sha256": "fd247783326eab276f23a0a5f56c708038441f90db973393281aa71c3eca5892"
     },
     {
       "path": "services/notifications-api.js",
@@ -4024,8 +4038,8 @@
       "path": "tests/unit/cost-reductions.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 2948,
-      "sha256": "18c2f61aabb96282e1a0c90f56a037ea4ee652c67ca747d897fd464e098de451"
+      "bytes": 6245,
+      "sha256": "56f79c9d63fe3884b593fe592cc6d5403f00f5240f82392907a17e07d4750476"
     },
     {
       "path": "tests/unit/customer-page-renderers.test.js",
@@ -4164,8 +4178,8 @@
       "path": "tests/unit/firebase-integration-contract.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 8312,
-      "sha256": "b61840daf4dcd96514a95c62900b0c0c478fbf65c0d120b6afba7665aabbe6f2"
+      "bytes": 8492,
+      "sha256": "054d2aa7698d9a014f46e7c403294b0eb7ec5e9e49c4ec6f88902aa5da03223f"
     },
     {
       "path": "tests/unit/firebase-mode-data.test.js",
