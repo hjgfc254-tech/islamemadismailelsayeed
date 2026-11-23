@@ -622,8 +622,8 @@
       "path": "apps/customer/pages/home.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 10553,
-      "sha256": "d179510e46481c69c970af82a6c90eead63cfee7569acff7371da0077f04b532"
+      "bytes": 10540,
+      "sha256": "4e3b5a4e47320bebe2bb6b85be0de79967014620bf1df0d23e6953737764e6c0"
     },
     {
       "path": "apps/customer/pages/live-map.js",
@@ -727,8 +727,8 @@
       "path": "apps/customer/styles/brand-2026.css",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 16564,
-      "sha256": "57e3390bf6e36dac02c637565e1f7c10a74f1466d8d06fd45ea461f8a90c1868"
+      "bytes": 20801,
+      "sha256": "99ed4de2f67291b7fe42400b07d108e012fab59378051c09e7f8690530ba0eae"
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -3297,14 +3297,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 11500,
-      "sha256": "678c9e88d13027dc1675246b4385a232a6456adcb6b536be6013f40b65c63495"
+      "sha256": "9e09a989f7833158aa572cd25ee6c7841733b5ea1f9fb93233d3f1bb0d148f27"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "e690ea3c9b4b344abff09ad412e44910988563b8267355a45f765c5909e1aba2"
+      "sha256": "33e23719157579553bb14ddbe6f2a19f8f10ccc3b04a4c7f5535d2829b198b3b"
     },
     {
       "path": "services/admin-api.js",
@@ -4087,8 +4087,8 @@
       "path": "tests/unit/customer-page-renderers.test.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 6278,
-      "sha256": "132353cefb8374a9f54e86a5257bc919b0333dc71f17fd0b70224e182ac68724"
+      "bytes": 6285,
+      "sha256": "836ed5878b717014ef57c32a8af7cefed02e003e9d1672e00841f2bb24497793"
     },
     {
       "path": "tests/unit/customer-polish.test.js",
@@ -4241,8 +4241,8 @@
       "path": "tests/unit/home.test.js",
       "area": "tests",
       "status": "IMPLEMENTED",
-      "bytes": 10278,
-      "sha256": "5969fa19dbd58f57ecffea6dcf566e03fec1f683190e857be27ce2a35406c417"
+      "bytes": 10393,
+      "sha256": "25c13e0af78dbce81711a2421bf188061bd8ca109a678318b345a732e8561d98"
     },
     {
       "path": "tests/unit/icon-asset-audit.test.js",

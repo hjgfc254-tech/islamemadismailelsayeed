@@ -57,7 +57,7 @@ ok(view().includes('طلباتك النشطة')&&view().includes('act-card')&&vi
 ok(view().includes('عندك طلب واحد'),'greeting counts active');
 ok(els['#tabbar'].innerHTML.includes('tab-badge'),'tab badge for active orders');
 ok(/data-go="orders"[^>]*aria-label="طلباتي — 1 نشطة"/.test(els['#tabbar'].innerHTML),'orders tab aria-label includes count');
-ok(view().includes('class="n">1'),'quick action count');
+ok(!view().includes('class="qa"')&&view().includes('data-act="cam"'),'2026 Home: the quick-actions row is folded into the search (camera) and the tab bar (orders badge)');
 /* إجراء مطلوب من العميل */
 run("__r.status='quote'; show('home')");
 ok(/act-card glass neon need/.test(view())&&view().includes('مطلوب موافقتك على السعر'),'needs-action highlighted for quote');

@@ -189,3 +189,48 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 /* tab bar labels never wrap */
 #tabbar .tab span{white-space:nowrap;font-size:clamp(10.5px,3vw,12.5px)}
 .tab.tab-fab .fab{width:clamp(50px,15vw,58px);height:clamp(50px,15vw,58px)}
+
+/* ═════ round 3 (owner, 2026-11-23): one rhythm, search on the photo, the whole page in the new identity ═════ */
+#view .home-v3{gap:clamp(18px,5.6vw,24px)}
+/* hero: greeting as a small eyebrow, more room at the bottom for the search that rides on it */
+#view .home-v3 .hero{padding-bottom:clamp(46px,13vw,60px)}
+#view .home-v3 .hero::before{background:linear-gradient(90deg,rgba(11,31,58,.96) 0%,rgba(11,31,58,.86) 40%,rgba(11,31,58,.3) 64%,rgba(11,31,58,0) 82%),
+  linear-gradient(0deg,rgba(11,31,58,.7) 0%,rgba(11,31,58,0) 40%)}
+#view .home-v3 .hero .greet{display:block;margin:0 0 6px;padding:0}
+#view .home-v3 .hero .greet b{display:block;font-family:var(--font-display);font-size:clamp(12px,3.4vw,14px);font-weight:700;color:#FFB4AC}
+#view .home-v3 .hero .greet small{display:none}
+/* search: a white pill overlapping the bottom of the photo, the camera inside it */
+#view .home-v3 .hero-search{position:relative;z-index:3;margin-top:calc(-1 * clamp(34px,10vw,42px));padding:0 2px}
+#view .home-v3 .hero-search .field{height:clamp(50px,14vw,56px);border-radius:999px;padding:0 6px 0 16px;border:0;box-shadow:0 10px 28px rgba(11,31,58,.16)}
+#view .home-v3 .hero-search .field>svg{width:20px;height:20px;color:var(--text-muted);flex:none}
+#view .home-v3 .hero-search .cam{flex:none;width:clamp(38px,11vw,44px);height:clamp(38px,11vw,44px);border-radius:50%;background:var(--hs-navy);color:#fff;border:0;display:grid;place-items:center}
+#view .home-v3 .hero-search .cam svg{width:20px;height:20px}
+/* trust: a light row, no card */
+#view .home-v3 .trust-strip{margin:0;padding:0 2px;background:none;box-shadow:none;border-radius:0}
+#view .home-v3 .trust-strip li{flex-direction:row;justify-content:center;gap:6px;font-size:clamp(10.5px,3vw,12px);font-weight:700;color:var(--text-secondary);text-align:start}
+#view .home-v3 .trust-strip li+li{border-inline-start:1px solid var(--hs-line)}
+#view .home-v3 .trust-strip li svg.bi{width:clamp(20px,6vw,24px);height:clamp(20px,6vw,24px);flex:none}
+#view .home-v3 .sec-head{margin-bottom:12px}
+
+/* section titles everywhere on Home: no tinted icon box, red icon */
+#view .home-v3 .sec-title{display:flex;align-items:center;gap:8px;margin:0 2px 12px}
+#view .home-v3 .sec-title .i,#view .home-v3 .sec-title>svg{width:22px;height:22px;padding:0;background:none;box-shadow:none;border:0;border-radius:0;color:var(--hs-red);--ic-a:var(--hs-red)}
+/* common problems / icon cards: white cards, navy icons on a light navy tile */
+#view .home-v3 .cp,#view .home-v3 .icard,#view .home-v3 .prow{background:var(--surface-primary);border:1px solid var(--hs-line);box-shadow:var(--hs-shadow);border-radius:16px}
+#view .home-v3 .cp .ip,#view .home-v3 .icard .ip,#view .home-v3 .prow .ip,#view .home-v3 .cp .ip:not(.ph){background:var(--brand-primary-soft);box-shadow:none;color:var(--hs-navy);--ic-a:var(--hs-red)}
+#view .home-v3 .cp .tx{font-family:var(--font-display);font-weight:700;color:var(--text-primary)}
+/* «امتى محتاج الفني؟» chips */
+#view .home-v3 .chip{background:var(--surface-primary);border:1.5px solid var(--hs-line);color:var(--text-primary);font-weight:700}
+#view .home-v3 .when-pick .chip[aria-checked="true"]{background:var(--hs-navy);border-color:var(--hs-navy);color:#fff}
+/* join card */
+#view .home-v3 .join{background:var(--surface-primary);border:1px solid var(--hs-line);box-shadow:var(--hs-shadow);border-radius:18px;margin-top:0}
+#view .home-v3 .join>.i,#view .home-v3 .join>svg{color:var(--hs-red);background:var(--hs-red-soft);border-radius:12px;padding:8px;width:40px;height:40px;box-shadow:none}
+#view .home-v3 .join .tag{background:var(--hs-red);color:#fff;border-radius:999px;border:0}
+/* footer: navy, white text */
+#view .home-v3 .site-foot{background:var(--hs-navy);border:0;color:#fff;margin-top:0}
+#view .home-v3 .site-foot .hs-logo{color:#fff}
+#view .home-v3 .site-foot p,#view .home-v3 .site-foot small{color:rgba(255,255,255,.75)}
+#view .home-v3 .site-foot .foot-cols b{color:#fff}
+#view .home-v3 .site-foot .foot-cols button,#view .home-v3 .site-foot .foot-cols a{color:rgba(255,255,255,.86);background:none}
+#view .home-v3 .site-foot .foot-bottom{border-color:rgba(255,255,255,.14)}
+#view .home-v3 .cp-grid{margin-top:0}
