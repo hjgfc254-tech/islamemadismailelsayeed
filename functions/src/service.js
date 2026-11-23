@@ -165,8 +165,15 @@ async function pushFresh(backend, changes, db, uidsByTag) {
 
 async function linkUser(backend, uid, actor, app) {
   if (!uid || !actor) return;
+  /* cost: every sync used to rewrite users/{uid} (one write per app open / re-sync). Now once per instance per account
+     unless the link changes; the link only needs to exist and be current for the change signals. */
+  const sig = tagOf(actor) + '|' + app;
+  if (linkMemo.get(uid) === sig) return;
   await backend.setDoc(`users/${uid}`, { tag: tagOf(actor), role: actor.role, refId: actor.id, app, updatedAt: new Date().toISOString() }, true);
+  if (linkMemo.size > 20000) linkMemo.clear();
+  linkMemo.set(uid, sig);
 }
+const linkMemo = new Map();
 
 /** A provider sees a request's contact details (phone, address, location) only after accepting it — API responses
     follow the same rule as the scoped sync. */
@@ -334,6 +341,7 @@ async function api(backend, { auth, data, ip }) {
   if (out.envelope.ok && req.method === 'DELETE' && ['/customers/me', '/providers/me'].includes(req.path) && token) {
     /* account deletion: the Firebase Auth account, the user link and this user's push tokens go too */
     try { const toks = await backend.queryDocs('pushTokens', 'uid', '==', token.uid); for (const x of toks) await backend.deleteDoc(`pushTokens/${x.id}`); } catch (e) { if (backend.log) backend.log('push token cleanup failed', e && e.message); }
+    linkMemo.delete(token.uid);
     try { await backend.deleteDoc(`users/${token.uid}`); } catch (e) {}
     try { if (backend.deleteAuthUser) await backend.deleteAuthUser(token.uid); } catch (e) { if (backend.log) backend.log('auth delete failed', e && e.message); }
   }
@@ -343,13 +351,20 @@ async function api(backend, { auth, data, ip }) {
 /** alertsClock (index.js, every 5 min): MP.opsScan over just the records it needs (read-only) → the raised alert events
     (requests without a provider > 30 min, providers pending > 1 day, commissions uncollected > 7 days). */
 async function scanOps(backend) {
+  /* cost: every 5 minutes only the open requests are checked; the slow checks (providers waiting > 1 day, commissions
+     uncollected > 7 days) run once an hour. Nothing open and not the hourly slot → 1 read, no runtime. */
+  const now = Date.now(), hourly = new Date(now).getUTCMinutes() < 5;
   const ld = new PartialDb(backend.adapter, null);
-  await ld.loadSystem();
   const open = await ld.where('serviceRequests', [['status', 'in', ['received', 'searching']]], { limit: 200 });
-  const ids = open.map(r => r.id);
+  const stale = open.filter(r => now - (Date.parse(r.createdAt) || now) >= 30 * 60000);
+  if (!stale.length && !hourly) return [];
+  await ld.loadSystem();
+  const ids = stale.map(r => r.id);
   for (let i = 0; i < ids.length; i += 30) await ld.where('assignments', [['reqId', 'in', ids.slice(i, i + 30)]], { limit: 300 });
-  await ld.where('providers', [['status', '==', 'pending']], { limit: 200 });
-  await ld.where('transactions', [['collection', '==', 'pending']], { limit: 300 });
+  if (hourly) {
+    await ld.where('providers', [['status', '==', 'pending']], { limit: 200 });
+    await ld.where('transactions', [['collection', '==', 'pending']], { limit: 300 });
+  }
   const res = runtime.operation({ db: ld.toDb(), roster: [] }, env => env.mp.opsScan());
   return res.alerts || [];
 }
@@ -359,9 +374,10 @@ async function scanOps(backend) {
 async function tickOffers(backend) {
   const out = await backend.runTransaction(async tx => {
     const ld = new PartialDb(backend.adapter, tx);
-    await ld.loadSystem();
+    /* cost: the open-requests query runs first; the system documents are read only when there is a round to tick */
     const open = (await ld.where('serviceRequests', [['status', 'in', ['received', 'searching', 'sent']]], { limit: 100 })).filter(r => r.bidding && !r.bidding.closed);
     if (!open.length) return { changes: {}, db: null, ids: [] };
+    await ld.loadSystem();
     const ids = open.map(r => r.id);
     for (let i = 0; i < ids.length; i += 30) await ld.where('assignments', [['reqId', 'in', ids.slice(i, i + 30)]], { limit: 300 });
     await ld.where('providers', [['status', '==', 'approved']], { limit: 300 });

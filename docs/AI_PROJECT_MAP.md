@@ -578,6 +578,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | tests/unit/client-error-telemetry.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/commissions.test.js | TEST | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
 | tests/unit/complaints-management.test.js | TEST | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
+| tests/unit/cost-reductions.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/customer-page-renderers.test.js | TEST | Behavior tests for Customer Home and Orders page renderers. | Extend when page renderer contracts or markup behavior changes. |
 | tests/unit/customer-polish.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/customer-providers-page.test.js | TEST | Providers page renderer contract (escaping, favorites, availability, empty/not-found) + runtime wiring. | Read when relevant; keep tests/docs aligned with behavior changes. |

@@ -1,6 +1,6 @@
 /**
  * Cheap usage counters for the Tech Center — NO personal data, only numbers.
- * Counted in memory per Cloud Functions instance and flushed at most once a minute to ONE document per instance and
+ * Counted in memory per Cloud Functions instance and flushed at most once every 5 minutes to ONE document per instance and
  * day: usage/{YYYY-MM-DD}_{instanceId} (server-only collection, 45-day TTL on expiresAt). The status route sums the
  * month's documents (cached for a minute), so there is no cross-instance contention and no per-request write.
  * Counted: api / session calls, 5xx errors, rejected (4xx) calls, rate-limit hits, Firestore reads / writes /
@@ -13,7 +13,7 @@ const crypto = require('crypto');
 const BUCKETS = [50, 100, 200, 400, 800, 1600, 3200];
 const GROUPS = ['sync', 'requests', 'customer', 'provider', 'admin', 'other'];
 const GROUP_LABEL = { sync: 'المزامنة', requests: 'الطلبات', customer: 'العميل', provider: 'مقدم الخدمة', admin: 'الإدارة', other: 'أخرى' };
-const FLUSH_MS = 60000, TTL_DAYS = 45;
+const FLUSH_MS = 5 * 60000, TTL_DAYS = 45;
 const INSTANCE = ((h) => 'i' + h.slice(0, 4) + 'x' + h.slice(4))(crypto.randomBytes(4).toString('hex'));   // letters break digit runs (never looks like a phone number)
 
 const dayOf = (t = Date.now()) => new Date(t).toISOString().slice(0, 10);

@@ -156,20 +156,30 @@ async function syncPlan(ld, actor) {
   const approved = [];
   if (!actor) return;
   const tag = actor.role + ':' + actor.id;
-  const inbox = ld.where('notifications', [['to', '==', tag]], { orderBy: ['at', 'desc'], limit: 50 });
-  const filed = ld.where('complaints', [['by', '==', tag]], { orderBy: ['at', 'desc'], limit: 50 });
+  /* lazy: only customers / providers need their inbox and filed complaints (admins read the admin inbox below) */
+  const inbox = () => ld.where('notifications', [['to', '==', tag]], { orderBy: ['at', 'desc'], limit: 50 });
+  const filed = () => ld.where('complaints', [['by', '==', tag]], { orderBy: ['at', 'desc'], limit: 50 });
   if (actor.role === 'customer') {
     await ld.doc('customers', actor.id);
     const reqs = await ld.where('serviceRequests', [['customerId', '==', actor.id]], { orderBy: ['createdAt', 'desc'], limit: 50 });
     await Promise.all([requestsLite(ld, reqs), ld.where('addresses', [['customerId', '==', actor.id]]), ld.where('favorites', [['customerId', '==', actor.id]]),
-      ld.where('transactions', [['customerId', '==', actor.id]], { orderBy: ['at', 'desc'], limit: 50 }), inbox, filed]);
+      ld.where('transactions', [['customerId', '==', actor.id]], { orderBy: ['at', 'desc'], limit: 50 }), inbox(), filed()]);
   } else if (actor.role === 'provider') {
     await ld.doc('providers', actor.id);
     const as = await ld.where('assignments', [['providerId', '==', actor.id]], { orderBy: ['at', 'desc'], limit: 100 });
     const reqs = await ld.docsIn('serviceRequests', as.map(a => a.reqId));
     await Promise.all([requestsLite(ld, reqs), ld.docsIn('customers', reqs.map(r => r.customerId)),
       ld.where('transactions', [['providerId', '==', actor.id]], { orderBy: ['at', 'desc'], limit: 100 }),
-      ld.where('reviews', [['providerId', '==', actor.id]], { orderBy: ['at', 'desc'], limit: 50 }), inbox, filed]);
+      ld.where('reviews', [['providerId', '==', actor.id]], { orderBy: ['at', 'desc'], limit: 50 }), inbox(), filed()]);
+  } else if (actor.role === 'admin' && actor.adminRole === 'tech') {
+    /* cost + privacy: scope.js gives the tech role none of the marketplace records — do not read them at all */
+  } else if (actor.role === 'admin' && actor.adminRole === 'content') {
+    /* no personal data for content (scope.js): requests as anonymous facts, public providers, reviews — no customers,
+       complaints or money rows are read */
+    await Promise.all([ld.where('serviceRequests', [], { orderBy: ['createdAt', 'desc'], limit: 200 }),
+      ld.where('providers', [], { orderBy: ['createdAt', 'desc'], limit: 300 }),
+      ld.where('reviews', [], { orderBy: ['at', 'desc'], limit: 200 }),
+      ld.where('notifications', [['to', '==', 'admin']], { orderBy: ['at', 'desc'], limit: 50 })]);
   } else if (actor.role === 'admin') {
     const reqs = await ld.where('serviceRequests', [], { orderBy: ['createdAt', 'desc'], limit: 200 });
     await Promise.all([requestsLite(ld, reqs), ld.docsIn('customers', reqs.map(r => r.customerId)),

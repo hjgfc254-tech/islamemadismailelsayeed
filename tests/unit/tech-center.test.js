@@ -119,7 +119,7 @@ test('budget config: owner only, validated, drives the cost level', async () => 
   assert.equal(s.cost.budgetEGP, 500); assert.equal(s.cost.usdToEgp, 49.5);
 });
 
-test('usage counters: calls, errors, rate limits, latency buckets and percentiles; flushed at most once a minute', async () => {
+test('usage counters: calls, errors, rate limits, latency buckets and percentiles; flushed at most once per flush interval (5 min)', async () => {
   usage._reset();
   const t = Date.now();
   for (let i = 0; i < 90; i++) usage.record({ kind: 'api', path: '/requests', ms: 40, status: 200 }, t);
@@ -141,8 +141,8 @@ test('usage counters: calls, errors, rate limits, latency buckets and percentile
   const b = memBackend();
   assert.equal(await usage.maybeFlush(b, t), true, 'first flush writes');
   usage.addReads(1);
-  assert.equal(await usage.maybeFlush(b, t + 1000), false, 'within a minute: no write');
-  assert.equal(await usage.maybeFlush(b, t + 61000), true);
+  assert.equal(await usage.maybeFlush(b, t + 1000), false, 'within the flush interval: no write');
+  assert.equal(await usage.maybeFlush(b, t + usage.FLUSH_MS + 1000), true);
   const doc = [...b.docs.entries()].find(([k]) => k.startsWith('usage/'));
   assert.ok(doc && doc[1].reads === 26 && doc[1].expiresAt, 'one document per instance and day with a TTL field');
   scan(doc[1]);

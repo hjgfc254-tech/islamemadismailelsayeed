@@ -139,9 +139,10 @@ async function handle({ backend, method, path: p, query, body, admin, uid }) {
 /* ───────────── clock: time-based alerts + escalation ───────────── */
 async function escalate(backend, now) {
   const C = core();
+  const open = (await backend.queryDocs('opsAlerts', 'status', '==', 'open')).map((x) => x.data);
+  if (!open.some((a) => a.severity === 'critical' && !a.escalated && a.team !== 'owner')) return 0;   // cost: settings read only when needed
   const settings = (await backend.getDoc('system/settings')) || {};
   const minutes = +((settings.opsAlerts || {}).escalateMin) || C.DEFAULT_ESCALATE_MIN;
-  const open = (await backend.queryDocs('opsAlerts', 'status', '==', 'open')).map((x) => x.data);
   let n = 0;
   for (const a of open) {
     if (a.team === 'owner' || !C.escalationDue(a, now, minutes)) continue;

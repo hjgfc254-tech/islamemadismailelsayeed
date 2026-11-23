@@ -1,6 +1,6 @@
 /**
  * MODULE: ops-center (HSOpsCenter) — the team workflow screens of the Admin Center:
- *   • bell in the header with the unread count of my teams' alerts (refreshes every 60 s; click → #/alerts)
+ *   • bell in the header with the unread count of my teams' alerts (refreshes every 2 min; click → #/alerts)
  *   • page `alerts`   «التنبيهات»: open / mine / all, «أنا هاخده» (claim), «تم» (resolve), «حوّل لبلاغ»
  *   • page `tickets`  «البلاغات»: filter by team / status / mine, new ticket, start / finish, notes
  *   • mountWorkBox(host) «صندوق الشغل» on the home page: my claimed alerts, my team's open alerts, my open tickets
@@ -172,7 +172,7 @@
   function startBell() {
     if (bellTimer || !root.setInterval) return;
     refreshBell();
-    bellTimer = root.setInterval(() => { if (!root.document || root.document.visibilityState !== 'hidden') refreshBell(); }, 60000);
+    bellTimer = root.setInterval(() => { if (!root.document || root.document.visibilityState !== 'hidden') refreshBell(); }, 120000);   // cost: each check loads the open alerts — every 2 minutes, paused while the tab is hidden
   }
 
   /* role home: the tech team opens on its own centre (it has no access to the day view's data) */

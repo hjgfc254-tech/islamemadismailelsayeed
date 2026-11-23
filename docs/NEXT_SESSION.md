@@ -38,3 +38,14 @@ take main's, then re-add new precache entries, `npm run sw:bump`, `npm run audit
 ## Owner inputs still pending (not code)
 Email transport for digests (Resend API key or SMTP), support contact numbers in Admin › الإعدادات,
 App Check site key, payment provider.
+
+## Firestore cost audit (2026-11-23)
+Production counters (usage/*): with ZERO users the scheduled clocks alone used ~2–3k reads and ~500 writes a day.
+Done: offers clock reads system docs only when a round is open; ops scan checks open requests every 5 min and the slow
+checks hourly; escalation skips the settings read; system/clocks written on change or every 15 min; health clock reads
+the month's usage docs + budget hourly (perf/cost reused from system/health); usage flush every 5 min; users/{uid} link
+written once per instance instead of every sync; hidden tabs defer signal re-syncs; Admin coalesces signal bursts (3 s);
+tech / content admin syncs skip the records they never receive; alert bell polls every 2 min.
+Next candidates (not done): change signals still wake EVERY active admin for every marketplace change (full admin sync,
+up to ~1.5k reads at scale) — move admins to a delta / "changed collections" sync; rateLimits costs 1 read + 1 write per
+mutation (in-memory limiter would remove it, with weaker cross-instance limits).

@@ -42,7 +42,15 @@ async function start() {
   const APP = appName();
   let actor = null, last = null, syncing = null, offSignal = null, lastServerTime = 0, syncTimer = null;
   /* One sync per burst: a write and its own RTDB signal (and rapid consecutive writes) coalesce into a single read. */
-  const scheduleSync = () => { clearTimeout(syncTimer); syncTimer = setTimeout(() => sync().catch(() => {}), 250); };
+  /* cost: a change signal re-syncs this device. A hidden tab waits until it is shown again (one sync instead of one per
+     change), and the Admin app — signalled on EVERY change in the marketplace — coalesces bursts into one sync. */
+  let syncWhenVisible = false;
+  const SYNC_DELAY = APP === 'admin' ? 3000 : 250;
+  const scheduleSync = (own) => {   // own: this device just wrote — reflect it quickly
+    if (!own && typeof document !== 'undefined' && document.visibilityState === 'hidden') { syncWhenVisible = true; return; }
+    clearTimeout(syncTimer); syncTimer = setTimeout(() => sync().catch(() => {}), own ? 250 : SYNC_DELAY);
+  };
+  if (typeof document !== 'undefined') document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && syncWhenVisible) { syncWhenVisible = false; scheduleSync(); } });
 
   const envelopeFromError = e => {
     const code = CODE_FOR[String(e && e.code || '').replace(/^functions\//, '')] || 'UNAVAILABLE';
@@ -159,7 +167,7 @@ async function start() {
         let env;
         try { env = (await callApi(payload)).data; }
         catch (e) { if (isWrite && /unavailable|deadline-exceeded/.test(String(e && e.code))) env = (await callApi(payload)).data; else throw e; }
-        if (isWrite) scheduleSync();
+        if (isWrite) scheduleSync(true);
         return env;
       } catch (e) { return envelopeFromError(e); }
       finally { if (sig) inflight.delete(sig); }

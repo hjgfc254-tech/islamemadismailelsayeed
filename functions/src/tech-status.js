@@ -142,13 +142,20 @@ function alertsToSend(alerts, sent, now) {
 }
 
 /** the scheduled probe (every 10 minutes) */
+let deployMemo = '';   // the deployed revision is checked once per instance, not every tick
 async function healthTick(backend, now = Date.now()) {
-  await usage.maybeFlush(backend, now, true);
+  /* cost: the month's usage documents (one per instance per day — hundreds by month end) and the budget are read once an
+     hour, not every 10 minutes; in between the last perf / cost summary stored in system/health is reused. */
   const prev = await backend.getDoc('system/health').catch(() => null);
+  const hourly = !prev || !prev.costAtMs || now - prev.costAtMs >= 55 * 60000;
+  await usage.maybeFlush(backend, now, hourly);
   const h = await runHealth(backend, now);
-  const [docs, clocks, cfgDoc] = await Promise.all([monthDocs(backend, now).catch(() => []), backend.getDoc('system/clocks').catch(() => null), backend.getDoc('system/tech').catch(() => null)]);
-  const today = new Date(now).toISOString().slice(0, 10), month = usage.merge(docs), day = usage.merge(docs.filter((d) => d.day === today));
-  const perf = usage.performance(day.api + day.session ? day : month), est = usage.estimate(month, now, cfgOf(cfgDoc));
+  const [docs, clocks, cfgDoc] = await Promise.all([hourly ? monthDocs(backend, now).catch(() => []) : [], backend.getDoc('system/clocks').catch(() => null), hourly ? backend.getDoc('system/tech').catch(() => null) : null]);
+  let perf, est;
+  if (hourly) {
+    const today = new Date(now).toISOString().slice(0, 10), month = usage.merge(docs), day = usage.merge(docs.filter((d) => d.day === today));
+    perf = usage.performance(day.api + day.session ? day : month); est = usage.estimate(month, now, cfgOf(cfgDoc));
+  } else { perf = prev.perfLite || {}; est = prev.estLite || {}; }
   const offers = clocks && clocks.offersAtMs ? { stale: now - clocks.offersAtMs > THRESHOLDS.offersClockStaleMs, ok: clocks.offersOk !== false } : null;
   const alerts = evaluateAlerts({ health: h, perf, est, clocks: { offers }, now });
   const sent = { ...((prev && prev.alertsSent) || {}) };
@@ -156,13 +163,20 @@ async function healthTick(backend, now = Date.now()) {
   const { notifyTeam } = require('./alerts-adapter');
   for (const a of toSend) { await notifyTeam(backend, 'tech', a.level, { text: a.text, link: a.link, key: a.key }); sent[a.key] = now; }
   for (const k of Object.keys(sent)) if (!alerts.some((a) => a.key === k) && now - sent[k] > 24 * 3600000) delete sent[k];
-  await backend.setDoc('system/health', { ...h, alertsSent: sent }, false);
+  const perfLite = { calls: +perf.calls || 0, errorRate: +perf.errorRate || 0 }, estLite = est ? { level: est.level, projectedEGP: est.projectedEGP, budgetEGP: est.budgetEGP } : {};
+  await backend.setDoc('system/health', { ...h, alertsSent: sent, perfLite, estLite, costAtMs: hourly ? now : prev.costAtMs }, false);
   const rev = process.env.K_REVISION || '';
-  if (rev) { const dep = await backend.getDoc('system/deploy').catch(() => null); if (!dep || dep.revision !== rev) await backend.setDoc('system/deploy', { revision: rev, at: new Date(now).toISOString(), node: process.version }, true).catch(() => {}); }
+  if (rev && rev !== deployMemo) { deployMemo = rev; const dep = await backend.getDoc('system/deploy').catch(() => null); if (!dep || dep.revision !== rev) await backend.setDoc('system/deploy', { revision: rev, at: new Date(now).toISOString(), node: process.version }, true).catch(() => {}); }
   return { overall: h.overall, alerts: alerts.length, sent: toSend.length };
 }
+/* cost: the 5-minute clocks used to write system/clocks on every run (288 writes a day each). Now a write happens only when
+   the result changes (ok / work done) or 15 minutes passed — still well inside offersClockStaleMs (20 min). Per instance. */
+const CLOCK_WRITE_EVERY_MS = 15 * 60000;
+const clockMemo = new Map();
 async function recordClock(backend, name, data, now = Date.now()) {
-  try { await backend.setDoc('system/clocks', { [name + 'AtMs']: now, [name + 'Ok']: data.ok !== false, [name + 'Changed']: +data.changed || 0 }, true); } catch (e) { /* never break the clock */ }
+  const ok = data.ok !== false, changed = +data.changed || 0, m = clockMemo.get(name);
+  if (m && m.ok === ok && !changed && !m.changed && now - m.at < CLOCK_WRITE_EVERY_MS) return false;
+  try { await backend.setDoc('system/clocks', { [name + 'AtMs']: now, [name + 'Ok']: ok, [name + 'Changed']: changed }, true); clockMemo.set(name, { ok, changed, at: now }); return true; } catch (e) { return false; /* never break the clock */ }
 }
 
 /* ───── HTTP-like handler ───── */

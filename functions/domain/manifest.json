@@ -1,7 +1,7 @@
 {
   "generatedBy": "scripts/sync-functions-domain.cjs",
   "files": {
-    "shared/config/legacy-data.js": "a59798542eb0b64ac63bf4597b2e0c854e97077989fb2b2ac4b1d45e9660c545",
+    "shared/config/legacy-data.js": "39f50b5456f3d685c3f1c06f477e7d90f835d58d850cfee151d1a9fa673dbfff",
     "services/local-catalog.js": "de3fcd80ef8de84667bada846d511897d05e285048cad59b10d9d6fdb69e8151",
     "services/local-market-store.js": "d4ff586353354e096e8678fae97265da807ca405b596f7f403f78be5a8d0f7d8",
     "services/api-client.js": "33ce93ee20b93ef47850ff8f651d0c1add30012d4876592f75e7be633647d9e1",

@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 656,
+  "file_count": 657,
   "files": [
     {
       "path": "_redirects",
@@ -251,8 +251,8 @@
       "path": "apps/admin/modules/ops-center.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 16460,
-      "sha256": "0d531e1ad20369865ca0e0db5ac2a9d5753c5306827c9d2e17f38ee16e47bed0"
+      "bytes": 16558,
+      "sha256": "bf621da49c44bdcc99bb04793b29d2ae9411d7aa661e42e9044e55cda5a87e9b"
     },
     {
       "path": "apps/admin/modules/ops-core.js",
@@ -2253,8 +2253,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 294732,
-      "sha256": "198c4293da2fe56207428d4db33605f2beafa0a9c60cb4f301dd084522395ac3"
+      "bytes": 294975,
+      "sha256": "0779851126739cf3069c80e73b862c2fd98e06be840f15d2370365edcef4a3fe"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2267,8 +2267,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 164528,
-      "sha256": "aca4925f98b0b9f5c3471686dc2d6d74712171024d938696872ad4d69695a48c"
+      "bytes": 164744,
+      "sha256": "35e1f98940a33049fbb765c2623d03c44323d36958b08b56db5d97a821cc035e"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2701,8 +2701,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 31074,
-      "sha256": "e6e7e469abcc0be2a6e2f2875a8ec041ec378bf7e970d1ee6e29040f3ee5e161"
+      "bytes": 31118,
+      "sha256": "70dc76e23abee0da0985f5489c54e01771565a60235eb8b6b337aa1358cd8100"
     },
     {
       "path": "docs/README.md",
@@ -2821,7 +2821,7 @@
       "area": "functions",
       "status": "NEEDS_REVIEW",
       "bytes": 2360,
-      "sha256": "87f065b785efaa156601c079ddeabcf6adc4fa74e44929c8245247c46f421081"
+      "sha256": "0c60d012563651d7f3f5ba9c1b0489ccdea23dbb6bd225b95f073b95677d14fa"
     },
     {
       "path": "functions/domain/services/admin-api.js",
@@ -2981,8 +2981,8 @@
       "path": "functions/src/alerts.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 9941,
-      "sha256": "9baafedd8542d42add55a1e3e35f7958fea6954fc47db40f37eeca9c5953a3fd"
+      "bytes": 10083,
+      "sha256": "c061fd5771f8b4674214c17e65be803c13e22d7df19fa5b68da52b53944f5ce7"
     },
     {
       "path": "functions/src/content.js",
@@ -3044,8 +3044,8 @@
       "path": "functions/src/plan.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 12475,
-      "sha256": "0cdcb504231f31bd794fa1c4e747599c0469e94240464c4a2560babd27a7cb34"
+      "bytes": 13388,
+      "sha256": "f4a2fe7f1b802fcbb92a2096a08ad75ab6cfd64eef14bba46f11e5ea0fc8c66e"
     },
     {
       "path": "functions/src/runtime.js",
@@ -3065,8 +3065,8 @@
       "path": "functions/src/service.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 42669,
-      "sha256": "d26587bc165a368ae58df8957aae5336ac0493f28cf4af14e497dbb5eea0dd8b"
+      "bytes": 43675,
+      "sha256": "e118a72d1cdd8eeb66374160f2db0c4829acaf73e98a9751c5e76485d50293ca"
     },
     {
       "path": "functions/src/store.js",
@@ -3079,8 +3079,8 @@
       "path": "functions/src/tech-status.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 15673,
-      "sha256": "172c80fdb654db9f3ee61d39a26c1efc4212f1acc480a6bf125d1cc955a39aed"
+      "bytes": 17050,
+      "sha256": "8c9ef346c2e3a3af1fb81aa97e16ba5b7f013c2b5d6893577ca5b7441c4823f0"
     },
     {
       "path": "functions/src/telemetry.js",
@@ -3093,8 +3093,8 @@
       "path": "functions/src/usage.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 8153,
-      "sha256": "a9ef9ddc143dea4c0f8e2ed7baf52d044d64530e4ee7eb823f748ec1e4bae3d2"
+      "bytes": 8164,
+      "sha256": "e663334ee0b10c5d98384fd8bccd85a03e0e7f5ab2b0141661ccae2b57279c47"
     },
     {
       "path": "functions/src/workforce.js",
@@ -3241,14 +3241,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 11359,
-      "sha256": "8e0543ddf19c0d7f9eb0a425c642c5c668988a5749da574306cd3f65b4dd3ed6"
+      "sha256": "f0f1699d277e02d15d9b38867aea3dbe1b117f1ee3ba0633657da877eb37caf2"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "c909d39140ab8a2fbeabbff2fe8b97e40cb6ff76fc6e5159327aa708f9c563c2"
+      "sha256": "76935474b971f2494f3aa158cd639814d21f464f8391bf0054e2a6faa428f7df"
     },
     {
       "path": "services/admin-api.js",
@@ -3296,8 +3296,8 @@
       "path": "services/firebase-backend.js",
       "area": "services",
       "status": "NEEDS_REVIEW",
-      "bytes": 35971,
-      "sha256": "4cc31bde7a0c6d908745b31eba28b31297917f2b732fa80e5bcc5e3448ee24dc"
+      "bytes": 36713,
+      "sha256": "124a7a5e2e0cb6739e594e7aec1cf9d7dc816d96cdddb6926f9963dce4d1f897"
     },
     {
       "path": "services/firebase-config.js",
@@ -4021,6 +4021,13 @@
       "sha256": "fea7ea676250d2be5a9dc5a7b9f7f4f23515bfcd7b3a0a5d4eabae41ab391b04"
     },
     {
+      "path": "tests/unit/cost-reductions.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2948,
+      "sha256": "18c2f61aabb96282e1a0c90f56a037ea4ee652c67ca747d897fd464e098de451"
+    },
+    {
       "path": "tests/unit/customer-page-renderers.test.js",
       "area": "tests",
       "status": "TEST",
@@ -4157,8 +4164,8 @@
       "path": "tests/unit/firebase-integration-contract.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 8165,
-      "sha256": "0d98be1b69687aced6fd64ed0c47e10146bd686be6c3d947be7f65b0bd706629"
+      "bytes": 8312,
+      "sha256": "b61840daf4dcd96514a95c62900b0c0c478fbf65c0d120b6afba7665aabbe6f2"
     },
     {
       "path": "tests/unit/firebase-mode-data.test.js",
@@ -4528,8 +4535,8 @@
       "path": "tests/unit/tech-center.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 17724,
-      "sha256": "c203005369ec4f92f3c609b82018357c46cd7b5de548d36a9429c3cae9fc385c"
+      "bytes": 17768,
+      "sha256": "a9391bad54cf7c8f6af13e1a3dc52ea37b9ba6119200a388c7614b7af8864c92"
     },
     {
       "path": "tests/unit/tree.test.js",

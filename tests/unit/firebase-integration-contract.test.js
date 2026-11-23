@@ -85,7 +85,8 @@ test('the bridge refreshes screens through the realtime client API that exists (
 });
 test('read efficiency on the client: syncs are coalesced and stale signals skipped; TTL fields on transient server docs', () => {
   const bridge = read('services/firebase-backend.js');
-  assert.match(bridge, /const scheduleSync = \(\) =>/, 'post-write syncs are debounced');
+  assert.match(bridge, /const scheduleSync = \(own\) =>/, 'post-write syncs are debounced');
+  assert.match(bridge, /visibilityState === 'hidden'\) \{ syncWhenVisible = true; return; \}/, 'a hidden tab defers signal syncs until shown');
   assert.match(bridge, /v\.at > lastServerTime/, 'a signal already covered by the last sync is ignored');
   assert.doesNotMatch(bridge, /if \(isWrite\) sync\(\)/, 'no immediate full sync after every write');
   const svc = read('functions/src/service.js');
