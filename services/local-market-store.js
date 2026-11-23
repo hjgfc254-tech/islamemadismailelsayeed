@@ -307,8 +307,11 @@ const MP = (() => {
       .sort((a,b) => b.score - a.score)
       .map(x => x.p);
   };
-  const rating = pid => { const rs = db.reviews.filter(x=>x.providerId===pid && !x.hidden);   /* hidden (moderated) reviews do not count */ return rs.length ? Math.round(rs.reduce((s,x)=>s+x.stars,0)/rs.length*10)/10 : null; };
-  const acceptRate = pid => { const as = db.assignments.filter(a=>a.providerId===pid && a.status!=='offered' && a.status!=='withdrawn'); return as.length ? Math.round(as.filter(a=>a.status!=='rejected').length/as.length*100) : 100; };
+  /* server: providers carry stats {n, sum, dec, ok} maintained at commit (functions/src/provider-stats.js), so matching does
+     not need their whole history; the local demo (no stats) computes from the arrays as before */
+  const statsOf = pid => { const p = db.providers.find(x => x.id === pid); return p && p.stats && typeof p.stats === 'object' ? p.stats : null; };
+  const rating = pid => { const s = statsOf(pid); if (s) return s.n ? Math.round(s.sum / s.n * 10) / 10 : null; const rs = db.reviews.filter(x=>x.providerId===pid && !x.hidden);   /* hidden (moderated) reviews do not count */ return rs.length ? Math.round(rs.reduce((s,x)=>s+x.stars,0)/rs.length*10)/10 : null; };
+  const acceptRate = pid => { const s = statsOf(pid); if (s) return s.dec ? Math.round(s.ok / s.dec * 100) : 100; const as = db.assignments.filter(a=>a.providerId===pid && a.status!=='offered' && a.status!=='withdrawn'); return as.length ? Math.round(as.filter(a=>a.status!=='rejected').length/as.length*100) : 100; };
 
   const api = {
     db: () => db, reset(){ db = seed(); buildServices(); save(); },

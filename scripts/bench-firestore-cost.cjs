@@ -35,6 +35,9 @@ function seed() {
   }
   for (let i = 0; i < N.transactions; i++) s[`transactions/t${i}`] = { id: 't' + i, reqId: 'r' + i, customerId: 'c' + (i % N.customers), providerId: 'p' + (i % 180), at: iso(i), value: 300, collection: i % 10 ? 'collected' : 'pending', _k: i };
   for (let i = 0; i < N.reviews; i++) s[`reviews/v${i}`] = { id: 'v' + i, reqId: 'r' + i, providerId: 'p' + (i % 180), at: iso(i), stars: 5, _k: i };
+  /* steady state after the one-time backfill: providers carry ranking stats when the server keeps them (provider-stats.js) */
+  let PS = null; try { PS = require(path.join(ROOT, 'functions/src/provider-stats.js')); } catch (e) { PS = null; }
+  if (PS) { const as = Object.values(s).filter((d) => d && d.reqId && d.providerId && d.status), rs = Object.entries(s).filter(([k]) => k.startsWith('reviews/')).map(([, d]) => d); for (let i = 0; i < N.providers; i++) s[`providers/p${i}`].stats = PS.compute('p' + i, as, rs); }
   for (let i = 0; i < N.complaints; i++) s[`complaints/k${i}`] = { id: 'k' + i, by: 'customer:c' + i, at: iso(i), status: 'open', _k: i };
   for (let i = 0; i < 300; i++) s[`notifications/n${i}`] = { id: 'n' + i, to: i % 2 ? 'admin' : 'customer:c' + (i % 50), at: iso(i), text: 'x', read: true, _k: i };
   const month = new Date().toISOString().slice(0, 7);

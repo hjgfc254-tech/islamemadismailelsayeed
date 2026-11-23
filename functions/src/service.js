@@ -26,6 +26,7 @@ const techStatus = require('./tech-status');
 const adminCode = require('./admin-code');
 const digestAdmin = require('./digest-admin');
 const alerts = require('./alerts');
+const { applyStatsDelta } = require('./provider-stats');
 /* admin-code errors carry a callable error code: rethrow them as ServiceError (index.js maps those to HttpsError) */
 const viaCode = async (p) => { try { return await p; } catch (e) { if (e && e.isServiceError) fail(e.code, e.message); throw e; } };
 const content = require('./content');
@@ -312,7 +313,7 @@ async function api(backend, { auth, data, ip }) {
     }
     const res = await runtime.request({ db: ld.toDb(), roster, rbac, actor, method: req.method, path: req.path, query: req.query, body: req.body });
     let changes = {};
-    if (res.envelope.ok && !isRead) changes = ld.commit(res.db).changes;
+    if (res.envelope.ok && !isRead) { await applyStatsDelta(ld, res.db, keyOf); changes = ld.commit(res.db).changes; }   // provider ranking stats kept exact (provider-stats.js)
     if (res.envelope.ok) res.envelope.data = redactForProvider(res.envelope.data, actor, res.db);
     if (res.envelope.ok && actor && actor.role === 'customer') res.envelope.data = redactForCustomer(res.envelope.data);
     if (res.envelope.ok && actor && actor.role === 'admin') res.envelope.data = scrubForRole(res.envelope.data, actor.adminRole);   // teams: tech / content / finance never receive raw personal data
@@ -396,6 +397,7 @@ async function tickOffers(backend) {
     await ld.where('reviews', [], { limit: 200 });
     const res = runtime.operation({ db: ld.toDb(), roster: [] }, env => env.mp.tickBidding());
     if (!res.result || !res.result.length) return { changes: {}, db: null, ids: [] };
+    await applyStatsDelta(ld, res.db, keyOf);
     const { changes } = ld.commit(res.db);
     return { changes, db: res.db, ids: res.result, alerts: res.alerts };
   });

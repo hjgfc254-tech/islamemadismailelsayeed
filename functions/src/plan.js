@@ -39,8 +39,12 @@ async function requestsLite(ld, reqs) {
 async function candidates(ld, cat) {
   if (!cat) return [];
   const ps = await ld.where('providers', [['status', '==', 'approved'], ['cats', 'array-contains', String(cat)]], { limit: CANDIDATE_LIMIT });
-  const ids = ps.map(p => p.id);
-  await Promise.all([ld.where('reviews', [['providerId', 'in', ids]]), ld.where('assignments', [['providerId', 'in', ids]])]);
+  /* cost: ranking reads provider.stats (provider-stats.js); the full history is read ONCE for providers without stats yet */
+  const need = ps.filter(p => !p.stats).map(p => String(p.id));
+  if (need.length) {
+    ld.statsBackfill = new Set([...(ld.statsBackfill || []), ...need]);
+    await Promise.all([ld.where('reviews', [['providerId', 'in', need]]), ld.where('assignments', [['providerId', 'in', need]])]);
+  }
   return ps;
 }
 

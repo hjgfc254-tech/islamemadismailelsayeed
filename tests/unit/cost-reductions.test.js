@@ -69,3 +69,18 @@ test('Admin delta sync: after a full sync only changed documents travel; a delet
   assert.equal(stale.delta, false, 'a tab older than 6 h gets a full sync');
   assert.ok(signals.length && signals.every((s) => !s.opts || !s.opts.full), 'plain changes do not force a full sync');
 });
+
+test('provider stats stay exact: accept / reject / review / hide / delete change the stored numbers like a full recount', async () => {
+  const PS = require(path.resolve(__dirname, '../../functions/src/provider-stats.js'));
+  const { keyOf } = require(path.resolve(__dirname, '../../functions/src/store.js'));
+  const A0 = [{ id: 'a1', reqId: 'r1', providerId: 'p1', status: 'offered' }, { id: 'a2', reqId: 'r2', providerId: 'p1', status: 'accepted' }];
+  const R0 = [{ id: 'v1', providerId: 'p1', stars: 4 }];
+  const p1 = { id: 'p1', stats: PS.compute('p1', A0, R0) };
+  const ld = { maps: { assignments: new Map(A0.map((a) => [a.id, a])), reviews: new Map(R0.map((r) => [r.id, r])), providers: new Map([['p1', p1]]) }, doc: async () => null };
+  const A1 = [{ id: 'a1', reqId: 'r1', providerId: 'p1', status: 'rejected' }, { id: 'a3', reqId: 'r3', providerId: 'p1', status: 'accepted' }];   // a2 deleted, a1 decided, a3 new
+  const R1 = [{ id: 'v1', providerId: 'p1', stars: 4, hidden: true }, { id: 'v2', providerId: 'p1', stars: 5 }];
+  const next = { providers: [{ ...p1 }], assignments: A1, reviews: R1 };
+  await PS.applyStatsDelta(ld, next, keyOf);
+  assert.deepEqual(next.providers[0].stats, PS.compute('p1', A1, R1));
+  assert.deepEqual(next.providers[0].stats, { n: 1, sum: 5, dec: 2, ok: 1 });
+});

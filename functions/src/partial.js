@@ -18,7 +18,12 @@ const { keyOf, colName, KNOWN_ARRAYS } = require('./store');
 const NEWEST_FIRST = new Set(['notifications', 'serviceRequests', 'quotes', 'complaints']);
 const IN_CHUNK = 30;
 const strip = d => { const c = { ...d }; delete c._k; delete c._u; return c; };
-const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+/* order-insensitive comparison: Firestore does not keep field order, so a plain JSON.stringify compare would see every
+   loaded document as "changed" whenever the app rebuilt it with keys in another order — and rewrite it (cost) */
+const stable = v => (Array.isArray(v) ? '[' + v.map(stable).join(',') + ']'
+  : v && typeof v === 'object' ? '{' + Object.keys(v).filter(k => v[k] !== undefined).sort().map(k => JSON.stringify(k) + ':' + stable(v[k])).join(',') + '}'
+  : JSON.stringify(v === undefined ? null : v));
+const same = (a, b) => stable(a) === stable(b);
 const withoutU = d => { if (!d || d._u === undefined) return d; const c = { ...d }; delete c._u; return c; };
 
 /* Short-lived per-instance cache for PUBLIC data that every sync re-reads (system docs, service areas, approved
