@@ -268,6 +268,17 @@ async function api(backend, { auth, data, ip }) {
   if (req.method === 'PATCH' && req.path === '/customers/me' && req.body.phone !== undefined && token && token.phone_number && normalizePhone(req.body.phone) !== normalizePhone(token.phone_number)) {
     return { ok: false, status: 409, error: { code: 'CONFLICT', message: 'تغيير رقم الهاتف يتطلب التحقق من الرقم الجديد — سجّل الدخول به', details: { phone: 'يجب أن يطابق الرقم المُتحقَّق منه' } } };
   }
+  /* security (2026-11-23 audit, S1): a provider is identified by the SMS-verified phone, so the profile phone may not
+     move to another number (approved-account hand-over to an unvetted person, self-lockout). The kept number is stored
+     in the app format so the identity lookup keeps matching. */
+  if (req.method === 'PATCH' && req.path === '/providers/me' && req.body.phone !== undefined) {
+    const verified = token && normalizePhone(token.phone_number);
+    if (!verified || normalizePhone(req.body.phone) !== verified) return { ok: false, status: 409, error: { code: 'CONFLICT', message: 'تغيير رقم الهاتف يتطلب التحقق من الرقم الجديد — كلّم الدعم', details: { phone: 'يجب أن يطابق الرقم المُتحقَّق منه' } } };
+    req.body.phone = verified;
+  }
+  if (req.method === 'PATCH' && req.path === '/customers/me' && req.body.phone !== undefined && token && token.phone_number) {
+    req.body.phone = normalizePhone(token.phone_number);        // same number (checked above), stored in the app format
+  }
   const idemPath = req.idem && token ? `idempotency/${token.uid}__${req.idem}` : null;
 
   const execute = async tx => {

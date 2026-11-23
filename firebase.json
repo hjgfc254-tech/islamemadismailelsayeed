@@ -71,6 +71,7 @@
       ".serena/**",
       ".claude/**",
       "install-tools.ps1",
+      "**/*.ps1",
       "coverage-map.txt",
       "service-worker.lock.json",
       ".github/**",
