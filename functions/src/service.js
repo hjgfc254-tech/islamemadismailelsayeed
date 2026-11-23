@@ -15,7 +15,8 @@ const runtime = require('./runtime');
 const { keyOf, colName, KNOWN_ARRAYS } = require('./store');
 const crypto = require('crypto');
 const { PartialDb } = require('./partial');
-const { plan, syncPlan } = require('./plan');
+const { plan, syncPlan, deltaPlan } = require('./plan');
+const DELTA_MAX_AGE_MS = 6 * 3600000;   // an Admin tab older than this does a full sync
 const { normalizePhone, APPS } = require('./identity');
 const { scopeFor, customerRequestView, customerQuote, scrubForRole } = require('./scope');
 const workforce = require('./workforce');
@@ -115,6 +116,15 @@ function affectedTags(changes, db) {
   return [...tags];
 }
 
+/* cost: the active admin list is read on every change signal — cached per instance for a minute (per backend) */
+const adminIdsCache = new WeakMap();
+async function activeAdminIds(backend) {
+  const hit = adminIdsCache.get(backend);
+  if (hit && Date.now() - hit.at < 60000) return hit.ids;
+  const ids = (await backend.queryDocs('admins', 'status', '==', 'active')).map(d => d.id);
+  adminIdsCache.set(backend, { at: Date.now(), ids });
+  return ids;
+}
 async function notifyChanges(backend, changes, db, actorUid) {
   if (!Object.keys(changes).length) return;
   const tags = affectedTags(changes, db);
@@ -126,8 +136,10 @@ async function notifyChanges(backend, changes, db, actorUid) {
       const t = d.data && d.data.tag; if (t) uidsByTag.set(t, (uidsByTag.get(t) || []).concat(d.id));
     }
   }
-  for (const d of await backend.queryDocs('admins', 'status', '==', 'active')) uids.add(d.id);
-  if (uids.size) await backend.signal([...uids]);
+  for (const id of await activeAdminIds(backend)) uids.add(id);
+  /* a deletion cannot travel in an Admin delta sync (plan.js deltaPlan) → ask the clients for a full sync */
+  const full = Object.values(changes).some(c => c.del && c.del.length);
+  if (uids.size) await backend.signal([...uids], full ? { full: true } : undefined);
   try { await pushFresh(backend, changes, db, uidsByTag); }
   catch (e) { if (backend.log) backend.log('push failed', e && e.message); }   // a push failure never fails the request
 }
@@ -325,7 +337,7 @@ async function api(backend, { auth, data, ip }) {
       changes: Object.fromEntries(Object.entries(out.changes).map(([k, c]) => [k, { set: c.set.length, del: c.del.length }]))
     });
     if (out.quiet) { /* no change signals: site content travels on public/content */ }
-    else if (out.workforce) { const admins = await backend.queryDocs('admins', 'status', '==', 'active'); await backend.signal(admins.map(a => a.id)); }
+    else if (out.workforce) { const admins = await backend.queryDocs('admins', 'status', '==', 'active'); await backend.signal(admins.map(a => a.id), { full: true }); }   // employees / RBAC travel only with full syncs
     else await notifyChanges(backend, out.changes, out.db, token && token.uid);
   }
   if (out.envelope.ok && req.method === 'POST' && req.path === '/admin/controls') {
@@ -422,9 +434,14 @@ async function session(backend, { auth, data, ip }) {
         if (accepted) admin = await backend.getDoc(`admins/${token.uid}`);
       }
       const gated = !!(app === 'admin' && admin && admin.status === 'active' && !adminCode.isUnlocked(admin));
-      const ld = new PartialDb(backend.adapter, null);
+      const syncStart = Date.now();
+      let ld = new PartialDb(backend.adapter, null);
       const actor = await loadActor(ld, token, app, gated ? null : admin);
-      await syncPlan(ld, actor);
+      /* Admin delta sync: only what changed since the client's previous sync (plan.js deltaPlan); full sync otherwise */
+      const since = +d.since || 0;
+      let delta = !!(actor && actor.role === 'admin' && since > syncStart - DELTA_MAX_AGE_MS && since < syncStart);
+      if (delta && (await deltaPlan(ld, actor, since)).overflow) { delta = false; ld = new PartialDb(backend.adapter, null); }
+      if (!delta) await syncPlan(ld, actor);
       if (ld.publicToSave) {     // (re)build of the public summary — one small write, then every sync reads 1 doc
         const snap = ld.publicToSave; ld.publicToSave = null;
         try { await backend.runTransaction(async tx => { backend.adapter.set(tx, 'system/public', snap); }); } catch (e) { if (backend.log) backend.log('public summary write failed', e && e.message); }
@@ -432,12 +449,15 @@ async function session(backend, { auth, data, ip }) {
       const db = ld.toDb() || runtime.emptyDb();
       if (token) await linkUser(backend, token.uid, actor, app);
       let adminData = null;
+      if (actor && actor.role === 'admin' && delta) {
+        return { serverTime: Date.now(), syncStart, delta: true, actor, db: scopeFor(db, actor), provider: null, admin: null, signedIn: true, reads: ld.reads };   // employees / RBAC travel with full syncs and workforce signals
+      }
       if (actor && actor.role === 'admin') {
         const wf = await workforce.loadState(backend.adapter, null);
         adminData = { employeeId: actor.employeeId, employees: wf.employees, rbac: wf.rbac };
       }
       if (gated) return { serverTime: Date.now(), actor: null, db: scopeFor(db, null), provider: null, admin: null, adminGate: adminCode.gateOf(admin), signedIn: true, reads: ld.reads };
-      return { serverTime: Date.now(), actor, db: scopeFor(db, actor), provider: app === 'provider' && token ? await providerStatusOf(ld, token) : null, admin: adminData, signedIn: !!token, reads: ld.reads };
+      return { serverTime: Date.now(), syncStart, delta: false, actor, db: scopeFor(db, actor), provider: app === 'provider' && token ? await providerStatusOf(ld, token) : null, admin: adminData, signedIn: !!token, reads: ld.reads };
     }
     case 'registerCustomer': {
       if (await maintenanceOn(backend)) fail('unavailable', 'المنصة في صيانة دلوقتي — جرّب تاني بعد شوية');   /* L3 */

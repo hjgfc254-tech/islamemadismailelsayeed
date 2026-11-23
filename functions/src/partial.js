@@ -17,8 +17,9 @@ const { keyOf, colName, KNOWN_ARRAYS } = require('./store');
 /** Collections whose app order is newest-first (the domain prepends to them). */
 const NEWEST_FIRST = new Set(['notifications', 'serviceRequests', 'quotes', 'complaints']);
 const IN_CHUNK = 30;
-const strip = d => { const c = { ...d }; delete c._k; return c; };
+const strip = d => { const c = { ...d }; delete c._k; delete c._u; return c; };
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+const withoutU = d => { if (!d || d._u === undefined) return d; const c = { ...d }; delete c._u; return c; };
 
 /* Short-lived per-instance cache for PUBLIC data that every sync re-reads (system docs, service areas, approved
    providers). Used only outside transactions (writes always read fresh inside their transaction); any commit that
@@ -170,7 +171,7 @@ class PartialDb {
     const prevSettings = this.system && this.system.settings;
     if (next.settings && (!prevSettings || !same(prevSettings, next.settings))) { a.set(tx, 'system/settings', next.settings); note('settings', 'set', 'settings'); }
     let seq = 0;
-    const base = Date.now() * 1000;
+    const base = Date.now() * 1000, stamp = Date.now();
     for (const k of KNOWN_ARRAYS) {
       const prev = this.maps[k];
       const items = Array.isArray(next[k]) ? next[k] : [];
@@ -183,7 +184,9 @@ class PartialDb {
         seen.add(id);
         const old = prev.get(id);
         const data = { ...JSON.parse(JSON.stringify(it)), _k: old && old._k !== undefined ? old._k : base + (++seq) };
-        if (!old || !same(old, data)) { a.set(tx, `${colName(k)}/${id}`, data); note(k, 'set', id); }
+        delete data._u;
+        /* _u = last change (ms): the Admin delta sync reads only documents changed since its previous sync */
+        if (!old || !same(withoutU(old), data)) { data._u = stamp; a.set(tx, `${colName(k)}/${id}`, data); note(k, 'set', id); }
       }
       for (const id of prev.keys()) if (!seen.has(id)) { a.del(tx, `${colName(k)}/${id}`); note(k, 'del', id); }
     }

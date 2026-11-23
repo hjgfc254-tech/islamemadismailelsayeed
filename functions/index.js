@@ -41,9 +41,9 @@ const backend = {
     if (kind === 'auth') { try { await getAuth().getUser('__health_probe__'); } catch (e) { if (e && e.code === 'auth/user-not-found') return; throw e; } return; }
     throw new Error('unknown probe');
   },
-  async signal(uids) {
-    const at = Date.now();
-    await getDatabase().ref('signals').update(Object.fromEntries(uids.map(u => [u, { at }])));
+  async signal(uids, opts) {
+    const at = Date.now(), v = opts && opts.full ? { at, full: true } : { at };   // full: the client must not use a delta sync
+    await getDatabase().ref('signals').update(Object.fromEntries(uids.map(u => [u, v])));
   },
   async authUsers(uids) {
     const out = {}; if (!uids.length) return out;

@@ -193,4 +193,22 @@ async function syncPlan(ld, actor) {
   void approved;
 }
 
-module.exports = { plan, syncPlan, requestBundle, candidates, PAGE_DEFAULT, PAGE_MAX };
+/* ── Admin DELTA sync (cost): after the first full sync, the Admin app asks only for documents changed since its previous
+   sync (`_u`, stamped by PartialDb.commit). One bounded query per collection — an idle re-sync costs ~10 reads instead of
+   ~2,300. Too many changes (a query hits the limit) → the caller falls back to a full sync. Deletions travel as a
+   `full` flag on the change signal (service.notifyChanges), so the client then asks for a full sync. ── */
+const DELTA_LIMIT = 300;
+const DELTA_KEYS = Object.freeze({
+  full: ['serviceRequests', 'assignments', 'quotes', 'customers', 'providers', 'complaints', 'transactions', 'reviews'],
+  content: ['serviceRequests', 'providers', 'reviews'],
+  tech: []
+});
+async function deltaPlan(ld, actor, since) {
+  await ld.loadSystem();
+  const keys = DELTA_KEYS[actor.adminRole] || DELTA_KEYS.full;
+  const lens = await Promise.all(keys.map(k => ld.where(k, [['_u', '>', since]], { orderBy: ['_u', 'asc'], limit: DELTA_LIMIT }).then(r => r.length)));
+  if (actor.adminRole !== 'tech') lens.push((await ld.where('notifications', [['to', '==', 'admin'], ['_u', '>', since]], { orderBy: ['_u', 'asc'], limit: DELTA_LIMIT })).length);
+  return { overflow: lens.some(n => n >= DELTA_LIMIT) };
+}
+
+module.exports = { deltaPlan, DELTA_LIMIT, plan, syncPlan, requestBundle, candidates, PAGE_DEFAULT, PAGE_MAX };

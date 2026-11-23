@@ -41,6 +41,8 @@ async function start() {
   const C = globalThis.HSApiClient;
   const APP = appName();
   let actor = null, last = null, syncing = null, offSignal = null, lastServerTime = 0, syncTimer = null;
+  let lastSyncStart = 0, needFull = true;   // Admin delta sync state; needFull after sign-in or a deletion signal
+  const DELTA_OVERLAP_MS = 60000;           // re-read the last minute: covers writes that committed during the previous sync
   /* One sync per burst: a write and its own RTDB signal (and rapid consecutive writes) coalesce into a single read. */
   /* cost: a change signal re-syncs this device. A hidden tab waits until it is shown again (one sync instead of one per
      change), and the Admin app — signalled on EVERY change in the marketplace — coalesces bursts into one sync. */
@@ -57,6 +59,25 @@ async function start() {
     return C.fail(code, e && e.message);
   };
 
+  /* merges an Admin delta (changed documents only) into this device's copy; new items go first in newest-first lists */
+  const NEWEST_FIRST = ['notifications', 'serviceRequests', 'quotes', 'complaints'];
+  function applyDelta(delta) {
+    if (!delta) return;
+    let cur = null;
+    try { cur = JSON.parse(localStorage.getItem(DB_KEY) || 'null'); } catch { cur = null; }
+    if (!cur || cur._source !== 'firebase') { needFull = true; scheduleSync(true); return; }   // nothing to merge into yet
+    for (const [k, v] of Object.entries(delta)) {
+      if (!Array.isArray(v)) { if (v && typeof v === 'object' && (k === 'settings' || k === 'meta')) cur[k] = v; continue; }
+      if (!v.length) continue;
+      const list = Array.isArray(cur[k]) ? cur[k] : (cur[k] = []);
+      const at = new Map(list.map((x, i) => [x && x.id, i]));
+      const fresh = [];
+      for (const it of v) { const i = it && it.id != null ? at.get(it.id) : undefined; if (i !== undefined) list[i] = it; else fresh.push(it); }
+      if (fresh.length) cur[k] = NEWEST_FIRST.includes(k) ? fresh.reverse().concat(list) : list.concat(fresh);
+    }
+    try { localStorage.setItem(DB_KEY, JSON.stringify(cur)); } catch {}
+    try { if (typeof MP !== 'undefined') MP.reload(); } catch {}
+  }
   function applySnapshot(db) {
     if (!db) return;
     let cur = null;
@@ -122,10 +143,14 @@ async function start() {
     if (syncing) return syncing;
     syncing = (async () => {
       try {
-        const r = (await callSession({ op: 'sync', app: APP })).data;
+        /* Admin: after the first full sync only the changes since the previous one (server plan.js deltaPlan) */
+        const since = APP === 'admin' && !needFull && lastSyncStart ? lastSyncStart - DELTA_OVERLAP_MS : 0;
+        needFull = false;
+        const r = (await callSession({ op: 'sync', app: APP, ...(since ? { since } : {}) })).data;
+        if (r.syncStart) lastSyncStart = r.syncStart;
         if (APP === 'admin' && r.adminGate && r.adminGate.needsCode) setTimeout(() => adminCodeFlow(r.adminGate), 0);   /* 8-digit access code */
         actor = r.actor; last = r; if (r.serverTime) lastServerTime = Math.max(lastServerTime, r.serverTime);
-        applySnapshot(r.db);
+        if (r.delta) applyDelta(r.db); else applySnapshot(r.db);
         applyAdmin(r.admin);
         reflectSession(actor, r.db || {});
         if (globalThis.HSRealtimeClient) globalThis.HSRealtimeClient.notify({ source: 'firebase' });
@@ -179,7 +204,8 @@ async function start() {
   A.onAuthStateChanged(auth, user => {
     if (offSignal) { offSignal(); offSignal = null; }
     /* a signal older than the last sync's server time is already reflected — skip it (no duplicate reads) */
-    if (user) { let initial = true; offSignal = D.onValue(D.ref(rtdb, `signals/${user.uid}`), snap => { const v = snap.val(); if (initial) { initial = false; return; } if (!v || !v.at || v.at > lastServerTime) scheduleSync(); }); }   // the initial value is covered by the sign-in sync below
+    lastSyncStart = 0; needFull = true;   // a new account always starts with a full sync
+    if (user) { let initial = true; offSignal = D.onValue(D.ref(rtdb, `signals/${user.uid}`), snap => { const v = snap.val(); if (initial) { initial = false; return; } if (v && v.full) needFull = true; if (!v || !v.at || v.at > lastServerTime) scheduleSync(); }); }   // the initial value is covered by the sign-in sync below
     sync().catch(e => console.warn('[backend] sync failed', e && e.message));
   });
 

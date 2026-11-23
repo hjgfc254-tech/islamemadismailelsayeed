@@ -97,7 +97,8 @@ test('read efficiency on the client: syncs are coalesced and stale signals skipp
 test('deployment configuration: TTL overrides preserved, one Functions region everywhere, demo resets hidden in firebase mode', () => {
   const ix = JSON.parse(read('firestore.indexes.json'));
   for (const g of ['idempotency', 'rateLimits']) assert.ok(ix.fieldOverrides.some(o => o.collectionGroup === g && o.fieldPath === 'expiresAt' && o.ttl === true), g + ' TTL override kept (a deploy must not remove it)');
-  assert.equal(ix.indexes.length, 13);
+  assert.equal(ix.indexes.length, 14);
+  assert.ok(ix.indexes.some(i => i.collectionGroup === 'notifications' && i.fields.map(f => f.fieldPath).join() === 'to,_u'), 'Admin delta sync: admin inbox changes by (to, _u)');
   assert.match(read('functions/index.js'), /region: 'me-central1'/, 'Functions in me-central1 (Doha): nearest region to Firestore me-central2 that allows Cloud Functions');
   assert.match(read('services/firebase-config.js'), /region: 'me-central1'/, 'the client calls the same region');
   assert.match(read('services/firebase-config.js'), /firebasedatabase\.app/, 'RTDB keeps its own URL (europe-west1)');
