@@ -14,7 +14,7 @@ const BUCKETS = [50, 100, 200, 400, 800, 1600, 3200];
 const GROUPS = ['sync', 'requests', 'customer', 'provider', 'admin', 'other'];
 const GROUP_LABEL = { sync: 'المزامنة', requests: 'الطلبات', customer: 'العميل', provider: 'مقدم الخدمة', admin: 'الإدارة', other: 'أخرى' };
 const FLUSH_MS = 60000, TTL_DAYS = 45;
-const INSTANCE = crypto.randomBytes(4).toString('hex');
+const INSTANCE = ((h) => 'i' + h.slice(0, 4) + 'x' + h.slice(4))(crypto.randomBytes(4).toString('hex'));   // letters break digit runs (never looks like a phone number)
 
 const dayOf = (t = Date.now()) => new Date(t).toISOString().slice(0, 10);
 const fresh = (day) => ({ day, month: day.slice(0, 7), instance: INSTANCE, api: 0, session: 0, reads: 0, writes: 0, deletes: 0, pushes: 0,
