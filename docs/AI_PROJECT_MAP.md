@@ -391,6 +391,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | docs/PROJECT_REFERENCE.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | docs/PROJECT_TREE.md | CONFIGURATION | Documentation for PROJECT_TREE | Update only when related implementation changes. |
 | docs/README.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| docs/SECURITY_AUDIT_2026-11-23.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | docs/SECURITY_MODEL.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
 | docs/TESTING_STRATEGY.md | DOCUMENTATION | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
 | docs/UI_EDIT_GUIDE_AR.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
@@ -636,6 +637,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | tests/unit/responsive-sweep-regression.test.js | TEST | Node regression checks for five confirmed responsive defects fixed during the 2026-11-13 browser sweep. | Maintain the regression guards and run with npm test. |
 | tests/unit/reviews-management.test.js | TEST | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
 | tests/unit/round5-features.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| tests/unit/security-audit-2026-11-23.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/security-fixes.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/security-round2.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/security.test.js | TEST | Unit tests for the security page logic: fixtures, validation, alert workflow, session rules, ordering, grid config, and the no-real-security/no-network boundary (7 checks). | Extend when the page behavior changes. |
