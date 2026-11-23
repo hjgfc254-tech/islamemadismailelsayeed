@@ -56,7 +56,7 @@ function createContext(db, roster, rbac) {
     run('(() => { const d = MP.db(); d.providers = []; MP.save ? MP.save() : localStorage.setItem("hs_mp_db", JSON.stringify(d)); })()');
   }
   if (Array.isArray(roster)) ctx.HSAdminRbac.state.roster = roster.map(e => ({ ...e }));
-  if (rbac && Array.isArray(rbac.roles)) ctx.HSAdminRbac.state.roles = JSON.parse(JSON.stringify(rbac.roles));
+  if (rbac && Array.isArray(rbac.roles)) ctx.HSAdminRbac.state.roles = ctx.HSAdminRbac.mergePresets(JSON.parse(JSON.stringify(rbac.roles)));   /* stored catalogues gain the team presets / new modules */
   if (rbac && rbac.overrides) ctx.HSAdminRbac.state.overrides = JSON.parse(JSON.stringify(rbac.overrides));
   return { ctx, run, mp: run('MP'), client: ctx.HSApiClient, alerts: () => JSON.parse(JSON.stringify(ctx.HS_ALERT_OUTBOX || [])) };
 }

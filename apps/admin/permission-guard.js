@@ -68,7 +68,8 @@
   const API_NEEDS = Object.freeze({
     'GET /requests': 'orders.view', 'GET /requests/:id': 'orders.view', 'GET /requests/:id/photos': 'orders.view', 'POST /requests/:id/cancel': 'orders.decide',
     'GET /complaints': 'complaints.view', 'POST /complaints/:id/resolve': 'complaints.decide',
-    'GET /admin/transactions': 'finance.view', 'GET /admin/commission': 'finance.view'
+    'GET /admin/transactions': 'finance.view', 'GET /admin/commission': 'finance.view',
+    'GET /admin/providers': 'providers.view', 'GET /admin/requests/:id/candidates': 'orders.view'
   });
   const TECH_API = Object.freeze(['GET /admin/summary', 'GET /notifications', 'POST /notifications/read', 'GET /admin/controls', 'GET /admin/support-contacts']);
   function apiDenied(actor, method, pattern) {

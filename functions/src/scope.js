@@ -34,10 +34,54 @@ function customerRequestView(r) {
    adminDataPolicy: 'minimal'. Low ranks (support, moderator) then get customers' phones masked (010•••••678), no saved
    addresses and no transactions; finance keeps transactions; admin / owner see everything (unchanged). */
 const maskPhone = (p) => { const s = String(p || ''); return s.length >= 7 ? s.slice(0, 3) + '•'.repeat(s.length - 6) + s.slice(-3) : (s ? '•••' : ''); };
-function adminView(db, actor) {
+/* Teams release (2026-11-22): data separation by role, ALWAYS on (independent of adminDataPolicy):
+     tech     → no customers / providers / requests / assignments / transactions / complaints / chats / addresses / reviews;
+     content  → no personal data: providers' public profile, requests as anonymous facts (category, status, price), no money rows;
+     finance  → money rows kept; phones masked, addresses / locations / chats removed.
+   Other roles (owner, admin, ops, support, moderator, custom) keep the existing behaviour below. */
+const REQ_FACTS = ['id', 'no', 'cat', 'sub', 'gov', 'area', 'status', 'createdAt', 'pricing', 'bidding', 'urgent', 'free'];
+const ROLE_VIEW = Object.freeze({ tech: 'none', content: 'nopii', finance: 'masked' });
+function maskRequest(r) { return { ...r, phone: maskPhone(r.phone), addr: r.addr ? '•••' : r.addr, geo: null, liveGeo: null, chat: [], name: r.name ? '•••' : r.name }; }
+function roleView(db, mode) {
+  if (mode === 'none') { const out = base(db); out.reviews = []; out.meta = {}; return out; }
   const full = JSON.parse(JSON.stringify(db));
+  full.addresses = []; full.favorites = [];
+  if (mode === 'nopii') {
+    full.customers = [];
+    full.providers = (full.providers || []).map(publicProvider);
+    full.serviceRequests = (full.serviceRequests || []).map((r) => pick(r, REQ_FACTS));
+    full.transactions = []; full.complaints = [];
+    full.notifications = (full.notifications || []).filter((n) => n.to === 'admin');
+    return full;
+  }
+  full.customers = (full.customers || []).map((c) => ({ ...c, phone: maskPhone(c.phone), email: c.email ? '•••' : c.email }));
+  full.providers = (full.providers || []).map((p) => ({ ...p, phone: maskPhone(p.phone), email: p.email ? '•••' : p.email, nationalId: undefined, idPhoto: undefined }));
+  full.serviceRequests = (full.serviceRequests || []).map(maskRequest);
+  return full;
+}
+/** Recursive response scrub for the restricted admin roles (defence in depth on every API answer). */
+const PII_KEYS = new Set(['phone', 'whatsapp', 'email', 'addr', 'address', 'geo', 'liveGeo', 'chat', 'nationalId', 'idPhoto']);
+function scrubForRole(data, role) {
+  if (!ROLE_VIEW[role]) return data;
+  const walk = (v, d) => {
+    if (d > 12 || v == null || typeof v !== 'object') return v;
+    if (Array.isArray(v)) return v.map((x) => walk(x, d + 1));
+    const out = {};
+    for (const [k, x] of Object.entries(v)) {
+      if (!PII_KEYS.has(k)) { out[k] = walk(x, d + 1); continue; }
+      if (k === 'chat') out[k] = [];
+      else if ((k === 'phone' || k === 'whatsapp') && role === 'finance') out[k] = maskPhone(x);
+      else out[k] = x == null ? x : (k === 'geo' || k === 'liveGeo' ? null : '•••');
+    }
+    return out;
+  };
+  return walk(data, 0);
+}
+function adminView(db, actor) {
   const policy = db.settings && db.settings.adminDataPolicy;
   const rank = actor.adminRole || 'owner';
+  if (ROLE_VIEW[rank]) return roleView(db, ROLE_VIEW[rank]);
+  const full = JSON.parse(JSON.stringify(db));
   if (policy !== 'minimal' || ['owner', 'admin'].includes(rank)) return full;
   full.customers = (full.customers || []).map((c) => ({ ...c, phone: maskPhone(c.phone), email: c.email ? '•••' : c.email }));
   full.serviceRequests = (full.serviceRequests || []).map((r) => ({ ...r, phone: maskPhone(r.phone), addr: r.addr ? '•••' : r.addr, geo: null }));
@@ -94,4 +138,4 @@ function scopeFor(db, actor) {
   return out;
 }
 
-module.exports = { adminView, maskPhone, scopeFor, publicProvider, PROVIDER_PUBLIC, customerRequestView, customerQuote };
+module.exports = { adminView, scrubForRole, ROLE_VIEW, maskPhone, scopeFor, publicProvider, PROVIDER_PUBLIC, customerRequestView, customerQuote };

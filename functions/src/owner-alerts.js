@@ -9,6 +9,12 @@
 'use strict';
 
 async function notifyOwner(backend, body, link) {
+  /* teams release: the owner alert is also a bell entry (team «owner», critical) — alerts.js stores it and pushes to the owners */
+  try {
+    const hash = String(link || '').replace(/^[^#]*/, '') || '#/alerts';
+    const r = await require('./alerts').ingest(backend, [{ team: 'owner', severity: 'critical', kind: 'owner', title: String(body).slice(0, 120), body: '', link: hash, dedupeKey: 'owner:' + String(body).slice(0, 80) }]);
+    if (r.length) return r.length;
+  } catch (e) { if (backend.log) backend.log('owner alert ingest failed', e && e.message); }
   try {
     if (!backend.sendPush || !backend.queryDocs) return 0;
     const owners = await backend.queryDocs('admins', 'role', '==', 'owner');

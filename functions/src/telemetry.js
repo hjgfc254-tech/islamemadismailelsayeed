@@ -66,7 +66,7 @@ async function report(backend, app, body, uid) {
     }, false);
     stored++;
     const n = (cur ? +cur.count || 0 : 0) + 1;
-    if ([10, 100, 1000].includes(n)) await require('./owner-alerts').notifyOwner(backend, `خطأ بيتكرر (${n} مرة) في ${c.app === 'server' ? 'السيرفر' : c.app === 'provider' ? 'تطبيق مقدم الخدمة' : c.app === 'admin' ? 'الإدارة' : 'تطبيق العميل'}: ${c.msg.slice(0, 90)}`, 'apps/admin/index.html#/audit');
+    if ([10, 100, 1000].includes(n)) await require('./alerts-adapter').notifyTeam(backend, 'tech', n >= 100 ? 'critical' : 'normal', { kind: 'errors.repeated', key: 'errors:' + path, link: '#/tech', text: `خطأ بيتكرر (${n} مرة) في ${c.app === 'server' ? 'السيرفر' : c.app === 'provider' ? 'تطبيق مقدم الخدمة' : c.app === 'admin' ? 'الإدارة' : 'تطبيق العميل'}: ${c.msg.slice(0, 90)}` });
   }
   return okEnv({ stored }, 201);
 }

@@ -135,3 +135,11 @@ exports.digestClock = onSchedule({ schedule: '5 * * * *', timeZone: 'Africa/Cair
   try { const r = await digestAdmin.tick(backend); if (Object.keys(r).length) logger.info('digestClock', r); }
   catch (e) { logger.error('digestClock failed', { error: e && e.message }); }
 });
+
+/* team alerts clock: every 5 minutes — time-based alerts (MP.opsScan: requests without a provider, pending providers,
+   overdue collections) and escalation of unclaimed critical alerts to the owner (functions/src/alerts.js). */
+const alertsEngine = require('./src/alerts');
+exports.alertsClock = onSchedule({ schedule: 'every 5 minutes', region: OPTS.region || 'me-central1', timeoutSeconds: 120 }, async () => {
+  try { const r = await alertsEngine.tick(backend, () => service.scanOps(backend)); if (r.raised || r.escalated) logger.info('alertsClock', r); }
+  catch (e) { logger.error('alertsClock failed', { error: e && e.message }); }
+});

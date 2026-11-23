@@ -19,7 +19,7 @@
     "apps/admin/modules/ops-routes.js": "cc2a03d01e151bcfcd56212b250ed1a267769844163f9773efe61e26037ca4d0",
     "services/ops-api.js": "58a1fbfe3e20714dae59b69e0c26826a47ee4327c189b65c8880d2ad83541464",
     "apps/admin/rbac-store.js": "ec90357ded620d4d147be4e5700da8429f4c4f58f07db6b4b275a4d0b97b03ff",
-    "apps/admin/permission-guard.js": "4ca57ff2a3cf198c000e9bb1a26f3060fce8ec551ba3d19871c3ff3016d112ed",
+    "apps/admin/permission-guard.js": "e57efb26c2847fd70ba3ffde44cf3e4ce7bd8f671a823b7ec73cc18ac1a82683",
     "apps/admin/modules/workforce/employee-status.js": "f61a20957671b072818ee6704346fa087f7f3dace03537b6c6bfdac420437472",
     "apps/admin/modules/workforce/employee-form.js": "e0e3ea8920dd84b152a086657c7d3e73490ca51c0ae2feaff0162d6b424147c3",
     "apps/admin/modules/workforce/employee-invitation.js": "ef3a7a7400c5d4541ddc09647e74a6ce20695077dc60a1e0f9dd4995af1655d3"
