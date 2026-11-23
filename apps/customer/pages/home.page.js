@@ -24,40 +24,55 @@
     const art=h&&h.img?`<img class="hero-photo" src="${e(h.img)}" alt="" decoding="async" fetchpriority="high" draggable="false">`:ART.hero;
     const sb=ctx.siteBanner, sbe=ctx.esc||(s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])));
     const bannerHtml=sb&&sb.text?`<div class="site-banner" role="note" data-part="banner">${ic('info')}<span>${sbe(sb.text)}</span>${sb.action&&sb.action!=='none'?`<button type="button" class="sb-go" data-act="slideGo" data-to="${sbe(sb.action)}">اعرف أكتر</button>`:''}</div>`:'';
-    return `<div class="screen">${topbar()}${bannerHtml}
-  ${renderGreeting()}
+    /* 2026 identity (owner, 2026-11-23): photo hero under the navy header, trust strip, search, the customer's own work
+       (draft / active requests), popular services, governorate banner, how it works — then the rest, shorter */
+    const heroImg=h&&h.img?e(h.img):'../../assets/brand/hero-tech-v3.jpg';
+    const heroTitle=h?title:'كل خدمة<br>تصليح وصيانة', heroAccent=h?accent:'في مكان واحد', heroSub=h?sub:'فنيين بتراجعهم الإدارة • سعر واضح قبل ما توافق';
+    const steps=[['grid','اختار الخدمة'],['calendar','حدّد الموعد'],['user','يوصلك الفني'],['star','قيّم الخدمة']];
+    const how4=ctx.firstVisit===false?'':`<section class="how-v3" aria-labelledby="howT"><h2 id="howT">إزاي هنصلحلك بتشتغل؟</h2><ol>${steps.map(([i,t])=>`<li><i>${ic(i)}</i><span>${t}</span></li>`).join('')}</ol></section>`;
+    /* the customer's own work comes first: an active request / unfinished draft sits above the hero; the greeting is a
+       slim line under the trust strip so the header flows straight into the photo (owner mock-up). Rendered in this
+       order (greeting → draft → active) so the dependency call order stays stable. */
+    const topHtml=topbar(), greetHtml=renderGreeting(), draftHtml=renderDraftResume(), activeHtml=renderActiveRequests();
+    const ownWork=(draftHtml||'').trim()||(activeHtml||'').trim();
+    return `<div class="screen home-v3${ownWork?' has-own':''}">${topHtml}${bannerHtml}
+  ${draftHtml}
+  ${activeHtml}
+  <section class="hero" aria-labelledby="heroT">
+    <img class="${h&&h.img?'hero-photo':'hero-bg'}" src="${heroImg}" data-hero="art" alt="" width="900" height="1115" decoding="async" fetchpriority="high" draggable="false">
+    <div class="txt">
+      <h1 id="heroT">${heroTitle}${heroAccent?`<br><span>${heroAccent}</span>`:''}</h1>
+      ${heroSub?`<p>${heroSub}</p>`:''}
+      <button class="hero-cta" data-act="newReq">${cta==='ابدأ الطلب'?'اطلب خدمة الآن':cta} <span class="arr" aria-hidden="true">←</span></button>
+    </div>
+  </section>
+  <ul class="trust-strip" aria-label="ليه هنصلحلك">
+    <li>${ic('shield')}<span>فنيين بتراجعهم الإدارة</span></li>
+    <li>${ic('wallet')}<span>سعر واضح قبل الحجز</span></li>
+    <li>${ic('clock')}<span>تابع طلبك خطوة بخطوة</span></li>
+  </ul>
+  ${greetHtml}
+  <div class="search hero-search">
+    <label class="field">${ic('search')}<input id="q" type="search" aria-label="ابحث عن فني أو خدمة" placeholder="اكتب مشكلتك… مثلاً: التكييف مش بيبرّد" enterkeyhint="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="home-sg"></label>
+    <button class="cam" data-act="cam" aria-label="تصوير المشكلة لإرفاقها بطلبك">${ic('camera')}</button>
+  </div>
+  <div id="home-sg" class="hs-suggest home-sg" role="listbox" hidden></div>
   ${ctx.addressBar||''}
   ${ctx.care||''}
-  ${renderDraftResume()}
-  ${renderActiveRequests()}
-  <section class="hero" aria-labelledby="heroT">
-    <div class="txt">
-      ${eyebrow?`<p class="hero-eyebrow">${eyebrow}</p>`:''}
-      <h1 id="heroT">${title}${accent?`<br><span>${accent}</span>`:''}</h1>
-      ${sub?`<p>${sub}</p>`:''}
-      <div class="search hero-search">
-        <label class="field glass neon">${ic('search')}<input id="q" type="search" aria-label="ابحث عن فني أو خدمة" placeholder="ابحث عن الخدمات التي تحتاجها" enterkeyhint="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="home-sg"></label>
-        <button class="cam" data-act="cam" aria-label="تصوير المشكلة لإرفاقها بطلبك">${ic('camera')}</button>
-      </div>
-      <div id="home-sg" class="hs-suggest home-sg" role="listbox" hidden></div>
-      <button class="hero-cta" data-act="newReq">${ic('wrench')} ${cta}</button>
-    </div>
-    <div class="art">${art}</div>
+  <section aria-labelledby="tilesT">
+    <div class="sec-head"><h2 id="tilesT">أشهر الخدمات</h2><button type="button" class="more" data-go="sections">عرض الكل ${ic('back')}</button></div>
+    ${String(tiles()).replace(/<\/div>\s*$/,`<button type="button" class="tile all-tile" data-go="sections" aria-label="كل الأقسام"><span class="tart" aria-hidden="true">${ic('grid')}</span><span class="tl">كل الأقسام</span></button></div>`)}
   </section>
-  <!-- 2026-11-20 design pass: categories first (what customers tap), then a slim trust row -->
-  <h2 class="sec-title" id="tilesT">${ic('grid')}تصفّح الفئات</h2>
-  <p class="sec-hint">اضغط مطوّلًا على أي قسم تشوف أشهر مشاكله وأسعاره</p>
-  ${tiles()}
-  <ul class="trust-strip" aria-label="ليه هنصلحلك">
-    <li>${ic('wallet')}<span><b>سعر واضح قبل الحجز</b><small>تعرف المبلغ قبل ما تأكد</small></span></li>
-    <li>${ic('shield')}<span><b>فنيين بتراجعهم الإدارة</b><small>قبل ما يبدأوا يستقبلوا طلبات</small></span></li>
-    <li>${ic('clock')}<span><b>تابع طلبك خطوة بخطوة</b><small>وتوصلك إشعارات بكل تحديث</small></span></li>
-  </ul>
-  ${renderQuickActions()}
+  <button type="button" class="gov-banner" data-go="sections">
+    <span class="gb-pin" aria-hidden="true">${ic('pin')}</span>
+    <span><b>خدماتك في محافظتك</b><small>فنيين في منطقتك — اختار القسم وإحنا نوصّلك بالأقرب</small></span>
+    <span class="gb-go" aria-hidden="true">${ic('back')}</span>
+    <svg class="gb-sky" viewBox="0 0 200 46" preserveAspectRatio="xMaxYMax meet" aria-hidden="true" fill="#fff"><path d="M0 46V34h8v-6h6v6h6V22h5v-8h2v8h5v24h6V30h10v16h6V26l4-10 4 10v20h8V20h3V6h2v14h3v26h6V32h12v14h6V28h8v18h5V12l3-6 3 6v34h6V30h10v16h8V36h10v10z"/></svg>
+  </button>  ${renderQuickActions()}
   ${ctx.trending||''}
   ${renderCommonProblems()}
   ${ctx.when||''}
-  ${howItWorks}
+  ${how4}
   ${renderRecentUsed()}
   ${renderSavedAddresses()}
   ${renderFavorites()}
@@ -66,22 +81,10 @@
   ${ctx.invite||''}
   ${reviewsBlock}
   ${renderServiceAreas()}
-  <section class="trust" aria-labelledby="trustT">
-    <div class="trust-photo"><img src="../../assets/brand/trust-handshake.jpg" alt="مقدم خدمة من هنصلحلك يصافح عميلًا" width="720" height="868" loading="lazy" decoding="async"></div>
-    <div class="trust-body">
-      <h2 id="trustT">خدماتك، في تجربة أسهل</h2>
-      <ul>
-        <li>${ic('check')}<span><b>مقدمو خدمة تتم مراجعتهم</b><small>تسجيل مقدم الخدمة يُراجَع من الإدارة قبل استقبال الطلبات.</small></span></li>
-        <li>${ic('list')}<span><b>تابع حالة طلبك من مكان واحد</b><small>كل مرحلة في طلبك ظاهرة لك من «طلباتي».</small></span></li>
-        <li>${ic('chat')}<span><b>قارن العروض قبل الاختيار</b><small>تستلم عروض الأسعار وتختار المناسب قبل التنفيذ.</small></span></li>
-      </ul>
-      <button class="cta" data-act="newReq">${ic('wrench')} ابدأ الطلب</button>
-    </div>
-  </section>
   <div class="join glass neon">${ic('user')}<div><b>عايز تقدم خدماتك؟</b><small>انضم كمقدم خدمة — التسجيل يُراجَع من الإدارة قبل استقبال الطلبات</small></div><a class="tag" href="../provider/index.html#/join">انضم كمقدم خدمة</a></div>
   <footer class="site-foot" aria-label="عن هنصلحلك">
     <div class="foot-brand">
-      <img class="wordmark" src="../../assets/brand/logo-v10-lockup-light.webp" alt="هنصلحلك HANSALEHLAK" width="615" height="160" loading="lazy" decoding="async">
+      <span class="hs-logo"><img src="../../assets/brand/hsl-mark.svg" alt="" width="38" height="38" loading="lazy" decoding="async"><span class="w"><b>هنصلحلك</b><small>HANSALEHLAK</small></span></span>
       <p>منصة واحدة، خدمات أسهل.</p>
     </div>
     <div class="foot-cols">

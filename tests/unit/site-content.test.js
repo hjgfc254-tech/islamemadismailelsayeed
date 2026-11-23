@@ -74,7 +74,7 @@ test('after a reload without cached images, missing() asks for them again', asyn
 
 test('Customer Home renders the published hero and slides (escaped) and keeps the defaults otherwise', async () => {
   const plainApp = boot({});
-  assert.match(plainApp.html(), /كل ما تحتاجه من خدمات/, 'default hero');
+  assert.match(plainApp.html(), /كل خدمة(<br>)?\s*تصليح وصيانة/, 'default hero (2026 identity copy)');
   assert.match(plainApp.html(), /خدمتك على بُعد خطوات/, 'default slides');
   const app = boot({});
   await app.run(`HSSiteContent.apply(${JSON.stringify(PAYLOAD)})`);

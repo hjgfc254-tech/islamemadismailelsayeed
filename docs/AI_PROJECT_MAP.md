@@ -106,6 +106,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | apps/customer/pages/support.page.js | IMPLEMENTED | Customer support, FAQs, policies, complaints and support history. | Protect with regression tests; do not rewrite unnecessarily. |
 | apps/customer/pages/trust-features.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | apps/customer/README.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
+| apps/customer/styles/brand-2026.css | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | apps/customer/styles/customer.css | IMPLEMENTED | Existing customer and legacy workspace styles. | Protect with regression tests; do not rewrite unnecessarily. |
 | apps/customer/styles/overrides.css | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | apps/guest/guest-entry.js | IMPLEMENTED (FRONTEND DEMO) | HSGuestEntry: resolves deep links via router + policy; remembers sign-in return link (one-shot). | Read when relevant; keep tests/docs aligned with behavior changes. |
@@ -139,6 +140,8 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | assets/app-icon-192.png | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | assets/app-icon-512.png | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | assets/brand/hero-tech-v2.webp | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| assets/brand/hero-tech-v3.jpg | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| assets/brand/hsl-mark.svg | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | assets/brand/loader/nut.webp | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | assets/brand/loader/wrench.webp | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | assets/brand/logo-v10-lockup-light.webp | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |

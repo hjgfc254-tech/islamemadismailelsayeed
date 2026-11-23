@@ -111,6 +111,7 @@ hansalhlak/
 │   │   │   ├── support.page.js
 │   │   │   └── trust-features.js
 │   │   ├── styles/
+│   │   │   ├── brand-2026.css
 │   │   │   ├── customer.css
 │   │   │   └── overrides.css
 │   │   ├── app.js
@@ -156,6 +157,8 @@ hansalhlak/
 │   │   │   ├── nut.webp
 │   │   │   └── wrench.webp
 │   │   ├── hero-tech-v2.webp
+│   │   ├── hero-tech-v3.jpg
+│   │   ├── hsl-mark.svg
 │   │   ├── logo-v10-lockup-light.webp
 │   │   ├── logo-v10-lockup.webp
 │   │   ├── logo-v10-mark.webp

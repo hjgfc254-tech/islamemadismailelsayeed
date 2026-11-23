@@ -165,7 +165,7 @@ const ART = {
   </svg>`,
 };
 
-const TABS = [['home','الرئيسية','home'],['sections','الخدمات','grid'],['search','بحث','search'],['orders','طلباتي','list'],['account','حسابي','user']];
+const TABS = [['home','الرئيسية','home'],['sections','الخدمات','grid'],['new','طلب خدمة','plus'],['orders','طلباتي','list'],['account','حسابي','user']];   // search: header button + Home field
 
 /* ───────── أدوات ───────── */
 const $ = s => document.querySelector(s);
@@ -206,13 +206,12 @@ const topbar = () => {
   try { const c = me(); hasNotes = c ? MP.unreadFor('customer:'+c.id) > 0 : false; } catch {}
   return `
 <header class="topbar">
-  <div class="tb-actions">
-    <button class="ic-btn avatar" data-go="account" aria-label="حسابي">${ic('user')}</button>
-    <button class="ic-btn ${hasNotes?'dot':''}" data-act="bell" aria-label="الإشعارات">${ic('bell')}</button>
-    <button class="ic-btn mini-search" data-act="miniSearch" aria-label="ابحث عن خدمة">${ic('search')}</button>
-  </div>
-  <div class="logo"><img class="wordmark" src="../../assets/brand/logo-v10-lockup.webp" alt="هنصلحلك HANSALEHLAK" width="615" height="160" decoding="async" draggable="false"></div>
   <div class="tb-actions"><button class="ic-btn" data-act="menu" aria-label="القائمة">${ic('menu')}</button></div>
+  <div class="logo"><span class="hs-logo" aria-label="هنصلحلك HANSALEHLAK"><img src="../../assets/brand/hsl-mark.svg" alt="" width="38" height="38" decoding="async" draggable="false"><span class="w" aria-hidden="true"><b>هنصلحلك</b><small>HANSALEHLAK</small></span></span></div>
+  <div class="tb-actions">
+    <button class="ic-btn mini-search" data-act="miniSearch" aria-label="ابحث عن خدمة">${ic('search')}</button>
+    <button class="ic-btn ${hasNotes?'dot':''}" data-act="bell" aria-label="الإشعارات">${ic('bell')}</button>
+  </div>
 </header>`;
 };
 /* V8-C3: البلاطة تفتح مسار الكتالوج الجديد (قسم ← جهاز ← مشكلة) إن وُجد القسم في CAT؛ وإلا تعود لمسار details القديم (توافق خلفي). */
@@ -859,6 +858,8 @@ const renderTabs = () => {
   const nAct = homeActiveRequests().length;
   const keepTab = focusedTab(); /* إعادة البناء تُدمّر التبويب المُركَّز عليه — نعيد التركيز إلى مكافئه (لكل المستدعين: go وshow) */
   $('#tabbar').innerHTML = TABS.map(([id,l,i])=>{
+    /* 2026 identity: the centre «طلب خدمة» button starts a new request from any screen */
+    if (id === 'new') return `<button class="tab tab-fab" data-act="newReq" aria-label="${l}"><span class="fab" aria-hidden="true">${ic(i)}</span><span>${l}</span></button>`;
     const b = (id==='orders' && nAct) ? `<b class="tab-badge" aria-hidden="true">${nAct>9?'9+':nAct}</b>` : '';
     const lbl = (id==='orders' && nAct) ? `${l} — ${nAct} نشطة` : l;
     return `<button class="tab ${state.tab===id?'on':''}" data-go="${id}" aria-label="${lbl}"${state.tab===id?' aria-current="page"':''}>${ic(i)}<span>${l}</span>${b}</button>`;
