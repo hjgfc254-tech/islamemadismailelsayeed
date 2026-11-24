@@ -1,0 +1,57 @@
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════════════
+   HANSALEHLAK 2026 identity — Provider app (owner, 2026-11-24). Loaded LAST in apps/provider/index.html.
+   Navy header with the light lock-up, navy brand hero (generated background: assets/brand/bg-navy.svg), red actions,
+   navy avatars, branded empty states. Colours come from shared/design-system/brand-2026-tokens.css.
+   ═══════════════════════════════════════════════════════════════════════════════════════════════════════ */
+:root{--hs-navy:#0B1F3A;--hs-navy-2:#15305A;--hs-red:#E1251B;--hs-red-ink:#C01810;--hs-red-soft:#FDECEA;--hs-line:#E4E9F0;
+  --hs-shadow:0 2px 6px rgba(11,31,58,.05),0 10px 24px rgba(11,31,58,.08);--font-display:'Cairo','IBM Plex Sans Arabic',system-ui,sans-serif}
+
+/* header */
+.pv-topbar{background:var(--hs-navy);border-bottom:0;box-shadow:0 6px 18px rgba(11,31,58,.18);color:#fff}
+.pv-brand::before{background-image:url(../../../assets/brand/hsl-lockup-light.png)}
+.pv-demo{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.28);color:#FFD9A8}
+.pv-topbar button,.pv-topbar a{color:#fff}
+.pv-topbar .pv-icon-btn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);color:#fff}
+.pv-topbar .pv-icon-btn:hover{background:rgba(255,255,255,.18)}
+.pv-brand::before{width:150px;height:40px}
+@media (max-width:400px){.pv-brand::before{width:118px;height:32px}}
+.pv-boot-mark{background:var(--hs-navy) url(../../../assets/brand/hsl-mark.svg) center/80% no-repeat;color:transparent;border-radius:50%}
+
+/* hero: navy brand card, white type */
+.pv-hero,.pv-welcome{color:#fff;border:0;border-radius:24px;background:var(--hs-navy) url(../../../assets/brand/bg-navy.svg) center/cover no-repeat;box-shadow:0 16px 34px rgba(11,31,58,.22)}
+.pv-hero::after,.pv-welcome::after{display:none}
+.pv-hero h1,.pv-hero h2,.pv-welcome h1{color:#fff}
+.pv-welcome p{color:rgba(255,255,255,.8)}
+.pv-welcome .pv-eyebrow{color:#FFB4AE}
+.pv-hero p,.pv-hero small,.pv-hero .pv-meta,.pv-hero .pv-hint,.pv-hero .pv-account-copy{color:rgba(255,255,255,.8)}
+.pv-hero .pv-eyebrow,.pv-hero>p:first-child,.pv-hero>small:first-child{color:#FFB4AE}
+.pv-hero .pv-availability{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.3);color:#fff}
+.pv-hero .pv-availability.is-on{background:#1FA971;border-color:#1FA971;color:#fff}
+
+/* panels, section titles, accounts */
+.pv-panel{border-radius:22px;border-color:var(--hs-line);box-shadow:var(--hs-shadow)}
+.pv-section-head h1,.pv-section-head h2,.pv-panel h2{font-family:var(--font-display);font-weight:800;color:var(--hs-navy)}
+.pv-avatar{background:var(--hs-navy);color:#fff;border:0;border-radius:14px;font-family:var(--font-display);font-weight:800;box-shadow:0 0 0 3px #fff,0 0 0 4px var(--hs-line)}
+.pv-account{border-radius:18px;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.pv-account:hover{border-color:var(--hs-navy);box-shadow:0 12px 26px rgba(11,31,58,.12)}
+.pv-account:active{transform:scale(.98)}
+.pv-arrow{color:var(--hs-red)}
+
+/* actions: red primary, navy secondary */
+.pv-primary,.pv-btn-primary,.pv-actions .is-primary,button[data-pv-action="accept"],button[data-pv-action="submit"]{background:var(--hs-red);border-color:var(--hs-red);color:#fff}
+.pv-primary:hover,.pv-btn-primary:hover{background:var(--hs-red-ink)}
+
+/* forms (join): one clear focus ring, chips in the brand */
+.pv-panel input:focus-visible,.pv-panel select:focus-visible,.pv-panel textarea:focus-visible{outline:none;border-color:var(--hs-navy);box-shadow:0 0 0 3px rgba(11,31,58,.12)}
+.pv-panel fieldset{border-radius:16px;border-color:var(--hs-line)}
+.pv-panel fieldset legend{color:var(--hs-navy);font-weight:800}
+.pv-panel label:has(>input[type="checkbox"]:checked){background:var(--hs-navy);border-color:var(--hs-navy);color:#fff}
+
+/* empty states: branded card instead of a blank area */
+.pv-empty{border-radius:22px;border:1px solid var(--hs-line);background:#fff url(../../../assets/brand/bg-light.svg) center/cover no-repeat;box-shadow:var(--hs-shadow)}
+
+/* bottom navigation and toast */
+.pv-nav .is-active,.pv-nav [aria-current="page"]{color:var(--hs-red-ink)}
+.pv-toast{background:var(--hs-navy);color:#fff;border-color:var(--hs-navy);border-radius:999px}
+
+@media (prefers-reduced-motion:reduce){.pv-account{transition:none}}

@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 675,
+  "file_count": 676,
   "files": [
     {
       "path": "_redirects",
@@ -783,8 +783,8 @@
       "path": "apps/provider/index.html",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 3681,
-      "sha256": "525a7d5c06ef80c3b778dd12b7bc4b76084a5485813aacd1a4f23e10017e4688"
+      "bytes": 3734,
+      "sha256": "72f543b7c271cb32451117964aaa9c7cefa45bbcca23cd17ef533df91617ff9c"
     },
     {
       "path": "apps/provider/login.html",
@@ -932,6 +932,13 @@
       "status": "CONFIGURATION",
       "bytes": 2123,
       "sha256": "eb3a71bdc9414beba35f941a0a8c38234caa212901abed92a100dfef39a2be46"
+    },
+    {
+      "path": "apps/provider/styles/brand-2026.css",
+      "area": "apps/provider",
+      "status": "NEEDS_REVIEW",
+      "bytes": 4756,
+      "sha256": "fba2a186aa6fead9ba0ebbd458227b24aa108db440697218546599fceffc831a"
     },
     {
       "path": "apps/provider/styles/overrides.css",
@@ -2337,8 +2344,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 299213,
-      "sha256": "2c2a9970cc41c2b1fc01163d2264d80f76291845f8c6bb054c502878377ee5d4"
+      "bytes": 299456,
+      "sha256": "98bb4b42969ae691ee6cb16c15706c544acadc846822a5132c952813491f31ab"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2351,8 +2358,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 168567,
-      "sha256": "a10c336d2990d073afd869217d64a13fc1fd49e9262045d23882cf78320dadea"
+      "bytes": 168784,
+      "sha256": "2f5462698e87ed3fafa460bca06cd45d54f65c5cb1b9e9188c12a3ff8b79b7f5"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2785,8 +2792,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 31828,
-      "sha256": "3959e2c6aa5456c1a663258511cde0c0382713a28f0adb42cad147581febdb88"
+      "bytes": 31869,
+      "sha256": "c12c30ffd0dfdc109d015f241855d1f2f22fce8a142c9c812cc27e00a1a5482b"
     },
     {
       "path": "docs/README.md",
@@ -3345,15 +3352,15 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 11774,
-      "sha256": "b39d4bbd68a998f58b6c9dfcac300bcfb48b7182866b04b23e1c3853977c4a3c"
+      "bytes": 11815,
+      "sha256": "e8374053b56cc0950310d410979cc3a62b413d13cc8c5dba5e58f0b1677dc106"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "abfcaf366ffa7497a0bde5d5cf8b7332e6cb7e0d76f9a8a1e7770e4eee3bc0ff"
+      "sha256": "6685058698fae795c928ddc99c4e74e27edce75a248bcf8cf504e324abf1bb22"
     },
     {
       "path": "services/admin-api.js",

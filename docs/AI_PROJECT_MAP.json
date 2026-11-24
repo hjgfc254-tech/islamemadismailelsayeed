@@ -2,8 +2,8 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 675,
-    "total_files": 675,
+    "file_count": 676,
+    "total_files": 676,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 33,
@@ -22,7 +22,7 @@
       "IMPLEMENTED (SHELL PARTS)": 1,
       "IMPLEMENTED (SHELL, DEMO)": 1,
       "IMPLEMENTED (SHELL)": 2,
-      "NEEDS_REVIEW": 324,
+      "NEEDS_REVIEW": 325,
       "PARTIALLY IMPLEMENTED": 1,
       "PLACEHOLDER": 64,
       "TEST": 78
@@ -4059,7 +4059,7 @@
       "next_action": "Maintain behavior parity; extend only with tested frontend requirements and keep all mutations local/demo until a trusted backend exists.",
       "explicit_references": [],
       "notes": "Implemented and unit-tested in Provider standalone frontend batch 2026-11-13. Does not provide production authentication, authorization, API or database integration.",
-      "sha256": "525a7d5c06ef80c3b778dd12b7bc4b76084a5485813aacd1a4f23e10017e4688",
+      "sha256": "72f543b7c271cb32451117964aaa9c7cefa45bbcca23cd17ef533df91617ff9c",
       "resolved_dependencies": [
         "apps/provider/styles/provider.css",
         "apps/customer/index.html"
@@ -4099,7 +4099,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 3681
+      "bytes": 3734
     },
     {
       "path": "apps/provider/login.html",
@@ -5018,6 +5018,18 @@
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
       "bytes": 2123
+    },
+    {
+      "path": "apps/provider/styles/brand-2026.css",
+      "area": "apps/provider",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "brand-2026.css",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "fba2a186aa6fead9ba0ebbd458227b24aa108db440697218546599fceffc831a",
+      "bytes": 4756
     },
     {
       "path": "apps/provider/styles/overrides.css",
@@ -9907,7 +9919,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "2c2a9970cc41c2b1fc01163d2264d80f76291845f8c6bb054c502878377ee5d4",
+      "sha256": "98bb4b42969ae691ee6cb16c15706c544acadc846822a5132c952813491f31ab",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -9943,7 +9955,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 299213
+      "bytes": 299456
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -10003,7 +10015,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "a10c336d2990d073afd869217d64a13fc1fd49e9262045d23882cf78320dadea",
+      "sha256": "2f5462698e87ed3fafa460bca06cd45d54f65c5cb1b9e9188c12a3ff8b79b7f5",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -10039,7 +10051,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 168567
+      "bytes": 168784
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -11158,7 +11170,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "3959e2c6aa5456c1a663258511cde0c0382713a28f0adb42cad147581febdb88",
+      "sha256": "c12c30ffd0dfdc109d015f241855d1f2f22fce8a142c9c812cc27e00a1a5482b",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11195,7 +11207,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 31828
+      "bytes": 31869
     },
     {
       "path": "docs/README.md",
@@ -12366,7 +12378,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "b39d4bbd68a998f58b6c9dfcac300bcfb48b7182866b04b23e1c3853977c4a3c",
+      "sha256": "e8374053b56cc0950310d410979cc3a62b413d13cc8c5dba5e58f0b1677dc106",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12403,7 +12415,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 11774
+      "bytes": 11815
     },
     {
       "path": "service-worker.lock.json",
@@ -12414,7 +12426,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "abfcaf366ffa7497a0bde5d5cf8b7332e6cb7e0d76f9a8a1e7770e4eee3bc0ff",
+      "sha256": "6685058698fae795c928ddc99c4e74e27edce75a248bcf8cf504e324abf1bb22",
       "bytes": 195
     },
     {
