@@ -734,8 +734,8 @@
       "path": "apps/customer/styles/brand-2026.css",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 35336,
-      "sha256": "2df30db95a05f3cb605c191019fd8d807291235687397509e08439ed27a7862f"
+      "bytes": 37875,
+      "sha256": "d8e4b9064cba93bab00c3b974cc202a292482d8c26b1d2f5ec3dd5246eef3b26"
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -3353,14 +3353,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 11815,
-      "sha256": "e8374053b56cc0950310d410979cc3a62b413d13cc8c5dba5e58f0b1677dc106"
+      "sha256": "860f1e047f6cd61bfcadb954d62d30460e110e90fb2ac79ea0a43e4929e40bda"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "6685058698fae795c928ddc99c4e74e27edce75a248bcf8cf504e324abf1bb22"
+      "sha256": "933a39c5fd402851b09ba663731f51b4058c10784e5c1c013d7a6975b7810e4d"
     },
     {
       "path": "services/admin-api.js",

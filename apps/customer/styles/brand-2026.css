@@ -390,4 +390,38 @@ html.is-scrolling body>.help-fab{opacity:.25;transform:scale(.82)}
   #view .screen[data-enter] :is(.grid.fit,.cgrid,.trust-strip,.plist)>*{animation:hsUp .5s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 45ms + 60ms)}
 }
 @keyframes hsUp{from{opacity:0;transform:translateY(14px) scale(.97)}to{opacity:1;transform:none}}
+
+/* desktop (≥1024px): the white top navigation carries the lock-up and the tabs, so the phone header collapses back into
+   its icon actions, the hero becomes a rounded card, and «طلب خدمة» is a red pill in the navigation */
+@media (min-width:1024px){
+  #view .topbar,html.is-scrolled #view .topbar{position:fixed;top:12px;min-height:0;height:44px;margin:0;padding:0;background:transparent;box-shadow:none;border-radius:0}
+  #view .topbar .ic-btn{color:var(--hs-navy)}
+  #view .topbar .ic-btn:hover{background:var(--brand-primary-soft)}
+  #view .topbar .ic-btn.dot::after{box-shadow:0 0 0 2px #fff}
+  #view .home-v3 .hero{margin:0;border-radius:26px;min-height:420px}
+  #view .home-v3 .hero .txt{width:46%;max-width:440px}
+  #view .home-v3 .hero h1{font-size:clamp(34px,3.2vw,46px)}
+  #view .home-v3 .hero-search{max-width:760px;margin-inline:auto;width:100%}
+  #view>.screen>.dhead:first-child{margin-top:0;padding-top:16px;border-radius:24px}
+  #tabbar .tab.tab-fab{height:auto;align-self:center;margin-inline:6px;padding:0 18px;min-height:42px;border-radius:999px;background:var(--hs-red);color:#fff;font-weight:800}
+  #tabbar .tab.tab-fab::after{display:none}
+  #tabbar .tab.tab-fab .fab{display:none}
+  #tabbar .tab.tab-fab:hover{background:var(--hs-red-ink);color:#fff}
+  #view .grid.fit>.tile{padding-top:18px;padding-bottom:14px}
+}
+
+/* Home hero: the photo settles in (slow zoom-out) and drifts slower than the page while scrolling (depth); the text
+   block rises — transform only, so the first paint (LCP) is not delayed */
+@media (prefers-reduced-motion:no-preference){
+  #view .home-v3 .hero .hero-bg,#view .home-v3 .hero .hero-photo{transform:translateY(calc(min(var(--sy,0),420) * .28px)) scale(1.04);will-change:transform}
+  #view .screen[data-enter] .hero .hero-bg,#view .screen[data-enter] .hero .hero-photo{animation:hsHeroIn 1.3s cubic-bezier(.2,.7,.2,1) both}
+  #view .screen[data-enter] .hero .txt>*{animation:hsRise .7s cubic-bezier(.2,.7,.2,1) both}
+  #view .screen[data-enter] .hero .txt>:nth-child(2){animation-delay:.08s}
+  #view .screen[data-enter] .hero .txt>:nth-child(3){animation-delay:.16s}
+  #view .screen[data-enter] .hero .txt>:nth-child(4){animation-delay:.24s}
+  #view .home-v3 .hero-cta{transition:transform .2s ease,box-shadow .2s ease}
+  #view .home-v3 .hero-cta:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(225,37,27,.4)}
+}
+@keyframes hsHeroIn{from{transform:scale(1.14)}to{transform:scale(1.04)}}
+@keyframes hsRise{from{transform:translateY(18px)}to{transform:none}}
 @media (prefers-reduced-motion:reduce){.hs-say,.hs-say.on{transition:none}#view .wz-say{animation:none}}
