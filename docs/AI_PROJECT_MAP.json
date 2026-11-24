@@ -9829,7 +9829,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "aa5e0e6a4e300a5461115be8455c0b6802d36e714d9bc8e8305f896fe2ea8d3f",
+      "sha256": "f5f9cb0d4137689c1a7377f487e113737d5ab8809ae2e4d6e7a7e14d518f7c68",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "START_HERE.md",
@@ -9838,7 +9838,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 6970
+      "bytes": 7632
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",

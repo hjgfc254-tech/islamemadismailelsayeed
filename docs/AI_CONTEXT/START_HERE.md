@@ -7,6 +7,7 @@
 - Known open: perf budget on the Fast-3G profile (customer LCP ~5–6 s; bundling work unfinished in a worktree). Owner decisions pending: adminDataPolicy 'minimal' (ready, off), support contact numbers, auto-pick when offers are not chosen, App Check key, payment provider.
 - New runners: `perf.cdp.js`, `client-errors.cdp.js`, `offer-alerts.cdp.js`, `admin-controls.cdp.js`. Deploy steps: `docs/DEPLOY_CHECKLIST.md` (standing approval: push + deploy after each change).
 - Inventory reproduces from a clean clone (0/0/0).
+- **2026-11-24 — 2026 identity, round 4 (`npm test` 573/573, hosting deployed):** navy #0B1F3A + red #E1251B across Customer, Provider, Admin tokens (`shared/design-system/brand-2026-tokens.css`, `apps/*/styles/brand-2026.css`). Customer "answers back": `apps/customer/experience.js` (sticky compact header, scroll-driven logo gear, reveal-on-scroll, «مساعد هنصلحلك» guide hints once per session), live sentence in the wizard (`wzSay`), branded empty states / inner-page navy band / request-sent card, generated brand backgrounds `assets/brand/bg-navy|bg-red|bg-light.svg`. Browser runners were not re-run this round (headless screenshots only).
 
 **Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md` · **Handoff:** `docs/HANDOFF_NEXT_AI.md` (newest entry on top)  
 **Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md` · **Project skills:** `.claude/skills/` (`finish-gate`, `vm-script-test`, `browser-qa`)
