@@ -80,7 +80,8 @@
         <p><button type="submit" class="adm-btn adm-btn-p" data-wf-save>${creating ? 'إضافة ودعوة محليًا' : 'حفظ التعديلات محليًا'}</button></p></section>
       ${creating ? '' : `<section aria-labelledby="ord-h-act"><h3 id="ord-h-act">الحساب والدعوة (محاكاة)</h3><div class="ord-act">
         ${acts.filter((a) => !(a.to === 'disabled' && lastOwner)).map((a) => `<button type="button" class="adm-btn ${a.cls}" data-ord-status="${a.to}">${a.text}</button>`).join('')}
-        ${m.status === 'invited' ? '<button type="button" class="adm-btn" data-wf-resend>إعادة إرسال الدعوة (محاكاة)</button>' : ''}</div></section>
+        ${m.status === 'invited' ? '<button type="button" class="adm-btn" data-wf-resend>إعادة إرسال الدعوة (محاكاة)</button>' : ''}</div>
+        ${m.status === 'invited' && m.inviteExpired ? '<p class="ord-err" role="note">الدعوة انتهت (صالحة 7 أيام) — ابعتها تاني عشان الموظف يقدر يفعّل حسابه.</p>' : m.status === 'invited' && m.inviteExpiresAt ? `<p class="ord-muted">الدعوة صالحة لحد ${esc(new Date(m.inviteExpiresAt).toLocaleDateString('ar-EG', { day: 'numeric', month: 'long' }))}.</p>` : ''}</section>
       <section aria-labelledby="wf-h-log"><h3 id="wf-h-log">سجل الإجراءات</h3><ul class="ord-tl">${m.log.slice().reverse().map((l) => `<li><span>${esc(l.text)}</span><small>${esc(dt(l.at))}</small></li>`).join('')}</ul></section>`}</form>`;
   };
 

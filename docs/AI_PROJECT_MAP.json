@@ -2,8 +2,8 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 680,
-    "total_files": 680,
+    "file_count": 681,
+    "total_files": 681,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 33,
@@ -22,7 +22,7 @@
       "IMPLEMENTED (SHELL PARTS)": 1,
       "IMPLEMENTED (SHELL, DEMO)": 1,
       "IMPLEMENTED (SHELL)": 2,
-      "NEEDS_REVIEW": 329,
+      "NEEDS_REVIEW": 330,
       "PARTIALLY IMPLEMENTED": 1,
       "PLACEHOLDER": 64,
       "TEST": 78
@@ -2467,7 +2467,7 @@
       "next_action": "Done. Next: apps/admin/pages/departments.page.js, then roles.page.js, permissions.page.js (item 3 remainder); employee-details.page.js is a hidden page whose parent is workforce.",
       "explicit_references": [],
       "notes": "Pure logic unit-tested in tests/unit/workforce.test.js (incl. last-owner guard, no send/grant API exposed); browser-checked (Playwright, ad hoc) at 1280/768/390px: owner guard UI, field errors + focus, duplicate email (case-insensitive), Enter submits once, create→resend→activate→disable, profile-change log, no-change message, Esc + focus return. Department/role lists are fixed local data (not linked to the departments/roles pages, which are still placeholders). No permission enforcement, no persistence.",
-      "sha256": "c4e43f6326bddd7c48e71ee0defa4fe9f69fa0e1f5efece39d3e307cf6ef358a",
+      "sha256": "045b0f9691c6952129bcd1123640a70c082a2ee96f57d0fa962972996a9044d7",
       "resolved_dependencies": [
         "apps/admin/admin-shell.js",
         "shared/components/data-grid.js",
@@ -2509,7 +2509,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 16471
+      "bytes": 16902
     },
     {
       "path": "apps/admin/permission-guard.js",
@@ -9943,7 +9943,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "26e3d586bbdead548127bb36775b88062755214fdf4ea3618449658d3111de37",
+      "sha256": "12597156a067f4defd31d1be5d0fe1d374fe2f18faeb4bda5ebe164493d83cfc",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -9979,7 +9979,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 300403
+      "bytes": 300642
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -10039,7 +10039,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "edf110dc16f8d79524f040030729d706d50463762d1b9fd0d0097aad47174a08",
+      "sha256": "4e8039718de93286bacf2d9442428a04b4f5547a34123467e54b6451dde579bf",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -10075,7 +10075,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 169637
+      "bytes": 169851
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -11194,7 +11194,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "f5a9de71ec114281d93c499b69884be3f47f34e1903d6401594fa3efeeff32bf",
+      "sha256": "e214f538ff7bbcb65a08b6679be020a517f05ef3aa87d57666e87e4debaa245f",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11231,7 +11231,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 32034
+      "bytes": 32076
     },
     {
       "path": "docs/README.md",
@@ -11254,8 +11254,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "5a030710528f4e78d1b47691e64dbc926d410a6848fb94b78288c8c67e7e0d21",
-      "bytes": 9148
+      "sha256": "fc722abadf255b5254f246a6e78aecb7f8363070b212ddcf18dc59e400a52bcd",
+      "bytes": 9258
     },
     {
       "path": "docs/SECURITY_MODEL.md",
@@ -11984,8 +11984,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "9c74a98425bf405586c2863e4136dd7f8962358cabcdc475d5ee59eff16c58b0",
-      "bytes": 9869
+      "sha256": "0372f3e379e74d10e9dae6863e6dff34a56ab913530ee5ef48ea5de6d4998a60",
+      "bytes": 11726
     },
     {
       "path": "index.html",
@@ -12402,7 +12402,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "ce2c2dbd393136463e514097e6cb35a3a823b5696d5828e4b108ddfd334f051c",
+      "sha256": "421c8da7dbef8694c906b0478b18c58914ed1144e4b40605d1ffcc989832a1d3",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12450,7 +12450,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "8f78419e7c6d2c66ae35b4edf486393ad96667eab5ec1438d06bce8a6c935bf7",
+      "sha256": "b86395c1cad8de07bfede505a0805337940cec8bc5555bdb3d5f1671cbb207eb",
       "bytes": 195
     },
     {
@@ -16414,6 +16414,18 @@
       "bytes": 3440,
       "has_real_logic": true,
       "actual_status_ar": "اختبار"
+    },
+    {
+      "path": "tests/unit/invite-expiry.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "invite-expiry.test.js",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "cda37c707eca8ba1e2afb6e3335c095cb66f9b46b98ae2a3f4aa6730d20dcf3f",
+      "bytes": 2783
     },
     {
       "path": "tests/unit/legacy-migration.test.js",

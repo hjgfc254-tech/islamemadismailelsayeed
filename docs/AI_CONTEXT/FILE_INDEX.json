@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 680,
+  "file_count": 681,
   "files": [
     {
       "path": "_redirects",
@@ -503,8 +503,8 @@
       "path": "apps/admin/pages/workforce.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 16471,
-      "sha256": "c4e43f6326bddd7c48e71ee0defa4fe9f69fa0e1f5efece39d3e307cf6ef358a"
+      "bytes": 16902,
+      "sha256": "045b0f9691c6952129bcd1123640a70c082a2ee96f57d0fa962972996a9044d7"
     },
     {
       "path": "apps/admin/permission-guard.js",
@@ -2358,8 +2358,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 300403,
-      "sha256": "26e3d586bbdead548127bb36775b88062755214fdf4ea3618449658d3111de37"
+      "bytes": 300642,
+      "sha256": "12597156a067f4defd31d1be5d0fe1d374fe2f18faeb4bda5ebe164493d83cfc"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2372,8 +2372,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 169637,
-      "sha256": "edf110dc16f8d79524f040030729d706d50463762d1b9fd0d0097aad47174a08"
+      "bytes": 169851,
+      "sha256": "4e8039718de93286bacf2d9442428a04b4f5547a34123467e54b6451dde579bf"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2806,8 +2806,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 32034,
-      "sha256": "f5a9de71ec114281d93c499b69884be3f47f34e1903d6401594fa3efeeff32bf"
+      "bytes": 32076,
+      "sha256": "e214f538ff7bbcb65a08b6679be020a517f05ef3aa87d57666e87e4debaa245f"
     },
     {
       "path": "docs/README.md",
@@ -2820,8 +2820,8 @@
       "path": "docs/SECURITY_AUDIT_2026-11-23.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 9148,
-      "sha256": "5a030710528f4e78d1b47691e64dbc926d410a6848fb94b78288c8c67e7e0d21"
+      "bytes": 9258,
+      "sha256": "fc722abadf255b5254f246a6e78aecb7f8363070b212ddcf18dc59e400a52bcd"
     },
     {
       "path": "docs/SECURITY_MODEL.md",
@@ -3219,8 +3219,8 @@
       "path": "functions/src/workforce.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 9869,
-      "sha256": "9c74a98425bf405586c2863e4136dd7f8962358cabcdc475d5ee59eff16c58b0"
+      "bytes": 11726,
+      "sha256": "0372f3e379e74d10e9dae6863e6dff34a56ab913530ee5ef48ea5de6d4998a60"
     },
     {
       "path": "index.html",
@@ -3367,14 +3367,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 11892,
-      "sha256": "ce2c2dbd393136463e514097e6cb35a3a823b5696d5828e4b108ddfd334f051c"
+      "sha256": "421c8da7dbef8694c906b0478b18c58914ed1144e4b40605d1ffcc989832a1d3"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "8f78419e7c6d2c66ae35b4edf486393ad96667eab5ec1438d06bce8a6c935bf7"
+      "sha256": "b86395c1cad8de07bfede505a0805337940cec8bc5555bdb3d5f1671cbb207eb"
     },
     {
       "path": "services/admin-api.js",
@@ -4341,6 +4341,13 @@
       "status": "TEST",
       "bytes": 3440,
       "sha256": "045320cfef18c24c48cb6d136fec2351a8ee0d70119c22f191f11ae7ea2b96f2"
+    },
+    {
+      "path": "tests/unit/invite-expiry.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2783,
+      "sha256": "cda37c707eca8ba1e2afb6e3335c095cb66f9b46b98ae2a3f4aa6730d20dcf3f"
     },
     {
       "path": "tests/unit/legacy-migration.test.js",
