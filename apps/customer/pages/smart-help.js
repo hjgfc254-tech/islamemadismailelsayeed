@@ -144,6 +144,25 @@
       </div>${smart}</section>`;
   }
 
+  /* ───────── «بيتي»: the devices this customer already had serviced (from their own finished requests) ───────── */
+  function myHome() {
+    let reqs = [];
+    try {
+      const c = typeof me === 'function' ? me() : null; if (!c || typeof MP === 'undefined') return '';
+      reqs = (MP.db().serviceRequests || []).filter((r) => r && r.customerId === c.id && ['completed', 'closed'].includes(r.status) && r.itemId);
+    } catch (e) { return ''; }
+    if (!reqs.length) return '';
+    const C = cat(); const seen = new Map();
+    for (const r of reqs) { const prev = seen.get(r.itemId); const at = r.closedAt || r.completedAt || r.createdAt || ''; if (!prev || at > prev.at) seen.set(r.itemId, { r, at }); }
+    const rows = [...seen.values()].slice(0, 6).map(({ r, at }) => {
+      const it = C && C.item(r.itemId); if (!it) return '';
+      let when = ''; try { when = at ? new Date(at).toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' }) : ''; } catch (e) {}
+      const due = readR().find((x) => x.item === it.id);
+      return `<button type="button" class="mh-item" data-wz-hit="item|${E(it.id)}">${B(it.cat) || I('wrench')}<span><b>${E(it.name)}</b><small>${when ? 'آخر خدمة ' + E(when) : ''}${due ? ' • الصيانة الجاية ' + E(due.due) : ''}</small></span><em>اطلب تاني</em></button>`;
+    }).join('');
+    return rows ? `<section class="my-home" aria-labelledby="mhT"><div class="sec-head"><h2 id="mhT">بيتي</h2></div><div class="mh-row">${rows}</div></section>` : '';
+  }
+
   /* ───────── clicks ───────── */
   if (doc && doc.addEventListener) {
     doc.addEventListener('click', (e) => {
@@ -161,5 +180,5 @@
     });
   }
 
-  root.HSSmartHelp = Object.freeze({ EMG, openEmergency, urgentRequest, openDiagnose, homeCard, remind, reminderButton, dueSoon, monthsFor, _read: readR });
+  root.HSSmartHelp = Object.freeze({ myHome, EMG, openEmergency, urgentRequest, openDiagnose, homeCard, remind, reminderButton, dueSoon, monthsFor, _read: readR });
 })(typeof globalThis !== 'undefined' ? globalThis : this);

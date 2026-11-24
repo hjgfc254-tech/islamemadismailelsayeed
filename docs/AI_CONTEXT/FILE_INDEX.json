@@ -629,8 +629,8 @@
       "path": "apps/customer/pages/home.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 10602,
-      "sha256": "d28714277ab4eaf3b60cdcbff99a29fae1f7be95908dc0498f31d024ca9221f5"
+      "bytes": 10628,
+      "sha256": "bf403b3046c29235500bf1219ac039823a3cd1f84f4d40986843029767ac7c07"
     },
     {
       "path": "apps/customer/pages/live-map.js",
@@ -699,8 +699,8 @@
       "path": "apps/customer/pages/request-wizard.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 71324,
-      "sha256": "7be87f70bb35390886696f32a146bae2c58a95256327087273f676752f7305a8"
+      "bytes": 73327,
+      "sha256": "a642376cef9121ebb3a92f67126a06d747a409d6f550f3420793c0eeec568764"
     },
     {
       "path": "apps/customer/pages/search.page.js",
@@ -713,8 +713,8 @@
       "path": "apps/customer/pages/smart-help.js",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 14930,
-      "sha256": "a3022c9413a6cdd6eb48bf30df5ff292080df7d9fb356583439c385f14023f54"
+      "bytes": 16507,
+      "sha256": "c42a15c8d9a6e4cc1366efb77dc78b010b3cd2340589556e21cd91925b3a5e5e"
     },
     {
       "path": "apps/customer/pages/support.page.js",
@@ -741,8 +741,8 @@
       "path": "apps/customer/styles/brand-2026.css",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 49458,
-      "sha256": "acae6479b6f103ac7add087f78cb05e21d6f84108ae532abd303ac56f81f95fe"
+      "bytes": 50623,
+      "sha256": "121e0a698c0da02977a01ec910cbc9e82e5ea2c5c580fb1d07580c8e06f31a54"
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -3360,14 +3360,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 11854,
-      "sha256": "49ee541a73255f73858d9c8d89fac0e5102e6bfb1af76ad028f8909ab3f85760"
+      "sha256": "77885c5827f0853399d49e5701eb0c2408e29eeede699c0ab0a9eb3518a9347c"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "84350a7550896115ece3fcb812368754b5da7cb409c559a3a11c60e181ddae1b"
+      "sha256": "55728ab99ac61f98b8879661e2ab12470ac695b549c4a4d78c93ae9ac01fc742"
     },
     {
       "path": "services/admin-api.js",
@@ -4633,8 +4633,8 @@
       "path": "tests/unit/smart-help.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 3916,
-      "sha256": "4f34be790b4fa228dc476ca094627e0ba867071f15fd11664205b3812abe6759"
+      "bytes": 5074,
+      "sha256": "647ecd86fa4bac3867daceac55c377adf00111d1b4b53d5518f403b96c9f3a58"
     },
     {
       "path": "tests/unit/static-audit.test.js",

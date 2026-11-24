@@ -371,6 +371,25 @@ function wzProgressBar(step){
     <div class="wz-cap">${step < 10 ? `<b>${WZ_STAGE_NAMES[st]}</b><span>الخطوة ${st + 1} من 5 — ${wzLeft(4 - st)}</span>` : 'تم إرسال الطلب'}</div>`;
 }
 
+/* «احكي المشكلة بصوتك»: the browser's speech recognition (Egyptian Arabic) writes into the description; shown only
+   where the browser supports it. The customer starts and stops it; the text stays editable. */
+const wzSpeech = () => (typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition)) || null;
+function wzVoiceOk(){ return !!wzSpeech(); }
+let wzRec = null;
+function wzVoiceToggle(btn){
+  const SR = wzSpeech(); if (!SR || !WZ) return;
+  if (wzRec) { try { wzRec.stop(); } catch {} return; }
+  const box = document.getElementById('wz-desc'); if (!box) return;
+  const base = box.value ? box.value.replace(/\s+$/, '') + ' ' : '';
+  const rec = new SR(); rec.lang = 'ar-EG'; rec.interimResults = true; rec.continuous = true;
+  rec.onresult = (e) => { let txt = ''; for (let i = 0; i < e.results.length; i++) txt += e.results[i][0].transcript; box.value = (base + txt).slice(0, 1000); WZ.desc = box.value; };
+  const end = () => { wzRec = null; btn.classList.remove('is-rec'); btn.setAttribute('aria-pressed', 'false'); btn.lastChild.textContent = ' احكي المشكلة بصوتك'; wzSaveDraft(); };
+  rec.onend = end;
+  rec.onerror = (e) => { end(); if (e && (e.error === 'not-allowed' || e.error === 'service-not-allowed')) toast('اسمح للمتصفح باستخدام الميكروفون من إعداداته'); };
+  try { rec.start(); wzRec = rec; btn.classList.add('is-rec'); btn.setAttribute('aria-pressed', 'true'); btn.lastChild.textContent = ' بسمعك… اضغط لما تخلص'; } catch { end(); }
+}
+if (typeof document !== 'undefined' && document.addEventListener) document.addEventListener('click', (e) => { const b = e.target && e.target.closest && e.target.closest('[data-wz-voice]'); if (b) { e.preventDefault(); wzVoiceToggle(b); } });
+
 /* 2026 identity: the two-tone brand icon of a category (same set as Home), or '' to fall back to the line icon */
 function wzBrandIc(id){
   try { const s = globalThis.HSBrandIcons && HSBrandIcons.svg(id); return s ? `<span class="dev brand" aria-hidden="true">${s}</span>` : ''; } catch { return ''; }
@@ -548,6 +567,7 @@ Object.assign(screens, {
           <label for="wz-desc">وصف المشكلة${w.unknown ? ' (اختياري)' : ' *'}</label>
           <textarea id="wz-desc" placeholder="اكتب بإيجاز اللي بيحصل، إمتى بدأ، وأي تفاصيل تساعد الفني…">${_esc(w.desc)}</textarea>
           ${sugg && !w.desc ? `<button type="button" class="chip" data-wz-sugg="${_esc(sugg)}">استخدم وصفًا مقترحًا</button>` : ''}
+          ${wzVoiceOk() ? `<button type="button" class="chip wz-voice" data-wz-voice aria-pressed="false">${safeIc('chat')} احكي المشكلة بصوتك</button>` : ''}
         </div>
         <div><label for="wz-note">ملاحظات إضافية</label><textarea id="wz-note" placeholder="أي تفاصيل تساعد الفني">${_esc(w.note)}</textarea></div>
       </div>`;

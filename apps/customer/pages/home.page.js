@@ -57,7 +57,7 @@
     <li>${bi('price','wallet')}<span>سعر واضح قبل الحجز</span></li>
     <li>${bi('track','clock')}<span>تابع طلبك خطوة بخطوة</span></li>
   </ul>
-  ${root.HSSmartHelp?root.HSSmartHelp.homeCard():''}
+  ${root.HSSmartHelp?root.HSSmartHelp.homeCard()+root.HSSmartHelp.myHome():''}
   ${ctx.addressBar||''}
   ${ctx.care||''}
   <section aria-labelledby="tilesT">

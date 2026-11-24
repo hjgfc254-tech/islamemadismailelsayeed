@@ -20,7 +20,7 @@ test('smart-help loads before Home and is precached', () => {
   const html = read('apps/customer/index.html');
   assert.ok(html.indexOf('pages/smart-help.js') > -1 && html.indexOf('pages/smart-help.js') < html.indexOf('pages/home.page.js'));
   assert.match(read('service-worker.js'), /'apps\/customer\/pages\/smart-help\.js'/);
-  assert.match(read('apps/customer/pages/home.page.js'), /root\.HSSmartHelp\?root\.HSSmartHelp\.homeCard\(\):''/);
+  assert.match(read('apps/customer/pages/home.page.js'), /root\.HSSmartHelp\?root\.HSSmartHelp\.homeCard\(\)\+root\.HSSmartHelp\.myHome\(\):''/);
 });
 
 test('emergency: safety steps first, real emergency numbers, gas is never sent straight to a technician', () => {
@@ -56,4 +56,21 @@ test('tracking shares to WhatsApp on tap; a 4–5 star rating gets a short celeb
   assert.match(read('apps/customer/pages/order-details.page.js'), /https:\/\/wa\.me\/\?text=\$\{encodeURIComponent\(root\.requestShareText\(r\)\)\}/);
   assert.match(read('apps/customer/pages/market-ui.page.js'), /const confetti = s >= 4 \?/);
   assert.match(read('apps/customer/styles/brand-2026.css'), /prefers-reduced-motion:reduce\)\{\.confetti\{display:none\}/);
+});
+
+test('«بيتي» lists only this customer\'s finished devices; voice description only where the browser supports it', () => {
+  const ctx = boot(), S = ctx.HSSmartHelp;
+  assert.equal(S.myHome(), '', 'no session → nothing');
+  ctx.me = () => ({ id: 'c1' });
+  ctx.MP = { db: () => ({ serviceRequests: [
+    { customerId: 'c1', status: 'closed', itemId: 'appliances/ac', createdAt: '2026-06-01T10:00:00Z' },
+    { customerId: 'c1', status: 'searching', itemId: 'plumbing/faucets', createdAt: '2026-11-01T10:00:00Z' },
+    { customerId: 'c2', status: 'closed', itemId: 'appliances/fridge', createdAt: '2026-06-01T10:00:00Z' }] }) };
+  vm.runInContext('var me = globalThis.me; var MP = globalThis.MP;', ctx);
+  const h = S.myHome();
+  assert.match(h, /data-wz-hit="item\|appliances\/ac"/);
+  assert.doesNotMatch(h, /plumbing\/faucets|appliances\/fridge/, 'open requests and other customers are left out');
+  const wiz = read('apps/customer/pages/request-wizard.page.js');
+  assert.match(wiz, /\$\{wzVoiceOk\(\) \? `<button type="button" class="chip wz-voice" data-wz-voice/);
+  assert.match(wiz, /rec\.lang = 'ar-EG'/);
 });

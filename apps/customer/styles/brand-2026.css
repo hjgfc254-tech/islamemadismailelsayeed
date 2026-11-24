@@ -449,6 +449,16 @@ html.is-scrolling body>.help-fab{opacity:.25;transform:scale(.82)}
 .confetti i:nth-child(3n){background:#F5B301}.confetti i:nth-child(3n+1){background:#fff}
 @keyframes hsConf{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(260px) rotate(540deg)}}
 @media (prefers-reduced-motion:reduce){.confetti{display:none}#sheet .stars-in button[aria-pressed="true"] svg{animation:none}}
+/* «بيتي»: the customer's own serviced devices, one tap to order again */
+#view .my-home .mh-row{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;scrollbar-width:none}
+#view .my-home .mh-item{flex:0 0 min(74%,250px);scroll-snap-align:start;display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--hs-line);border-radius:18px;background:#fff;box-shadow:var(--hs-shadow);font:inherit;text-align:start;cursor:pointer;color:var(--text-primary)}
+#view .my-home .mh-item>svg{flex:none;width:40px;height:40px}
+#view .my-home .mh-item span{flex:1;min-width:0}
+#view .my-home .mh-item b{display:block;font-family:var(--font-display);font-size:14.5px;font-weight:800}
+#view .my-home .mh-item small{display:block;font-size:11.5px;color:var(--text-muted)}
+#view .my-home .mh-item em{flex:none;font-style:normal;font-size:12px;font-weight:800;color:var(--hs-red-ink)}
+#view .wz-voice{margin-top:8px;margin-inline-start:6px;background:var(--brand-primary-soft);color:var(--hs-navy);border-color:transparent;font-weight:700}
+#view .wz-voice.is-rec{background:var(--hs-red);color:#fff;animation:hsPulse 1.6s infinite}
 #view .wa-share{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;color:#128C4A;border-color:#BFE8D0}
 
 /* location (address step): one card on top — «استخدم موقعي الحالي» / «اختار على الخريطة» */
