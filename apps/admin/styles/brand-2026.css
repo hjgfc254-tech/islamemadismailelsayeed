@@ -1,0 +1,10 @@
+/* HANSALEHLAK 2026 identity — Admin finishing layer (owner, 2026-11-24). Loaded last in apps/admin/index.html.
+   Tokens only (the Admin CSS hard-coded-value audit stays at its baseline): navy titles in the display face, the open
+   page marked in red in the sidebar, selected tabs navy, table headers on soft navy, a white header bar. */
+.adm-head{background:var(--surface-primary);box-shadow:var(--shadow-1)}
+.adm-title{font-family:var(--font-display);font-weight:800;color:var(--brand-primary)}
+.adm-link.is-active,[dir="rtl"] .adm-link.is-active{box-shadow:inset calc(-1 * var(--sp-1)) 0 0 var(--accent)}
+[dir="ltr"] .adm-link.is-active{box-shadow:inset var(--sp-1) 0 0 var(--accent)}
+[role="tab"].adm-btn[aria-selected="true"]{background:var(--brand-primary);border-color:var(--brand-primary);color:var(--on-brand)}
+.rl-table th{background:var(--brand-primary-soft);color:var(--brand-primary);font-weight:700}
+.rl-table tbody tr:hover td{background:var(--surface-secondary)}
