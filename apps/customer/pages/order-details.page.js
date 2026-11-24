@@ -156,6 +156,7 @@
     if (closed && !rev) {
       actions.push(`<button class="cta" data-act="rate" data-id="${id}">${ic('medal')} قيّم مقدم الخدمة</button>`);
     }
+    if (closed && root.HSSmartHelp) { const rb = root.HSSmartHelp.reminderButton(r); if (rb) actions.push(rb); }   /* «فكّرني بالصيانة» (AC, heaters, tanks…) */
     if (rev) {
       actions.push(uiSuccess('star', `تقييمك: ${starsHtml(rev.stars)}`));
     }
@@ -167,6 +168,8 @@
     }
     if (p && inProgress) {
       actions.push(`<button class="cta ghost" data-act="shareReq" data-id="${id}">${ic('share')} شارك تفاصيل الطلب مع حد من أهلك</button>`);
+      /* one tap to WhatsApp (the customer chooses the chat; nothing is sent by the app itself) */
+      if (typeof root.requestShareText === 'function') { try { actions.push(`<a class="cta ghost wa-share" href="https://wa.me/?text=${encodeURIComponent(root.requestShareText(r))}" target="_blank" rel="noopener">${ic('chat')} ابعتها على واتساب</a>`); } catch (e) {} }
     }
     if (tx && ['completed', 'closed'].includes(r.status)) {
       actions.push(`<button class="cta ghost" data-act="receipt" data-id="${id}">${ic('book')} الفاتورة</button>`);

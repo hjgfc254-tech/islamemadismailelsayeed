@@ -1189,6 +1189,7 @@ function openMenu(){
   const mk = typeof HSBrandIcons !== 'undefined' && HSBrandIcons.mark ? HSBrandIcons.mark(52) : '';
   const brandCard = `<div class="menu-brand">${mk}<div><b>${who ? 'أهلاً يا ' + esc(who) : 'أهلاً بيك في هنصلحلك'}</b><small>أي عطل في البيت — احنا هنا نساعدك</small></div><button type="button" class="menu-cta" data-act="newReq">${ic('plus')} اطلب خدمة</button></div>`;
   sheet(`<h4>القائمة</h4>${brandCard}<div style="margin-top:8px">${items.map(([g,l,i])=>`<button class="menu-item" data-go="${g}">${ic(i)}${l}</button>`).join('')}
+    <button class="menu-item menu-emg" data-emg="">${ic('warn')}طوارئ — تسريب، شرر، ريحة غاز</button>
     <button class="menu-item" data-go="support">${ic('info')}المساعدة والدعم</button>
     <div class="lbl">محتوى توعوي (اختياري)</div>
     <button class="menu-item" data-act="slide" data-s="guide">${ic('book')}دليل الصيانة</button>

@@ -108,6 +108,7 @@ hansalhlak/
 │   │   │   ├── request-create.page.js
 │   │   │   ├── request-wizard.page.js
 │   │   │   ├── search.page.js
+│   │   │   ├── smart-help.js
 │   │   │   ├── support.page.js
 │   │   │   └── trust-features.js
 │   │   ├── styles/
@@ -749,6 +750,7 @@ hansalhlak/
 │       ├── shared-components.test.js
 │       ├── shared-foundations.test.js
 │       ├── site-content.test.js
+│       ├── smart-help.test.js
 │       ├── static-audit.test.js
 │       ├── status-badge.test.js
 │       ├── super-dashboard.test.js

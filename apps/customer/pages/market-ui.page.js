@@ -353,7 +353,9 @@ document.addEventListener('submit', e => {
       _rvPhotos = [];
       closeSheet();
       show('tracking', id);
-      sheet(`<div class="done glass neon success-pop" role="status" aria-live="polite">
+      /* a small celebration for a good rating (CSS only; off under reduced motion) */
+      const confetti = s >= 4 ? `<div class="confetti" aria-hidden="true">${Array.from({ length: 16 }, (_, i) => `<i style="--k:${i}"></i>`).join('')}</div>` : '';
+      sheet(`<div class="done glass neon success-pop" role="status" aria-live="polite">${confetti}
         <svg class="success-check" viewBox="0 0 52 52" aria-hidden="true" focusable="false"><circle cx="26" cy="26" r="23"/><path d="M15.5 27.5l7 7 14-15"/></svg>
         <h3>شكرًا على تقييمك</h3><p class="hint">رأيك بيساعد غيرك يختار الفني المناسب.</p>
         <button type="button" class="cta" data-act="rvDone">تم</button></div>`);

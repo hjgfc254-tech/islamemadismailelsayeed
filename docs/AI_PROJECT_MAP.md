@@ -105,6 +105,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | apps/customer/pages/request-create.page.js | IMPLEMENTED (FRONTEND DEMO) | HSCustomerRequestCreate: #/request[/<catalogId>] route entry into the existing wizard (startRequest; problem preselects step 3). | Read when relevant; keep tests/docs aligned with behavior changes. |
 | apps/customer/pages/request-wizard.page.js | IMPLEMENTED | Multi-step service request creation, validation, draft handling and attachment references. | Protect with regression tests; do not rewrite unnecessarily. |
 | apps/customer/pages/search.page.js | IMPLEMENTED | Arabic-aware catalog search engine and result binding. | Protect with regression tests; do not rewrite unnecessarily. |
+| apps/customer/pages/smart-help.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | apps/customer/pages/support.page.js | IMPLEMENTED | Customer support, FAQs, policies, complaints and support history. | Protect with regression tests; do not rewrite unnecessarily. |
 | apps/customer/pages/trust-features.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | apps/customer/README.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
@@ -664,6 +665,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | tests/unit/shared-components.test.js | TEST | Behavior tests for shared button/form/table/notification render primitives. | Extend when component markup/API changes. |
 | tests/unit/shared-foundations.test.js | TEST | Behavior tests for shared utilities, config and runtime structural contracts. | Extend when a shared foundation contract changes. |
 | tests/unit/site-content.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| tests/unit/smart-help.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/static-audit.test.js | IMPLEMENTED | Existing unit/static regression test. | Protect with regression tests; do not rewrite unnecessarily. |
 | tests/unit/status-badge.test.js | TEST | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
 | tests/unit/super-dashboard.test.js | TEST | Unit tests for the owner dashboard: every KPI/attention item derived from the source pages' APIs, severity ordering, all-zero/unavailable/all-failed sources, live follow of injected sources, module links, HTML escaping and the read-only/no-network/no-mutation boundary (10 checks). | Extend when the page behavior changes. |
