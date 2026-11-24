@@ -32,6 +32,7 @@ const viaCode = async (p) => { try { return await p; } catch (e) { if (e && e.is
 const content = require('./content');
 const ai = require('./ai');
 const { invalidateShared } = require('./partial');
+const agentGateway = require('./agent-gateway');
 
 const METHODS = ['GET', 'POST', 'PATCH', 'DELETE'];
 const WRITE_LIMIT_PER_MIN = 60;
@@ -230,15 +231,23 @@ async function api(backend, { auth, data, ip }) {
   }
   if (digestAdmin.PATH_RE.test(req.path)) {        // owner / manager e-mail digests (digest-admin.js): code-unlocked admins only
     const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
-    if (!token || !adm || adm.status !== 'active' || !adminCode.isUnlocked(adm)) return { ok: false, status: token ? 403 : 401, error: { code: token ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } };
+    if (!token || !adm || adm.status !== 'active' || !adminCode.isUnlocked(adm) || adm.role === 'callcenter') return { ok: false, status: token ? 403 : 401, error: { code: token ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } };
     if (!isRead) await rateLimit(backend, token.uid);
     const out = await digestAdmin.handle({ backend, method: req.method, path: req.path, query: req.query, body: req.body, admin: adm, uid: token.uid, deps: backend.digestDeps });
     if (!isRead && out.ok) await backend.addDoc('audit', { at: new Date().toISOString(), uid: token.uid, actor: { role: 'admin', id: token.uid, adminRole: adm.role }, app: 'admin', method: req.method, path: req.path, status: out.status, changes: { digest: { set: 1, del: 0 } } });
     return out;
   }
+  if (agentGateway.PATH_RE.test(req.path)) {     /* call centre (agent-gateway.js): a code-unlocked employee with callcenter.* — same routes as the AI agents */
+    const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
+    if (!token || !adm || adm.status !== 'active' || !adminCode.isUnlocked(adm)) return { ok: false, status: token ? 403 : 401, error: { code: token ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } };
+    if (!isRead) await rateLimit(backend, token.uid);
+    const ctx = alerts._actorCtx(await alerts._rbacOf(backend), adm);
+    const principal = { channel: 'human', id: token.uid, uid: token.uid, name: adm.name || '', adminRole: adm.role || null, can: (s) => { const k = agentGateway.PERM_OF_SCOPE[s]; return !!k && ctx.can(...k.split('.')); } };
+    return agentGateway.handle({ backend, principal, method: req.method, path: req.path, query: req.query, body: req.body, deps: AGENT_DEPS });
+  }
   if (techStatus.PATH_RE.test(req.path)) {       /* Tech Center: system information only, owner / tech roles, never inside a transaction */
     const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
-    const actor = adm && adm.status === 'active' && adminCode.isUnlocked(adm) ? { role: 'admin', id: token.uid, adminRole: adm.role } : null;
+    const actor = adm && adm.status === 'active' && adminCode.isUnlocked(adm) && adm.role !== 'callcenter' ? { role: 'admin', id: token.uid, adminRole: adm.role } : null;   // the call centre has no Tech Center
     return techStatus.handle({ backend, method: req.method, path: req.path, body: req.body, actor });
   }
   if (alerts.PATH_RE.test(req.path)) {           // team alerts + tickets (alerts.js, rules in the shared ops-core / ops-routes): code-unlocked admins only
@@ -288,6 +297,10 @@ async function api(backend, { auth, data, ip }) {
     }
     const ld = new PartialDb(backend.adapter, tx);
     const actor = await loadActor(ld, token, req.app, admin);
+    /* the call centre works one caller at a time through /agent/* — no AI keys, site content, admin extras or dashboard counts */
+    if (actor && actor.role === 'admin' && actor.adminRole === 'callcenter' && (ai.PATH_RE.test(req.path) || content.PATH_RE.test(req.path) || adminExtra.PATH_RE.test(req.path) || /^\/admin\/(summary|employees|rbac)(\/|$)/.test(req.path))) {
+      return { envelope: { ok: false, status: 403, error: { code: 'FORBIDDEN', message: 'دور الكول سنتر بيشتغل من صفحة «الكول سنتر» بس' } }, changes: {}, actor };
+    }
     if (ai.PATH_RE.test(req.path)) {          // AI providers / keys (server-only document system/ai)
       if (!actor || actor.role !== 'admin') return { envelope: { ok: false, status: actor ? 403 : 401, error: { code: actor ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } }, changes: {}, actor };
       const envelope = await ai.handle({ backend, tx, method: req.method, path: req.path, body: req.body, admin });
@@ -635,4 +648,28 @@ async function importLocal(backend, token, d) {
   return { report, totals: result };
 }
 
-module.exports = { aiIpAllow, AI_IP_DAILY, tickOffers, scanOps, api, session, importLocal, validateApi, affectedTags, ServiceError, WRITE_LIMIT_PER_MIN };
+/* ───────────── call centre (agent-gateway.js): domain operations run AS the caller ─────────────
+   load(ld) reads what the customer route needs (plan.js) and may stop with an envelope; run(env, ctx) calls the app's own
+   route inside the domain runtime. Commit, ranking stats, ops alerts and change signals are the same as for `api`. */
+async function domainOp(backend, { load, run }) {
+  const out = await backend.runTransaction(async tx => {
+    const ld = new PartialDb(backend.adapter, tx);
+    const ctx = await load(ld);
+    if (ctx && ctx.stop) return { result: ctx.stop, changes: {} };
+    const env = runtime.createContext(ld.toDb(), []);
+    const result = await run(env, ctx || {});
+    if (!result || !result.ok) return { result: result ? JSON.parse(JSON.stringify(result)) : { ok: false, status: 500, error: { code: 'INTERNAL', message: 'حدث خطأ غير متوقع' } }, changes: {} };
+    const db = runtime.snapshot(env);
+    await applyStatsDelta(ld, db, keyOf);
+    const { changes } = ld.commit(db);
+    return { result: JSON.parse(JSON.stringify(result)), changes, db, alerts: env.alerts() };
+  });
+  if (out.alerts && out.alerts.length) await alerts.ingest(backend, out.alerts);
+  if (Object.keys(out.changes).length) await notifyChanges(backend, out.changes, out.db, null);
+  return out;
+}
+const AGENT_DEPS = Object.freeze({ domain: domainOp });
+/** https `agentApi` (functions/index.js): AI agents with an AGENT_API_KEYS key. */
+const agentHttp = (backend, req, opts) => agentGateway.http(backend, req, { ...(opts || {}), deps: AGENT_DEPS });
+
+module.exports = { aiIpAllow, AI_IP_DAILY, tickOffers, scanOps, api, session, importLocal, validateApi, affectedTags, ServiceError, WRITE_LIMIT_PER_MIN, agentHttp, domainOp };

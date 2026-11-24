@@ -228,9 +228,38 @@ Alert sources: new complaint / cash dispute, empty offers round (domain `MP.rais
 Delivery: in-app bell + push to the team (critical also to the owner); `CHANNELS.whatsapp` is a reserved slot.
 An unclaimed critical alert escalates to the owner once after `system/settings.opsAlerts.escalateMin` (default 15) minutes.
 
+### Call centre: human employees and AI voice agents (2026-11-25)
+Server only: `functions/src/agent-gateway.js` (no local-demo routes). Two ways in, same routes, rules, rate limit
+(in memory, `AGENT_RATE_PER_MIN`, default 120/min per key or employee) and audit (`audit` rows `app: 'agent'`,
+`actor: {role:'agent', id: <key id | uid>, channel}`, request / ticket id as `subject`, never a phone number):
+- **Employee** (Admin app, callable `api`, code-unlocked): needs `callcenter.view` (lookup, catalog, status, lists),
+  `callcenter.create` (request, complaint, hand-off, call log) or `callcenter.edit` (cancel). Owner, `admin` and the
+  `callcenter` role have them.
+- **AI agent** (https function `agentApi`, `Authorization: Bearer <secret>`): key from `AGENT_API_KEYS`
+  (`id:secret:scope|scope`, `*` = all); missing / wrong key → 401, scope missing → 403, over the limit → 429.
+  URL shape: `<agentApi URL>/agent/<route>` (the `/agent` prefix is optional).
+
+Requests, cancellations and complaints run the customer's own routes AS the caller (same validation, owner
+switches, travel fee, alerts). A request id is answered only for the phone that owns it (else 404).
+
+| Route | Scope | Notes |
+|---|---|---|
+| `POST /agent/lookup` | lookup | `{phone}` → `{found, customer?: {id, name, phone (masked for AI), status}, requests: [{id, no, status, statusLabel, serviceName, gov, area, when, open, source}]}` (last 10, no address). |
+| `GET /agent/catalog` | catalog | `{categories: [{id, name, safety, items: [{id, name, price (customer price or null), problems: [{id, name, warn}]}]}], fees: {cancelFee, visitFee}, govs}`. |
+| `POST /agent/requests` | requests.create | `{phone, name, cat, item, problem?, desc?, gov, area?, addr, when? (YYYY-MM-DD), period? (morning\|noon\|evening), callId?}` → 201 request summary + `price`. Creates the customer by phone if new. `source: 'callcenter'`, `createdBy {channel, id}`. Max 10 open requests per caller. |
+| `GET /agent/requests/:id` | requests.read | `?phone=` → summary + `provider` (first name), `eta {at, minutes}`, `nextStep`, `canCancel`, `cancelFee`. |
+| `POST /agent/requests/:id/cancel` | requests.cancel | `{phone, reason, confirmFee?}`; a travel fee (provider on the way / arrived) → 409 `FEE_CONFIRMATION_REQUIRED` `{details: {fee}}` until `confirmFee: true`. |
+| `POST /agent/complaints` | complaints | `{phone, requestId?, kind, text 5–1000}` → 201 `{id, status}`. |
+| `POST /agent/handoff` | handoff | `{callId, phone?, requestId?, summary, reason}` → 201 `{ticketId}`; `opsTickets` (team ops, high, `source: 'callcenter'`) + alert «محتاج موظف» to ops. |
+| `POST /agent/calls` | calls | `{callId, from, startedAt, endedAt?, channel: ai\|human, summary, outcome, transcript?, requestId?}` → `callLogs/{id}` (idempotent per agent + callId); transcript deleted after 30 days (`callLogsClock`). |
+| `GET /agent/calls` · `GET /agent/handoffs` | calls.read | Last 50 call logs (no transcript, masked numbers) · last 30 hand-off tickets. |
+
+Full design, tool schemas for the AI agent and the voice-agent prompt: `docs/AI_CALLCENTER.md`.
+
 ### Data separation by role (always on)
-`functions/src/scope.js`: `tech` gets no customers / providers / requests / transactions / complaints / reviews /
-addresses / chats in the sync, and the API gate (`permission-guard.js apiDenied`) answers only its allow-list;
+`functions/src/scope.js`: `tech` and `callcenter` get no customers / providers / requests / transactions / complaints / reviews /
+addresses / chats in the sync, and the API gate (`permission-guard.js apiDenied`) answers only their allow-lists
+(the call centre reaches one caller at a time through `/agent/lookup`);
 `content` gets no personal data (public provider profiles, anonymous request facts); `finance` keeps money rows with
 masked phones and no addresses / locations / chats. Every API answer for these roles also passes `scrubForRole`.
 

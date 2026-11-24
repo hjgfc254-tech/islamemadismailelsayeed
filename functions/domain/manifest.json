@@ -1,7 +1,7 @@
 {
   "generatedBy": "scripts/sync-functions-domain.cjs",
   "files": {
-    "shared/config/legacy-data.js": "39f50b5456f3d685c3f1c06f477e7d90f835d58d850cfee151d1a9fa673dbfff",
+    "shared/config/legacy-data.js": "a59798542eb0b64ac63bf4597b2e0c854e97077989fb2b2ac4b1d45e9660c545",
     "services/local-catalog.js": "de3fcd80ef8de84667bada846d511897d05e285048cad59b10d9d6fdb69e8151",
     "services/local-market-store.js": "fd247783326eab276f23a0a5f56c708038441f90db973393281aa71c3eca5892",
     "services/api-client.js": "33ce93ee20b93ef47850ff8f651d0c1add30012d4876592f75e7be633647d9e1",
@@ -15,13 +15,13 @@
     "services/support-api.js": "8e52c5cb211d4e6096c07261aca9470f2914f5a1eac6347d2eb59d98b0d552cc",
     "services/finance-api.js": "a6b72cb665c2264be3fdd6f3c1792db747a5414534231ee4c5e9f01098f2f565",
     "services/admin-api.js": "70a77f02e7398d3eb10f6b2d72ec3a7df236c3ea8c08bdde1ba4c971eb1568d4",
-    "apps/admin/modules/ops-core.js": "356758e341978e5054a86db382d72f2496daedcb932d891ca7d35323d55d30f9",
+    "apps/admin/modules/ops-core.js": "c050e6badeebcb551fb47874c5e117927f2a9fd35b7aac51802740099197e294",
     "apps/admin/modules/ops-routes.js": "cc2a03d01e151bcfcd56212b250ed1a267769844163f9773efe61e26037ca4d0",
     "services/ops-api.js": "58a1fbfe3e20714dae59b69e0c26826a47ee4327c189b65c8880d2ad83541464",
-    "apps/admin/rbac-store.js": "ec90357ded620d4d147be4e5700da8429f4c4f58f07db6b4b275a4d0b97b03ff",
-    "apps/admin/permission-guard.js": "e57efb26c2847fd70ba3ffde44cf3e4ce7bd8f671a823b7ec73cc18ac1a82683",
+    "apps/admin/rbac-store.js": "95af0bd62821ea805c2b9ed414a3681b5adbd70b48162b1a7b537e2db3dfbe62",
+    "apps/admin/permission-guard.js": "dccc7415036b43a510dd57e95fcd29be81377a2104747c23c7164ee1ed1f4bb6",
     "apps/admin/modules/workforce/employee-status.js": "f61a20957671b072818ee6704346fa087f7f3dace03537b6c6bfdac420437472",
-    "apps/admin/modules/workforce/employee-form.js": "e0e3ea8920dd84b152a086657c7d3e73490ca51c0ae2feaff0162d6b424147c3",
+    "apps/admin/modules/workforce/employee-form.js": "0e1d7c567cba442846240855f7e695a191bbfbda8ae971d9c8e05d182ef5c9ea",
     "apps/admin/modules/workforce/employee-invitation.js": "ef3a7a7400c5d4541ddc09647e74a6ce20695077dc60a1e0f9dd4995af1655d3"
   }
 }

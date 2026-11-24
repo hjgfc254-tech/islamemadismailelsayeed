@@ -18,7 +18,7 @@
    • CLEAR_CACHE  — مسح كل الكاش (لأدوات العرض التجريبي).
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'hansalhlak-v11-firebase-99';
+const CACHE = 'hansalhlak-v11-firebase-101';
 
 /* الملفات الأساسية — يجب أن تعمل offline بعد أول زيارة */
 const FILES = [
@@ -66,6 +66,7 @@ const FILES = [
   'apps/admin/modules/ops-routes.js',
   'apps/admin/modules/ops-center.js',
   'apps/admin/pages/alerts.page.js',
+  'apps/admin/pages/callcenter.page.js',
   'services/ops-api.js',
   'apps/customer/customer-session.js',
   'apps/customer/customer-router.js',

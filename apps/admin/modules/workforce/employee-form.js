@@ -12,7 +12,7 @@
   const nf = (n) => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
 
   const DEPARTMENTS = { ops: 'العمليات', support: 'الدعم', finance: 'المالية', content: 'المحتوى', tech: 'التقنية', exec: 'الإدارة العليا' };
-  const ROLES = { owner: 'المالك', admin: 'مدير', support: 'دعم فني', finance: 'المالية', moderator: 'مراقب محتوى', ops: 'عمليات ودعم', content: 'المحتوى والأسعار', tech: 'التقنية' };
+  const ROLES = { owner: 'المالك', admin: 'مدير', support: 'دعم فني', finance: 'المالية', moderator: 'مراقب محتوى', ops: 'عمليات ودعم', content: 'المحتوى والأسعار', tech: 'التقنية', callcenter: 'خدمة العملاء (كول سنتر)' };
   const LIMITS = { name: 60, email: 80 };
   const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
