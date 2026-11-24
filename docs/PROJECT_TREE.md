@@ -49,6 +49,7 @@ hansalhlak/
 │   │   │   ├── admin-dashboard.page.js
 │   │   │   ├── alerts.page.js
 │   │   │   ├── audit-log.page.js
+│   │   │   ├── callcenter.page.js
 │   │   │   ├── categories-management.page.js
 │   │   │   ├── commissions.page.js
 │   │   │   ├── complaints-management.page.js
@@ -442,6 +443,7 @@ hansalhlak/
 │   │   └── 2026-11-10-super-dashboard-demo-assumptions.md
 │   ├── ADMIN_MODULES.md
 │   ├── AI_AGENT_CONTINUATION_PROTOCOL.md
+│   ├── AI_CALLCENTER.md
 │   ├── AI_NEXT_IMPLEMENTATION_ORDER.md
 │   ├── AI_PROJECT_MAP.csv
 │   ├── AI_PROJECT_MAP.json
@@ -512,6 +514,7 @@ hansalhlak/
 │   ├── src/
 │   │   ├── admin-code.js
 │   │   ├── admin-extra.js
+│   │   ├── agent-gateway.js
 │   │   ├── ai.js
 │   │   ├── alerts-adapter.js
 │   │   ├── alerts.js
@@ -679,6 +682,7 @@ hansalhlak/
 │       ├── api-adapters.test.js
 │       ├── api-gaps.test.js
 │       ├── audit-log.test.js
+│       ├── callcenter-agent.test.js
 │       ├── catalog-wizard.test.js
 │       ├── categories-management.test.js
 │       ├── client-error-telemetry.test.js

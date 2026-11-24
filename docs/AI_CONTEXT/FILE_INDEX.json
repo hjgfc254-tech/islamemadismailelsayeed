@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 684,
+  "file_count": 688,
   "files": [
     {
       "path": "_redirects",
@@ -132,8 +132,8 @@
       "path": "apps/admin/admin-shell.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL, DEMO)",
-      "bytes": 26473,
-      "sha256": "c3ef391b21c159556b322eb79230f31f5b04707349aa86a854fe00ccc92cc9ea"
+      "bytes": 26560,
+      "sha256": "3f8504000ff6ba6f7b4db7f5103f02cafb000d2c2f1f8401683a14774a572728"
     },
     {
       "path": "apps/admin/app.js",
@@ -146,8 +146,8 @@
       "path": "apps/admin/index.html",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL HOST)",
-      "bytes": 6744,
-      "sha256": "4f544f0bf4766f1353a6446f173b0f7dae04e095b409bc8b30261378b4888a96"
+      "bytes": 6792,
+      "sha256": "10bdd98300f94bbfb0938fa82be507b6fca1174ae8b43d986721ff0373c23893"
     },
     {
       "path": "apps/admin/login.html",
@@ -251,15 +251,15 @@
       "path": "apps/admin/modules/ops-center.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 16558,
-      "sha256": "bf621da49c44bdcc99bb04793b29d2ae9411d7aa661e42e9044e55cda5a87e9b"
+      "bytes": 16642,
+      "sha256": "c69624696ba27c6ec43ffc946e63a70e69d46708df7541a534490528103144ba"
     },
     {
       "path": "apps/admin/modules/ops-core.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 12296,
-      "sha256": "356758e341978e5054a86db382d72f2496daedcb932d891ca7d35323d55d30f9"
+      "bytes": 12317,
+      "sha256": "c050e6badeebcb551fb47874c5e117927f2a9fd35b7aac51802740099197e294"
     },
     {
       "path": "apps/admin/modules/ops-routes.js",
@@ -286,8 +286,8 @@
       "path": "apps/admin/modules/workforce/employee-form.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 4429,
-      "sha256": "e0e3ea8920dd84b152a086657c7d3e73490ca51c0ae2feaff0162d6b424147c3"
+      "bytes": 4486,
+      "sha256": "0e1d7c567cba442846240855f7e695a191bbfbda8ae971d9c8e05d182ef5c9ea"
     },
     {
       "path": "apps/admin/modules/workforce/employee-invitation.js",
@@ -330,6 +330,13 @@
       "status": "IMPLEMENTED (DEMO)",
       "bytes": 12011,
       "sha256": "8f715ba293fbca23e224184fd4c051c82a7eb5e00bddfff60f0024776654c576"
+    },
+    {
+      "path": "apps/admin/pages/callcenter.page.js",
+      "area": "apps/admin",
+      "status": "NEEDS_REVIEW",
+      "bytes": 14248,
+      "sha256": "3f9f76f39d7cfb2ac6228a56e42bab179a38c873ae09fe12ae2960ced9dc9211"
     },
     {
       "path": "apps/admin/pages/categories-management.page.js",
@@ -510,15 +517,15 @@
       "path": "apps/admin/permission-guard.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 5913,
-      "sha256": "e57efb26c2847fd70ba3ffde44cf3e4ce7bd8f671a823b7ec73cc18ac1a82683"
+      "bytes": 6513,
+      "sha256": "dccc7415036b43a510dd57e95fcd29be81377a2104747c23c7164ee1ed1f4bb6"
     },
     {
       "path": "apps/admin/rbac-store.js",
       "area": "admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 21142,
-      "sha256": "ec90357ded620d4d147be4e5700da8429f4c4f58f07db6b4b275a4d0b97b03ff"
+      "bytes": 22436,
+      "sha256": "95af0bd62821ea805c2b9ed414a3681b5adbd70b48162b1a7b537e2db3dfbe62"
     },
     {
       "path": "apps/admin/README.md",
@@ -2271,6 +2278,13 @@
       "sha256": "ac7f91eeaa1b83baa04f3e5d104d83bd74d5748a45a70febdd63366d3714770b"
     },
     {
+      "path": "docs/AI_CALLCENTER.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 13668,
+      "sha256": "f83ff641fa7b217736112da257cb4637783c10c49bb56903c77874dfd97db733"
+    },
+    {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md",
       "area": "docs",
       "status": "DOCUMENTATION",
@@ -2344,8 +2358,8 @@
       "path": "docs/AI_CONTEXT/START_HERE.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 8659,
-      "sha256": "4d2a89acb6c097f8af6657464926d6b5695ae8c1c36d2637ca5ccd1d76b629e9"
+      "bytes": 9269,
+      "sha256": "996735b9e5f23ddc8c567944eb44161645a7c34578da76778f8b38ff8ffaec9c"
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -2365,8 +2379,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 301332,
-      "sha256": "570d3d7fc6950910f453592f91991467e491cbde733e415b95e8225b37854d3c"
+      "bytes": 302279,
+      "sha256": "84aab4e3aa730c5af49a44c7a4a3cac12c7e35ad6b886d9d0079b745abe669fd"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2379,15 +2393,15 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 170481,
-      "sha256": "2f20f296a07ac7072f2e267d15ec73d630cdb75406234ce571b571de5524198c"
+      "bytes": 171330,
+      "sha256": "e4db281e5a8418d45ba9091bc30619afad6d87382ab0ef4d09311bea88bdfb10"
     },
     {
       "path": "docs/API_CONTRACTS.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 25000,
-      "sha256": "2536e54dc3e5366d9a702507f39a3568b9cbe1af0757d531fa8242732cfe615e"
+      "bytes": 28216,
+      "sha256": "f52dd11b00badf8a0308b3c4e48abd17f39e94fa4538c6bd6055e8698a07baa0"
     },
     {
       "path": "docs/ARCHITECTURE.md",
@@ -2813,8 +2827,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 32186,
-      "sha256": "d8e4fd607ea588bb98da185f3defa04dd2051431b643a97128f29f4b1894da95"
+      "bytes": 32350,
+      "sha256": "96f28ae3d632ddb941678a978081cddff7637179ec31a84831c7be9bacc3fb00"
     },
     {
       "path": "docs/README.md",
@@ -2862,8 +2876,8 @@
       "path": "firestore.indexes.json",
       "area": "firestore.indexes.json",
       "status": "NEEDS_REVIEW",
-      "bytes": 5681,
-      "sha256": "ac993a2bdfb78c86dcf43fcdc2c30a96095ca21850fe8ee245d1a72db546f339"
+      "bytes": 5966,
+      "sha256": "86ba292a2a4f64bcfa00c6805220e4f4f9248857e0dc6b51658f1a71f3c13e2b"
     },
     {
       "path": "firestore.rules",
@@ -2876,8 +2890,8 @@
       "path": "functions/.env.example",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 249,
-      "sha256": "1850541e7e9e648300c9e58db620966c44c825d056ffc15ecd06b0b853205977"
+      "bytes": 889,
+      "sha256": "80f453f4ea4fcb544246b7fcbf7029db040db3b903cee3ff606eb809b29caf3c"
     },
     {
       "path": "functions/.gitignore",
@@ -2890,8 +2904,8 @@
       "path": "functions/domain/apps/admin/modules/ops-core.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 12296,
-      "sha256": "356758e341978e5054a86db382d72f2496daedcb932d891ca7d35323d55d30f9"
+      "bytes": 12317,
+      "sha256": "c050e6badeebcb551fb47874c5e117927f2a9fd35b7aac51802740099197e294"
     },
     {
       "path": "functions/domain/apps/admin/modules/ops-routes.js",
@@ -2904,8 +2918,8 @@
       "path": "functions/domain/apps/admin/modules/workforce/employee-form.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 4429,
-      "sha256": "e0e3ea8920dd84b152a086657c7d3e73490ca51c0ae2feaff0162d6b424147c3"
+      "bytes": 4486,
+      "sha256": "0e1d7c567cba442846240855f7e695a191bbfbda8ae971d9c8e05d182ef5c9ea"
     },
     {
       "path": "functions/domain/apps/admin/modules/workforce/employee-invitation.js",
@@ -2925,22 +2939,22 @@
       "path": "functions/domain/apps/admin/permission-guard.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 5913,
-      "sha256": "e57efb26c2847fd70ba3ffde44cf3e4ce7bd8f671a823b7ec73cc18ac1a82683"
+      "bytes": 6513,
+      "sha256": "dccc7415036b43a510dd57e95fcd29be81377a2104747c23c7164ee1ed1f4bb6"
     },
     {
       "path": "functions/domain/apps/admin/rbac-store.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 21142,
-      "sha256": "ec90357ded620d4d147be4e5700da8429f4c4f58f07db6b4b275a4d0b97b03ff"
+      "bytes": 22436,
+      "sha256": "95af0bd62821ea805c2b9ed414a3681b5adbd70b48162b1a7b537e2db3dfbe62"
     },
     {
       "path": "functions/domain/manifest.json",
       "area": "functions",
       "status": "NEEDS_REVIEW",
       "bytes": 2360,
-      "sha256": "7e5eba2b82131dab5d22d4e862f4ea5b828226903e4eb66e5650f3293f137440"
+      "sha256": "f0d7adf8d91010927308f166ee8d3d55359d32667168c7a78225c77839858e8f"
     },
     {
       "path": "functions/domain/services/admin-api.js",
@@ -3051,8 +3065,8 @@
       "path": "functions/index.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 9996,
-      "sha256": "089d71f3465cfdfb4f6081f2b7da5e168bdb6ea98e749cbf3b4aa1b7a208c557"
+      "bytes": 12118,
+      "sha256": "04d7a44f3dc044e173d218bc800f81e6effa2e6aea1b9f35cbe5eb91393a5c97"
     },
     {
       "path": "functions/package-lock.json",
@@ -3081,6 +3095,13 @@
       "status": "NEEDS_REVIEW",
       "bytes": 11651,
       "sha256": "e38bc3c99a3ec0e1671dfc4332103556e162bc1748563674e59b119ee45b790d"
+    },
+    {
+      "path": "functions/src/agent-gateway.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 29383,
+      "sha256": "3558844272f41dd100eb4ad857ae7a95dc5efbe268235ce5e4cdfa6ef5696138"
     },
     {
       "path": "functions/src/ai.js",
@@ -3163,8 +3184,8 @@
       "path": "functions/src/plan.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 16158,
-      "sha256": "61140f0c07371ef9c14c2952b7997df3dda7c3cc43eb4a3aa81257a63f2dabda"
+      "bytes": 16357,
+      "sha256": "66881266a573dc7904bbd768ac5a6be63de9e41e4c23f3df338787103fa51ec8"
     },
     {
       "path": "functions/src/provider-stats.js",
@@ -3184,15 +3205,15 @@
       "path": "functions/src/scope.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 10177,
-      "sha256": "a1f9a0f921729c66445a0bf0ab43162d2841af8ae34ccd9b2c133ceb57a217e6"
+      "bytes": 10463,
+      "sha256": "9892850820de5d90defa0399b7e1cb562c7d03784880962b62e8191d008e2dd1"
     },
     {
       "path": "functions/src/service.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 46762,
-      "sha256": "c5d1ddc2d0fcf7a8bf9f04ff3015839bedb7dea6aeb1d39a06aff8a9acf88625"
+      "bytes": 50107,
+      "sha256": "4fd7e51c34a7879efeee9582e2c352b012a661ee54391ffe1c89c44bbb02972e"
     },
     {
       "path": "functions/src/store.js",
@@ -3380,15 +3401,15 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 11989,
-      "sha256": "9f6c46f1e76f70afd77a4a539e453d949bb6136871c338230178abe54ff81c69"
+      "bytes": 12030,
+      "sha256": "c8da5456f5039ebba430a76cff4407cce2c82678b2e0f3fdb76c36046cafc527"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 196,
-      "sha256": "59ca6eed2df590567ac11411bb6e9bd06fc2e0fa3c4e61153e0b1f789516fc12"
+      "sha256": "5338d6d6237dd8d573daddd1831806394b271934f55e0e84c7716961bec44cfd"
     },
     {
       "path": "services/admin-api.js",
@@ -4133,6 +4154,13 @@
       "sha256": "8c86caee77ee2991253d9e340f4d99ee3fe72bd15d1246722ed8c5e321820a4c"
     },
     {
+      "path": "tests/unit/callcenter-agent.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 18965,
+      "sha256": "ed2df04d2546cab3101c0eacf5014a0a8da74c45f5862202e860bb5a868dbbf9"
+    },
+    {
       "path": "tests/unit/catalog-wizard.test.js",
       "area": "tests",
       "status": "IMPLEMENTED",
@@ -4318,15 +4346,15 @@
       "path": "tests/unit/firebase-integration-contract.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 8492,
-      "sha256": "054d2aa7698d9a014f46e7c403294b0eb7ec5e9e49c4ec6f88902aa5da03223f"
+      "bytes": 8695,
+      "sha256": "cedcf4ec5d277c067182f1075d45b0d2e421785da631a2c28b10fafdabbe8791"
     },
     {
       "path": "tests/unit/firebase-mode-data.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 16282,
-      "sha256": "bb4c5df4e29dfdb82f9b08ae8164540a7542ff8623ca307964ca65a8863e9850"
+      "bytes": 16296,
+      "sha256": "8060a1042ee92a32686bdc94a05bb4f42532883eb0d5a69788831a47e9c23fc7"
     },
     {
       "path": "tests/unit/frontend-contracts.test.js",
@@ -4535,15 +4563,15 @@
       "path": "tests/unit/rbac-pages.test.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 4415,
-      "sha256": "2e5cce4200aef3e8241cf727288b13ca3452b6d35c2f53680a30ea0490603e3c"
+      "bytes": 4428,
+      "sha256": "d0a331dcd33ab734870a286a14064ccf13549e0b0d2cf8a9b3fc45b00c602d83"
     },
     {
       "path": "tests/unit/rbac-store.test.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 11870,
-      "sha256": "6955c83cb0c3b51bcf6b056cb494ea7b11df2952f6f56dceb363b5c8ca7a1680"
+      "bytes": 11926,
+      "sha256": "5a47ebbd2289b50c0b41ed9e21218315718205c2b8a2ee9a3c79e36c8567fe69"
     },
     {
       "path": "tests/unit/README.md",
