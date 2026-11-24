@@ -139,6 +139,8 @@ async function run({ exe, wsUrl }) {
 
   /* Cross-app links resolve */
   for (const href of externals) {
+    /* third-party share targets (WhatsApp) open in the customer's own app; they are not ours to fetch from the test */
+    if (/^https:\/\/wa\.me\//.test(href)) { ok(/^https:\/\/wa\.me\/\?text=/.test(href), 'WhatsApp share link is well-formed'); continue; }
     const status = await evaluate(`fetch(${JSON.stringify(href.split('#')[0])},{method:'GET'}).then(r=>r.status).catch(()=>0)`);
     ok(status === 200, `link target resolves: ${href} (HTTP ${status})`);
   }

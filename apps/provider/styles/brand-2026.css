@@ -10,7 +10,7 @@
 .pv-topbar{background:var(--hs-navy);border-bottom:0;box-shadow:0 6px 18px rgba(11,31,58,.18);color:#fff}
 .pv-brand::before{background-image:url(../../../assets/brand/hsl-lockup-light.png)}
 .pv-demo{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.28);color:#FFD9A8}
-.pv-topbar button,.pv-topbar a{color:#fff}
+.pv-topbar button,.pv-topbar a,.pv-topbar .pv-brand span{color:#fff}
 .pv-topbar .pv-icon-btn{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.25);color:#fff}
 .pv-topbar .pv-icon-btn:hover{background:rgba(255,255,255,.18)}
 .pv-brand::before{width:150px;height:40px}

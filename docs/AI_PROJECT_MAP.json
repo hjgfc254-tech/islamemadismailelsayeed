@@ -2649,7 +2649,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md). Also holds .hs-badge styles for shared/components/status-badge.js. Also holds .hs-grid styles for shared/components/data-grid.js.",
-      "sha256": "fd94dc94da9b0912784b63432061e19a588a80482400cab7bc518a255bacbed7",
+      "sha256": "17ccb11a96f3d9671dd1c9c53f3610e5dfa8dc6d4b92b1bef6bd7d43671c3cf6",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2686,7 +2686,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 50010
+      "bytes": 50870
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -2990,7 +2990,7 @@
         "https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap"
       ],
       "notes": "TASK 04: #sheet retains role=dialog and aria-modal=true and adds tabindex=-1 as a safe focus fallback when content has no interactive control.",
-      "sha256": "89f81beceaa06e7b4149879c402c1ef59391ea6d11a660d3fb59ee654929001c",
+      "sha256": "43db36ab8ef4b0c5b886d95f0bea62cbf55191227f7ec89dcc61d26a8e5dff95",
       "resolved_dependencies": [
         "manifest.json",
         "assets/icon.svg",
@@ -3053,7 +3053,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 9073
+      "bytes": 10443
     },
     {
       "path": "apps/customer/pages/account.page.js",
@@ -3799,8 +3799,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "121e0a698c0da02977a01ec910cbc9e82e5ea2c5c580fb1d07580c8e06f31a54",
-      "bytes": 50623
+      "sha256": "a0faeccec5d6a6ce7e270b5ff184f3f0f45d28ef89ff8a90bef78f580d5d55e7",
+      "bytes": 50755
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -5040,8 +5040,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "fba2a186aa6fead9ba0ebbd458227b24aa108db440697218546599fceffc831a",
-      "bytes": 4756
+      "sha256": "c4e395f5de248e35d7f632b40043f6a73cc3b8fbd6d59152ed6a6755a7d216c4",
+      "bytes": 4782
     },
     {
       "path": "apps/provider/styles/overrides.css",
@@ -12390,7 +12390,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "77885c5827f0853399d49e5701eb0c2408e29eeede699c0ab0a9eb3518a9347c",
+      "sha256": "58842f2b85a8f6a9c695226027a1c9bea2a11620a506fb084f01d78188eb8a35",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12438,7 +12438,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "55728ab99ac61f98b8879661e2ab12470ac695b549c4a4d78c93ae9ac01fc742",
+      "sha256": "c78a62fe1dbfcb4e2b606deabd128224c25bcd24daae3eac14fb42b3d1b53582",
       "bytes": 195
     },
     {
@@ -15056,8 +15056,8 @@
       "next_action": "Keep in sync with apps/guest/guest-policy.js.",
       "explicit_references": [],
       "notes": "Added 2026-11-14 (final completion sprint).",
-      "sha256": "3efcdf36cf37049d91c1fe386e03d2c1bd833bc9cb210b26a868cfe25baa8013",
-      "bytes": 10283,
+      "sha256": "9769db4082b5ee52d397648a97b1fec49130b0bf68b9c2bee142957751c5b8d4",
+      "bytes": 10718,
       "has_real_logic": true,
       "actual_status_ar": "اختبار متصفح"
     },
@@ -15070,8 +15070,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "088014b7134485de9d126161cfa6e3236ad8585ce7678ac4f8564136918604d9",
-      "bytes": 13497
+      "sha256": "8a3f72e7eab6520d1e4215b37f399756826c4402ceaac34f8f4c2d64f3f802ef",
+      "bytes": 13756
     },
     {
       "path": "tests/e2e/lib/a11y-audit.js",

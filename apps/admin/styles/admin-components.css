@@ -183,6 +183,8 @@ th[aria-sort="ascending"] .hs-grid-sort,th[aria-sort="descending"] .hs-grid-sort
 .rl-chk{display:inline-flex;align-items:center;gap:var(--sp-2);min-height:44px}
 .rl-chk input{width:22px;height:22px;flex:none}
 .rl-scroll{overflow-x:auto;max-width:100%}
+/* a scrolling table never widens its column / card (grid and flex items default to min-width:auto) */
+:has(>.rl-scroll),#adm-content{min-width:0}
 .rl-table{border-collapse:collapse;min-width:640px;width:100%}
 .rl-table th,.rl-table td{border:1px solid var(--border-subtle);padding:var(--sp-2);text-align:start;vertical-align:top}
 .rl-table th[scope=row]{white-space:nowrap}
@@ -282,6 +284,11 @@ th[aria-sort="ascending"] .hs-grid-sort,th[aria-sort="descending"] .hs-grid-sort
 .adm-side-top{border-bottom-color:var(--nav-dark-line)!important;color:var(--on-brand)}
 .adm-side-top .adm-brand,.adm-side-top .adm-brand small{color:var(--on-brand)}
 .adm-side-top .adm-brand-t{background-image:url(../../../assets/brand/hsl-lockup-light.png)}
+/* the 2026 lock-up is wider than the old word mark: on the narrowest phones it shrinks so the header never overflows */
+@media (max-width:360px){.adm-head .adm-brand-t{width:calc(var(--sp-8) * 2);height:calc(var(--sp-3) + var(--sp-4))}.adm-head .adm-brand{flex-shrink:1}
+  /* header buttons (menu · search · bell · account) fit 320px: tighter gaps, compact bell, account name truncates */
+  .adm-head{gap:var(--sp-1);padding-inline:var(--sp-2)}.adm-head .adm-bell{min-width:calc(var(--sp-7) + var(--sp-1));padding-inline:var(--sp-2)}
+  .adm-head .adm-account{min-width:0;flex-shrink:1}.adm-head .adm-account .adm-btn{max-width:calc(var(--sp-8) * 2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
 .adm-group-t{color:var(--nav-dark-muted)}
 .adm-link{color:var(--nav-dark-text)}
 .adm-link svg.i,.adm-link .adm-ico{color:var(--nav-dark-text)}

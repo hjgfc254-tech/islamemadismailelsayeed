@@ -202,6 +202,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 #view .home-v3 .hero-search{position:relative;z-index:3;margin-top:calc(-1 * clamp(34px,10vw,42px));padding:0 2px}
 #view .home-v3 .hero-search .field{height:clamp(50px,14vw,56px);border-radius:999px;padding:0 6px 0 16px;border:0;box-shadow:0 10px 28px rgba(11,31,58,.16)}
 #view .home-v3 .hero-search .field>svg{width:20px;height:20px;color:var(--text-muted);flex:none}
+#view .home-v3 .hero-search input{align-self:stretch;height:auto;min-height:44px}   /* the whole pill height is the touch target */
 #view .home-v3 .hero-search .cam{flex:none;width:clamp(38px,11vw,44px);height:clamp(38px,11vw,44px);border-radius:50%;background:var(--hs-navy);color:#fff;border:0;display:grid;place-items:center}
 #view .home-v3 .hero-search .cam svg{width:20px;height:20px}
 /* trust: a light row, no card */

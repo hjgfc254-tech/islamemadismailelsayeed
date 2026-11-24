@@ -41,7 +41,10 @@ async function run({ exe, wsUrl }) {
     ok(!ADMIN_TRACE.test(await evaluate('document.body.innerText')), `${tag} no Admin text or role switching anywhere on the page`);
     ok(await evaluate('!!document.querySelector(\'a[href="../provider/index.html#/join"]\') && !document.querySelector(\'a[href*="admin"]\')'), `${tag} only the provider onboarding invitation is offered (no Admin/Provider management link)`);
     ok(await noOverflow(), `${tag} home: no horizontal overflow`);
-    for (const tab of ['sections', 'search', 'account']) {
+    /* 2026 identity: the tab bar is الرئيسية · الخدمات · «طلب خدمة» (centre button) · طلباتي · حسابي — search lives in the
+       Home search field and the header search icon, not in a tab */
+    ok(await evaluate('!!document.querySelector(\'#tabbar .tab-fab[data-act="newReq"]\') && !document.querySelector(\'#tabbar [data-go="search"]\')'), `${tag} centre «طلب خدمة» button in the tab bar`);
+    for (const tab of ['sections', 'account']) {
       if (await focusEl(`#tabbar [data-go="${tab}"]`, `${tag} tab ${tab}`)) {
         await ENTER(); await sleep(150);
         ok(await evaluate(`!!document.querySelector('#tabbar [data-go="${tab}"][aria-current="page"]')`), `${tag} Enter on the «${tab}» tab opens it (aria-current)`);
