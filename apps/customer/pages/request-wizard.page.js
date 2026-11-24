@@ -75,16 +75,31 @@ function wzSkip(n){
 }
 /* Map pin picker: shared/components/hs-map.js (MapLibre + OpenFreeMap, loaded on first use / prefetched on the address step).
    Move the map under the fixed centre pin; «تأكيد» stores {lat,lng} on the request address (the provider sees it only after accepting). */
-let wzMapPick = null;
+let wzMapPick = null, wzMapAddr = null;
+/* the place found on the map / by GPS fills the empty address fields (governorate, area, street) — never overwrites typing */
+function wzFillFromAddr(a){
+  if (!WZ || !a) return;
+  const A = WZ.address, govs = (MP && MP.GOVS) || [];
+  if (a.gov && govs.includes(a.gov) && !A.gov) A.gov = a.gov;
+  if (a.area && !(A.area || '').trim()) A.area = a.area;
+  if (a.street && !(A.addr || '').trim()) A.addr = a.street;
+  if (a.label) A.geoLabel = a.label;
+}
+/* why the position could not be read, with the exact steps for iPhone / Android */
+function wzGeoHelp(h){
+  if (!h || typeof sheet !== 'function') return;
+  sheet(`<h4>${safeIc('pin')} ${_esc(h.title)}</h4><ol class="geo-help">${h.steps.map(s => `<li>${_esc(s)}</li>`).join('')}</ol>
+    <button type="button" class="cta" data-act="wzGeo">جرّب تاني</button><button type="button" class="cta ghost" data-act="wzMap">${safeIc('search')} حدد على الخريطة بإيدي</button>`);
+}
 function wzOpenMap(){
   if (!WZ || typeof sheet !== 'function') return;
-  const start = WZ.address.geo || { lat: 30.0444, lng: 31.2357 };
-  wzMapPick = { lat: start.lat, lng: start.lng };
-  sheet(`<h4>${safeIc('pin')} حدد مكانك على الخريطة</h4><div class="sub">حرّك الخريطة لحد ما العلامة تبقى على باب البيت، أو اضغط «موقعي».</div>
+  const start = WZ.address.geo || (window.HSMap && HSMap.centerFor(WZ.address.gov)) || { lat: 30.0444, lng: 31.2357 };
+  wzMapPick = { lat: start.lat, lng: start.lng }; wzMapAddr = null;
+  sheet(`<h4>${safeIc('pin')} حدد مكانك على الخريطة</h4><div class="sub">ابحث عن الشارع أو اضغط «موقعي»، وحرّك الخريطة لحد ما العلامة تبقى على باب البيت.</div>
     <div id="wz-map" class="wz-map" role="application" aria-label="خريطة لتحديد المكان — حرّك الخريطة والعلامة ثابتة في النص"></div>
     <button type="button" class="cta" data-act="wzMapOk">${safeIc('check')} تأكيد المكان</button>`);
-  /* fast map layer (shared/components/hs-map.js): CARTO tiles, Leaflet pre-loaded, Uber-style fixed centre pin */
-  (window.HSMap ? HSMap.picker(document.getElementById('wz-map'), { start: WZ.address.geo || null, onChange: (g) => { wzMapPick = g; } }).then((p) => { wzMapPick = p.get(); })
+  /* hs-map: MapLibre + OpenFreeMap, opens on the governorate (never the world), asks for the position at once */
+  (window.HSMap ? HSMap.picker(document.getElementById('wz-map'), { start: WZ.address.geo || null, gov: WZ.address.gov, onChange: (g) => { wzMapPick = g; }, onAddress: (a) => { wzMapAddr = a; }, onHelp: wzGeoHelp }).then((p) => { wzMapPick = p.get(); })
     : Promise.reject(new Error('map'))).catch(() => { const el = document.getElementById('wz-map'); if (el) el.innerHTML = '<p class="hint" style="padding:16px">تعذّر تحميل الخريطة — استخدم «موقعي الحالي» أو اكتب العنوان.</p>'; });
 }
 const UNKNOWN_TXT = 'مش عارف أحدد المشكلة — محتاج فني يفحصها';
@@ -563,7 +578,13 @@ Object.assign(screens, {
             ${safeIc('pin')} ${_esc(a.label || a.addr.slice(0,20))}
           </button>`).join('')}
         </div>` : '';
+      /* location first (like delivery apps): one tap fills governorate / area / street; typing stays available below */
+      const geoCard = `<div class="geo-card ${w.address.geo ? 'is-set' : ''}">${(window.HSMap && HSMap.prefetch(), '')}
+          <div class="geo-card-h">${safeIc('pin')}<div><b>${w.address.geo ? 'تم تحديد مكانك' : 'فين مكان الخدمة؟'}</b><small>${w.address.geo ? _esc(w.address.geoLabel || 'العلامة متحطة على الخريطة — تقدر تعدّلها') : 'حدده بضغطة، وهنملا العنوان عنك'}</small></div></div>
+          <div class="geo-card-a"><button type="button" class="cta" data-act="wzGeo">${safeIc('pin')} ${w.address.geo ? 'حدّث موقعي' : 'استخدم موقعي الحالي'}</button>
+          <button type="button" class="cta ghost" data-act="wzMap">${safeIc('search')} ${w.address.geo ? 'عدّل على الخريطة' : 'اختار على الخريطة'}</button></div></div>`;
       body = crumbHtml(w) + `<div class="form">
+        ${geoCard}
         ${addrChips}
         <div><label for="wz-gov">المحافظة *</label><select id="wz-gov" required aria-required="true"><option value="">اختر المحافظة</option>${(MP ? MP.GOVS : []).map(g=>`<option ${g===w.address.gov?'selected':''}>${_esc(g)}</option>`).join('')}</select></div>
         <div><label for="wz-area">المنطقة *</label><input id="wz-area" required aria-required="true" list="areas" value="${_esc(w.address.area)}" placeholder="المنطقة / الحي"><datalist id="areas">${((MP && MP.AREA_HINTS[w.address.gov]) || []).map(a=>`<option value="${_esc(a)}">`).join('')}</datalist></div>
@@ -573,8 +594,6 @@ Object.assign(screens, {
         <div><label for="wz-label">اسم مختصر (اختياري)</label><input id="wz-label" value="${_esc(w.address.label)}" placeholder="مثل: البيت، المكتب"></div>
         <label class="hint" style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" id="wz-save-addr" ${w.address.save?'checked':''} style="width:auto"> احفظ هذا العنوان لاستخدامه لاحقًا</label>
         <label class="hint" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="wz-default-addr" ${w.address.default?'checked':''} style="width:auto"> اجعله العنوان الافتراضي</label>
-        ${(window.HSMap && HSMap.prefetch(), '')}<button type="button" class="cta ghost" style="margin-top:8px;min-height:46px" data-act="wzGeo">${safeIc('pin')} ${w.address.geo ? 'تم تحديد موقعك' : 'استخدم موقعي الحالي (بموافقتك)'}</button>
-        <button type="button" class="cta ghost" style="margin-top:8px;min-height:46px" data-act="wzMap">${safeIc('search')} ${w.address.geo ? 'عدّل المكان على الخريطة' : 'حدد المكان على الخريطة'}</button>
       </div>`;
     }
 
@@ -1002,20 +1021,26 @@ document.addEventListener('click', e => {
     }
     case 'wzMap': { wzOpenMap(); break; }
     case 'wzMapOk': {
-      if (WZ && wzMapPick) { WZ.address.geo = { lat: +wzMapPick.lat.toFixed(6), lng: +wzMapPick.lng.toFixed(6) }; wzSaveDraft(); }
+      if (WZ && wzMapPick) { WZ.address.geo = { lat: +wzMapPick.lat.toFixed(6), lng: +wzMapPick.lng.toFixed(6) }; wzFillFromAddr(wzMapAddr); wzSaveDraft(); }
       if (typeof closeSheet === 'function') closeSheet(true);
       if (hasUI()) show('wizard');
       toast('تم تحديد المكان على الخريطة', 'success');
       break;
     }
     case 'wzGeo': {
-      if (!navigator.geolocation) return toast('المتصفح لا يدعم تحديد الموقع');
-      /* fast first (cached / network position in ~3 s), then the precise one replaces it */
+      if (typeof closeSheet === 'function') closeSheet(true);
+      if (!navigator.geolocation) return wzGeoHelp(window.HSMap ? HSMap.geoHelp(null) : { title: 'المتصفح مش بيدعم تحديد الموقع', steps: ['حدد المكان على الخريطة بإيدك.'] });
+      /* fast first (cached / network position in ~3 s), then the precise one replaces it; the street / area found there
+         fill the empty fields */
       let first = true;
-      const take = (g) => { WZ.address.geo = { lat: +g.lat.toFixed(6), lng: +g.lng.toFixed(6) }; wzSaveDraft(); if (first) { first = false; show('wizard'); toast('تم تحديد موقعك'); } };
-      toast('بنحدد موقعك…');
+      const take = (g) => {
+        WZ.address.geo = { lat: +g.lat.toFixed(6), lng: +g.lng.toFixed(6) }; wzSaveDraft();
+        if (first) { first = false; show('wizard'); toast('تم تحديد موقعك', 'success'); }
+        if (window.HSMap) HSMap.reverse(g).then(a => { if (a && WZ) { wzFillFromAddr(a); wzSaveDraft(); if (WZ.step === 6) show('wizard'); } });
+      };
+      toast('بنحدد موقعك… لو المتصفح سألك اختار «سماح»');
       (window.HSMap ? HSMap.locate(take) : new Promise((res, rej) => navigator.geolocation.getCurrentPosition(p => { take({ lat: p.coords.latitude, lng: p.coords.longitude }); res(); }, rej, { timeout: 8000 })))
-        .catch(() => toast('لم يتم السماح بتحديد الموقع'));
+        .catch(e => wzGeoHelp(window.HSMap ? HSMap.geoHelp(e) : { title: 'مش قادرين نحدد موقعك', steps: ['اسمح بالموقع من إعدادات المتصفح، أو حدد على الخريطة.'] }));
       break;
     }
     case 'wzAddPhoto': {

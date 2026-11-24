@@ -711,6 +711,7 @@ hansalhlak/
 │       ├── live-tracking.test.js
 │       ├── local-attachments.test.js
 │       ├── mailer.test.js
+│       ├── map-location.test.js
 │       ├── marketplace-mechanisms.test.js
 │       ├── marketplace-rules.test.js
 │       ├── notifications-management.test.js

@@ -362,6 +362,34 @@ html.is-scrolling body>.help-fab{opacity:.25;transform:scale(.82)}
    old offset left it floating ~100px above the tab bar; now it sits right on top of it */
 @media (max-width:899px){#view .wz-nav{bottom:-20px;margin-bottom:0}}
 
+/* location (address step): one card on top — «استخدم موقعي الحالي» / «اختار على الخريطة» */
+#view .geo-card{padding:14px;border-radius:20px;color:#fff;background:var(--hs-navy) url(../../../assets/brand/bg-navy.svg) center/cover no-repeat;box-shadow:0 12px 26px rgba(11,31,58,.2)}
+#view .geo-card-h{display:flex;align-items:center;gap:12px}
+#view .geo-card-h>svg{flex:none;width:44px;height:44px;padding:10px;border-radius:14px;background:var(--hs-red);color:#fff}
+#view .geo-card-h b{display:block;font-family:var(--font-display);font-size:17px;font-weight:800}
+#view .geo-card-h small{display:block;font-size:13px;color:rgba(255,255,255,.8)}
+#view .geo-card.is-set .geo-card-h>svg{background:#1FA971}
+#view .geo-card-a{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+#view .geo-card-a .cta{margin:0;min-height:46px;font-size:14px}
+#view .geo-card-a .cta:not(.ghost){background:var(--hs-red);border-color:var(--hs-red);color:#fff}
+#view .geo-card-a .cta.ghost{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.3);color:#fff}
+#sheet .geo-help{margin:10px 0 14px;padding-inline-start:20px;display:grid;gap:8px;font-size:14px;line-height:1.7;color:var(--text-secondary)}
+
+/* map picker: taller, search on top, «موقعي» under it, the street name under the pin */
+#sheet .wz-map{height:min(60vh,460px)}
+.hs-map .hs-map-search{position:absolute;z-index:650;top:10px;inset-inline:10px;margin:0}
+.hs-map .hs-map-search input{width:100%;height:46px;padding:0 14px;border:0;border-radius:14px;background:#fff;font:inherit;font-size:14px;box-shadow:0 6px 18px rgba(11,31,58,.18)}
+.hs-map .hs-map-search input:focus{outline:2px solid var(--hs-navy)}
+.hs-map .hs-map-results{list-style:none;margin:6px 0 0;padding:6px;max-height:220px;overflow:auto;border-radius:14px;background:#fff;box-shadow:0 12px 28px rgba(11,31,58,.22)}
+.hs-map .hs-map-results button{display:block;width:100%;padding:10px;border:0;border-radius:10px;background:none;font:inherit;font-size:13.5px;text-align:start;color:var(--text-primary);cursor:pointer}
+.hs-map .hs-map-results button:hover{background:var(--surface-sunken)}
+.hs-map .hs-map-results .none{padding:10px;font-size:13px;color:var(--text-muted)}
+.hs-map .hs-map-locate{top:64px;background:var(--hs-navy);color:#fff}
+.hs-map .hs-map-addr{position:absolute;z-index:600;left:50%;bottom:54px;transform:translateX(-50%);max-width:calc(100% - 24px);margin:0;padding:8px 14px;border-radius:999px;background:var(--hs-navy);color:#fff;font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 8px 18px rgba(11,31,58,.25)}
+.hs-map .hs-map-addr:empty,.hs-map .hs-map-hint:empty{display:none}
+.hs-map .hs-map-hint.is-err{background:#FDECEA;color:var(--hs-red-ink);font-weight:700}
+.hs-map .hs-map-help{margin-inline-start:6px;padding:4px 10px;border:0;border-radius:999px;background:var(--hs-red);color:#fff;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}
+
 /* request sent: a navy brand card, and «what happens now» with a live "searching" step */
 #view .done{position:relative;overflow:hidden;border:0;border-radius:24px;color:#fff;padding:26px 18px 20px;
   background:var(--hs-navy) url(../../../assets/brand/bg-navy.svg) center/cover no-repeat;box-shadow:0 16px 34px rgba(11,31,58,.28)}
