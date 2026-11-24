@@ -608,8 +608,8 @@
       "path": "apps/customer/pages/account.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 30873,
-      "sha256": "4f63f7ec1ea45b0b39b8c00556c0792c2568be87e20066bcbe9731294bb2e257"
+      "bytes": 31246,
+      "sha256": "dae94034eadb15a673236b8765515d101ff44e4d9ba52abdf9c3a0433868da90"
     },
     {
       "path": "apps/customer/pages/addresses.page.js",
@@ -727,8 +727,8 @@
       "path": "apps/customer/pages/support.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 22862,
-      "sha256": "23fca09541c3c5ab1083ef8de7958de050ac91fcf8acb17027a3abf1b6420099"
+      "bytes": 22147,
+      "sha256": "af92d052f390d6f187659ec091b81efae2438af6d495f5c81bfee4c4b6047151"
     },
     {
       "path": "apps/customer/pages/trust-features.js",
@@ -748,8 +748,8 @@
       "path": "apps/customer/styles/brand-2026.css",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 51679,
-      "sha256": "3610f6c3f75b9da52925f1a35d14cb1f7852f723cdcbe61f7c4c39dcc6114a44"
+      "bytes": 51957,
+      "sha256": "d6f64a08d9ee0938548f98f9d67a9ef3e4ed72bc70fcbf25ec9c3ce618b00479"
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -790,8 +790,8 @@
       "path": "apps/provider/app.js",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 78279,
-      "sha256": "e24abf1c7a2ea876728ddf331186289050cb56e2cf9044a27d15ecfd586020e3"
+      "bytes": 78643,
+      "sha256": "2336eddaa4e8dd381458c20221cb46239d9d7445883f77506ada768c88c2d5e0"
     },
     {
       "path": "apps/provider/index.html",
@@ -965,8 +965,8 @@
       "path": "apps/provider/styles/provider.css",
       "area": "apps/provider",
       "status": "IMPLEMENTED (RESPONSIVE FRONTEND)",
-      "bytes": 40137,
-      "sha256": "5e2d825ef00dfccdf4ce6cb1624dcdf04e795041b5f361ea12fc0780f8e5b929"
+      "bytes": 40368,
+      "sha256": "95a9178aa0219896a3b96f394853406381cc56b2a9aa1806088e9a04a1e8d6da"
     },
     {
       "path": "assets/app-icon-192.png",
@@ -3240,29 +3240,29 @@
       "path": "legal/cancellation.html",
       "area": "legal",
       "status": "NEEDS_REVIEW",
-      "bytes": 4850,
-      "sha256": "975830b4489273beb8c7d6ca8335f816a4f9359f691722e986275eaf4469d5ef"
+      "bytes": 6683,
+      "sha256": "f481ccbde23b32c9f625abaae3af8b6f83f2f96fdd7c8a6141bbbfc97fbfe211"
     },
     {
       "path": "legal/legal.css",
       "area": "legal",
       "status": "NEEDS_REVIEW",
-      "bytes": 2005,
-      "sha256": "b6d4c6bb48e48dea3f3d149e8ae8d6501bca181609e160589193e085eb935c23"
+      "bytes": 2201,
+      "sha256": "4df202505c32ab670b9ac149490a07d937c396c2fd7ffe2e762651204abc4f22"
     },
     {
       "path": "legal/privacy.html",
       "area": "legal",
       "status": "NEEDS_REVIEW",
-      "bytes": 9894,
-      "sha256": "c88f3b2c65f7d9f4397700a997db29e1f156a62b6d37936d036afd93d17262ee"
+      "bytes": 16983,
+      "sha256": "6f18a83a3d2dfed15de81ca58dc58f74f56f24031178db61bc0a27e824c473c7"
     },
     {
       "path": "legal/terms.html",
       "area": "legal",
       "status": "NEEDS_REVIEW",
-      "bytes": 4449,
-      "sha256": "314e37b22a7b03219ef0bff4cdccfb27ba042e545a533664f7a1a2a9f21d1b95"
+      "bytes": 13718,
+      "sha256": "58fb90eaf7cca02dcd8db50860a90c164518b0992c3d7908b58135b7a74c2a35"
     },
     {
       "path": "manifest.json",
@@ -3374,14 +3374,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 11988,
-      "sha256": "708cd037cdfa3789f105ffd236a6d656acc0bb2a7c5d2392085d4e82e39de34b"
+      "sha256": "efcee2e8ce1abea7a2887133c5c40f3ce0c4c2ca1afad4a6608f079828e95bf7"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "f5f05b4b309fe55ceb595ceee90dee1340e0826d791c5bf03292979ef2c92f10"
+      "sha256": "262ba259fbf9565a1e45401664d1cc1a19723f016112cf1178c25e2c26f4f371"
     },
     {
       "path": "services/admin-api.js",
@@ -4437,8 +4437,8 @@
       "path": "tests/unit/policies.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 2541,
-      "sha256": "66254db3ecdcce4ae197feb552c4588e6f55e9a71307d0929f5377409c4ae7f2"
+      "bytes": 4335,
+      "sha256": "1452624ac47996dde4a8b5ed23ba63ef72daa9089e259d305dba8bc067b75b3d"
     },
     {
       "path": "tests/unit/provider-app-a11y.test.js",

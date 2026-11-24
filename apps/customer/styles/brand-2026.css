@@ -472,6 +472,9 @@ html.is-scrolling body>.help-fab{opacity:.25;transform:scale(.82)}
 #sheet .policy-text .meta,#sheet .policy-loading{color:var(--text-muted);font-size:13px}
 #sheet .policy-text .note{padding:10px 12px;border-radius:12px;background:var(--hs-red-soft);border:1px solid #F7C9C5;color:var(--text-primary)}
 #sheet .policy-text a{color:var(--hs-red-ink);font-weight:700}
+#view .auth-legal{margin:8px 0 0;font-size:12.5px;line-height:1.7;text-align:center;color:var(--text-muted)}
+#view .auth-legal a{color:var(--hs-red-ink);font-weight:700}
+#sheet .policy-text .fill{padding:0 6px;border-radius:6px;background:#FFF3CD;color:#7A5200;font-weight:700}
 
 /* location (address step): one card on top — «استخدم موقعي الحالي» / «اختار على الخريطة» */
 #view .geo-card{padding:14px;border-radius:20px;color:#fff;background:var(--hs-navy) url(../../../assets/brand/bg-navy.svg) center/cover no-repeat;box-shadow:0 12px 26px rgba(11,31,58,.2)}

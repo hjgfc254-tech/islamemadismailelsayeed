@@ -19,3 +19,5 @@ a{color:var(--red-ink);font-weight:700}
 .links{margin-top:30px;padding-top:14px;border-top:1px solid var(--line)}
 footer{text-align:center;color:var(--muted);font-size:14px;padding:0 16px 32px}
 @media (max-width:600px){main{margin:12px 12px 40px}}
+/* fields the owner still has to fill (company name, register no., address, privacy e-mail, DPO, courts) */
+.fill{padding:0 6px;border-radius:6px;background:#FFF3CD;color:#7A5200;font-weight:700}

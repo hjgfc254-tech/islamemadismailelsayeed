@@ -234,7 +234,7 @@ const Account = (() => {
       <button class="cta auth-submit" type="submit" data-submit>متابعة</button>
       <div class="auth-or" aria-hidden="true"><span>أو</span></div>
       <button class="auth-guest" type="button" data-go="home">تصفح كزائر بدون تسجيل</button>
-      <p class="auth-trust">${safeIc('shield')} بياناتك محمية، ولا يرى مقدم الخدمة رقمك إلا بعد قبول طلبك.</p>
+      <p class="auth-trust">${safeIc('shield')} بياناتك محمية، ولا يرى مقدم الخدمة رقمك إلا بعد قبول طلبك.</p><p class="auth-legal">بالمتابعة، فإنك توافق على <a href="../../legal/terms.html" target="_blank" rel="noopener">شروط الاستخدام</a> و<a href="../../legal/privacy.html" target="_blank" rel="noopener">سياسة الخصوصية</a> و<a href="../../legal/cancellation.html" target="_blank" rel="noopener">سياسة الإلغاء</a>.</p>
     </form>
   </section>`;
 

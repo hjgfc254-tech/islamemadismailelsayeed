@@ -274,3 +274,5 @@
 .pv-live .pv-btn{margin-inline-start:auto;min-height:40px}
 .pv-live.is-on{background:color-mix(in srgb,var(--success,#2B6B40) 12%,transparent);color:var(--text-primary)}
 .pv-live.is-on .pv-link{margin-inline-start:auto}
+/* consent line above «إرسال» on the registration form (links to the legal pages) */
+.pv-legal{margin:0;font-size:var(--fs-xs);line-height:1.7;color:var(--text-secondary)}.pv-legal a{color:var(--accent-ink);font-weight:700}
