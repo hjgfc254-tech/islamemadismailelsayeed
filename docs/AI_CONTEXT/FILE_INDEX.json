@@ -699,8 +699,8 @@
       "path": "apps/customer/pages/request-wizard.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 68592,
-      "sha256": "9d9087743ab2c460882ffe9c4ead3686814ac45d8afc83c48073c7f8cfb90ccf"
+      "bytes": 69046,
+      "sha256": "0e7125c9ab74b88b0d2d34f493dea1063d2bec058f36805a1c53c8fcb85057f5"
     },
     {
       "path": "apps/customer/pages/search.page.js",
@@ -734,8 +734,8 @@
       "path": "apps/customer/styles/brand-2026.css",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 32932,
-      "sha256": "fb38cdc7587cab2712845f1334179a48fb53b6d0bb856691fc8077da0588b712"
+      "bytes": 35336,
+      "sha256": "2df30db95a05f3cb605c191019fd8d807291235687397509e08439ed27a7862f"
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -3346,14 +3346,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 11774,
-      "sha256": "4a849097694ee9e47e28f62de4f9dd1dd711db7ebd207ae2bcb507c70357d8a3"
+      "sha256": "b39d4bbd68a998f58b6c9dfcac300bcfb48b7182866b04b23e1c3853977c4a3c"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "e46bb38f9d80e9e17942fef5aefda3735d276c7b2e42093b34c66335ada29181"
+      "sha256": "abfcaf366ffa7497a0bde5d5cf8b7332e6cb7e0d76f9a8a1e7770e4eee3bc0ff"
     },
     {
       "path": "services/admin-api.js",

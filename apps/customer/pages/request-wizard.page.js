@@ -671,6 +671,11 @@ Object.assign(screens, {
         <p class="hint">هنبلغك أول ما فني مناسب يقبل طلبك.</p>
         ${c || it ? `<p class="hint">${[c && c.name, it && it.name, !w.unknown && pr && pr.name].filter(Boolean).map(_esc).join(' ← ')}</p>` : ''}
         <p class="hint">${{received:'تم الاستلام',searching:'جارٍ البحث عن مقدم خدمة',sent:'تم إرسال الطلب لمقدم الخدمة'}[r ? r.status : 'received'] || ''}</p>
+        <ol class="done-next" aria-label="اللي هيحصل دلوقتي">
+          <li class="ok"><i aria-hidden="true">✓</i><span>استلمنا طلبك</span></li>
+          <li class="now"><i aria-hidden="true"><em></em><em></em><em></em></i><span>بندوّر لك على أقرب فني متاح</span></li>
+          <li><i aria-hidden="true">3</i><span>الفني يكلّمك ويأكد الموعد والسعر</span></li>
+        </ol>
         <button type="button" class="cta" data-act="wzTrack">${safeIc('clock')} متابعة الطلب</button>
         <button type="button" class="cta ghost" data-go="home">${safeIc('home')} الرئيسية</button>
       </div>`;

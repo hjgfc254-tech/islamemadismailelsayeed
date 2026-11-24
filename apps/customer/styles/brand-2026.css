@@ -358,6 +358,31 @@ html.is-scrolling body>.help-fab{opacity:.25;transform:scale(.82)}
 .hs-say-x{position:absolute;top:6px;inset-inline-end:8px;width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:rgba(255,255,255,.7);font-size:20px;line-height:1;cursor:pointer}
 .hs-say-x:hover{background:rgba(255,255,255,.1);color:#fff}
 
+/* wizard «التالي / رجوع» bar: sticky offsets count from #view's padding edge (which already clears the tab bar), so the
+   old offset left it floating ~100px above the tab bar; now it sits right on top of it */
+@media (max-width:899px){#view .wz-nav{bottom:-20px;margin-bottom:0}}
+
+/* request sent: a navy brand card, and «what happens now» with a live "searching" step */
+#view .done{position:relative;overflow:hidden;border:0;border-radius:24px;color:#fff;padding:26px 18px 20px;
+  background:var(--hs-navy) url(../../../assets/brand/bg-navy.svg) center/cover no-repeat;box-shadow:0 16px 34px rgba(11,31,58,.28)}
+#view .done h3{color:#fff;font-family:var(--font-display);font-size:24px;font-weight:800}
+#view .done .hint,#view .done .done-no{color:rgba(255,255,255,.82)}
+#view .done .done-no b{color:#fff;letter-spacing:.04em}
+#view .done .success-check circle{stroke:#fff}
+#view .done .success-check path{stroke:#fff}
+#view .done .success-check{background:var(--hs-red);border-radius:50%;box-shadow:0 0 0 8px rgba(225,37,27,.25)}
+#view .done .cta{background:var(--hs-red);border-color:var(--hs-red);color:#fff}
+#view .done .cta.ghost{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.3);color:#fff}
+#view .done-next{list-style:none;margin:16px 0 14px;padding:14px;display:grid;gap:12px;text-align:start;border-radius:18px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12)}
+#view .done-next li{display:flex;align-items:center;gap:12px;font-size:14px;font-weight:600;color:rgba(255,255,255,.7)}
+#view .done-next li i{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;font-style:normal;font-weight:800;font-size:13px;background:rgba(255,255,255,.12);color:#fff}
+#view .done-next li.ok{color:#fff}#view .done-next li.ok i{background:#1FA971}
+#view .done-next li.now{color:#fff}#view .done-next li.now i{background:var(--hs-red);display:flex;gap:3px;justify-content:center}
+#view .done-next li.now em{width:4px;height:4px;border-radius:50%;background:#fff;animation:hsDot 1.2s infinite ease-in-out}
+#view .done-next li.now em:nth-child(2){animation-delay:.15s}#view .done-next li.now em:nth-child(3){animation-delay:.3s}
+@keyframes hsDot{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+@media (prefers-reduced-motion:reduce){#view .done-next li.now em{animation:none;opacity:1}}
+
 /* reveal: blocks below the fold rise in as they enter; card grids of a new screen arrive in a short cascade */
 @media (prefers-reduced-motion:no-preference){
   #view .rv{opacity:0;transform:translateY(24px);transition:opacity .6s cubic-bezier(.2,.7,.2,1),transform .6s cubic-bezier(.2,.7,.2,1)}

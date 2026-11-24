@@ -3574,7 +3574,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "9d9087743ab2c460882ffe9c4ead3686814ac45d8afc83c48073c7f8cfb90ccf",
+      "sha256": "0e7125c9ab74b88b0d2d34f493dea1063d2bec058f36805a1c53c8fcb85057f5",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3613,7 +3613,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 68592
+      "bytes": 69046
     },
     {
       "path": "apps/customer/pages/search.page.js",
@@ -3787,8 +3787,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "fb38cdc7587cab2712845f1334179a48fb53b6d0bb856691fc8077da0588b712",
-      "bytes": 32932
+      "sha256": "2df30db95a05f3cb605c191019fd8d807291235687397509e08439ed27a7862f",
+      "bytes": 35336
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -12366,7 +12366,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "4a849097694ee9e47e28f62de4f9dd1dd711db7ebd207ae2bcb507c70357d8a3",
+      "sha256": "b39d4bbd68a998f58b6c9dfcac300bcfb48b7182866b04b23e1c3853977c4a3c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12414,7 +12414,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "e46bb38f9d80e9e17942fef5aefda3735d276c7b2e42093b34c66335ada29181",
+      "sha256": "abfcaf366ffa7497a0bde5d5cf8b7332e6cb7e0d76f9a8a1e7770e4eee3bc0ff",
       "bytes": 195
     },
     {
