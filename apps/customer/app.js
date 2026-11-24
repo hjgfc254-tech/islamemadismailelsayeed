@@ -669,9 +669,10 @@ function renderCommonProblems(){
       .map(p => ({ p, it: CAT.item(p.item), c: CAT.category(p.cat) })).filter(x => x.it && x.c && x.it.active && x.c.active);
   } catch {}
   if (!rows.length) return '';
-  return `<h2 class="sec-title">${ic('bulb')}مشكلات شائعة</h2>
-    <div class="cp-grid">${rows.map(({p,it,c}) => `<button class="cp glass neon" data-wz-hit="problem|${esc(p.id)}">
-      ${icp(icItem(it, p.cat),'dev')}<span class="tx">${esc(p.name)}<small>${esc(it.name)}</small></span></button>`).join('')}</div>`;
+  /* 2026-11-25 (owner): a compact swipe row right under the search — one tap starts the request on that problem */
+  const label = (p, it) => (String(p.name).includes(it.name) ? p.name : `${it.name} ${p.name}`);
+  return `<section class="cp-row" aria-labelledby="cpT"><h2 class="cp-h" id="cpT">مشكلات شائعة</h2>
+    <div class="cp-scroll" role="list">${rows.map(({p,it}) => `<button type="button" class="cp-chip" role="listitem" data-wz-hit="problem|${esc(p.id)}">${icp(icItem(it, p.cat),'dev')}<span>${esc(label(p, it))}</span></button>`).join('')}</div></section>`;
 }
 
 /* العناوين المحفوظة — من نفس طبقة العناوين (MP.addressesFor)؛ تُدار من شاشة addresses */

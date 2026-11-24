@@ -6,10 +6,11 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { boot, ROOT } = require('../helpers/customer-app-harness.js');
 
-test('Home shows the three trust points under the hero (claims the product actually implements)', () => {
+test('Home shows the three trust points in their own «ليه تختار هنصلحلك؟» card (claims the product actually implements)', () => {
   const html = boot({}).html();
   assert.match(html, /<ul class="trust-strip" aria-label="ليه هنصلحلك">/);
-  for (const t of ['سعر واضح قبل الحجز', 'فنيين بتراجعهم الإدارة', 'تابع طلبك خطوة بخطوة']) assert.match(html, new RegExp(t));
+  assert.match(html, /<section class="why-card" aria-labelledby="whyT"><h2 id="whyT">ليه تختار هنصلحلك؟<\/h2>/);
+  for (const t of ['سعر واضح', 'بتراجعهم الإدارة قبل التفعيل', 'متابعة لحظة بلحظة']) assert.match(html, new RegExp(t));
 });
 
 test('Orders and tracking show placeholders (not «no orders» / «not found») while the first server sync runs', () => {

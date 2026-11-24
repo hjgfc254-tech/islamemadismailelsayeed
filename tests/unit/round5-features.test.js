@@ -197,8 +197,8 @@ test('round 6: home footer links, «امتى محتاج الفني؟» pre-fills
   const { boot: bootCustomer } = require('../helpers/customer-app-harness.js');
   const app = bootCustomer({});
   const html = app.html();
-  assert.match(html, /data-support="policy-privacy">سياسة الخصوصية/); assert.match(html, /data-support="policy-terms"/);
-  assert.match(html, /data-go="support">مركز المساعدة/); assert.match(html, /class="when-pick"/);
+  assert.match(html, /data-support="policy-privacy">الخصوصية/); assert.match(html, /data-support="policy-cancel">الإلغاء والاسترداد/); assert.match(html, /data-support="policy-terms"/);
+  assert.match(html, /data-go="support">المساعدة/); assert.match(html, /class="when-pick"/);
   app.run("sessionStorage.setItem('hs_when_pref','tomorrow'); startRequest('electric')");
   assert.equal(app.run('WZ.schedule.flexible'), false);
   assert.match(app.run('WZ.schedule.date'), /^\d{4}-\d{2}-\d{2}$/);

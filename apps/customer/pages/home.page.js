@@ -50,13 +50,9 @@
     <label class="field">${ic('search')}<input id="q" type="search" aria-label="ابحث عن فني أو خدمة" placeholder="اكتب مشكلتك… مثلاً: التكييف مش بيبرّد" enterkeyhint="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="home-sg"><button type="button" class="cam" data-act="cam" aria-label="تصوير المشكلة لإرفاقها بطلبك">${ic('camera')}</button></label>
   </div>
   <div id="home-sg" class="hs-suggest home-sg" role="listbox" hidden></div>
+  ${renderCommonProblems()}
   ${draftHtml}
   ${activeHtml}
-  <ul class="trust-strip" aria-label="ليه هنصلحلك">
-    <li>${bi('verified','shield')}<span>فنيين بتراجعهم الإدارة</span></li>
-    <li>${bi('price','wallet')}<span>سعر واضح قبل الحجز</span></li>
-    <li>${bi('track','clock')}<span>تابع طلبك خطوة بخطوة</span></li>
-  </ul>
   ${root.HSSmartHelp?root.HSSmartHelp.homeCard()+root.HSSmartHelp.myHome():''}
   ${ctx.addressBar||''}
   ${ctx.care||''}
@@ -64,7 +60,13 @@
     <div class="sec-head"><h2 id="tilesT">أشهر الخدمات</h2><button type="button" class="more" data-go="sections">عرض الكل <span aria-hidden="true">←</span></button></div>
     ${String(tiles()).replace(/<\/div>\s*$/,`<button type="button" class="tile all-tile" data-go="sections" aria-label="كل الأقسام"><span class="tart brand" aria-hidden="true">${bi('all','grid')}</span><span class="tl">كل الأقسام</span></button></div>`)}
   </section>
-  ${renderCommonProblems()}
+  <section class="why-card" aria-labelledby="whyT"><h2 id="whyT">ليه تختار هنصلحلك؟</h2>
+    <ul class="trust-strip" aria-label="ليه هنصلحلك">
+      <li>${bi('verified','shield')}<span><b>فنيين موثوقين</b><small>بتراجعهم الإدارة قبل التفعيل</small></span></li>
+      <li>${bi('price','wallet')}<span><b>سعر واضح</b><small>تعرفه قبل الحجز ومايتغيّرش إلا بموافقتك</small></span></li>
+      <li>${bi('track','clock')}<span><b>متابعة لحظة بلحظة</b><small>من قبول الطلب لحد ما الشغل يخلص</small></span></li>
+    </ul>
+  </section>
   <button type="button" class="gov-banner" data-go="sections">
     <span class="gb-pin" aria-hidden="true">${ic('pin')}</span>
     <span><b>خدماتك في محافظتك</b><small>فنيين في منطقتك — اختار القسم وإحنا نوصّلك بالأقرب</small></span>
@@ -86,15 +88,14 @@
   <footer class="site-foot" aria-label="عن هنصلحلك">
     <div class="foot-brand">
       <span class="hs-logo"><img src="../../assets/brand/hsl-mark.svg" alt="" width="38" height="38" loading="lazy" decoding="async"><span class="w"><b>هنصلحلك</b><small>HANSALEHLAK</small></span></span>
-      <p>منصة واحدة، خدمات أسهل.</p>
+      <p>كل خدمة تصليح وصيانة في مكان واحد.</p>
     </div>
-    <div class="foot-cols">
-      <nav aria-label="التطبيق"><b>التطبيق</b><button type="button" data-go="sections">الخدمات</button><button type="button" data-go="orders">طلباتي</button><button type="button" data-go="account">حسابي</button></nav>
-      <nav aria-label="المساعدة"><b>المساعدة</b><button type="button" data-go="support">مركز المساعدة</button><button type="button" data-support="faq">الأسئلة الشائعة</button><button type="button" data-support="complaint">ابعت شكوى</button></nav>
-      <nav aria-label="السياسات"><b>السياسات</b><button type="button" data-support="policy-privacy">سياسة الخصوصية</button><button type="button" data-support="policy-terms">شروط الاستخدام</button><button type="button" data-support="policy-cancel">سياسة الإلغاء</button></nav>
-      <nav aria-label="الفنيين"><b>للفنيين</b><a href="../provider/index.html#/join">انضم كمقدم خدمة</a><a href="../provider/index.html">دخول الفنيين</a></nav>
-    </div>
-    <div class="foot-bottom"><small class="foot-copy">© ${new Date().getFullYear()} هنصلحلك — كل الحقوق محفوظة</small>${ctx.demo === false ? '' : '<small>نسخة عرض تجريبية — البيانات محلية على هذا الجهاز.</small>'}</div>
+    <nav class="foot-links" aria-label="روابط هنصلحلك">
+      <button type="button" data-go="sections">الخدمات</button><button type="button" data-go="orders">طلباتي</button><button type="button" data-go="support">المساعدة</button><button type="button" data-support="faq">الأسئلة الشائعة</button><button type="button" data-support="complaint">شكوى</button>
+      <button type="button" data-support="policy-privacy">الخصوصية</button><button type="button" data-support="policy-terms">الشروط</button><button type="button" data-support="policy-cancel">الإلغاء والاسترداد</button>
+      <a href="../provider/index.html#/join">انضم كفني</a><a href="../provider/index.html">دخول الفنيين</a>
+    </nav>
+    <div class="foot-bottom"><small class="foot-copy">© ${new Date().getFullYear()} هنصلحلك — جميع الحقوق محفوظة</small>${ctx.demo === false ? '' : '<small>نسخة عرض تجريبية — البيانات محلية على هذا الجهاز.</small>'}</div>
   </footer>
   </div>`;
   };
