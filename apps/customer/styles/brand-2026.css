@@ -462,6 +462,17 @@ html.is-scrolling body>.help-fab{opacity:.25;transform:scale(.82)}
 #view .wz-voice.is-rec{background:var(--hs-red);color:#fff;animation:hsPulse 1.6s infinite}
 #view .wa-share{display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;color:#128C4A;border-color:#BFE8D0}
 
+/* policies (privacy / terms / cancellation): the full text from legal/*.html, readable on white */
+#sheet .policy-text{margin-top:10px;padding:16px;border:1px solid var(--hs-line);border-radius:18px;background:#fff;color:var(--text-primary);font-size:14.5px;line-height:1.85}
+#sheet .policy-text h2{margin:18px 0 6px;font-family:var(--font-display);font-size:16.5px;font-weight:800;color:var(--hs-navy)}
+#sheet .policy-text h2:first-child{margin-top:0}
+#sheet .policy-text p,#sheet .policy-text li{color:var(--text-primary)}
+#sheet .policy-text ul{padding-inline-start:20px;margin:6px 0}
+#sheet .policy-text li{margin:4px 0}
+#sheet .policy-text .meta,#sheet .policy-loading{color:var(--text-muted);font-size:13px}
+#sheet .policy-text .note{padding:10px 12px;border-radius:12px;background:var(--hs-red-soft);border:1px solid #F7C9C5;color:var(--text-primary)}
+#sheet .policy-text a{color:var(--hs-red-ink);font-weight:700}
+
 /* location (address step): one card on top — «استخدم موقعي الحالي» / «اختار على الخريطة» */
 #view .geo-card{padding:14px;border-radius:20px;color:#fff;background:var(--hs-navy) url(../../../assets/brand/bg-navy.svg) center/cover no-repeat;box-shadow:0 12px 26px rgba(11,31,58,.2)}
 #view .geo-card-h{display:flex;align-items:center;gap:12px}

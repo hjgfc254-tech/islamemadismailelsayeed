@@ -538,6 +538,7 @@ hansalhlak/
 │   ├── package-lock.json
 │   └── package.json
 ├── legal/
+│   ├── cancellation.html
 │   ├── legal.css
 │   ├── privacy.html
 │   └── terms.html
@@ -721,6 +722,7 @@ hansalhlak/
 │       ├── offers-clock.test.js
 │       ├── order-lifecycle.test.js
 │       ├── orders-management.test.js
+│       ├── policies.test.js
 │       ├── provider-app-a11y.test.js
 │       ├── provider-app-actions.test.js
 │       ├── provider-app-register.test.js

@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 681,
+  "file_count": 683,
   "files": [
     {
       "path": "_redirects",
@@ -727,8 +727,8 @@
       "path": "apps/customer/pages/support.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 21271,
-      "sha256": "3ca8f6a52a653aed44ca773818d2a16b143cc8ccb5b5c5420995cb3c8c77c279"
+      "bytes": 22862,
+      "sha256": "23fca09541c3c5ab1083ef8de7958de050ac91fcf8acb17027a3abf1b6420099"
     },
     {
       "path": "apps/customer/pages/trust-features.js",
@@ -748,8 +748,8 @@
       "path": "apps/customer/styles/brand-2026.css",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 50755,
-      "sha256": "a0faeccec5d6a6ce7e270b5ff184f3f0f45d28ef89ff8a90bef78f580d5d55e7"
+      "bytes": 51679,
+      "sha256": "3610f6c3f75b9da52925f1a35d14cb1f7852f723cdcbe61f7c4c39dcc6114a44"
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -2358,8 +2358,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 300642,
-      "sha256": "12597156a067f4defd31d1be5d0fe1d374fe2f18faeb4bda5ebe164493d83cfc"
+      "bytes": 301097,
+      "sha256": "4ab06e9fe45e6df9579b4585e713ec7d3495ddfa3a67532405c96023b83f2c3c"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2372,8 +2372,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 169851,
-      "sha256": "4e8039718de93286bacf2d9442428a04b4f5547a34123467e54b6451dde579bf"
+      "bytes": 170265,
+      "sha256": "2b30c82c2651251f27cdc9c834da99678a4824e54d9701963076186f0771531a"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2806,8 +2806,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 32076,
-      "sha256": "e214f538ff7bbcb65a08b6679be020a517f05ef3aa87d57666e87e4debaa245f"
+      "bytes": 32147,
+      "sha256": "2e3eb2631d89c50e6c93293e9887b43313b1c6d84f470a93f967915a9bef8993"
     },
     {
       "path": "docs/README.md",
@@ -3237,25 +3237,32 @@
       "sha256": "e4c25031d35604e1f6c0d66d810ba10629b9e4ae7c8093468629eafee2fef17b"
     },
     {
+      "path": "legal/cancellation.html",
+      "area": "legal",
+      "status": "NEEDS_REVIEW",
+      "bytes": 4850,
+      "sha256": "975830b4489273beb8c7d6ca8335f816a4f9359f691722e986275eaf4469d5ef"
+    },
+    {
       "path": "legal/legal.css",
       "area": "legal",
       "status": "NEEDS_REVIEW",
-      "bytes": 939,
-      "sha256": "7b09cbac36d7b7590be5a2bc847bcd08c8be8c427c4c1a2a5951edc14fab143f"
+      "bytes": 2005,
+      "sha256": "b6d4c6bb48e48dea3f3d149e8ae8d6501bca181609e160589193e085eb935c23"
     },
     {
       "path": "legal/privacy.html",
       "area": "legal",
       "status": "NEEDS_REVIEW",
-      "bytes": 9519,
-      "sha256": "6655cd72ac8aee50649141fdb9306630a1747092b78cb4e6c8e2be47ff5f25f8"
+      "bytes": 9894,
+      "sha256": "c88f3b2c65f7d9f4397700a997db29e1f156a62b6d37936d036afd93d17262ee"
     },
     {
       "path": "legal/terms.html",
       "area": "legal",
       "status": "NEEDS_REVIEW",
-      "bytes": 4133,
-      "sha256": "8139d46612b0f9f2282df6315ccafe014879674ba12e8b697e7b4e9adac2913b"
+      "bytes": 4449,
+      "sha256": "314e37b22a7b03219ef0bff4cdccfb27ba042e545a533664f7a1a2a9f21d1b95"
     },
     {
       "path": "manifest.json",
@@ -3366,15 +3373,15 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 11892,
-      "sha256": "421c8da7dbef8694c906b0478b18c58914ed1144e4b40605d1ffcc989832a1d3"
+      "bytes": 11988,
+      "sha256": "708cd037cdfa3789f105ffd236a6d656acc0bb2a7c5d2392085d4e82e39de34b"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "b86395c1cad8de07bfede505a0805337940cec8bc5555bdb3d5f1671cbb207eb"
+      "sha256": "f5f05b4b309fe55ceb595ceee90dee1340e0826d791c5bf03292979ef2c92f10"
     },
     {
       "path": "services/admin-api.js",
@@ -4425,6 +4432,13 @@
       "status": "TEST",
       "bytes": 3201,
       "sha256": "4250f649705b1f8439fb97ee4c81670556d8722ce1337f201e40bb0f700813a2"
+    },
+    {
+      "path": "tests/unit/policies.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2541,
+      "sha256": "66254db3ecdcce4ae197feb552c4588e6f55e9a71307d0929f5377409c4ae7f2"
     },
     {
       "path": "tests/unit/provider-app-a11y.test.js",

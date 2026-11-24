@@ -208,21 +208,39 @@ const Support = (() => {
 
   /* ═════════ السياسات ═════════ */
   const POLICIES = {
-    cancel: {title:'سياسة الإلغاء', body: `يمكنك إلغاء الطلب مجانًا قبل بدء تنفيذ الخدمة. بعد بدء التنفيذ، يتم التعامل مع طلب الإلغاء بالتنسيق مع مقدم الخدمة وفريق الدعم. قد تُطبق رسوم معاينة إن تمت الزيارة. في حال عدم الاتفاق على السعر بعد المعاينة، يمكنك رفض العرض دون أي التزام.`},
+    cancel: {title:'سياسة الإلغاء والاسترجاع', body: `الإلغاء ببلاش لحد ما الفني يتحرك لك. بعد ما يتحرك ممكن يكون فيه رسوم انتقال، وبتظهرلك قبل ما تأكد الإلغاء. ولو رفضت السعر بعد المعاينة ممكن يتطبّق رسم معاينة بس.`},
     privacy: {title:'سياسة الخصوصية', body: (globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase') ? `بياناتك (الاسم، رقم التليفون، العناوين، الطلبات) محفوظة على خوادم Google Firebase المؤمَّنة. الفني اللي بيقبل طلبك بس هو اللي بيشوف عنوانك ورقمك، وده بعد القبول. فريق إدارة هنصلحلك بيشوف البيانات اللازمة لتشغيل الخدمة وحل الشكاوى. الصور اللي بترفقها بتفضل على جهازك. تقدر تحذف حسابك في أي وقت من صفحة «حسابي».` : `في الوضع التجريبي، تُحفظ جميع بياناتك (الاسم، الهاتف، العنوان، الطلبات) على جهازك فقط باستخدام LocalStorage وIndexedDB. لا تُرسل البيانات إلى أي خادم خارجي. عند إتمام التكامل مع Backend، سيتم تحديث هذه السياسة لتوضح كيفية حماية البيانات وتشفيرها.`},
     terms: {title:'شروط الاستخدام', body: `هنصلحلك منصة وسيطة تربط العملاء بمقدمي الخدمات. المنصة لا تقدم الخدمات مباشرة، ولا تتحمل مسؤولية جودة التنفيذ. يتم التحقق من مقدمي الخدمة قدر الإمكان، لكن التعاقد النهائي للخدمة بينك وبين مقدم الخدمة. أي نزاع يُرفع للدعم لتسهيل الحل. الأسعار المعروضة تقديرية، والسعر النهائي يُحدَّد بعد المعاينة.`}
   };
 
+  /* The full policy text lives in legal/*.html (one source for the website and the app). The sheet opens on the
+     short summary, then replaces it with the page's full text (headings, lists) as soon as it is fetched; offline,
+     the summary stays and «افتح الصفحة» links the page. */
+  const POLICY_PAGE = { privacy: 'privacy.html', terms: 'terms.html', cancel: 'cancellation.html' };
+  const policyHtml = (raw) => {
+    try {
+      const d = new DOMParser().parseFromString(raw, 'text/html'), m = d.querySelector('main'); if (!m) return '';
+      m.querySelectorAll('script,style,iframe,object,embed,form,img,.links').forEach((n) => n.remove());
+      m.querySelectorAll('*').forEach((n) => { [...n.attributes].forEach((a) => { if (/^on/i.test(a.name) || (a.name === 'href' && /^\s*javascript:/i.test(a.value))) n.removeAttribute(a.name); }); });
+      const h1 = m.querySelector('h1'); if (h1) h1.remove();   // the sheet already has the title
+      m.querySelectorAll('a[href]').forEach((a) => { const f = a.getAttribute('href'); if (/^[a-z]+\.html$/.test(f)) { a.setAttribute('href', '../../legal/' + f); a.setAttribute('target', '_blank'); a.setAttribute('rel', 'noopener'); } });
+      return m.innerHTML;
+    } catch (e) { return ''; }
+  };
   const openPolicy = (kind) => {
     const p = POLICIES[kind];
     if (!p) return;
     if (typeof sheet !== 'function') return;
+    const page = POLICY_PAGE[kind];
     sheet(`<h4>${safeIc('book')} ${_esc(p.title)}</h4>
-      <div class="card2 glass neon" style="padding:14px">
-        <div style="font-size:13.5px;line-height:1.7;color:#eadfe7">${_esc(p.body)}</div>
-      </div>
-      ${kind === 'privacy' || kind === 'terms' ? `<p style="margin:10px 0 0"><a class="cta ghost" href="../../legal/${kind}.html" target="_blank" rel="noopener">اقرا النص الكامل</a></p>` : ''}
-      ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'':`<div class="demo-banner">${safeIc('info')}<span>نص تجريبي — عند التشغيل الفعلي، ستحتاج لصياغة قانونية.</span></div>`}`);
+      <div class="policy-text" data-policy-body>${page ? '' : `<p>${_esc(p.body)}</p>`}${page ? `<p>${_esc(p.body)}</p><p class="policy-loading" aria-live="polite">بنحمّل النص الكامل…</p>` : ''}</div>
+      ${page ? `<p style="margin:10px 0 0"><a class="cta ghost" href="../../legal/${page}" target="_blank" rel="noopener">افتح الصفحة في نافذة</a></p>` : ''}`);
+    if (!page || typeof fetch !== 'function') return;
+    fetch('../../legal/' + page, { cache: 'no-cache' }).then((r) => (r.ok ? r.text() : '')).then((raw) => {
+      const html = raw && policyHtml(raw), box = document.querySelector('#sheet [data-policy-body]');
+      if (box && html) box.innerHTML = html;
+      else if (box) { const l = box.querySelector('.policy-loading'); if (l) l.remove(); }
+    }).catch(() => { const l = document.querySelector('#sheet .policy-loading'); if (l) l.textContent = 'مش قادرين نحمّل النص الكامل دلوقتي — افتح الصفحة من الزرار اللي تحت.'; });
   };
 
   /* ═════════ الأحداث ═════════ */
