@@ -26,7 +26,7 @@
   const iso = (ms) => new Date(ms).toISOString();
   const ms = (v) => { const t = Date.parse(v); return Number.isFinite(t) ? t : 0; };
 
-  const ROLE_TEAMS = Object.freeze({ tech: ['tech'], ops: ['ops'], support: ['ops'], moderator: ['ops'], finance: ['finance'], content: ['content'], admin: ['ops', 'finance', 'content'] });
+  const ROLE_TEAMS = Object.freeze({ tech: ['tech'], ops: ['ops'], support: ['ops'], moderator: ['ops'], finance: ['finance'], content: ['content'], admin: ['ops', 'finance', 'content'], callcenter: ['ops'] });
   /** Teams an admin follows: preset roles by name, custom roles from the permission keys they hold. The owner follows everyone. */
   function teamsFor(perms, role) {
     if (role === 'owner') return ['ops', 'finance', 'content', 'tech', 'owner'];

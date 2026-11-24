@@ -178,7 +178,7 @@ async function syncPlan(ld, actor) {
     await Promise.all([ld.where('quotes', [['reqId', 'in', reqs.map(r => r.id)]]), ld.docsIn('customers', reqs.filter(r => accepted.has(r.id)).map(r => r.customerId)),
       ld.where('transactions', [['providerId', '==', actor.id]], { orderBy: ['at', 'desc'], limit: 100 }),
       ld.where('reviews', [['providerId', '==', actor.id]], { orderBy: ['at', 'desc'], limit: 50 }), inbox(), filed()]);
-  } else if (actor.role === 'admin' && actor.adminRole === 'tech') {
+  } else if (actor.role === 'admin' && (actor.adminRole === 'tech' || actor.adminRole === 'callcenter')) {
     /* cost + privacy: scope.js gives the tech role none of the marketplace records — do not read them at all */
   } else if (actor.role === 'admin' && actor.adminRole === 'content') {
     /* no personal data for content (scope.js): requests as anonymous facts, public providers, reviews — no customers,
@@ -215,13 +215,14 @@ const DELTA_LIMIT = 300;
 const DELTA_KEYS = Object.freeze({
   full: ['serviceRequests', 'assignments', 'quotes', 'customers', 'providers', 'complaints', 'transactions', 'reviews'],
   content: ['serviceRequests', 'providers', 'reviews'],
-  tech: []
+  tech: [],
+  callcenter: []          // one caller at a time through /agent/lookup (agent-gateway.js), never a sync of the marketplace
 });
 async function deltaPlan(ld, actor, since) {
   await ld.loadSystem();
   const keys = DELTA_KEYS[actor.adminRole] || DELTA_KEYS.full;
   const lens = await Promise.all(keys.map(k => ld.where(k, [['_u', '>', since]], { orderBy: ['_u', 'asc'], limit: DELTA_LIMIT }).then(r => r.length)));
-  if (actor.adminRole !== 'tech') lens.push((await ld.where('notifications', [['to', '==', 'admin'], ['_u', '>', since]], { orderBy: ['_u', 'asc'], limit: DELTA_LIMIT })).length);
+  if (actor.adminRole !== 'tech' && actor.adminRole !== 'callcenter') lens.push((await ld.where('notifications', [['to', '==', 'admin'], ['_u', '>', since]], { orderBy: ['_u', 'asc'], limit: DELTA_LIMIT })).length);
   return { overflow: lens.some(n => n >= DELTA_LIMIT) };
 }
 

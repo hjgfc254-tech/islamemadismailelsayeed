@@ -175,11 +175,12 @@
     bellTimer = root.setInterval(() => { if (!root.document || root.document.visibilityState !== 'hidden') refreshBell(); }, 120000);   // cost: each check loads the open alerts — every 2 minutes, paused while the tab is hidden
   }
 
-  /* role home: the tech team opens on its own centre (it has no access to the day view's data) */
+  /* role home: the tech team opens on its own centre, the call centre on #/callcenter (no access to the day view's data) */
   function roleHome() {
     try {
       const R = root.HSAdminRbac, h = root.location && root.location.hash;
-      if (R && R.state && R.state.actor === 'tech' && (!h || h === '#' || h === '#/' || h === '#/dashboard')) root.location.hash = '#/tech';
+      const home = R && R.state && { tech: '#/tech', callcenter: '#/callcenter' }[R.state.actor];
+      if (home && (!h || h === '#' || h === '#/' || h === '#/dashboard')) root.location.hash = home;
     } catch (e) { /* never block the shell */ }
   }
 

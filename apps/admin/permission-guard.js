@@ -19,7 +19,8 @@
     workforce: 'workforce', 'employee-details': 'workforce', departments: 'departments', roles: 'roles', permissions: 'permissions',
     /* teams release (2026-11-22): money pages need the finance module, the rest follow their team */
     finance: 'finance', commissions: 'finance', settlements: 'finance', reports: 'finance', quotes: 'orders', insights: 'orders',
-    tickets: 'tickets', alerts: 'alerts', tech: 'tech', 'content-studio': 'marketing'
+    tickets: 'tickets', alerts: 'alerts', tech: 'tech', 'content-studio': 'marketing',
+    callcenter: 'callcenter'   /* call centre (2026-11-25): owner / admin / callcenter role */
   });
   const rbac = () => root.HSAdminRbac || null;
 
@@ -72,9 +73,12 @@
     'GET /admin/providers': 'providers.view', 'GET /admin/requests/:id/candidates': 'orders.view'
   });
   const TECH_API = Object.freeze(['GET /admin/summary', 'GET /notifications', 'POST /notifications/read', 'GET /admin/controls', 'GET /admin/support-contacts']);
+  /* call centre: works through /agent/* (functions/src/agent-gateway.js, one caller at a time) — the marketplace routes stay closed */
+  const CALLCENTER_API = Object.freeze(['GET /notifications', 'POST /notifications/read', 'GET /admin/controls', 'GET /admin/support-contacts']);
   function apiDenied(actor, method, pattern) {
     if (!actor || actor.role !== 'admin' || !actor.adminRole) return '';
     const sig = String(method).toUpperCase() + ' ' + pattern;
+    if (actor.adminRole === 'callcenter') return CALLCENTER_API.includes(sig) ? '' : 'دور الكول سنتر بيشتغل من صفحة «الكول سنتر» بس (رقم المتصل الأول)';
     if (actor.adminRole === 'tech') return TECH_API.includes(sig) ? '' : 'دور التقنية مالوش وصول لبيانات العملاء ومقدمي الخدمة والطلبات والماليات';
     const need = API_NEEDS[sig]; if (!need) return '';
     const emp = employeeOf(actor); if (!emp) return '';
@@ -82,7 +86,7 @@
     return can(emp, m, a) ? '' : 'ده خارج صلاحيات دورك';
   }
 
-  const api = Object.freeze({ ROUTE_MODULE, OWNER_ONLY, API_NEEDS, TECH_API, apiDenied, employeeOf, riskDenied, permissionsOf, can, canView, isGuarded: (id) => !!ROUTE_MODULE[id] });
+  const api = Object.freeze({ ROUTE_MODULE, OWNER_ONLY, API_NEEDS, TECH_API, CALLCENTER_API, apiDenied, employeeOf, riskDenied, permissionsOf, can, canView, isGuarded: (id) => !!ROUTE_MODULE[id] });
   root.HSAdminPermissionGuard = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

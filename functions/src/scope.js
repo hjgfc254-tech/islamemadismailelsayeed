@@ -40,7 +40,9 @@ const maskPhone = (p) => { const s = String(p || ''); return s.length >= 7 ? s.s
      finance  → money rows kept; phones masked, addresses / locations / chats removed.
    Other roles (owner, admin, ops, support, moderator, custom) keep the existing behaviour below. */
 const REQ_FACTS = ['id', 'no', 'cat', 'sub', 'gov', 'area', 'status', 'createdAt', 'pricing', 'bidding', 'urgent', 'free'];
-const ROLE_VIEW = Object.freeze({ tech: 'none', content: 'nopii', finance: 'masked' });
+/* callcenter (2026-11-25) → 'none' like tech: the sync carries no marketplace records at all; the call-centre employee reaches ONE
+   caller at a time through the phone lookup of functions/src/agent-gateway.js (caller's own requests only, no other customers). */
+const ROLE_VIEW = Object.freeze({ tech: 'none', content: 'nopii', finance: 'masked', callcenter: 'none' });
 function maskRequest(r) { return { ...r, phone: maskPhone(r.phone), addr: r.addr ? '•••' : r.addr, geo: null, liveGeo: null, chat: [], name: r.name ? '•••' : r.name }; }
 function roleView(db, mode) {
   if (mode === 'none') { const out = base(db); out.reviews = []; out.meta = {}; return out; }

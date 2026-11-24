@@ -13,9 +13,13 @@
   const MODULES = { orders: 'الطلبات', customers: 'العملاء', providers: 'مقدمو الخدمة', services: 'الخدمات', categories: 'التصنيفات', complaints: 'الشكاوى', reviews: 'التقييمات',
     notifications: 'الإشعارات', workforce: 'فريق العمل', departments: 'الإدارات', roles: 'الأدوار', permissions: 'الصلاحيات',
     /* teams release (2026-11-22): money, offers/content, the privacy line, the tech centre, alerts and internal tickets */
-    finance: 'المالية', marketing: 'العروض والمحتوى', pii: 'بيانات العملاء الشخصية', tech: 'التقنية', alerts: 'التنبيهات', tickets: 'البلاغات' };
+    finance: 'المالية', marketing: 'العروض والمحتوى', pii: 'بيانات العملاء الشخصية', tech: 'التقنية', alerts: 'التنبيهات', tickets: 'البلاغات',
+    /* call-centre release (2026-11-25): phone lookup, requests on behalf of a caller, call logs, hand-offs (functions/src/agent-gateway.js) */
+    callcenter: 'خدمة العملاء (كول سنتر)' };
   /* modules added after the first catalogue: stored catalogues (production) get them through mergePresets() */
-  const NEW_MODULES = ['finance', 'marketing', 'pii', 'tech', 'alerts', 'tickets'];
+  const NEW_MODULES = ['finance', 'marketing', 'pii', 'tech', 'alerts', 'tickets'];   // catalogue v2
+  const V3_MODULES = ['callcenter'];                                                  // catalogue v3
+  const CATALOG_V = 3;
   const ACTIONS = { view: 'عرض', create: 'إضافة', edit: 'تعديل', decide: 'قرار/تغيير حالة' };
   const DEPARTMENTS = { ops: 'العمليات', support: 'الدعم', finance: 'المالية', content: 'المحتوى', tech: 'التقنية', exec: 'الإدارة العليا' };
   const STATUS_LABEL = { active: 'مفعّل', invited: 'دعوة معلّقة', disabled: 'معطّل' };
@@ -40,7 +44,7 @@
     return [
       { id: 'owner', name: 'المالك', description: 'صلاحيات كاملة (دور نظام محمي).', inherits: null, system: true, permissions: ALL_KEYS.slice() },
       { id: 'admin', name: 'مدير', description: 'إدارة التشغيل والمحتوى والمالية مع عرض الفريق.', inherits: null, system: false,
-        permissions: sortKeys(all(ops, FOUR).concat(all(['workforce'], ['view', 'create', 'edit']), [key('departments', 'view'), key('departments', 'edit')], v('roles', 'permissions', 'pii'), all(['finance', 'marketing', 'alerts', 'tickets'], FOUR))) },
+        permissions: sortKeys(all(ops, FOUR).concat(all(['workforce'], ['view', 'create', 'edit']), [key('departments', 'view'), key('departments', 'edit')], v('roles', 'permissions', 'pii'), all(['finance', 'marketing', 'alerts', 'tickets'], FOUR), all(['callcenter'], ['view', 'create', 'edit']))) },
       { id: 'support', name: 'دعم فني', description: 'متابعة العملاء والشكاوى.', inherits: null, system: false,
         permissions: sortKeys(v('orders', 'customers', 'providers', 'complaints', 'reviews', 'pii').concat([key('complaints', 'edit'), key('complaints', 'decide')], work)) },
       { id: 'finance', name: 'المالية', description: 'العمولات والتسويات والتحصيل — أرقام التليفونات والعناوين مخفية.', inherits: null, system: false, permissions: sortKeys(v('orders', 'customers', 'providers', 'services').concat(all(['finance'], FOUR), work)) },
@@ -52,7 +56,11 @@
       { id: 'content', name: 'المحتوى والأسعار', description: 'الكتالوج والأسعار والعروض والإشعارات الجماعية ومحتوى الواجهة — بدون بيانات عملاء شخصية.', inherits: null, system: false,
         permissions: sortKeys(all(['services', 'categories', 'marketing', 'notifications'], FOUR).concat(v('reviews'), work)) },
       { id: 'tech', name: 'التقنية', description: 'حالة النظام والأخطاء والتكلفة — بدون أي بيانات عملاء أو مقدمي خدمة أو طلبات (مفروض من السيرفر).', inherits: null, system: false,
-        permissions: sortKeys(all(['tech'], FOUR).concat(work)) }
+        permissions: sortKeys(all(['tech'], FOUR).concat(work)) },
+      /* call centre (2026-11-25): one caller at a time, reached by a phone lookup — no customer list, no money, no settings
+         (enforced on the server: scope.js ROLE_VIEW, permission-guard CALLCENTER_API, agent-gateway.js) */
+      { id: 'callcenter', name: 'خدمة العملاء (كول سنتر)', description: 'بحث برقم المتصل، طلب جديد باسمه، متابعة وإلغاء طلباته، شكوى، تحويل لموظف — بدون قوائم العملاء أو الماليات أو الإعدادات.', inherits: null, system: false,
+        permissions: sortKeys(all(['callcenter'], ['view', 'create', 'edit']).concat(work)) }
     ];
   };
   const buildRoster = () => [['exec', 'owner', 'active'], ['ops', 'admin', 'active'], ['support', 'support', 'active'], ['finance', 'finance', 'active'], ['content', 'moderator', 'active'], ['support', 'support', 'invited'],
@@ -148,7 +156,7 @@
      1 دعم · 2 مشرف (مالية / مراقب محتوى) · 3 مدير · 4 المالك. A custom role may declare `level`; otherwise it takes the
      highest level along its inheritance chain, and never more than 3 (only the owner role is 4). */
   const LEVELS = { 1: 'دعم', 2: 'مشرف', 3: 'مدير', 4: 'المالك' };
-  const ROLE_LEVEL = { owner: 4, admin: 3, content: 3, ops: 2, finance: 2, moderator: 2, support: 1, tech: 1 };
+  const ROLE_LEVEL = { owner: 4, admin: 3, content: 3, ops: 2, finance: 2, moderator: 2, support: 1, tech: 1, callcenter: 1 };
   const RISK = Object.freeze({
     'complaints.resolve': 1, 'requests.assign': 1,
     'providers.warn': 2, 'providers.approve': 2, 'providers.reject': 2, 'reviews.hide': 2, 'finance.collection': 2,
@@ -175,14 +183,15 @@
     const fresh = buildRoles(), list = (Array.isArray(roles) ? roles : []).map((r) => Object.assign({}, r, { permissions: (r.permissions || []).slice() }));
     for (const p of fresh) {
       const cur = list.find((r) => r.id === p.id);
-      if (!cur) { list.push(Object.assign({}, p, { catalogV: 2 })); continue; }
-      if (p.id === 'owner') { cur.permissions = ALL_KEYS.slice(); cur.catalogV = 2; continue; }
+      if (!cur) { list.push(Object.assign({}, p, { catalogV: CATALOG_V })); continue; }
+      if (p.id === 'owner') { cur.permissions = ALL_KEYS.slice(); cur.catalogV = CATALOG_V; continue; }
       if (!cur.catalogV) { cur.permissions = sortKeys(cur.permissions.concat(p.permissions.filter((k) => NEW_MODULES.includes(k.split('.')[0])))); cur.catalogV = 2; }
+      if (cur.catalogV < 3) { cur.permissions = sortKeys(cur.permissions.concat(p.permissions.filter((k) => V3_MODULES.includes(k.split('.')[0])))); cur.catalogV = 3; }
     }
     return list;
   };
 
-  const api = { mergePresets, NEW_MODULES, LEVELS, ROLE_LEVEL, RISK, RISK_LABEL, levelOf, riskNeed, MODULES, ACTIONS, DEPARTMENTS, STATUS_LABEL, LIMITS, ALL_KEYS, key, keyLabel, isKey, sortKeys, buildRoles, buildRoster, roleById, chain, effective, inherited, descendants, validParents, roleEmployees,
+  const api = { mergePresets, NEW_MODULES, V3_MODULES, CATALOG_V, LEVELS, ROLE_LEVEL, RISK, RISK_LABEL, levelOf, riskNeed, MODULES, ACTIONS, DEPARTMENTS, STATUS_LABEL, LIMITS, ALL_KEYS, key, keyLabel, isKey, sortKeys, buildRoles, buildRoster, roleById, chain, effective, inherited, descendants, validParents, roleEmployees,
     validateRole, grantViolations, impact, createRole, updateRole, employeeEffective, setOverrides, isLastActiveOwner, changeEmployee, state, reset, addAudit, auditFor };
   root.HSAdminRbac = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;

@@ -2,13 +2,14 @@
  * HANSALEHLAK Cloud Functions — the application's server-side backend.
  *   api      (callable)  every application request {app, method, path, query, body}; identity from Firebase Auth only
  *   session  (callable)  sync | registerCustomer | claimOwner | importLocal
+ *   agentApi (https)     call-centre gateway for AI voice agents (Bearer key from AGENT_API_KEYS) — src/agent-gateway.js
  * Business rules run from functions/domain/ (a hash-verified copy of the app's own domain layer).
  * Firestore holds the data; Realtime Database carries low-latency change signals (signals/{uid}).
  * Storage is intentionally not used in this phase.
  */
 'use strict';
 const { setGlobalOptions } = require('firebase-functions/v2');
-const { onCall, HttpsError } = require('firebase-functions/v2/https');
+const { onCall, onRequest, HttpsError } = require('firebase-functions/v2/https');
 const logger = require('firebase-functions/logger');
 /* firebase-admin 14: modular entry points only (the namespaced admin.firestore() / admin.auth() API was removed) */
 const { initializeApp } = require('firebase-admin/app');
@@ -142,4 +143,29 @@ const alertsEngine = require('./src/alerts');
 exports.alertsClock = onSchedule({ schedule: 'every 5 minutes', region: OPTS.region || 'me-central1', timeoutSeconds: 120 }, async () => {
   try { const r = await alertsEngine.tick(backend, () => service.scanOps(backend)); if (r.raised || r.escalated) logger.info('alertsClock', r); }
   catch (e) { logger.error('alertsClock failed', { error: e && e.message }); }
+});
+
+/* Call centre — AI voice agents (any telephony / AI vendor), server-to-server: https POST/GET <agentApi URL>/agent/…
+   with `Authorization: Bearer <secret>`; keys come from AGENT_API_KEYS (functions env / secret, `id:secret:scopes`,
+   see functions/.env.example and docs/AI_CALLCENTER.md) and never from client code. Rules, rate limit and audit:
+   functions/src/agent-gateway.js (the same routes the Admin call-centre page uses through `api`). */
+const agentGateway = require('./src/agent-gateway');
+exports.agentApi = onRequest({ region: 'me-central1', cors: false, maxInstances: 5, timeoutSeconds: 30 }, async (req, res) => {
+  const t0 = Date.now();
+  try {
+    if (!['GET', 'POST'].includes(req.method)) { res.status(405).json({ ok: false, status: 405, error: { code: 'METHOD_NOT_ALLOWED', message: 'GET or POST' } }); return; }
+    if (req.method === 'POST' && JSON.stringify(req.body || {}).length > 200000) { res.status(413).json({ ok: false, status: 413, error: { code: 'TOO_LARGE', message: 'request body too large' } }); return; }
+    const out = await service.agentHttp(backend, req);
+    usage.record({ kind: 'agentApi', path: req.path, ms: Date.now() - t0, status: out.status, rateLimited: out.status === 429 });
+    res.set('Cache-Control', 'no-store').status(out.status).json(out.body);
+  } catch (e) {
+    logger.error('agentApi failed', { error: e && e.message, stack: e && e.stack });
+    res.status(500).json({ ok: false, status: 500, error: { code: 'INTERNAL', message: 'حدث خطأ غير متوقع' } });
+  }
+});
+
+/* call transcripts are kept 30 days, then removed (the call summary stays) — docs/AI_CALLCENTER.md «Retention» */
+exports.callLogsClock = onSchedule({ schedule: 'every 24 hours', region: 'me-central1', timeoutSeconds: 120 }, async () => {
+  try { const r = await agentGateway.retentionTick(backend); if (r.deleted) logger.info('callLogsClock', r); }
+  catch (e) { logger.error('callLogsClock failed', { error: e && e.message }); }
 });
