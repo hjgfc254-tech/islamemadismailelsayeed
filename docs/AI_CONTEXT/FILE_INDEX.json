@@ -559,8 +559,8 @@
       "path": "apps/customer/app.js",
       "area": "apps/customer",
       "status": "PARTIALLY IMPLEMENTED",
-      "bytes": 100920,
-      "sha256": "f988c4491cf0864048eb47a2e022125636be00430a047da6f601678204ac601b"
+      "bytes": 101676,
+      "sha256": "f6ac08fda2bf5244846cc7a31f8980df2b00191c275c3a953471d24d1395866c"
     },
     {
       "path": "apps/customer/brand-icons.js",
@@ -587,8 +587,8 @@
       "path": "apps/customer/experience.js",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 8328,
-      "sha256": "1d186a30d73bed1c140d6395c23d39680cc44989bb23239d13534f4ff2a6b061"
+      "bytes": 8582,
+      "sha256": "a4c41b5ab95e5af1d0607f737e9c013540d155d415a551d21ab5163e2d722270"
     },
     {
       "path": "apps/customer/index.html",
@@ -629,8 +629,8 @@
       "path": "apps/customer/pages/home.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 10540,
-      "sha256": "4e3b5a4e47320bebe2bb6b85be0de79967014620bf1df0d23e6953737764e6c0"
+      "bytes": 10549,
+      "sha256": "44ec04adc0e33a1ec02f081be1310f634c8cf43b4569079be39716a262c30a38"
     },
     {
       "path": "apps/customer/pages/live-map.js",
@@ -734,8 +734,8 @@
       "path": "apps/customer/styles/brand-2026.css",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 31500,
-      "sha256": "3f7de9569753455345182c69e2fecb2c64334578e06d2a8513e904e8215ce31e"
+      "bytes": 32932,
+      "sha256": "fb38cdc7587cab2712845f1334179a48fb53b6d0bb856691fc8077da0588b712"
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -3346,14 +3346,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 11774,
-      "sha256": "f365ef054396ad9f5640e9b76c602f17d9b9fa8e90291d9b78f665ab34e79e38"
+      "sha256": "4a849097694ee9e47e28f62de4f9dd1dd711db7ebd207ae2bcb507c70357d8a3"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "821596499a2ac48c6656c076e3891c22ac57d20b10f04f51f218686af2562218"
+      "sha256": "e46bb38f9d80e9e17942fef5aefda3735d276c7b2e42093b34c66335ada29181"
     },
     {
       "path": "services/admin-api.js",
@@ -4696,8 +4696,8 @@
       "path": "tests/unit/ui-round3.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 6185,
-      "sha256": "2d85accd63b92d20b96fd96974d85b3f826dde9dae72a9440dd3d82c868a4ec9"
+      "bytes": 6370,
+      "sha256": "5f862952489926d9ec4557e2464895c06a882548a5dea83b61b801f6b5841936"
     },
     {
       "path": "tests/unit/upfront-pricing.test.js",

@@ -80,7 +80,7 @@
 
   /* ───────── scroll ───────── */
   function mountScroll(view) {
-    let raf = 0;
+    let raf = 0, scrollT = 0;
     view.addEventListener('scroll', () => {
       if (raf) return;
       raf = requestAnimationFrame(() => {
@@ -90,6 +90,8 @@
         html.classList.toggle('is-scrolled', y > 14);
         if (screen() === 'home' && max > 600 && y / max > 0.94) cue('bottom');
       });
+      /* while the finger moves the guide steps back (never covers what is being read), then returns */
+      html.classList.add('is-scrolling'); clearTimeout(scrollT); scrollT = setTimeout(() => html.classList.remove('is-scrolling'), 700);
       arm();
     }, { passive: true });
   }

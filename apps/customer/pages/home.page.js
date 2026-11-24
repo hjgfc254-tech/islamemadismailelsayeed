@@ -31,14 +31,12 @@
     const bi=(n,fb)=>(root.HSBrandIcons&&root.HSBrandIcons.svg(n))||ic(fb);   // 2026 two-tone icons (brand-icons.js), old icon as fallback
     const steps=[['choose','grid','اختار الخدمة'],['schedule','calendar','حدّد الموعد'],['arrive','user','يوصلك الفني'],['rate','star','قيّم الخدمة']];
     const how4=ctx.firstVisit===false?'':`<section class="how-v3" aria-labelledby="howT"><h2 id="howT">إزاي هنصلحلك بتشتغل؟</h2><ol>${steps.map(([b,i,t])=>`<li><i>${bi(b,i)}</i><span>${t}</span></li>`).join('')}</ol></section>`;
-    /* the customer's own work comes first: an active request / unfinished draft sits above the hero; the greeting is a
+    /* the customer's own work comes right after the search (round 4: the header always flows into the photo); the greeting is a
        slim line under the trust strip so the header flows straight into the photo (owner mock-up). Rendered in this
        order (greeting → draft → active) so the dependency call order stays stable. */
     const topHtml=topbar(), greetHtml=renderGreeting(), draftHtml=renderDraftResume(), activeHtml=renderActiveRequests();
     const ownWork=(draftHtml||'').trim()||(activeHtml||'').trim();
     return `<div class="screen home-v3${ownWork?' has-own':''}">${topHtml}${bannerHtml}
-  ${draftHtml}
-  ${activeHtml}
   <section class="hero" aria-labelledby="heroT">
     <img class="${h&&h.img?'hero-photo':'hero-bg'}" src="${heroImg}" data-hero="art" alt="" width="900" height="1115" decoding="async" fetchpriority="high" draggable="false">
     <div class="txt">
@@ -52,6 +50,8 @@
     <label class="field">${ic('search')}<input id="q" type="search" aria-label="ابحث عن فني أو خدمة" placeholder="اكتب مشكلتك… مثلاً: التكييف مش بيبرّد" enterkeyhint="search" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="home-sg"><button type="button" class="cam" data-act="cam" aria-label="تصوير المشكلة لإرفاقها بطلبك">${ic('camera')}</button></label>
   </div>
   <div id="home-sg" class="hs-suggest home-sg" role="listbox" hidden></div>
+  ${draftHtml}
+  ${activeHtml}
   <ul class="trust-strip" aria-label="ليه هنصلحلك">
     <li>${bi('verified','shield')}<span>فنيين بتراجعهم الإدارة</span></li>
     <li>${bi('price','wallet')}<span>سعر واضح قبل الحجز</span></li>

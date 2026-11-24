@@ -10,7 +10,7 @@ const { boot, ROOT } = require('../helpers/customer-app-harness.js');
 const P = require('../helpers/provider-app-harness.js');
 const read = f => fs.readFileSync(path.join(ROOT, f), 'utf8');
 
-test('Home: active request pinned above the hero, how-it-works for first visits, real reviews only when they exist', () => {
+test('Home: active request pinned under the search, how-it-works for first visits, real reviews only when they exist', () => {
   const guest = boot({});
   const html = guest.html();
   assert.match(html, /إزاي هنصلحلك بتشتغل؟/, 'first visit sees how it works');
@@ -21,7 +21,8 @@ test('Home: active request pinned above the hero, how-it-works for first visits,
   app.run(`MP.db().reviews.push({ id:'rv_x', reqId:'nope', providerId:'p_demo1', customerId:'c', stars:5, comment:'شغل ممتاز ومحترم', at:new Date().toISOString() })`);
   app.run("show('home')");
   const h2 = app.html();
-  assert.ok(h2.indexOf('act-card') > -1 && h2.indexOf('act-card') < h2.indexOf('class="hero"'), 'active request is above the hero');
+  /* round 4 (2026-11-24): the header always flows into the photo; the active request sits right under the search, before the services */
+  assert.ok(h2.indexOf('act-card') > h2.indexOf('id="home-sg"') && h2.indexOf('act-card') < h2.indexOf('id="tilesT"'), 'active request is under the search, above the services');
   assert.doesNotMatch(h2, /إزاي هنصلحلك بتشتغل؟/, 'returning customers do not see the explainer');
   assert.match(h2, /آراء عملائنا/); assert.match(h2, /شغل ممتاز ومحترم/);
 });

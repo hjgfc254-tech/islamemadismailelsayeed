@@ -2813,7 +2813,7 @@
         "tests/e2e/customer-sheet-focus.browser.py"
       ],
       "notes": "2026-11-13 TASK 04: Bottom Sheet initial focus, Tab/Shift+Tab containment, Escape, focus restoration/fallback, and background inert/aria-hidden isolation implemented and browser-tested. origin remains the legacy problem-list return context; route-style close focuses the destination #view.",
-      "sha256": "f988c4491cf0864048eb47a2e022125636be00430a047da6f601678204ac601b",
+      "sha256": "f6ac08fda2bf5244846cc7a31f8980df2b00191c275c3a953471d24d1395866c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2852,7 +2852,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 100920
+      "bytes": 101676
     },
     {
       "path": "apps/customer/brand-icons.js",
@@ -2973,8 +2973,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "1d186a30d73bed1c140d6395c23d39680cc44989bb23239d13534f4ff2a6b061",
-      "bytes": 8328
+      "sha256": "a4c41b5ab95e5af1d0607f737e9c013540d155d415a551d21ab5163e2d722270",
+      "bytes": 8582
     },
     {
       "path": "apps/customer/index.html",
@@ -3230,7 +3230,7 @@
       "next_action": "Keep this module presentation-only; extract individual sections only when tests establish stable contracts.",
       "explicit_references": [],
       "notes": "Extracted from screens.home on 2026-11-13. Script loaded before app.js. Tests: customer-page-renderers.test.js and home.test.js.",
-      "sha256": "4e3b5a4e47320bebe2bb6b85be0de79967014620bf1df0d23e6953737764e6c0",
+      "sha256": "44ec04adc0e33a1ec02f081be1310f634c8cf43b4569079be39716a262c30a38",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3267,7 +3267,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 10540
+      "bytes": 10549
     },
     {
       "path": "apps/customer/pages/live-map.js",
@@ -3787,8 +3787,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "3f7de9569753455345182c69e2fecb2c64334578e06d2a8513e904e8215ce31e",
-      "bytes": 31500
+      "sha256": "fb38cdc7587cab2712845f1334179a48fb53b6d0bb856691fc8077da0588b712",
+      "bytes": 32932
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -12366,7 +12366,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "f365ef054396ad9f5640e9b76c602f17d9b9fa8e90291d9b78f665ab34e79e38",
+      "sha256": "4a849097694ee9e47e28f62de4f9dd1dd711db7ebd207ae2bcb507c70357d8a3",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12414,7 +12414,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "821596499a2ac48c6656c076e3891c22ac57d20b10f04f51f218686af2562218",
+      "sha256": "e46bb38f9d80e9e17942fef5aefda3735d276c7b2e42093b34c66335ada29181",
       "bytes": 195
     },
     {
@@ -17327,8 +17327,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "2d85accd63b92d20b96fd96974d85b3f826dde9dae72a9440dd3d82c868a4ec9",
-      "bytes": 6185
+      "sha256": "5f862952489926d9ec4557e2464895c06a882548a5dea83b61b801f6b5841936",
+      "bytes": 6370
     },
     {
       "path": "tests/unit/upfront-pricing.test.js",

@@ -1184,7 +1184,12 @@ function openNotes(){
 
 function openMenu(){
   const items = [['home','الرئيسية','home'],['sections','الخدمات','grid'],['orders','طلباتي','list'],['fav','المحفوظة','heart'],['account','حسابي','user']];
-  sheet(`<h4>القائمة</h4><div style="margin-top:8px">${items.map(([g,l,i])=>`<button class="menu-item" data-go="${g}">${ic(i)}${l}</button>`).join('')}
+  /* 2026: the menu opens on a navy brand card that greets the customer and offers the main action */
+  let who = ''; try { const c = me(); who = c && c.name ? String(c.name).trim().split(/\s+/)[0] : ''; } catch {}
+  const mk = typeof HSBrandIcons !== 'undefined' && HSBrandIcons.mark ? HSBrandIcons.mark(52) : '';
+  const brandCard = `<div class="menu-brand">${mk}<div><b>${who ? 'أهلاً يا ' + esc(who) : 'أهلاً بيك في هنصلحلك'}</b><small>أي عطل في البيت — احنا هنا نساعدك</small></div><button type="button" class="menu-cta" data-act="newReq">${ic('plus')} اطلب خدمة</button></div>`;
+  sheet(`<h4>القائمة</h4>${brandCard}<div style="margin-top:8px">${items.map(([g,l,i])=>`<button class="menu-item" data-go="${g}">${ic(i)}${l}</button>`).join('')}
+    <button class="menu-item" data-go="support">${ic('info')}المساعدة والدعم</button>
     <div class="lbl">محتوى توعوي (اختياري)</div>
     <button class="menu-item" data-act="slide" data-s="guide">${ic('book')}دليل الصيانة</button>
     <button class="menu-item" data-act="slide" data-s="popular">${ic('medal')}أشهر الحلول</button>
