@@ -32,7 +32,9 @@ test('wizard: Leaflet map picker is vendored, lazy-loaded and attributed; help b
   assert.match(wiz, /data-act="wzMap"/); assert.match(wiz, /HSMap\.picker/); { const m = read('shared/components/hs-map.js'); assert.match(m, /OpenStreetMap/); assert.match(m, /tiles\.openfreemap\.org/); assert.match(m, /maplibre/); }
   assert.match(read('shared/components/hs-map.js'), /LIB \+ 'maplibre-gl\.js'/, 'map library loaded on first use only');
   const app = read('apps/customer/app.js');
-  assert.match(app, /b\.addEventListener\('click', \(\) => \{ try \{ go\('support'\); \} catch \{\} \}\);/);
+  /* 2026: the help button opens «مساعد هنصلحلك» (its menu links the support centre); without experience.js it goes straight there */
+  assert.match(app, /b\.addEventListener\('click', \(\) => \{ try \{ if \(globalThis\.HSExperience\) HSExperience\.menu\(\); else go\('support'\); \} catch \{\} \}\);/);
+  assert.match(read('apps/customer/experience.js'), /data-go="support"/);
   assert.match(app, /addEventListener\('offline', \(\) => set\(false\)\)/);
   assert.match(read('apps/customer/styles/customer.css'), /html\[data-fs="lg"\] #app,html\[data-fs="lg"\] #sheet\{zoom:1\.12\}/);
 });

@@ -207,7 +207,7 @@ const topbar = () => {
   return `
 <header class="topbar">
   <div class="tb-actions"><button class="ic-btn" data-act="menu" aria-label="القائمة">${ic('menu')}</button></div>
-  <div class="logo"><span class="hs-logo" aria-label="هنصلحلك HANSALEHLAK"><img src="../../assets/brand/hsl-mark.svg" alt="" width="38" height="38" decoding="async" draggable="false"><span class="w" aria-hidden="true"><b>هنصلحلك</b><small>HANSALEHLAK</small></span></span></div>
+  <div class="logo"><span class="hs-logo" aria-label="هنصلحلك HANSALEHLAK">${typeof HSBrandIcons !== 'undefined' && HSBrandIcons.mark ? HSBrandIcons.mark(46) : '<img src="../../assets/brand/hsl-mark.svg" alt="" width="38" height="38" decoding="async" draggable="false">'}<span class="w" aria-hidden="true"><b>هنصلحلك</b><small>HANSALEHLAK</small></span></span></div>
   <div class="tb-actions">
     <button class="ic-btn mini-search" data-act="miniSearch" aria-label="ابحث عن خدمة">${ic('search')}</button>
     <button class="ic-btn ${hasNotes?'dot':''}" data-act="bell" aria-label="الإشعارات">${ic('bell')}</button>
@@ -1368,8 +1368,9 @@ function mountHelpAndNet(){
   if (!document.getElementById('help-fab')) {
     const b = document.createElement('button');
     b.id = 'help-fab'; b.type = 'button'; b.className = 'help-fab'; b.setAttribute('aria-label', 'المساعدة والأسئلة الشائعة');
-    b.innerHTML = ic('info') + '<span>مساعدة</span>';
-    b.addEventListener('click', () => { try { go('support'); } catch {} });
+    /* 2026: the help button is «مساعد هنصلحلك» (experience.js) — a short menu; without it, straight to support */
+    b.innerHTML = '<img src="../../assets/brand/hsl-mark.svg" alt="" width="30" height="30" decoding="async"><span>مساعدة</span>';
+    b.addEventListener('click', () => { try { if (globalThis.HSExperience) HSExperience.menu(); else go('support'); } catch {} });
     document.body.appendChild(b);
   }
   if (!document.getElementById('net-banner')) {

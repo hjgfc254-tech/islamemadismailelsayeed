@@ -356,6 +356,41 @@ function wzProgressBar(step){
     <div class="wz-cap">${step < 10 ? `<b>${WZ_STAGE_NAMES[st]}</b><span>الخطوة ${st + 1} من 5 — ${wzLeft(4 - st)}</span>` : 'تم إرسال الطلب'}</div>`;
 }
 
+/* 2026 identity: the two-tone brand icon of a category (same set as Home), or '' to fall back to the line icon */
+function wzBrandIc(id){
+  try { const s = globalThis.HSBrandIcons && HSBrandIcons.svg(id); return s ? `<span class="dev brand" aria-hidden="true">${s}</span>` : ''; } catch { return ''; }
+}
+
+/* «The app talks back»: one live sentence that grows with every choice (category → item → problem → area → time),
+   so the customer sees we understood the request so far. Pure string; empty after submit. */
+function wzSay(w){
+  if (!w || w.step >= 10) return '';
+  const c = w.cat && CAT.category(w.cat), it = w.item && CAT.item(w.item);
+  const pr = !w.unknown && w.problem && CAT.problem ? CAT.problem(w.problem) : null;
+  const b = s => `<b>${_esc(s)}</b>`;
+  let when = '';
+  const s = w.schedule || {};
+  if (s.flexible) when = 'في أي وقت يناسب الفني';
+  else if (s.date) {
+    const iso = n => { const d = new Date(); d.setDate(d.getDate() + n); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+    const day = s.date === iso(0) ? 'النهارده' : s.date === iso(1) ? 'بكرة' : (() => { try { return new Date(s.date + 'T12:00:00').toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' }); } catch { return s.date; } })();
+    when = day + (s.period ? ' ' + ({ morning: 'الصبح', noon: 'الضهر', evening: 'بالليل' })[s.period] : '');
+  }
+  const area = w.address && (w.address.area || w.address.gov);
+  let text;
+  if (!c) text = 'أهلاً! قولّي المشكلة في إيه — اختار القسم وأنا أكمّل معاك خطوة بخطوة.';
+  else {
+    text = `تمام، محتاج ${b('فني ' + c.name)}`;
+    if (it) text += ` لـ ${b(it.name)}`;
+    if (pr) text += ` — ${b(pr.name)}`; else if (w.unknown) text += ` — ${b('محتاج فحص')}`;
+    if (area) text += ` في ${b(area)}`;
+    if (when) text += ` ${b(when)}`;
+    text += it ? '.' : '… اختار الجهاز أو نوع الشغل.';
+  }
+  const mark = '<img src="../../assets/brand/hsl-mark.svg" alt="" width="30" height="30" decoding="async">';
+  return `<div class="wz-say" role="status" aria-live="polite">${mark}<p>${text}</p></div>`;
+}
+
 /* ═════════ مسار crumb ═════════ */
 function crumbHtml(w){
   const b = CAT.breadcrumb(w);
@@ -457,14 +492,14 @@ Object.assign(screens, {
     if (cur === 0) {
       body = `<div class="cgrid" role="group" aria-label="اختيار القسم">${CAT.categories().map(x => `
         <button type="button" class="icard glass neon ${x.id===w.cat?'sel':''}" data-wz-cat="${x.id}" aria-pressed="${x.id===w.cat}">
-          ${safeIcp(safeIcSec(x.icon), 'dev')}<span>${_esc(x.name)}</span>
+          ${wzBrandIc(x.id) || safeIcp(safeIcSec(x.icon), 'dev')}<span>${_esc(x.name)}</span>
         </button>`).join('')}</div>`;
     }
 
     /* 1 — الجهاز/نوع العمل */
     if (cur === 1) {
       const nItems = CAT.items(w.cat).length;
-      body = crumbHtml(w) + `<div class="cat-hero">${safeIcp(safeIcSec(c.icon), 'dev')}<div><b>${_esc(c.name)}</b><small>${nItems} ${nItems > 10 ? 'خدمة' : 'خدمات'} متاحة<span class="tfrom" data-from-cat="${_esc(c.id)}" hidden></span></small></div></div>` + `<div class="cgrid" role="group" aria-label="اختيار الجهاز أو نوع العمل">${CAT.items(w.cat).map(i => `
+      body = crumbHtml(w) + `<div class="cat-hero">${wzBrandIc(c.id) || safeIcp(safeIcSec(c.icon), 'dev')}<div><b>${_esc(c.name)}</b><small>${nItems} ${nItems > 10 ? 'خدمة' : 'خدمات'} متاحة<span class="tfrom" data-from-cat="${_esc(c.id)}" hidden></span></small></div></div>` + `<div class="cgrid" role="group" aria-label="اختيار الجهاز أو نوع العمل">${CAT.items(w.cat).map(i => `
         <button type="button" class="icard glass neon ${i.id===w.item?'sel':''}" data-wz-item="${i.id}" aria-pressed="${i.id===w.item}">
           ${safeIcp(safeIcItem(i, c.id), 'dev')}<span>${_esc(i.name)}</span>
         </button>`).join('')}</div>`;
@@ -677,7 +712,7 @@ Object.assign(screens, {
     const it2 = w.item && CAT.item(w.item), c2 = w.cat && CAT.category(w.cat), pr2 = !w.unknown && w.problem && CAT.problem ? CAT.problem(w.problem) : null;
     const sumRows = [['القسم', c2 && c2.name], ['الجهاز / العمل', it2 && it2.name], ['المشكلة', w.unknown ? 'تحتاج فحص' : pr2 && pr2.name], ['العنوان', [w.address.gov, w.address.area].filter(Boolean).join(' — ')], ['الموعد', w.schedule.date ? (w.schedule.date + (w.schedule.period ? ' • ' + ({ morning: 'صباحًا', noon: 'ظهرًا', evening: 'مساءً' })[w.schedule.period] : '')) : (w.schedule.flexible ? 'مرن' : '')]].filter(r => r[1]);
     const aside = w.step > 0 && w.step < 10 && sumRows.length ? `<aside class="wz-summary" aria-label="ملخص طلبك"><b>ملخص طلبك</b><dl>${sumRows.map(([k, v]) => `<div><dt>${k}</dt><dd>${_esc(v)}</dd></div>`).join('')}</dl></aside>` : '';
-    return `<div class="screen wz-screen">${wzHead}${stepHeading}${w.step < 10 ? wzProgressBar(w.step) : ''}<div class="wz-layout"><div class="wz-main">${body}<p id="wz-validation-error" class="wz-validation-error" role="alert" aria-live="assertive" hidden></p>${nav}</div>${aside}</div></div>`;
+    return `<div class="screen wz-screen">${wzHead}${stepHeading}${w.step < 10 ? wzProgressBar(w.step) + wzSay(w) : ''}<div class="wz-layout"><div class="wz-main">${body}<p id="wz-validation-error" class="wz-validation-error" role="alert" aria-live="assertive" hidden></p>${nav}</div>${aside}</div></div>`;
   }
 });
 

@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 670,
+  "file_count": 675,
   "files": [
     {
       "path": "_redirects",
@@ -559,15 +559,15 @@
       "path": "apps/customer/app.js",
       "area": "apps/customer",
       "status": "PARTIALLY IMPLEMENTED",
-      "bytes": 100569,
-      "sha256": "acc223f01d61635eb1ea9774a79c101f15667d2599897e64779c38d049e451ef"
+      "bytes": 100920,
+      "sha256": "f988c4491cf0864048eb47a2e022125636be00430a047da6f601678204ac601b"
     },
     {
       "path": "apps/customer/brand-icons.js",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 3693,
-      "sha256": "c44d9193da8f5b0f06b3749699e0b1828fa4ed72446fc1f9ded9265fab6e82ed"
+      "bytes": 4862,
+      "sha256": "425bfeb7b460f4c6fcda4d5f3e186e7efa463cd58a1e6d25c5deac7c3f3ba563"
     },
     {
       "path": "apps/customer/customer-router.js",
@@ -584,11 +584,18 @@
       "sha256": "628501356699f3b63a46e035868a125370ef8dd2c706d5bff0d0fbe822fbef3b"
     },
     {
+      "path": "apps/customer/experience.js",
+      "area": "apps/customer",
+      "status": "NEEDS_REVIEW",
+      "bytes": 8328,
+      "sha256": "1d186a30d73bed1c140d6395c23d39680cc44989bb23239d13534f4ff2a6b061"
+    },
+    {
       "path": "apps/customer/index.html",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 8992,
-      "sha256": "de4522050773acf7ff08ce98dedefc4438b9c622731fc129dcdf353afcd848c7"
+      "bytes": 9030,
+      "sha256": "e010a6509df2d69403b7c96019c0ccf8d2122bcd440b51f98119fb575341e14c"
     },
     {
       "path": "apps/customer/pages/account.page.js",
@@ -692,8 +699,8 @@
       "path": "apps/customer/pages/request-wizard.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 66274,
-      "sha256": "04c8184a51cefce04b530d063fae22e0aff236ab0793b020e2aaa8efed77cba3"
+      "bytes": 68592,
+      "sha256": "9d9087743ab2c460882ffe9c4ead3686814ac45d8afc83c48073c7f8cfb90ccf"
     },
     {
       "path": "apps/customer/pages/search.page.js",
@@ -727,8 +734,8 @@
       "path": "apps/customer/styles/brand-2026.css",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 21761,
-      "sha256": "503a3bdc49682e30c79d18273ebbb0c3c56bc04c6e1ceedd215b527c32ae1365"
+      "bytes": 31500,
+      "sha256": "3f7de9569753455345182c69e2fecb2c64334578e06d2a8513e904e8215ce31e"
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -953,6 +960,27 @@
       "status": "NEEDS_REVIEW",
       "bytes": 17849,
       "sha256": "64af5efc064180ad4c9f75bc552f6feecd5fa0c1d3c92573d276e68a2553c940"
+    },
+    {
+      "path": "assets/brand/bg-light.svg",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2357,
+      "sha256": "511a3adfe99e1012580803d173d28d2e32ffae8ab650e37b1c42befa2e67cc89"
+    },
+    {
+      "path": "assets/brand/bg-navy.svg",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2355,
+      "sha256": "901cbfc43dd162284c4ae9447560d4b7d51ffedf0132a3819cdb2b2fb5de399c"
+    },
+    {
+      "path": "assets/brand/bg-red.svg",
+      "area": "assets",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2356,
+      "sha256": "37b8c53fd7027af01eaa51ce4404083b528d2c47d7c8f193598d9073a47e98ea"
     },
     {
       "path": "assets/brand/hero-tech-v2.webp",
@@ -2309,8 +2337,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 298080,
-      "sha256": "fc0575a31babc414507fba388efae521f98d19a525dfedaa07f966e12cbf79a3"
+      "bytes": 299213,
+      "sha256": "2c2a9970cc41c2b1fc01163d2264d80f76291845f8c6bb054c502878377ee5d4"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2323,8 +2351,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 167529,
-      "sha256": "b5bf35f5da26c96f21a6e98abce293f2b25eb6b601f071dd364145d702ede9e2"
+      "bytes": 168567,
+      "sha256": "a10c336d2990d073afd869217d64a13fc1fd49e9262045d23882cf78320dadea"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2757,8 +2785,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 31651,
-      "sha256": "9c973311f030e950576fa7319d093d4a4b377dc511eefba49daa287cc8d0cf72"
+      "bytes": 31828,
+      "sha256": "3959e2c6aa5456c1a663258511cde0c0382713a28f0adb42cad147581febdb88"
     },
     {
       "path": "docs/README.md",
@@ -3317,15 +3345,15 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 11651,
-      "sha256": "4b75318c0f8cda32a9a8de127e3eec27efba45d8bea177fed1ab07bfe901069a"
+      "bytes": 11774,
+      "sha256": "f365ef054396ad9f5640e9b76c602f17d9b9fa8e90291d9b78f665ab34e79e38"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 195,
-      "sha256": "baac37168d4d7ced945cf5fc8982c448b7541b51ba9989c519bc74581d9f5570"
+      "sha256": "821596499a2ac48c6656c076e3891c22ac57d20b10f04f51f218686af2562218"
     },
     {
       "path": "services/admin-api.js",
@@ -4231,6 +4259,13 @@
       "sha256": "b1303f1c202c6cd2451f9c7b757827cb47fb6f93a481295cf0bde4d480c26bf7"
     },
     {
+      "path": "tests/unit/experience.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2997,
+      "sha256": "d84e74f9471dbf978a514e7403b7e623cbe97984c9340f968318b2720a4df077"
+    },
+    {
       "path": "tests/unit/finance-dashboard.test.js",
       "area": "tests",
       "status": "TEST",
@@ -4661,8 +4696,8 @@
       "path": "tests/unit/ui-round3.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 5902,
-      "sha256": "d869805860154efb584c2a5f43a70d841820cf921a01de1cc9ea342b5094b51e"
+      "bytes": 6185,
+      "sha256": "2d85accd63b92d20b96fd96974d85b3f826dde9dae72a9440dd3d82c868a4ec9"
     },
     {
       "path": "tests/unit/upfront-pricing.test.js",

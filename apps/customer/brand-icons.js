@@ -34,7 +34,17 @@
     const body = ICONS[name]; if (!body) return '';
     return `<svg class="bi${cls ? ' ' + cls : ''}" viewBox="0 0 48 48" width="48" height="48" aria-hidden="true" focusable="false">${body}</svg>`;
   }
-  const api = Object.freeze({ svg, names: Object.freeze(Object.keys(ICONS)) });
+  /** the logo mark inline (same drawing as assets/brand/hsl-mark.svg) with the red gear in its own group (.hm-gear),
+      so the header can turn the gear while the page scrolls — the wrench stays still */
+  function mark(size) {
+    const n = size || 46;
+    let teeth = ''; for (let a = 0; a < 360; a += 45) teeth += `<rect x="42.5" y="3.5" width="15" height="16" rx="3.2" transform="rotate(${a} 50 50)"/>`;
+    return `<svg class="hm" viewBox="0 0 100 100" width="${n}" height="${n}" aria-hidden="true" focusable="false"><g class="hm-gear" fill="#E1251B"><circle cx="50" cy="50" r="38"/>${teeth}</g>`
+      + '<circle cx="50" cy="50" r="32" fill="#fff"/><circle cx="50" cy="50" r="30" fill="#0B1F3A"/>'
+      + '<g transform="rotate(40 50 50)" fill="#fff"><path d="M46 20.75 L46 29 Q46 30.5 47.5 30.5 L52.5 30.5 Q54 30.5 54 29 L54 20.75 A11 11 0 1 1 46 20.75 Z"/><rect x="45" y="38" width="10" height="46" rx="4.5"/></g>'
+      + '<g transform="rotate(40 50 50)" fill="#0B1F3A"><rect x="46.5" y="47" width="1.8" height="9" rx=".9"/><rect x="49.1" y="47" width="1.8" height="9" rx=".9"/><rect x="51.7" y="47" width="1.8" height="9" rx=".9"/></g></svg>';
+  }
+  const api = Object.freeze({ svg, mark, names: Object.freeze(Object.keys(ICONS)) });
   root.HSBrandIcons = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

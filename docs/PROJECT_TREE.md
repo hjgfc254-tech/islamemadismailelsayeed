@@ -118,6 +118,7 @@ hansalhlak/
 │   │   ├── brand-icons.js
 │   │   ├── customer-router.js
 │   │   ├── customer-session.js
+│   │   ├── experience.js
 │   │   ├── index.html
 │   │   └── README.md
 │   ├── guest/
@@ -157,6 +158,9 @@ hansalhlak/
 │   │   ├── loader/
 │   │   │   ├── nut.webp
 │   │   │   └── wrench.webp
+│   │   ├── bg-light.svg
+│   │   ├── bg-navy.svg
+│   │   ├── bg-red.svg
 │   │   ├── hero-tech-v2.webp
 │   │   ├── hero-tech-v3.jpg
 │   │   ├── hsl-lockup-light.png
@@ -693,6 +697,7 @@ hansalhlak/
 │       ├── digest-admin.test.js
 │       ├── digest.test.js
 │       ├── discover.test.js
+│       ├── experience.test.js
 │       ├── finance-dashboard.test.js
 │       ├── firebase-backend.test.js
 │       ├── firebase-integration-contract.test.js

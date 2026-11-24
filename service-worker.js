@@ -18,7 +18,7 @@
    • CLEAR_CACHE  — مسح كل الكاش (لأدوات العرض التجريبي).
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'hansalhlak-v11-firebase-83';
+const CACHE = 'hansalhlak-v11-firebase-84';
 
 /* الملفات الأساسية — يجب أن تعمل offline بعد أول زيارة */
 const FILES = [
@@ -29,6 +29,7 @@ const FILES = [
   'apps/customer/styles/overrides.css',
   'apps/customer/styles/brand-2026.css',
   'apps/customer/brand-icons.js',
+  'apps/customer/experience.js',
   'shared/design-system/design-system.css',
   'shared/utils/error-reporter.js',
   'shared/icons/icon-registry.js',
@@ -143,6 +144,9 @@ const FILES = [
   'assets/brand/hsl-lockup.png',
   'assets/brand/hsl-lockup-light.png',
   'assets/brand/hsl-word.png',
+  'assets/brand/bg-navy.svg',
+  'assets/brand/bg-red.svg',
+  'assets/brand/bg-light.svg',
   'shared/design-system/brand-2026-tokens.css',
   'assets/brand/onboard-1.webp',
   'assets/brand/trust-handshake.jpg',
