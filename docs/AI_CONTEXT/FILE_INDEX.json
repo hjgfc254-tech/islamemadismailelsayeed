@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 695,
+  "file_count": 697,
   "files": [
     {
       "path": "_redirects",
@@ -2236,11 +2236,25 @@
       "sha256": "b1226d858f657376570cbf6a57377a866df7407bf4563df7c027271d8de9e739"
     },
     {
+      "path": "docs/agent-briefs/architecture-maintenance.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 6021,
+      "sha256": "e37cc5810acb7cb4d782be136d6844220f07691eb9fac26d4e9731f6a3f0f892"
+    },
+    {
       "path": "docs/agent-briefs/callcenter-ai.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
       "bytes": 4945,
       "sha256": "7468fa29ca39a769493c6306d7b5e463608346d811894f3e705025c2414e6ee5"
+    },
+    {
+      "path": "docs/agent-briefs/design-micro-audit-2.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 1805,
+      "sha256": "46efc37880f6533c5543fd030a7886bdcfb393a0fce6882b98d7a7fe896cd41e"
     },
     {
       "path": "docs/agent-briefs/design-micro-audit.md",
@@ -2400,8 +2414,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 303953,
-      "sha256": "07731ac84c4503ac833573346c8c1683cb8e6a3e55ad07b4cb22d6dbda436269"
+      "bytes": 304459,
+      "sha256": "bcc4137ec14295bab7bce84c4f8c651b45cc511cdf30f7bb05fd25036d9ed211"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2414,8 +2428,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 172836,
-      "sha256": "ba4402041b312e44b7f916cd679bd0f21994d751b47173a92ef4bd88f89abcd2"
+      "bytes": 173286,
+      "sha256": "7ea6585e5e9454beb80813d25bf898470d39da49c6665711f3d0d5a2f765cbfc"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2848,8 +2862,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 32639,
-      "sha256": "21e5ed3d4776c1b52c6799e00d4b0eed75ad9ac8ee4db8f9c3254332c2f29d61"
+      "bytes": 32735,
+      "sha256": "f3a9c09bdcb74375b23890eafc44a7c76df13c8bca2c30ee8a64f42c8209cec1"
     },
     {
       "path": "docs/README.md",

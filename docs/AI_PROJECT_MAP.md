@@ -323,7 +323,9 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | database/schema/transactions.schema.js | PLACEHOLDER | Proposed transactions data schema. No production database schema/migration is implemented. | Implement only after prerequisite modules and contracts are ready; replace the documentation-only placeholder with tested real logic. |
 | database/seeds/README.md | CONFIGURATION | Documentation for README | Update only when related implementation changes. |
 | docs/ADMIN_MODULES.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
+| docs/agent-briefs/architecture-maintenance.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | docs/agent-briefs/callcenter-ai.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| docs/agent-briefs/design-micro-audit-2.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | docs/agent-briefs/design-micro-audit.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | docs/agent-briefs/digest.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | docs/agent-briefs/README.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |

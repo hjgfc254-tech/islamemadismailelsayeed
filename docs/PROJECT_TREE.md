@@ -384,7 +384,9 @@ hansalhlak/
 │   └── README.md
 ├── docs/
 │   ├── agent-briefs/
+│   │   ├── architecture-maintenance.md
 │   │   ├── callcenter-ai.md
+│   │   ├── design-micro-audit-2.md
 │   │   ├── design-micro-audit.md
 │   │   ├── digest.md
 │   │   ├── README.md
