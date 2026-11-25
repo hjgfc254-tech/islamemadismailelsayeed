@@ -473,6 +473,7 @@ hansalhlak/
 │   ├── FRONTEND_TEAM_AI_PROTOCOL.md
 │   ├── HANDOFF_NEXT_AI.md
 │   ├── HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md
+│   ├── MAINTENANCE_GUIDE.md
 │   ├── MIGRATION_PLAN.md
 │   ├── NEXT_SESSION.md
 │   ├── PERMISSIONS.md
@@ -783,6 +784,7 @@ hansalhlak/
 │       ├── ui-kit.test.js
 │       ├── ui-round3.test.js
 │       ├── upfront-pricing.test.js
+│       ├── wiring.test.js
 │       └── workforce.test.js
 ├── tools/
 │   └── security/

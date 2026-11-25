@@ -407,6 +407,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | docs/FRONTEND_TEAM_AI_PROTOCOL.md | DOCUMENTATION | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
 | docs/HANDOFF_NEXT_AI.md | DOCUMENTATION | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
 | docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md | DOCUMENTATION | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
+| docs/MAINTENANCE_GUIDE.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | docs/MIGRATION_PLAN.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
 | docs/NEXT_SESSION.md | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | docs/PERMISSIONS.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
@@ -698,6 +699,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | tests/unit/ui-kit.test.js | IMPLEMENTED | Existing unit/static regression test. | Protect with regression tests; do not rewrite unnecessarily. |
 | tests/unit/ui-round3.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/upfront-pricing.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| tests/unit/wiring.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/workforce.test.js | TEST | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
 | tools-lab/.gitignore | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tools/security/self-test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
