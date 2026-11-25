@@ -55,9 +55,9 @@ const NEXT_STEP = Object.freeze({
   received: 'بندوّر على فني مناسب — هنبلغك أول ما حد يقبل', searching: 'بندوّر على فني مناسب — هنبلغك أول ما حد يقبل',
   sent: 'الطلب اتبعت لفني وبنستنى ردّه', accepted: 'الفني قبل الطلب وهيتواصل معاك لتأكيد الموعد',
   scheduled: 'الموعد متأكد — الفني هيبلغك وهو في الطريق', enroute: 'الفني في الطريق ليك', arrived: 'الفني وصل عندك',
-  started: 'الشغل شغال دلوقتي', quote: 'الفني بعت سعر ومحتاج موافقتك من التطبيق — أو نحوّلك لموظف',
+  started: 'الشغل شغال دلوقتي', quote: 'الفني بعت سعر ومحتاج موافقتك',
   completed: 'الخدمة خلصت — أكّد الإتمام وقيّم الفني من التطبيق', closed: 'الطلب مقفول', cancelled: 'الطلب ملغي',
-  failed: 'تعذّر تنفيذ الخدمة — ممكن نفتح شكوى أو نحوّلك لموظف'
+  failed: 'تعذّر تنفيذ الخدمة — ممكن نسجّل شكوى'
 });
 
 const env = (status, data) => ({ ok: true, status, data });
@@ -248,7 +248,7 @@ async function cancelRequest({ backend, id, body, principal, deps }) {
       if (fee && body.confirmFee !== true) {
         return bad(409, 'FEE_CONFIRMATION_REQUIRED', 'فيه رسوم انتقال ' + fee + ' ج.م لأن الفني في الطريق — اقرأها للمتصل، ولو وافق ابعت confirmFee: true', { fee });
       }
-      const by = principal.channel === 'ai' ? 'المساعد الصوتي' : principal.channel === 'chat' ? 'المساعد الذكي (شات)' : 'خدمة العملاء';
+      const by = principal.channel === 'ai' ? 'المساعد الصوتي' : principal.channel === 'chat' ? 'خدمة العملاء (شات)' : 'خدمة العملاء';
       const res = await e.client.request('POST', `/requests/${id}/cancel`, { body: { reason: 'إلغاء عن طريق ' + by + ': ' + reason }, actor: ctx.actor });
       if (!res.ok) return res;
       return { ok: true, status: 200, data: { ...requestSummary(e.mp.get('serviceRequests', id)), cancelFee: fee }, subject: id };

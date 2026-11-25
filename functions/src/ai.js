@@ -60,11 +60,11 @@ function catalog() {
 async function loadConfig(adapter, tx) {
   const c = (await adapter.get(tx || null, 'system/ai')) || {};
   return { providers: Array.isArray(c.providers) ? c.providers : [], features: { text: !!(c.features && c.features.text), photo: !!(c.features && c.features.photo), chat: !!(c.features && c.features.chat) },
-    chatDailyLimit: Number.isFinite(+c.chatDailyLimit) ? +c.chatDailyLimit : 60, chatGlobalDailyLimit: Number.isFinite(+c.chatGlobalDailyLimit) ? +c.chatGlobalDailyLimit : 3000,
+    chatDailyLimit: Number.isFinite(+c.chatDailyLimit) ? +c.chatDailyLimit : 60, chatHandoff: c.chatHandoff === true, chatGlobalDailyLimit: Number.isFinite(+c.chatGlobalDailyLimit) ? +c.chatGlobalDailyLimit : 3000,
     dailyLimit: Number.isFinite(+c.dailyLimit) ? +c.dailyLimit : 20, globalDailyLimit: Number.isFinite(+c.globalDailyLimit) ? +c.globalDailyLimit : 2000 };
 }
 const view = c => ({
-  features: c.features, dailyLimit: c.dailyLimit, globalDailyLimit: c.globalDailyLimit, chatDailyLimit: c.chatDailyLimit, chatGlobalDailyLimit: c.chatGlobalDailyLimit, chatEnvKey: !!(process.env.CHAT_API_KEY || process.env.ANTHROPIC_API_KEY),
+  features: c.features, dailyLimit: c.dailyLimit, globalDailyLimit: c.globalDailyLimit, chatDailyLimit: c.chatDailyLimit, chatGlobalDailyLimit: c.chatGlobalDailyLimit, chatHandoff: !!c.chatHandoff, chatEnvKey: !!(process.env.CHAT_API_KEY || process.env.ANTHROPIC_API_KEY),
   providers: c.providers.map(p => ({ id: p.id, label: p.label, kind: p.kind, model: p.model, baseUrl: p.baseUrl || '', roles: p.roles, enabled: p.enabled !== false,
     hasKey: !!p.apiKey, keyLast4: p.apiKey ? String(p.apiKey).slice(-4) : '' }))
 });
@@ -78,6 +78,7 @@ function cleanConfig(cur, body) {
   const errors = {};
   const next = { ...cur, features: { ...cur.features }, providers: cur.providers.map(p => ({ ...p })) };
   if (body.features !== undefined) next.features = { text: !!(body.features && body.features.text), photo: !!(body.features && body.features.photo), chat: !!(body.features && body.features.chat) };
+  if (body.chatHandoff !== undefined) next.chatHandoff = body.chatHandoff === true;
   for (const k of ['dailyLimit', 'globalDailyLimit', 'chatDailyLimit', 'chatGlobalDailyLimit']) {
     if (body[k] === undefined) continue;
     const n = Math.round(+body[k]);

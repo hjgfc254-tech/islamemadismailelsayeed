@@ -153,9 +153,15 @@ Any stack that can call HTTPS tools works (e.g. a SIP trunk + a realtime voice L
   names only; no other customer is reachable; the audit log stores ids, never phone numbers.
 - The caller should hear at the start that the call is handled by an automated assistant and may be recorded.
 
-## Chat employee in the Customer app («مساعد هنصلحلك», 2026-11-25)
+## Chat employee in the Customer app («موظف خدمة العملاء», 2026-11-25)
 
-An AI **chat** employee inside the Customer app (Support centre → «اسأل مساعد هنصلحلك»).
+An AI **chat** employee inside the Customer app (Support centre → «كلّم موظف خدمة العملاء»).
+
+**No human team yet (owner, 2026-11-25).** Human hand-off is off by default (`system/ai.chatHandoff`, Admin checkbox «التحويل لموظف بشري»). While it is off:
+- the `handoff_to_human` tool is not offered to the model;
+- the system prompt says no human is available, so the model must not promise a call or a transfer, and anything it cannot solve becomes a complaint the platform reviews;
+- the «كلّم موظف» button is hidden;
+- if a customer sincerely asks, it says it is the automated customer-service employee (transparency).
 
 - **Server:** `functions/src/support-chat.js`, session op `chat` (`history | send {text} | confirm {id, yes} | reset`).
 - **Providers:** `functions/src/chat-llm.js` is provider-neutral, so the owner chooses the provider. Supported kinds:
@@ -204,7 +210,7 @@ Every change is confirmed by the customer on a server-built card. It runs AS the
 - add a «بيتي» device;
 - fix the name (name only);
 - app-screen buttons;
-- hand-off to a human (ops ticket + alert, at most 3 per day).
+- hand-off to a human (ops ticket + alert, at most 3 per day) — only when `chatHandoff` is on.
 
 ### What it cannot do (abusable)
 

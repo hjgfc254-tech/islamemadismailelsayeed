@@ -75,6 +75,10 @@ test('DeepSeek: a full request — tools as the signed-in customer, nothing writ
   assert.equal(b0.messages[0].role, 'system');
   assert.deepEqual(b0.messages.slice(1).map((m) => m.role), ['user', 'system'], 'platform context = system message after the user message');
   assert.ok(b0.tools.every((t) => t.type === 'function' && t.function.parameters.additionalProperties === false));
+  assert.ok(!b0.tools.some((t) => t.function.name === 'handoff_to_human'), 'no human team by default → no hand-off tool');
+  assert.match(b0.messages[0].content, /موظف خدمة العملاء/);
+  assert.match(b0.messages[0].content, /NO other human employees/, 'never promises a human');
+  assert.equal(v.handoff, false, 'the «كلّم موظف» button stays hidden');
   assert.ok(!JSON.stringify(calls.map((c) => c.body)).includes('01012345678'), 'the customer phone never reaches the provider');
   assert.deepEqual(lastResults(calls[1].body, 2)[1].requests.map((r) => r.id), ['r1'], 'only own requests');
   assert.equal(await reqCount(b), before);
@@ -227,7 +231,7 @@ test('quotas, busy lock, hand-off and app-screen buttons', async () => {
   await send(b, 'u1', { action: 'send', text: 'a' });
   await send(b, 'u1', { action: 'send', text: 'b' });
   await assert.rejects(send(b, 'u1', { action: 'send', text: 'c' }), (e) => /حد الرسايل/.test(e.message));
-  const b2 = world();
+  const b2 = world({ ...AI_ON, chatHandoff: true });                  // the owner has a human team
   fakeOpenAI([{ text: 'اهلا' }]);
   await send(b2, 'u1', { action: 'send', text: 'a' });
   const d2 = await b2.getDoc('supportChats/u1');
@@ -236,6 +240,7 @@ test('quotas, busy lock, hand-off and app-screen buttons', async () => {
   await b2.setDoc('supportChats/u1', { ...d2, busyUntil: 0 });
   fakeOpenAI([{ calls: [['handoff_to_human', { summary: 'العميل زعلان من التأخير', reason: 'شكوى تأخير' }], ['open_screen', { screen: 'order', request_id: 'r1' }], ['open_screen', { screen: 'order', request_id: 'r2' }]] }, { text: 'موظف هيكلمك' }]);
   const v = await send(b2, 'u1', { action: 'send', text: 'عايز اكلم موظف' });
+  assert.equal(v.handoff, true);
   assert.equal(v.messages.at(-1).handoff, true);
   assert.deepEqual(v.messages.at(-1).links, [{ screen: 'order', id: 'r1' }], 'a button only for an own request');
   const tickets = await docs(b2, 'opsTickets');

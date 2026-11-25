@@ -16,7 +16,7 @@
     if (!host || !C()) return;
     const res = await C().request('GET', '/admin/ai');
     if (!res.ok) { host.innerHTML = `<p>${esc(errText(res))}</p>`; return; }
-    const work = { features: { ...res.data.features }, dailyLimit: res.data.dailyLimit, globalDailyLimit: res.data.globalDailyLimit, chatDailyLimit: res.data.chatDailyLimit, chatGlobalDailyLimit: res.data.chatGlobalDailyLimit, chatEnvKey: !!res.data.chatEnvKey,
+    const work = { features: { ...res.data.features }, dailyLimit: res.data.dailyLimit, globalDailyLimit: res.data.globalDailyLimit, chatDailyLimit: res.data.chatDailyLimit, chatGlobalDailyLimit: res.data.chatGlobalDailyLimit, chatHandoff: !!res.data.chatHandoff, chatEnvKey: !!res.data.chatEnvKey,
       providers: res.data.providers.map((p) => ({ ...p, apiKey: '' })) };
     const status = (m) => { const s = host.querySelector('[data-ai-status]'); if (s) s.textContent = m || ''; };
 
@@ -28,7 +28,8 @@
         <fieldset class="ord-dlg-in"><legend>تشغيل</legend>
           <label class="hs-grid-field"><span>«اكتب مشكلتك» (نص)</span><input type="checkbox" data-ai-f="text" ${work.features.text ? 'checked' : ''}></label>
           <label class="hs-grid-field"><span>«صوّر المشكلة» (صور — محتاج مزوّد بيفهم الصور زي Gemini)</span><input type="checkbox" data-ai-f="photo" ${work.features.photo ? 'checked' : ''}></label>
-          <label class="hs-grid-field"><span>«مساعد هنصلحلك» (شات خدمة عملاء ذكي — محتاج أي مزوّد عليه علامة «شات»؛ لو أكتر من واحد بيستخدم الأول ولو وقع يروح للي بعده${work.chatEnvKey ? ' أو المفتاح المحفوظ على السيرفر' : ''})</span><input type="checkbox" data-ai-f="chat" ${work.features.chat ? 'checked' : ''}></label>
+          <label class="hs-grid-field"><span>«موظف خدمة العملاء» (شات ذكي في مركز الدعم — محتاج أي مزوّد عليه علامة «شات»؛ لو أكتر من واحد بيستخدم الأول ولو وقع يروح للي بعده${work.chatEnvKey ? ' أو المفتاح المحفوظ على السيرفر' : ''})</span><input type="checkbox" data-ai-f="chat" ${work.features.chat ? 'checked' : ''}></label>
+          <label class="hs-grid-field"><span>التحويل لموظف بشري (فعّله لما يبقى عندك فريق خدمة عملاء — وإلا المشاكل اللي ماتتحلش بتتسجل شكوى)</span><input type="checkbox" data-ai-x="chatHandoff" ${work.chatHandoff ? 'checked' : ''}></label>
           <label class="hs-grid-field"><span>رسايل الشات لكل عميل في اليوم</span><input type="number" min="0" max="500" data-ai-n="chatDailyLimit" value="${esc(work.chatDailyLimit)}"></label>
           <label class="hs-grid-field"><span>رسايل الشات للمنصة كلها في اليوم (حماية للتكلفة)</span><input type="number" min="0" max="100000" data-ai-n="chatGlobalDailyLimit" value="${esc(work.chatGlobalDailyLimit)}"></label>
           <label class="hs-grid-field"><span>الحد لكل عميل في اليوم</span><input type="number" min="0" max="500" data-ai-n="dailyLimit" value="${esc(work.dailyLimit)}"></label>
@@ -57,6 +58,7 @@
     const onEdit = (e) => {
       const t = e.target, d = t.dataset;
       if (d.aiF) work.features[d.aiF] = t.checked;
+      if (d.aiX) work[d.aiX] = t.checked;
       if (d.aiN) work[d.aiN] = Number(t.value);
       if (d.aiP) { const p = row(t); p[d.aiP] = t.type === 'checkbox' ? t.checked : t.value; if (d.aiP === 'kind') { p.model = ''; render(); } }
       if (d.aiRole) { const p = row(t); p.roles = t.checked ? [...new Set(p.roles.concat(d.aiRole))] : p.roles.filter((r) => r !== d.aiRole); }
@@ -79,7 +81,7 @@
       }
       if (d.aiSave !== undefined) {
         b.disabled = true; status('جارٍ الحفظ…');
-        const r = await C().request('PATCH', '/admin/ai', { body: { features: work.features, dailyLimit: work.dailyLimit, globalDailyLimit: work.globalDailyLimit, chatDailyLimit: work.chatDailyLimit, chatGlobalDailyLimit: work.chatGlobalDailyLimit,
+        const r = await C().request('PATCH', '/admin/ai', { body: { features: work.features, dailyLimit: work.dailyLimit, globalDailyLimit: work.globalDailyLimit, chatDailyLimit: work.chatDailyLimit, chatGlobalDailyLimit: work.chatGlobalDailyLimit, chatHandoff: work.chatHandoff,
           providers: work.providers.map((p) => ({ id: p.id || undefined, label: p.label, kind: p.kind, model: p.model, baseUrl: p.baseUrl, apiKey: p.apiKey || undefined, roles: p.roles, enabled: p.enabled })) } });
         b.disabled = false;
         if (r.ok) { work.providers = r.data.providers.map((p) => ({ ...p, apiKey: '' })); render(); status('تم الحفظ. المفاتيح محفوظة على الخادم بس.'); }

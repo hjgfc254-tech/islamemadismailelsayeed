@@ -806,8 +806,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "cd6793721dfc6e5640f0337bc52c2cd16dadd8317cbdcb403294c5ab012c3daf",
-      "bytes": 10830
+      "sha256": "fab1a021bd9aff67b1a915682a1b4fd21ca4936dad1d499ffa07802c5ee73ad0",
+      "bytes": 11272
     },
     {
       "path": "apps/admin/modules/audit/audit-details.js",
@@ -3711,8 +3711,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "0537c399d9dc6f1d700c8ebb34acace50e2184d7591c65dc79d5475efe83d971",
-      "bytes": 12175
+      "sha256": "fb9970a40b6f1192830a2c9622cac831397557b56f4fabb50c62bf86e06c0ca9",
+      "bytes": 12445
     },
     {
       "path": "apps/customer/pages/support.page.js",
@@ -3724,7 +3724,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "9130020ad1615f088636bc244aa1f62deac970ae88c7471fcaabef28e2b308ae",
+      "sha256": "c28cded8ac781adfbd7261de7015f3caa8443ea87059ae0ff559341ebac3f3cd",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3763,7 +3763,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 22621
+      "bytes": 22591
     },
     {
       "path": "apps/customer/pages/trust-features.js",
@@ -9687,8 +9687,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "081f776ee15b45c6b2cecd7a81faefd36b095557867b8dde48bd8f6cbb8383ea",
-      "bytes": 18743
+      "sha256": "57fb4b2b1c1f75335f4120be589246f5433de7bd5216a76f774ba0ec963e1fe2",
+      "bytes": 19345
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md",
@@ -9901,7 +9901,7 @@
       "next_action": "Read only when relevant to the task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added or verified during engineering environment normalization.",
-      "sha256": "097257f47816ea9169428fcab14cff5be13548f1ee4f4c9dbc7289f80e06aeca",
+      "sha256": "2f499112de8599844c6f512f36b5657c1755f93a414582affca60c252392897a",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "START_HERE.md",
@@ -9910,7 +9910,7 @@
       "file_behavior": "See file contents and relevant domain map.",
       "completion_definition": "Responsibility and behavior are verified; checks pass.",
       "actual_status_ar": "مضاف إلى الجرد الحالي.",
-      "bytes": 9987
+      "bytes": 10033
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -11792,8 +11792,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "e9e724eb1f6cb80a60d964ffca2b8d8fccb45687324fab8d2019651f53f8788d",
-      "bytes": 29453
+      "sha256": "683af534f6e417f54cab769f03bf4f6cd9082ee346850252226bf8b22c7acaed",
+      "bytes": 29371
     },
     {
       "path": "functions/src/ai.js",
@@ -11804,8 +11804,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "332147831f2a1b5aba05b3d43a561a2e31d79f13ab50eb8f8a117e0277b01c49",
-      "bytes": 16636
+      "sha256": "b03ba26df8bd69a252574a287189c76bf56f1391972c2aeb61454cde7152bab8",
+      "bytes": 16787
     },
     {
       "path": "functions/src/alerts-adapter.js",
@@ -12020,8 +12020,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "f9f33f0c0e1f3d9901238e7cf8860cc8dc7c32a1e795139298144c00aa70e7e7",
-      "bytes": 49067
+      "sha256": "3ac7456f2090054cc4c7ecb8f61065b61b18ad968133ec05839f796e5d04d155",
+      "bytes": 50248
     },
     {
       "path": "functions/src/tech-status.js",
@@ -12169,8 +12169,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "89b3c2c8ae0c171cd9d1427e25b92d48c2eee162ca2833e7fef1ae4559f26a9e",
-      "bytes": 18907
+      "sha256": "4cd602dc0862c58fbe82fce218c4c73eee79de4b0109aa3f5d082c23798dd0fe",
+      "bytes": 19014
     },
     {
       "path": "legal/terms.html",
@@ -12498,7 +12498,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "6941ce587b97f99aafc836385a9c0f78a7a45024277287e64e361424025ad263",
+      "sha256": "6f175e621dbdf678f3b9b0dbc1dc4b89c5537eb5404311abb009f1fbd9a90670",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12546,7 +12546,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "33a2c390ca6f6e55bc9c37d7e8440c3db9a09d96e1cff8330aca3a4bdd8b46c9",
+      "sha256": "b028ede0aa38de7986ab0adbaf2f055183a352ee0677eb3cf3c14ee148402990",
       "bytes": 196
     },
     {
@@ -17354,8 +17354,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "fb43d91e6c4869c36fd67ca2df7ae16cc5a09535ab11cdf32397d9098ebed943",
-      "bytes": 20405
+      "sha256": "3bd23e2d44cc4b9726bdc962de76432743472d76fb359fcd774194a6a8c958dd",
+      "bytes": 20894
     },
     {
       "path": "tests/unit/support-contacts-policy.test.js",

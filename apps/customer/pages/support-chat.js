@@ -1,5 +1,6 @@
 /**
- * MODULE: support-chat (HSSupportChat) — «مساعد هنصلحلك», the AI support employee chat (2026-11-25).
+ * MODULE: support-chat (HSSupportChat) — «موظف خدمة العملاء», the AI customer-service chat (2026-11-25).
+ * The «كلّم موظف» button shows only when the owner switched on the human hand-off (server answers {handoff}).
  * Live mode: every message goes to the server (session op `chat`, functions/src/support-chat.js) which runs the model,
  * the tools and all the security layers; this file only draws the conversation. Replies are rendered as TEXT (esc), never HTML.
  * Prepared actions arrive as server-built cards; nothing is created / cancelled / sent until the customer presses the
@@ -29,7 +30,7 @@
     if (/شكو|زعلان|وحش/.test(t)) return 'آسفين جدًا. ابعت الشكوى من «مركز الدعم» ← «تقديم شكوى» وهنتابعها.';
     if (/دفع|فلوس|سعر|بكام/.test(t)) return 'الدفع كاش للفني بعد ما الشغل يخلص، والسعر بيظهر لك قبل ما توافق ومايتغيرش إلا بموافقتك.';
     if (/عايز|محتاج|فني|تصليح/.test(t)) return 'تمام! اضغط «اطلب خدمة الآن» من الرئيسية واختار القسم — في النسخة الحقيقية أقدر أجهّز لك الطلب هنا وتأكده بضغطة.';
-    return 'أنا المساعد التجريبي. في النسخة الحقيقية بفهم كلامك وبتابع طلباتك وبجهّز طلب أو إلغاء أو شكوى تأكدها بضغطة.';
+    return 'دي نسخة تجريبية. في النسخة الحقيقية بفهم كلامك وبتابع طلباتك وبجهّز طلب أو إلغاء أو شكوى تأكدها بضغطة.';
   }
 
   /* ── drawing ── */
@@ -48,9 +49,9 @@
     if (!box) return;
     const list = box.querySelector('.hc-list');
     const empty = !state.messages.length;
-    list.innerHTML = (empty ? `<li class="hc-msg bot"><p>أهلًا بيك 👋 أنا مساعد هنصلحلك. قولّي محتاج إيه — أتابع طلبك، أجهّز لك طلب جديد، ألغي، أو أوصّلك لموظف.</p></li>` : '')
+    list.innerHTML = (empty ? `<li class="hc-msg bot"><p>أهلًا بيك 👋 معاك خدمة عملاء هنصلحلك. قولّي محتاج إيه — أتابع طلبك، أجهّز لك طلب جديد، ألغي، أو أحل أي مشكلة في طلبك.</p></li>` : '')
       + state.messages.map(bubble).join('') + state.cards.map(card).join('')
-      + (state.busy ? '<li class="hc-msg bot typing" aria-label="المساعد بيكتب"><span class="ai-dots" aria-hidden="true"><i></i><i></i><i></i></span></li>' : '');
+      + (state.busy ? '<li class="hc-msg bot typing" aria-label="خدمة العملاء بتكتب"><span class="ai-dots" aria-hidden="true"><i></i><i></i><i></i></span></li>' : '');
     box.querySelector('.hc-quick').hidden = !empty || state.busy;
     box.querySelector('[data-chat-send]').disabled = state.busy;
     list.scrollTop = list.scrollHeight;
@@ -60,8 +61,8 @@
     box = document.createElement('div');
     box.id = 'hs-chat'; box.className = 'hc'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-labelledby', 'hcT');
     box.innerHTML = `<div class="hc-panel">
-      <header class="hc-head"><span class="hc-av" aria-hidden="true">${I('chat')}</span><span class="hc-who"><b id="hcT">مساعد هنصلحلك</b><small>${live() ? 'بيرد فورًا — وأي إجراء بيتنفذ بتأكيدك' : 'نسخة تجريبية — ردود ثابتة على جهازك'}</small></span>
-        <button type="button" class="hc-ic" data-chat-human aria-label="كلّم موظف">${I('user')}</button><button type="button" class="hc-ic" data-chat-reset aria-label="محادثة جديدة"><span aria-hidden="true">↻</span></button><button type="button" class="hc-ic" data-chat-close aria-label="إغلاق">✕</button></header>
+      <header class="hc-head"><span class="hc-av" aria-hidden="true">${I('chat')}</span><span class="hc-who"><b id="hcT">موظف خدمة العملاء</b><small>${live() ? 'متاح 24 ساعة — وأي إجراء بيتنفذ بتأكيدك' : 'نسخة تجريبية — ردود ثابتة على جهازك'}</small></span>
+        <button type="button" class="hc-ic" data-chat-human aria-label="كلّم موظف" hidden>${I('user')}</button><button type="button" class="hc-ic" data-chat-reset aria-label="محادثة جديدة"><span aria-hidden="true">↻</span></button><button type="button" class="hc-ic" data-chat-close aria-label="إغلاق">✕</button></header>
       <ol class="hc-list" role="log" aria-live="polite" aria-label="المحادثة"></ol>
       <div class="hc-quick">${QUICK.map((q) => `<button type="button" data-chat-q="${E(q)}">${E(q)}</button>`).join('')}</div>
       <form class="hc-form" data-chat-form><label class="sr-only" for="hcIn">رسالتك</label><textarea id="hcIn" rows="1" maxlength="800" placeholder="اكتب رسالتك…" enterkeyhint="send"></textarea>
@@ -80,7 +81,7 @@
     if (!live()) return null;
     return root.HSBackend.chat(payload);
   }
-  const apply = (r) => { if (r) { state.messages = r.messages || []; state.cards = r.cards || []; } };
+  const apply = (r) => { if (r) { state.messages = r.messages || []; state.cards = r.cards || []; const h = box && box.querySelector('[data-chat-human]'); if (h) h.hidden = r.handoff !== true; } };
 
   async function send(text) {
     const t = String(text || '').trim().slice(0, 800);
@@ -130,7 +131,7 @@
 
   async function open() {
     if (!enabled()) { if (root.Support && root.Support.openContact) root.Support.openContact(''); return; }
-    if (live() && !(typeof me === 'function' && me())) { say('سجّل الدخول الأول عشان المساعد يقدر يتابع طلباتك'); if (typeof show === 'function') show('account'); return; }
+    if (live() && !(typeof me === 'function' && me())) { say('سجّل الدخول الأول عشان خدمة العملاء تقدر تتابع طلباتك'); if (typeof show === 'function') show('account'); return; }
     lastFocus = document.activeElement;
     if (!box) build();
     box.hidden = false; document.documentElement.classList.add('hc-open');
