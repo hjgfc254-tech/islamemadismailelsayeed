@@ -8,3 +8,12 @@
 [role="tab"].adm-btn[aria-selected="true"]{background:var(--brand-primary);border-color:var(--brand-primary);color:var(--on-brand)}
 .rl-table th{background:var(--brand-primary-soft);color:var(--brand-primary);font-weight:700}
 .rl-table tbody tr:hover td{background:var(--surface-secondary)}
+
+/* ═════ round 10 (2026-11-25): design micro-audit 2 — tokens only ═════ */
+/* list filters / grid forms: inputs and selects fell back to the browser look (square, inset border) */
+.hs-grid-field input:not([type=checkbox]):not([type=radio]),.hs-grid-field select,.hs-grid-field textarea{padding-inline:var(--sp-3);border:1px solid var(--border-default);border-radius:var(--r-md);background:var(--surface-primary);color:var(--text-primary);font:inherit}
+.hs-grid-field textarea{padding-block:var(--sp-2)}
+.hs-grid-field :is(input,select,textarea):focus-visible{outline:none;border-color:var(--brand-primary);box-shadow:var(--focus-ring)}
+/* status pills in tables broke unevenly over 2–3 lines — balanced lines (nowrap pushed the actions column off-screen) */
+.hs-grid-table .hs-badge{text-wrap:balance;line-height:1.35}/* tables: text sat at the top of the row while the row's buttons were centred — one middle line */
+.rl-table td{vertical-align:middle}

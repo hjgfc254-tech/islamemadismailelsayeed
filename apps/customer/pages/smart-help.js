@@ -18,6 +18,8 @@
   const I = (n) => { try { return typeof ic === 'function' ? ic(n) : ''; } catch (e) { return ''; } };
   const B = (n) => { try { return (root.HSBrandIcons && root.HSBrandIcons.svg(n)) || ''; } catch (e) { return ''; } };
   const cat = () => (typeof CAT !== 'undefined' ? CAT : null);
+  /* the device's own icon (as on the request's device step) — the category icon made AC, fridge and heater look the same */
+  const DI = (it) => { try { return typeof icp === 'function' && typeof icItem === 'function' ? icp(icItem(it, it.cat), 'dev') : ''; } catch (e) { return ''; } };
 
   /* ───────── emergency ───────── */
   const EMG = {
@@ -76,7 +78,7 @@
     if (!step) {
       const list = DX_DEVICES.map((x) => C.item(x)).filter(Boolean);
       sheet(`${dots(0)}<h4>${I('search')} شخّص مشكلتك في 3 خطوات</h4><div class="sub">الجهاز أو المكان اللي فيه المشكلة إيه؟</div>
-        <div class="dx-grid">${list.map((it) => `<button type="button" class="dx-pick" data-dx-item="${E(it.id)}">${B(it.cat) || I('wrench')}<span>${E(it.name)}</span></button>`).join('')}
+        <div class="dx-grid">${list.map((it) => `<button type="button" class="dx-pick" data-dx-item="${E(it.id)}">${DI(it) || B(it.cat) || I('wrench')}<span>${E(it.name)}</span></button>`).join('')}
         <button type="button" class="dx-pick dx-other" data-act="newReq">${B('all')}<span>حاجة تانية</span></button></div>`);
       return;
     }

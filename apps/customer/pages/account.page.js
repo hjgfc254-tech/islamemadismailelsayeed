@@ -122,7 +122,7 @@ const Account = (() => {
   const tabNotifs = () => {
     const u = meUser(); if (!u) return loginPrompt();
     const ns = MP.notesFor('customer:' + u.id).slice(0, 30);
-    if (!ns.length) return `<div class="empty">${safeIc('bell')}<p>لا توجد إشعارات بعد<br><small>ستصلك إشعارات حالة الطلب هنا</small></p></div>`;
+    if (!ns.length) return `<div class="empty">${safeIc('bell')}<p>لسه مفيش إشعارات<br><small>هنبلغك هنا بكل تحديث على طلباتك.</small></p></div>`;
     return `<div class="plist" style="gap:8px">${ns.map(n => `
       <div class="card2 glass neon" style="padding:12px">
         <div class="top"><b>${safeIc('bell')} إشعار</b>${!n.read ? '<span class="tag">جديد</span>' : ''}</div>

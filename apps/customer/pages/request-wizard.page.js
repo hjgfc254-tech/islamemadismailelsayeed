@@ -449,8 +449,9 @@ function dateChipsHtml(current){
   const today = new Date(); today.setHours(0,0,0,0);
   for (let i = 0; i < 7; i++) {
     const d = new Date(today); d.setDate(today.getDate() + i);
-    const iso = d.toISOString().slice(0,10);
-    const lbl = i === 0 ? 'النهاردة' : i === 1 ? 'غدًا' : d.toLocaleDateString('ar-EG', {weekday:'short', day:'numeric'});
+    /* local calendar day (toISOString is UTC: in Cairo it named the day before, so «الجمعة» was selected for Thursday) */
+    const iso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+    const lbl = i === 0 ? 'النهارده' : i === 1 ? 'بكرة' :d.toLocaleDateString('ar-EG', {weekday:'short', day:'numeric'});
     out.push(`<button type="button" class="chip date-chip ${current===iso?'on':''}" data-wz-date="${iso}" aria-pressed="${current===iso}">${_esc(lbl)}</button>`);
   }
   return `<div class="chips" role="group" aria-label="اختيار اليوم المفضل">${out.join('')}</div>`;
@@ -479,8 +480,8 @@ async function renderAttachmentsBlock(w){
         <button type="button" class="th add" data-act="wzAddVideo">${safeIc('file-up')}<small>فيديو</small></button>
       ` : ''}
     </div>
-    <small class="hint">الحد الأقصى ${limits.maxFiles} مرفقات • صورة ≤ ${limits.maxImageMB}MB • فيديو ≤ ${limits.maxVideoMB}MB</small>
-    <div class="need">${safeIc('info')}<span>${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'الصور بتتحفظ على جهازك، وتقدر تفرّجها للفني وقت الزيارة. تقدر تحذفها قبل إرسال الطلب.':'المرفقات تُخزَّن على جهازك فقط في الوضع التجريبي، ويمكن حذفها قبل إرسال الطلب.'}</span></div>
+    <small class="hint">لحد ${limits.maxFiles} ملفات • الصورة لحد <bdi>${limits.maxImageMB} MB</bdi> • الفيديو لحد <bdi>${limits.maxVideoMB} MB</bdi></small>
+    <div class="need">${safeIc('info')}<span>${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'الصور بتتحفظ على جهازك، وتقدر تفرّجها للفني وقت الزيارة. تقدر تحذفها قبل إرسال الطلب.':'في الوضع التجريبي الملفات بتتحفظ على جهازك بس، وتقدر تمسحها قبل ما تبعت الطلب.'}</span></div>
   </div>`;
 }
 
@@ -612,8 +613,8 @@ Object.assign(screens, {
         <div><label for="wz-detail">الدور / الشقة / تفاصيل</label><input id="wz-detail" value="${_esc(w.address.detail)}" placeholder="الدور، الشقة، علامة مميزة"></div>
         <div><label for="wz-addr-type">نوع العنوان</label><select id="wz-addr-type"><option value="home" ${w.address.type==='home'?'selected':''}>منزل</option><option value="work" ${w.address.type==='work'?'selected':''}>عمل</option><option value="other" ${w.address.type==='other'?'selected':''}>أخرى</option></select></div>
         <div><label for="wz-label">اسم مختصر (اختياري)</label><input id="wz-label" value="${_esc(w.address.label)}" placeholder="مثل: البيت، المكتب"></div>
-        <label class="hint" style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" id="wz-save-addr" ${w.address.save?'checked':''} style="width:auto"> احفظ هذا العنوان لاستخدامه لاحقًا</label>
-        <label class="hint" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="wz-default-addr" ${w.address.default?'checked':''} style="width:auto"> اجعله العنوان الافتراضي</label>
+        <label class="hint" style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" id="wz-save-addr" ${w.address.save?'checked':''} style="width:auto"> احفظ العنوان ده للمرات الجاية</label>
+        <label class="hint" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="wz-default-addr" ${w.address.default?'checked':''} style="width:auto"> خليه العنوان الأساسي</label>
       </div>`;
     }
 
@@ -626,11 +627,11 @@ Object.assign(screens, {
       const quickHtml = `<div class="chips quick-when" role="group" aria-label="اختيار سريع للموعد">${QUICK.map(([l, v]) => `<button type="button" class="chip ${qOn(v) ? 'on' : ''}" data-wz-quick="${v}" aria-pressed="${qOn(v)}">${_esc(l)}</button>`).join('')}</div>`;
       body = `<div class="form">
         ${quickHtml}
-        <label class="hint" style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><input type="checkbox" id="wz-flexible" ${s.flexible?'checked':''} style="width:auto"> موعد مرن (سأتفق مع الفني)</label>
+        <label class="hint" style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><input type="checkbox" id="wz-flexible" ${s.flexible?'checked':''} style="width:auto"> موعد مرن (هتفق مع الفني)</label>
         <div id="wz-date-wrap" style="${s.flexible ? 'display:none' : ''}">
           <label for="wz-date-input">اليوم المفضل *</label>
           ${dateChipsHtml(s.date)}
-          <div style="margin-top:10px"><input type="date" id="wz-date-input" value="${_esc(s.date)}" min="${new Date().toISOString().slice(0,10)}"></div>
+          <div style="margin-top:10px"><input type="date" id="wz-date-input" value="${_esc(s.date)}" min="${isoIn(0)}"></div>
         </div>
         <div id="wz-period-wrap" style="${s.flexible ? 'display:none' : ''}">
           <span class="wz-field-label" id="wz-period-label">الفترة المفضلة *</span>
@@ -777,7 +778,7 @@ function renderAttachmentsBlockSync(w){
         <button type="button" class="th add" data-act="wzAddVideo">${safeIc('file-up')}<small>فيديو</small></button>
       ` : ''}
     </div>
-    <small class="hint">الحد الأقصى ${limits.maxFiles} مرفقات • صورة ≤ ${limits.maxImageMB}MB • فيديو ≤ ${limits.maxVideoMB}MB</small>
+    <small class="hint">لحد ${limits.maxFiles} ملفات • الصورة لحد <bdi>${limits.maxImageMB} MB</bdi> • الفيديو لحد <bdi>${limits.maxVideoMB} MB</bdi></small>
   </div>`;
 }
 

@@ -55,3 +55,13 @@
 .pv-toast{background:var(--hs-navy);color:#fff;border-color:var(--hs-navy);border-radius:999px}
 
 @media (prefers-reduced-motion:reduce){.pv-account{transition:none}}
+
+/* ═════ round 10 (2026-11-25): design micro-audit 2 — small, safe fixes; identity unchanged ═════ */
+/* job stage strip: on phones «في الطريق» and «جاري التنفيذ» ran together — smaller, balanced labels, a gap between columns */
+.pv-journey{column-gap:6px}
+.pv-journey li span{display:block;line-height:1.3;text-wrap:balance}
+@media (max-width:480px){.pv-journey li{font-size:11px}}/* request details: the status badge sat twice (page head + card) and squeezed the title to «فحص لوحة / كهرباء» — keep the card's */
+.pv-section-head>.pv-status{display:none}
+/* request card: a long status badge pushed the title into a narrow column — the badge wraps under it when space is short */
+.pv-request>header{flex-wrap:wrap;row-gap:6px}
+.pv-request>header>div{flex:1 1 160px;min-width:0}

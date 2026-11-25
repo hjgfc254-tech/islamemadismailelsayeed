@@ -385,7 +385,7 @@ const HS_SEARCH = (() => {
     if (!r.total) return renderEmpty(q, opts);
     const parts = [];
     if (r.fuzzy && r.didYouMean) {
-      parts.push(`<div class="need">${safeIc('info')}<span>عرضنا نتائج «${safeEsc(r.didYouMean)}» — لو تقصد شيئًا آخر عدّل البحث.</span></div>`);
+      parts.push(`<div class="need">${safeIc('info')}<span>عرضنا نتائج «${safeEsc(r.didYouMean)}» — لو قصدك حاجة تانية عدّل البحث.</span></div>`);
     } else if (r.partial) {
       parts.push(`<div class="need">${safeIc('info')}<span>مفيش تطابق كامل لكل كلماتك، دي أقرب النتائج.</span></div>`);
     }
@@ -393,7 +393,7 @@ const HS_SEARCH = (() => {
       const g = r.groups[k], S = SECTION[k];
       if (!g.length) return;
       parts.push(`<div class="lbl">${S.t} (${g.length})</div><div class="plist">${g.slice(0, S.max).map(S.row).join('')}</div>`);
-      if (g.length > S.max) parts.push(`<div class="hs-more">+${g.length - S.max} نتيجة أخرى — أضف كلمة لتضييق البحث</div>`);
+      if (g.length > S.max) parts.push(`<div class="hs-more">+${g.length - S.max} نتيجة تانية — زوّد كلمة عشان تضيّق البحث</div>`);
     });
     return parts.join('');
   };
@@ -420,12 +420,12 @@ const HS_SEARCH = (() => {
     }
     const cats = CAT.categories().map(c => `<button class="chip" type="button" data-hs-hit="cat|${safeEsc(c.id)}">${safeEsc(c.name)}</button>`).join('');
     const empty = (typeof UIK !== 'undefined' && UIK.empty)
-      ? UIK.empty('search', `مفيش نتائج لـ «${safe}»`, 'جرّب كلمة مختلفة أو تصفّح الأقسام، أو أرسل طلبًا عامًا وسيتواصل معك الفني.')
-      : `<div class="empty">${safeIc('search')}<p>مفيش نتائج لـ «${safe}»<br><small>جرّب كلمة مختلفة، أو أرسل طلبًا عامًا وسيتواصل معك الفني.</small></p></div>`;
+      ? UIK.empty('search', `مفيش نتائج لـ «${safe}»`, 'جرّب كلمة تانية أو اتفرّج على الأقسام، أو ابعت طلب عام والفني هيكلمك.')
+      : `<div class="empty">${safeIc('search')}<p>مفيش نتائج لـ «${safe}»<br><small>جرّب كلمة تانية، أو ابعت طلب عام والفني هيكلمك.</small></p></div>`;
     return `${empty}${dym}${related}
       <div class="lbl">تصفّح الأقسام</div><div class="chips">${cats}</div>
-      <button class="cta" data-hs-hit="generic|" data-hs-generic="1">${safeIc('send')} أرسل طلبًا عامًا</button>
-      <button class="cta ghost" data-hs-hit="desc|" data-hs-desc="1">${safeIc('edit')} اكتب وصف مشكلتك يدويًا</button>`;
+      <button class="cta" data-hs-hit="generic|" data-hs-generic="1">${safeIc('send')} ابعت طلب عام</button>
+      <button class="cta ghost" data-hs-hit="desc|" data-hs-desc="1">${safeIc('edit')} اكتب مشكلتك بإيدك</button>`;
   };
 
   const renderSuggestions = (q, limit = 8) => {

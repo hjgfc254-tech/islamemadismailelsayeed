@@ -27,20 +27,20 @@
 
     /* عنوان الحالة */
     const nextStepCopy = ({
-      received:'تم استلام طلبك. ستبدأ المنصة البحث عن مقدم خدمة مناسب.',
-      searching:'يجري البحث عن مقدم خدمة مناسب لطلبك.',
-      sent:'تم إرسال الطلب إلى مقدم الخدمة. انتظر رده.',
-      accepted:'راجع اقتراح الموعد إن وُجد، أو انتظر تأكيد مقدم الخدمة.',
-      scheduled:'تم تأكيد الموعد. تابع تحديثات مقدم الخدمة قبل الزيارة.',
-      enroute:'مقدم الخدمة سجّل أنه في الطريق إليك.',
-      arrived:'مقدم الخدمة سجّل الوصول. يمكنك متابعة بدء تنفيذ الخدمة.',
-      started:'الخدمة قيد التنفيذ. قد يصلك عرض سعر إذا احتاج العمل ذلك.',
-      quote:'هناك عرض سعر ينتظر قرارك. راجعه قبل الموافقة أو الرفض.',
-      completed:'سجّل مقدم الخدمة إتمام العمل. أكّد الإتمام إذا كانت الخدمة قد انتهت.',
-      closed:'تم إغلاق الطلب. يمكنك الرجوع إلى تفاصيله وتقييم الخدمة إن كان متاحًا.',
-      cancelled:'تم إلغاء هذا الطلب.',
-      failed:'تعذر تنفيذ هذا الطلب.'
-    })[r.status] || 'تابع سجل الطلب لمعرفة آخر تحديث.';
+      received:'استلمنا طلبك، وهنبدأ ندوّر لك على فني مناسب.',
+      searching:'بندوّر لك دلوقتي على فني مناسب لطلبك.',
+      sent:'بعتنا طلبك للفني، وهنبلغك أول ما يرد.',
+      accepted:'الفني قبل طلبك — راجع الموعد اللي اقترحه، أو استنى تأكيده.',
+      scheduled:'الموعد اتأكد. هتلاقي تحديثات الفني هنا قبل الزيارة.',
+      enroute:'الفني في الطريق ليك.',
+      arrived:'الفني وصل، وهيبدأ الشغل.',
+      started:'الشغل شغّال. لو احتاج حاجة زيادة هيوصلك عرض سعر توافق عليه الأول.',
+      quote:'في عرض سعر مستني ردك — راجعه قبل ما توافق أو ترفض.',
+      completed:'الفني قال إن الشغل خلص. أكّد الإتمام لو كل حاجة تمام.',
+      closed:'الطلب اتقفل. تقدر ترجع لتفاصيله وتقيّم الخدمة.',
+      cancelled:'الطلب ده اتلغى.',
+      failed:'للأسف الطلب ده ماتنفذش.'
+    })[r.status] || 'تابع مسار الطلب تحت عشان تعرف آخر تحديث.';
     const statusBar = failed
       ? `<div class="need warn">${ic('st-failed')}<span>${STATUS_LABEL.failed}${r.failureReason?` — ${esc(r.failureReason)}`:''}</span></div>`
       : cancelled
@@ -110,7 +110,7 @@
       ? `<div class="need warn">${ic('clock')}<span>مقدم الخدمة اقترح الموعد: <b>${fmtDT(r.proposal.at)}</b></span></div>
          <button class="cta" data-act="custConfirm" data-id="${id}">${ic('check')} موافقة على الموعد المقترح</button>`
       : r.status === 'accepted' && !r.proposal
-      ? `<div class="need">${ic('info')}<span>بانتظار تأكيد مقدم الخدمة للموعد.</span></div>`
+      ? `<div class="need">${ic('info')}<span>مستنيين الفني يأكد الموعد.</span></div>`
       : r.agreedAt
       ? `<div class="need">${ic('calendar')}<span>الموعد المتفق عليه: <b>${fmtDT(r.agreedAt)}</b></span></div>`
       : '';
@@ -188,7 +188,7 @@
     /* Progress is driven by the provider from the Provider app (shared store); the customer has no provider-side controls. */
     const sim = (!cancelled && !failed && !closed && !['completed'].includes(r.status)) ? `<div class="demo-banner" style="margin-top:14px">${ic('info')}<span>يحدّث مقدم الخدمة حالة الطلب من تطبيقه.</span></div>` : '';
 
-    return `<div class="screen">${head('متابعة الطلب #'+esc(r.no), true)}${demoBanner()}
+    return `<div class="screen">${head('متابعة الطلب <bdi class="code">#'+esc(r.no)+'</bdi>', true)}${demoBanner()}
       ${uiOfflineIfNeeded()}
       ${journey}
       ${statusBar}

@@ -762,3 +762,45 @@ html.hc-open{overflow:hidden}
 #view .prov-card .prov-avatar{color:#fff!important}
 /* tracking chat: the heading carried the page-level top margin inside its card (an empty band above it) */
 #view .chat-box>.sec-title{margin-top:0}
+
+/* ═════ round 10 (2026-11-25): design micro-audit 2 — small, safe fixes; identity unchanged ═════ */
+/* wizard «التفاصيل»: the choice path was repeated above every part of the same screen — keep the first one */
+#view .wz-part~.wz-part .crumbs{display:none}
+/* review: the promo code box was a bare browser input — same size, border and corners as the other fields */
+#view .promo-field input{width:100%;height:50px;padding:0 14px;box-sizing:border-box;background:var(--surface-primary);border:1.5px solid var(--border-default);border-radius:var(--r-md);color:var(--text-primary);font-size:var(--fs-md);outline:0}
+#view .promo-field input:focus{border-color:var(--hs-navy);box-shadow:0 0 0 3px rgba(11,31,58,.12)}
+/* the Arabic hint inside the LTR code box read «RAMADAN :مثال»; RTL until the customer types */
+#view .promo-field input:placeholder-shown{direction:rtl;text-align:right;letter-spacing:0}
+#view .promo-field label{font-weight:700;color:var(--text-primary)}
+/* tracking stage strip: at phone widths the labels ran into each other («في الطريق جاري التنفيذ») — smaller, balanced, own column */
+#view .journey li span{display:block;max-width:100%;padding-inline:1px;line-height:1.3;text-wrap:balance}
+@media (max-width:480px){#view .journey li{font-size:11px}#view .journey{padding-inline:6px}}
+/* order timeline: label, note and date fought for one line (dates broke over 3 lines at 390px) — label first, details under it */
+#view ol.tl[aria-label="السجل الزمني للطلب"] li{display:grid;grid-template-columns:28px minmax(0,1fr);column-gap:12px;row-gap:2px;align-items:start;padding:6px 0}
+#view ol.tl[aria-label="السجل الزمني للطلب"] li>i{grid-row:1/span 3}
+#view ol.tl[aria-label="السجل الزمني للطلب"] li>span{grid-column:2;line-height:1.4;padding-top:3px}
+#view ol.tl[aria-label="السجل الزمني للطلب"] li>small,#view ol.tl[aria-label="السجل الزمني للطلب"] li>time{grid-column:2;margin:0;font-size:12px;font-weight:400;line-height:1.4;color:var(--text-muted)}
+#view ol.tl[aria-label="السجل الزمني للطلب"] li:not(:last-child)::after{top:36px;bottom:-4px;height:auto}
+/* tracking chat: the message box was a bare square input next to the rounded send button */
+#view .chat-form input{min-height:48px;padding:0 14px;box-sizing:border-box;background:var(--surface-primary);border:1.5px solid var(--border-default);border-radius:var(--r-md);color:var(--text-primary);font-size:var(--fs-md);outline:0}
+#view .chat-form input:focus{border-color:var(--hs-navy);box-shadow:0 0 0 3px rgba(11,31,58,.12)}
+#view .chat-form .cta{min-height:48px;border-radius:var(--r-md)}
+/* light theme: a few notes still carried the old dark-theme mint (#6ee7b7, ~1.5:1 on white) inline — readable success green */
+#view [style*="6ee7b7"],#sheet [style*="6ee7b7"]{color:var(--success)!important}
+#view [style*="6ee7b7"] svg,#sheet [style*="6ee7b7"] svg{--ic-a:var(--success)}
+/* provider card: «• ٣٤٢ خدمة منجزة» broke inside its piece next to the stars — pieces wrap whole */
+#view .prov-inline .prov-head{min-width:0}
+#view .prov-inline .prov-stats{flex-wrap:wrap;white-space:nowrap;column-gap:6px;row-gap:2px}
+/* saved addresses: the non-default card dropped «حذف» onto its own full-width row — one even row of actions on every card */
+#view .addr-card .acts{display:flex;flex-wrap:nowrap;gap:8px}
+#view .addr-card .acts button{flex:1 1 0;min-width:0;min-height:44px;padding-inline:6px;white-space:nowrap}
+/* desktop: sheets (menu, notifications, support, emergency…) stretched across the whole 1280px screen — a centred panel */
+@media (min-width:900px){#sheet{max-width:640px;margin-inline:auto}}
+/* support chat: the «كلّم موظف» button is [hidden] while hand-off is off, but .hc-ic{display:grid} still drew it;
+   on 320px the title then broke over three lines */
+.hc-ic[hidden]{display:none}
+.hc-head{gap:8px}
+.hc-who b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hc-who small{line-height:1.4}
+/* desktop: with the narrower sheet the floating help button stayed visible (but unusable) beside it — hide it while a sheet is open */
+body:has(#app.open) .help-fab{visibility:hidden}
