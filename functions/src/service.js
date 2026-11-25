@@ -9,6 +9,26 @@
  * }
  * Reads are operation-scoped (plan.js): a GET runs without a transaction; a mutation runs in ONE transaction that reads
  * only the documents its rules need and writes only what changed.
+ *
+ * Called by: functions/index.js (`api`, `session`, `offersClock` → tickOffers, `alertsClock` → scanOps,
+ *            `agentApi` → agentHttp). Map of every route and session op: docs/MAINTENANCE_GUIDE.md §2.
+ * Collections written here: rateLimits, idempotency, audit, users, pushTokens, migrations, system/public, plus every
+ *            marketplace collection through PartialDb.commit (partial.js / store.js).
+ *
+ * `api` dispatch order (first match wins; see api() below):
+ *   1. /telemetry/errors, /admin/client-errors*   telemetry.js     no transaction, in-memory rate limit (index.js)
+ *   2. /admin/digest*                             digest-admin.js  code-unlocked admin (not callcenter)
+ *   3. /agent/*                                   agent-gateway.js code-unlocked admin with callcenter.* permissions
+ *   4. /admin/tech/*                              tech-status.js   owner | tech role (checked inside)
+ *   5. /admin/alerts*, /admin/tickets*            alerts.js        code-unlocked admin (rules: shared ops-core / ops-routes)
+ *   — write rate limit (60 / min per uid or IP) and the identity fix-ups (provider registration, phone changes) —
+ *   inside ONE transaction (GET: no transaction):
+ *   6. /admin/ai*                                 ai.js            admin actor (never callcenter)
+ *   7. /admin/content, /admin/media*              content.js       admin actor (never callcenter)
+ *   8. admin-extra.PATH_RE                        admin-extra.js   admin actor (tech: /admin/security only)
+ *   9. /admin/employees*, /admin/rbac*            workforce.js     admin actor
+ *  10. GET /admin/summary                         adminSummary()   aggregation counts
+ *  11. everything else                            plan.js → runtime.js (the app's own route table in functions/domain)
  */
 'use strict';
 const runtime = require('./runtime');
@@ -45,6 +65,12 @@ const fail = (code, message) => { throw new ServiceError(code, message); };
 
 function tokenOf(auth) { return auth && auth.uid ? { ...(auth.token || {}), uid: auth.uid } : null; }
 function str(v, max) { return typeof v === 'string' && v.length <= max ? v : null; }
+/** The caller's admins/{uid} record when the call comes from the Admin app (null otherwise; one read). */
+const adminDocOf = (backend, token, app) => (token && app === 'admin' ? backend.getDoc(`admins/${token.uid}`) : null);
+/** An active admin whose 8-digit access code is unlocked (admin-code.js). */
+const isUnlockedAdmin = adm => !!(adm && adm.status === 'active' && adminCode.isUnlocked(adm));
+/** The «admin only» refusal: 401 without an identity, 403 with the wrong one. */
+const adminOnly = signedIn => ({ ok: false, status: signedIn ? 403 : 401, error: { code: signedIn ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } });
 
 function validateApi(data) {
   const d = data || {};
@@ -226,34 +252,34 @@ async function api(backend, { auth, data, ip }) {
   const token = tokenOf(auth);
   const isRead = req.method === 'GET';
   if (telemetry.PATH_RE.test(req.path)) {        // client error reports: rate limited in memory (limits.js), never audited
-    const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
-    const actor = adm && adm.status === 'active' && adminCode.isUnlocked(adm) ? { role: 'admin', id: token.uid, adminRole: adm.role } : null;
+    const adm = await adminDocOf(backend, token, req.app);
+    const actor = isUnlockedAdmin(adm) ? { role: 'admin', id: token.uid, adminRole: adm.role } : null;
     return telemetry.handle({ backend, method: req.method, path: req.path, query: req.query, body: req.body, app: req.app, actor, token });
   }
   if (digestAdmin.PATH_RE.test(req.path)) {        // owner / manager e-mail digests (digest-admin.js): code-unlocked admins only
-    const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
-    if (!token || !adm || adm.status !== 'active' || !adminCode.isUnlocked(adm) || adm.role === 'callcenter') return { ok: false, status: token ? 403 : 401, error: { code: token ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } };
+    const adm = await adminDocOf(backend, token, req.app);
+    if (!token || !isUnlockedAdmin(adm) || adm.role === 'callcenter') return adminOnly(!!token);
     if (!isRead) await rateLimit(backend, token.uid);
     const out = await digestAdmin.handle({ backend, method: req.method, path: req.path, query: req.query, body: req.body, admin: adm, uid: token.uid, deps: backend.digestDeps });
     if (!isRead && out.ok) await backend.addDoc('audit', { at: new Date().toISOString(), uid: token.uid, actor: { role: 'admin', id: token.uid, adminRole: adm.role }, app: 'admin', method: req.method, path: req.path, status: out.status, changes: { digest: { set: 1, del: 0 } } });
     return out;
   }
   if (agentGateway.PATH_RE.test(req.path)) {     /* call centre (agent-gateway.js): a code-unlocked employee with callcenter.* — same routes as the AI agents */
-    const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
-    if (!token || !adm || adm.status !== 'active' || !adminCode.isUnlocked(adm)) return { ok: false, status: token ? 403 : 401, error: { code: token ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } };
+    const adm = await adminDocOf(backend, token, req.app);
+    if (!token || !isUnlockedAdmin(adm)) return adminOnly(!!token);
     if (!isRead) await rateLimit(backend, token.uid);
     const ctx = alerts._actorCtx(await alerts._rbacOf(backend), adm);
     const principal = { channel: 'human', id: token.uid, uid: token.uid, name: adm.name || '', adminRole: adm.role || null, can: (s) => { const k = agentGateway.PERM_OF_SCOPE[s]; return !!k && ctx.can(...k.split('.')); } };
     return agentGateway.handle({ backend, principal, method: req.method, path: req.path, query: req.query, body: req.body, deps: AGENT_DEPS });
   }
   if (techStatus.PATH_RE.test(req.path)) {       /* Tech Center: system information only, owner / tech roles, never inside a transaction */
-    const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
-    const actor = adm && adm.status === 'active' && adminCode.isUnlocked(adm) && adm.role !== 'callcenter' ? { role: 'admin', id: token.uid, adminRole: adm.role } : null;   // the call centre has no Tech Center
+    const adm = await adminDocOf(backend, token, req.app);
+    const actor = isUnlockedAdmin(adm) && adm.role !== 'callcenter' ? { role: 'admin', id: token.uid, adminRole: adm.role } : null;   // the call centre has no Tech Center
     return techStatus.handle({ backend, method: req.method, path: req.path, body: req.body, actor });
   }
   if (alerts.PATH_RE.test(req.path)) {           // team alerts + tickets (alerts.js, rules in the shared ops-core / ops-routes): code-unlocked admins only
-    const adm = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
-    if (!token || !adm || adm.status !== 'active' || !adminCode.isUnlocked(adm)) return { ok: false, status: token ? 403 : 401, error: { code: token ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } };
+    const adm = await adminDocOf(backend, token, req.app);
+    if (!token || !isUnlockedAdmin(adm)) return adminOnly(!!token);
     if (!isRead) await rateLimit(backend, token.uid);
     return alerts.handle({ backend, method: req.method, path: req.path, query: req.query, body: req.body, admin: adm, uid: token.uid });
   }
@@ -263,7 +289,7 @@ async function api(backend, { auth, data, ip }) {
     return { ok: false, status: 401, error: { code: 'UNAUTHENTICATED', message: 'سجّل الدخول برقم موبايلك (كود SMS) الأول، وبعدها كمّل التسجيل' } };
   }
   /* the admin's access code must be unlocked (admin-code.js); until then the token resolves to no admin actor */
-  const adminDoc = token && req.app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
+  const adminDoc = await adminDocOf(backend, token, req.app);
   const admin = adminDoc && adminCode.isUnlocked(adminDoc) ? adminDoc : null;
   if (req.method === 'POST' && req.path === '/providers/register' && token && token.phone_number) {
     req.body.phone = normalizePhone(token.phone_number);        // a registration is bound to the verified phone
@@ -290,6 +316,8 @@ async function api(backend, { auth, data, ip }) {
     req.body.phone = normalizePhone(token.phone_number);        // same number (checked above), stored in the app format
   }
   const idemPath = req.idem && token ? `idempotency/${token.uid}__${req.idem}` : null;
+  /** Stores a mutation's envelope under its idempotency key (a retry within 24 h replays it); no-op for reads. */
+  const remember = (tx, envelope) => { if (idemPath && !isRead) backend.adapter.set(tx, idemPath, { envelope, atMs: Date.now(), path: req.path, expiresAt: new Date(Date.now() + IDEMPOTENCY_TTL_MS) }); };
 
   const execute = async tx => {
     if (idemPath) {
@@ -303,27 +331,27 @@ async function api(backend, { auth, data, ip }) {
       return { envelope: { ok: false, status: 403, error: { code: 'FORBIDDEN', message: 'دور الكول سنتر بيشتغل من صفحة «الكول سنتر» بس' } }, changes: {}, actor };
     }
     if (ai.PATH_RE.test(req.path)) {          // AI providers / keys (server-only document system/ai)
-      if (!actor || actor.role !== 'admin') return { envelope: { ok: false, status: actor ? 403 : 401, error: { code: actor ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } }, changes: {}, actor };
+      if (!actor || actor.role !== 'admin') return { envelope: adminOnly(!!actor), changes: {}, actor };
       const envelope = await ai.handle({ backend, tx, method: req.method, path: req.path, body: req.body, admin });
       return { envelope, changes: envelope.ok && !isRead ? { admin: { set: [req.path], del: [] } } : {}, actor, db: {}, quiet: true };
     }
     if (content.PATH_RE.test(req.path)) {
-      if (!actor || actor.role !== 'admin') return { envelope: { ok: false, status: actor ? 403 : 401, error: { code: actor ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } }, changes: {}, actor };
+      if (!actor || actor.role !== 'admin') return { envelope: adminOnly(!!actor), changes: {}, actor };
       const envelope = await content.handle({ backend, tx, method: req.method, path: req.path, body: req.body, admin });
-      if (idemPath && !isRead) backend.adapter.set(tx, idemPath, { envelope, atMs: Date.now(), path: req.path, expiresAt: new Date(Date.now() + IDEMPOTENCY_TTL_MS) });
+      remember(tx, envelope);
       return { envelope, changes: envelope.ok && !isRead ? { admin: { set: [req.path], del: [] } } : {}, actor, db: {}, quiet: true, contentV: envelope.ok && envelope.data && envelope.data.v };   // audited; clients learn via public/content, no admin re-sync
     }
     if (adminExtra.PATH_RE.test(req.path)) {
       if (actor && actor.role === 'admin' && actor.adminRole === 'tech' && !/^\/admin\/security(\/|$)/.test(req.path)) return { envelope: { ok: false, status: 403, error: { code: 'FORBIDDEN', message: 'دور التقنية مالوش وصول للسجل والإعدادات والإشعارات الجماعية' } }, changes: {}, actor };
-      if (!actor || actor.role !== 'admin') return { envelope: { ok: false, status: actor ? 403 : 401, error: { code: actor ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } }, changes: {}, actor };
+      if (!actor || actor.role !== 'admin') return { envelope: adminOnly(!!actor), changes: {}, actor };
       const envelope = await adminExtra.handle({ backend, tx, method: req.method, path: req.path, query: req.query, body: req.body, admin, token });
-      if (idemPath && !isRead) backend.adapter.set(tx, idemPath, { envelope, atMs: Date.now(), path: req.path, expiresAt: new Date(Date.now() + IDEMPOTENCY_TTL_MS) });
+      remember(tx, envelope);
       return { envelope, changes: envelope.ok && !isRead ? { admin: { set: [req.path], del: [] } } : {}, actor, db: {}, workforce: true };
     }
     if (/^\/admin\/(employees|rbac)(\/|$)/.test(req.path)) {
-      if (!actor || actor.role !== 'admin') return { envelope: { ok: false, status: actor ? 403 : 401, error: { code: actor ? 'FORBIDDEN' : 'UNAUTHENTICATED', message: 'admin only' } }, changes: {}, actor };
+      if (!actor || actor.role !== 'admin') return { envelope: adminOnly(!!actor), changes: {}, actor };
       const envelope = await workforce.handle({ adapter: backend.adapter, tx, method: req.method, path: req.path, body: req.body, admin });
-      if (idemPath && !isRead) backend.adapter.set(tx, idemPath, { envelope, atMs: Date.now(), path: req.path, expiresAt: new Date(Date.now() + IDEMPOTENCY_TTL_MS) });
+      remember(tx, envelope);
       return { envelope, changes: envelope.ok && !isRead ? { employees: { set: ['workforce'], del: [] } } : {}, actor, db: {}, workforce: true };
     }
     if (isRead && req.path === '/admin/summary' && actor && actor.role === 'admin') {
@@ -343,7 +371,7 @@ async function api(backend, { auth, data, ip }) {
     if (res.envelope.ok && actor && actor.role === 'customer') res.envelope.data = redactForCustomer(res.envelope.data);
     if (res.envelope.ok && actor && actor.role === 'admin') res.envelope.data = scrubForRole(res.envelope.data, actor.adminRole);   // teams: tech / content / finance never receive raw personal data
     if (Object.keys(ld.pages).length && res.envelope.ok) res.envelope.page = { nextCursor: Object.values(ld.pages)[0] };
-    if (idemPath && !isRead) backend.adapter.set(tx, idemPath, { envelope: res.envelope, atMs: Date.now(), path: req.path, expiresAt: new Date(Date.now() + IDEMPOTENCY_TTL_MS) });
+    remember(tx, res.envelope);
     return { envelope: res.envelope, changes, actor, db: res.db, reads: ld.reads, alerts: res.envelope.ok && !isRead ? res.alerts : [] };
   };
   const out = isRead ? await execute(null) : await backend.runTransaction(execute);
@@ -464,7 +492,7 @@ async function session(backend, { auth, data, ip }) {
   const app = APPS.includes(d.app) ? d.app : 'customer';
   switch (d.op) {
     case 'sync': {
-      let admin = token && app === 'admin' ? await backend.getDoc(`admins/${token.uid}`) : null;
+      let admin = await adminDocOf(backend, token, app);
       if (token && app === 'admin' && !admin && token.email_verified) {           // invited employee signing in for the first time
         const accepted = await backend.runTransaction(tx => workforce.acceptInvite(backend.adapter, tx, token));
         if (accepted) admin = await backend.getDoc(`admins/${token.uid}`);
@@ -687,4 +715,4 @@ const AGENT_DEPS = Object.freeze({ domain: domainOp });
 /** https `agentApi` (functions/index.js): AI agents with an AGENT_API_KEYS key. */
 const agentHttp = (backend, req, opts) => agentGateway.http(backend, req, { ...(opts || {}), deps: AGENT_DEPS });
 
-module.exports = { aiIpAllow, AI_IP_DAILY, tickOffers, scanOps, api, session, importLocal, validateApi, affectedTags, ServiceError, WRITE_LIMIT_PER_MIN, agentHttp, domainOp };
+module.exports = { aiIpAllow, AI_IP_DAILY, tickOffers, scanOps, api, session, importLocal, validateApi, affectedTags, ServiceError, WRITE_LIMIT_PER_MIN, agentHttp, domainOp, _adminOnly: adminOnly };

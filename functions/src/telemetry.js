@@ -8,6 +8,8 @@
  * thousands of documents. Documents carry expiresAt (+30 days) for the Firestore TTL policy.
  * Abuse limits: reports are rate limited in memory per uid / IP before this handler runs (limits.js, telemetryAllowed),
  * at most MAX_REPORTS per call and MAX_GROUPS_PER_DAY new groups per instance per day.
+ * Called by: service.js api (first in the dispatch), functions/index.js wrap (unexpected server errors → app «server»),
+ * tech-status.js (scrub). Collection: clientErrors (TTL on expiresAt). Client side: shared/utils/error-reporter.js.
  */
 'use strict';
 const crypto = require('crypto');

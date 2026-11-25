@@ -6,6 +6,7 @@
  *   plus a per-instance ceiling for all anonymous reads together.
  * With maxInstances = 10 the worst case is bounded at 10 × the per-instance ceiling. Mutations keep the
  * Firestore-backed per-user limiter in service.js.
+ * Called by: functions/index.js (wrap: read + telemetry limiters) and agent-gateway.js (per agent key / employee).
  */
 'use strict';
 const LIMITS = Object.freeze({ userReadsPerMin: 240, ipReadsPerMin: 60, anonymousReadsPerMinPerInstance: 600 });

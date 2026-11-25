@@ -16,6 +16,8 @@
  *   POST   /admin/media              {kind: hero|slide|icon, data: data:image/(webp|jpeg|png);base64,…, w, h}
  *   DELETE /admin/media/:id          refused (409) while the content references it
  * Public: session op `content` {have: [mediaId…]} → {v, hero, slides, icons, media{id: dataUrl} for missing ids}
+ * Called by: service.js (api PATH_RE below; session op `content`). After a change service.js writes the RTDB value
+ * public/content {v, at}, which open pages (guests included) listen to.
  */
 'use strict';
 const crypto = require('crypto');

@@ -2,6 +2,8 @@
  * Actor-scoped read model: what each actor may load into the app's local read model (MP).
  * Least privilege — a customer never receives other customers, provider private fields, or other people's requests;
  * a provider sees offered requests without the customer's phone/address until the job is assigned to them.
+ * Called by: service.js (session.sync / registerCustomer → scopeFor; api responses → customerRequestView, customerQuote,
+ * scrubForRole) and agent-gateway.js (maskPhone). Pure: no Firestore access.
  */
 'use strict';
 const PROVIDER_PUBLIC = ['id', 'name', 'type', 'cats', 'subs', 'govs', 'areas', 'years', 'bio', 'rating', 'jobs', 'avatar', 'status', 'available', 'demo', 'createdAt'];

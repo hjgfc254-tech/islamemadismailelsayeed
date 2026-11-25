@@ -10,6 +10,8 @@
  *     own code with the current one.
  * Until unlocked, the admin's token resolves to no actor: every admin API call is refused and sync returns only
  * { adminGate } (service.js).
+ * Called by: service.js (session op `adminCode` {action: set | unlock | lock}; isUnlocked() before every admin route) and
+ * admin-extra.js (POST /admin/security/reset-code/:uid). Collections: admins/{uid}, audit.
  */
 'use strict';
 const crypto = require('crypto');

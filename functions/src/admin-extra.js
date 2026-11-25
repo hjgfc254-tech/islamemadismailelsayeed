@@ -12,6 +12,9 @@
  *   GET  /admin/notifications/broadcasts      in-app broadcast history                          RBAC notifications.view
  *   POST /admin/notifications/broadcast       {audience: customers|providers, text}             RBAC notifications.create
  * Every mutation is audited by the caller (service.js) and runs inside its transaction.
+ * Called by: service.js api (PATH_RE below, after the callcenter / tech role gates).
+ * Collections: audit (read), system/settings, departments, admins (+ Firebase Auth via backend.authUsers /
+ * revokeSessions), broadcasts, notifications (one per recipient of a broadcast), customers / providers (recipients).
  */
 'use strict';
 const workforce = require('./workforce');

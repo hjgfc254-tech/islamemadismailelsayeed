@@ -8,6 +8,10 @@
  * Business rules are the app's own pure functions (functions/domain: employee-form/status/invitation, rbac-store):
  * validation, unique email, the last-active-owner guard, grant limits (no one grants permissions they do not hold).
  * Server-only additions: only an owner may give or take the owner role; nobody changes their own status.
+ * Called by: service.js (api /admin/employees*, /admin/rbac*; session.sync → loadState / acceptInvite; session op
+ * claimOwner → createOwner) and admin-extra.js (departments). Routes:
+ *   GET /admin/employees · POST /admin/employees (invite) · PATCH /admin/employees/:id · POST /admin/employees/:id/status
+ *   POST /admin/employees/:id/resend · GET /admin/rbac · POST /admin/rbac/roles · POST /admin/rbac/overrides/:employeeId
  */
 'use strict';
 const runtime = require('./runtime');

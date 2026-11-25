@@ -3,6 +3,9 @@
  * (see docs/FIREBASE_BACKEND.md "Read/write cost per operation"). Lists are bounded and cursor-paginated.
  * Correctness rule: anything a handler checks (ownership, duplicate phone, candidate matching, current quote,
  * existing review/transaction) MUST be loaded here, otherwise the rule would silently weaken — covered by tests.
+ * Called by: service.js (api → plan, session.sync → syncPlan / deltaPlan), agent-gateway.js and support-chat.js (plan).
+ * Reads only (never writes). Routes and their plan branch: docs/MAINTENANCE_GUIDE.md §2.1; every Firestore query shape
+ * here must have an index in firestore.indexes.json or be single-field — pinned by tests/unit/wiring.test.js.
  */
 'use strict';
 const { decodeCursor } = require('./partial');
@@ -157,7 +160,6 @@ async function plan(ld, { method, path, query, body, actor }) {
 async function syncPlan(ld, actor) {
   await ld.loadSystem();
   await ld.loadPublic();   // approved providers + service areas + latest reviews from ONE summary document (system/public)
-  const approved = [];
   if (!actor) return;
   const tag = actor.role + ':' + actor.id;
   /* lazy: only customers / providers need their inbox and filed complaints (admins read the admin inbox below) */
@@ -204,7 +206,6 @@ async function syncPlan(ld, actor) {
       ld.where('reviews', [], { orderBy: ['at', 'desc'], limit: 200 }),
       ld.where('notifications', [['to', '==', 'admin']], { orderBy: ['at', 'desc'], limit: 50 })]);
   }
-  void approved;
 }
 
 /* ── Admin DELTA sync (cost): after the first full sync, the Admin app asks only for documents changed since its previous

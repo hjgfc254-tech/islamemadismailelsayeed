@@ -2,6 +2,8 @@
  * Domain runtime: executes the application's own business rules and route handlers (functions/domain/, a verified copy
  * of services/*.js + the Admin RBAC catalog) inside an isolated vm context per call.
  * The caller supplies the persisted database snapshot and a SERVER-RESOLVED actor; the client never supplies identity.
+ * Called by: service.js, workforce.js, admin-extra.js, ai.js, agent-gateway.js. No Firestore access of its own.
+ * ORDER mirrors the browser script order; functions/domain is refreshed with `npm run functions:sync` (never by hand).
  */
 'use strict';
 const fs = require('fs');
