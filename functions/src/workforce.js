@@ -63,6 +63,13 @@ async function handle({ adapter, tx, method, path, body, admin }) {
   const me = st.employees.find(e => e.id === admin.employeeId) || (admin.role ? { id: admin.employeeId || '-', role: admin.role } : null);
   const isOwner = me && me.role === 'owner';
   const deny = () => env(403, 'FORBIDDEN', 'ليست لديك صلاحية لهذا الإجراء');
+  /* grant limits for employees too (the rbac-store changeEmployee rule): nobody gives a role, or manages an employee,
+     whose permissions they do not hold themselves — otherwise workforce.edit could hand out (or self-assign) more power */
+  const held = new Set(me ? d.R.employeeEffective(d.roles, d.overrides, { id: me.id, role: me.role }) : []);
+  const exceeds = keys => !isOwner && keys.some(k => !held.has(k));
+  const roleAbove = role => exceeds(d.R.effective(d.roles, String(role || '')));
+  const targetAbove = t => exceeds(d.R.employeeEffective(d.roles, d.overrides, { id: t.id, role: t.role }));
+  const above = () => env(403, 'FORBIDDEN', 'لا يمكنك إسناد دور أو إدارة موظف سلطته أعلى من سلطتك');
   const notFound = () => env(404, 'NOT_FOUND', 'الموظف غير موجود');
   const catchDomain = fn => {
     try { return fn(); }
@@ -103,6 +110,7 @@ async function handle({ adapter, tx, method, path, body, admin }) {
   if (method === 'POST' && seg.length === 2) {
     if (!can(d, me, 'workforce', 'create')) return deny();
     if (body.role === 'owner' && !isOwner) return deny();
+    if (roleAbove(body.role)) return above();
     return catchDomain(() => {
       const made = d.EF.createEmployee(st.employees, body);
       const next = stampInvite(made, made[made.length - 1].id);   // S9: the 7-day invitation window starts now
@@ -116,6 +124,7 @@ async function handle({ adapter, tx, method, path, body, admin }) {
     if (!can(d, me, 'workforce', 'edit')) return deny();
     const fields = { name: target.name, email: target.email, department: target.department, role: target.role, ...body };
     if ((fields.role === 'owner' || target.role === 'owner') && fields.role !== target.role && !isOwner) return deny();
+    if (targetAbove(target) || (fields.role !== target.role && roleAbove(fields.role))) return above();
     if (target.uid && fields.email !== undefined && String(fields.email).trim().toLowerCase() !== target.email) return env(409, 'CONFLICT', 'لا يمكن تغيير بريد موظف فعّل حسابه');
     return catchDomain(() => {
       const next = d.EF.updateEmployee(st.employees, target.id, fields);
@@ -127,6 +136,7 @@ async function handle({ adapter, tx, method, path, body, admin }) {
     if (!can(d, me, 'workforce', 'decide')) return deny();
     if (me && target.id === me.id) return env(409, 'CONFLICT', 'لا يمكنك تغيير حالة حسابك');
     if (target.role === 'owner' && !isOwner) return deny();
+    if (targetAbove(target)) return above();
     return catchDomain(() => {
       const next = d.ST.setStatus(st.employees, target.id, String(body.status || ''));
       writeEmployees(adapter, tx, st.employees, next);

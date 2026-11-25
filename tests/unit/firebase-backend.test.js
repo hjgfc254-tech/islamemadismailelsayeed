@@ -475,6 +475,22 @@ test('admin workforce on the server: invite → accept by verified email → rol
   assert.ok(b.col('audit').some(a => a.path === '/admin/employees'), 'workforce mutations are audited');
 });
 
+test('workforce grant limits: an employee manager cannot give (or manage) a role above their own authority', async () => {
+  const b = await setup();
+  await call(b, OWNER, 'admin', 'POST', '/admin/employees', { name: 'عادل', email: 'adel@example.com', department: 'ops', role: 'admin' });
+  const ADEL = emailUser('u_adel', 'adel@example.com');
+  assert.equal((await service.session(b, { auth: ADEL, data: { op: 'sync', app: 'admin' } })).actor.adminRole, 'admin');
+  const sup = await call(b, ADEL, 'admin', 'POST', '/admin/employees', { name: 'سعاد', email: 'suad@example.com', department: 'support', role: 'support' });
+  assert.equal(sup.status, 201, 'a role within the actor\'s authority is fine');
+  assert.equal((await call(b, ADEL, 'admin', 'POST', '/admin/employees', { name: 'تقني', email: 'tech1@example.com', department: 'tech', role: 'tech' })).status, 403, 'tech.* is not held by the admin role');
+  assert.equal((await call(b, ADEL, 'admin', 'PATCH', `/admin/employees/${sup.data.id}`, { role: 'tech' })).status, 403, 'no promotion above authority');
+  assert.equal((await call(b, ADEL, 'admin', 'PATCH', `/admin/employees/${sup.data.id}`, { role: 'ops' })).ok, true, 'a role within authority');
+  const tech = await call(b, OWNER, 'admin', 'POST', '/admin/employees', { name: 'تامر', email: 'tamer@example.com', department: 'tech', role: 'tech' });
+  assert.equal(tech.status, 201, 'the owner can');
+  assert.equal((await call(b, ADEL, 'admin', 'PATCH', `/admin/employees/${tech.data.id}`, { role: 'support' })).status, 403, 'cannot manage an employee above authority');
+  assert.equal(b.docs.get(`employees/${tech.data.id}`).role, 'tech');
+});
+
 test('RBAC catalogue on the server: role edits and overrides respect grant limits and are enforced on admin routes', async () => {
   const b = await setup();
   const rb = await call(b, OWNER, 'admin', 'GET', '/admin/rbac');

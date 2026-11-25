@@ -104,7 +104,7 @@
     const bar = document.querySelector('[data-of-undo-bar]');
     const p = MP.get('providers', pid) || {};
     if (pending) { clearTimeout(pending.timer); clearInterval(pending.tick); }
-    const send = () => { const cur = pending; pending = null; if (bar) bar.hidden = true;
+    const send = () => { const cur = pending; pending = null; if (cur) clearInterval(cur.tick); if (bar) bar.hidden = true;   /* stop the countdown: it would repaint forever (old name over the next choice) */
       apiCall('choose:' + id, (cur && cur.btn) || btn, () => HSOrdersApi.choose(id, pid), () => { show('tracking', id); toast('تمام — الفني هيتواصل معاك على الموعد'); }); };
     if (!bar) return send();
     let s = UNDO_MS / 1000;

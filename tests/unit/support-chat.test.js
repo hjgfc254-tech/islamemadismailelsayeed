@@ -248,6 +248,39 @@ test('quotas, busy lock, hand-off and app-screen buttons', async () => {
   assert.equal(tickets[0].phone, '01012345678', 'the employee gets the real phone from the account');
 });
 
+test('a double-tapped confirm runs the card once even when the second tap read the chat before the first one saved', async () => {
+  const b = world();
+  fakeOpenAI([
+    { calls: [['prepare_complaint', { request_id: 'r1', text: 'الفني اتأخر ساعتين ومردش' }]] },
+    { text: 'راجع الشكوى واضغط إرسال.' }
+  ]);
+  const v = await send(b, 'u1', { action: 'send', text: 'عايز اشتكي' });
+  const card = v.cards[0];
+  const stale = await b.getDoc('supportChats/u1');                     // what the second tap read (card still unused)
+  const first = await send(b, 'u1', { action: 'confirm', id: card.id, yes: true });
+  assert.equal(first.done, true);
+  const getDoc = b.getDoc;
+  b.getDoc = async (p) => (p === 'supportChats/u1' ? JSON.parse(JSON.stringify(stale)) : getDoc(p));
+  await assert.rejects(send(b, 'u1', { action: 'confirm', id: card.id, yes: true }), (e) => /انتهى/.test(e.message));
+  b.getDoc = getDoc;
+  assert.equal((await docs(b, 'complaints')).length, 1, 'one complaint, not two');
+  const saved = await b.getDoc('supportChats/u1');
+  assert.ok(saved.ui.some((m) => m.role === 'bot' && /شكوتك وصلت/.test(m.text)), 'the first confirm\'s reply is not overwritten');
+});
+
+test('dates follow the Cairo calendar: after midnight in Egypt «yesterday» (still the UTC date) is in the past', async (t) => {
+  t.mock.timers.enable({ apis: ['Date'], now: Date.parse('2026-11-24T23:30:00Z') });   // 01:30 on 25 Nov in Cairo
+  assert.equal(chat.cairoDay(Date.now()), '2026-11-25');
+  const b = world();
+  const calls = fakeOpenAI([
+    { calls: [['prepare_new_request', { cat: 'appliances', item: 'appliances/fridge', problem: '', desc: 'الثلاجة مش بتبرد', saved_address_id: '', gov: 'القاهرة', area: 'مدينة نصر', addr: 'شارع مكرم عبيد عمارة 5', when: '2026-11-24', period: '' }]] },
+    { text: 'التاريخ ده فات، تحب امتى؟' }
+  ]);
+  await send(b, 'u1', { action: 'send', text: 'عايز فني امبارح' });
+  assert.match(calls[0].body.messages.find((m) => m.role === 'system' && /Today is/.test(m.content)).content, /Today is 2026-11-25 \(Cairo\)/);
+  assert.match(lastResults(calls[1].body, 1)[0].error, /التاريخ فات/);
+});
+
 test('retention + admin config: any provider kind can take the chat role; public flag', async () => {
   const b = world();
   await b.setDoc('supportChats/u1', { uid: 'u1', expiresAt: '2026-01-01T00:00:00.000Z' });

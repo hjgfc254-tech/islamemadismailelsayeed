@@ -129,6 +129,9 @@ ${handoff ? '7. Hand off (handoff_to_human) when the customer asks for a person,
 /* ───────────── persistence ───────────── */
 const docPath = (uid) => `supportChats/${uid}`;
 const iso = (ms) => new Date(ms).toISOString();
+/** YYYY-MM-DD in Egypt (the customer's calendar day — the UTC date is still «yesterday» after midnight in Cairo) */
+const CAIRO_DAY = new Intl.DateTimeFormat('en-CA', { timeZone: 'Africa/Cairo', year: 'numeric', month: '2-digit', day: '2-digit' });
+const cairoDay = (ms) => CAIRO_DAY.format(new Date(ms));
 const newChat = (uid, customer, now) => ({ uid, customerId: customer.id, chatId: 'ch_' + now.toString(36) + crypto.randomBytes(4).toString('hex'), noteKey: crypto.randomBytes(9).toString('hex'),
   startedAt: iso(now), updatedAt: iso(now), turns: 0, hist: '[]', ui: [], actions: {}, notes: [], busyUntil: 0, expiresAt: iso(now + LIMITS.keepMs) });
 const histOf = (chat) => { try { const a = JSON.parse(chat.hist || '[]'); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
@@ -266,7 +269,7 @@ async function runTool(ctx, name, input) {
       const body = { phone, name: ctx.customer.name || 'عميل', cat: i.cat, item: i.item, problem: i.problem || '', desc: i.desc, gov, area, addr, when: i.when || '', period: i.period || '' };
       const v = gateway.validateCreate(body);
       if (v.errors) return { error: 'بيانات ناقصة أو غلط — صحّحها أو اسأل العميل', details: v.errors };
-      if (body.when && body.when < new Date().toISOString().slice(0, 10)) return { error: 'التاريخ فات', details: { when: 'النهارده أو بعده' } };
+      if (body.when && body.when < cairoDay(Date.now())) return { error: 'التاريخ فات', details: { when: 'النهارده أو بعده' } };
       const cat = await catalogOf(ctx);
       const it = cat ? cat.categories.flatMap((c) => c.items).find((x) => x.id === v.payload.itemId) : null;
       const { phone: _p, name: _n, ...rest } = body; void _p; void _n;
@@ -459,14 +462,19 @@ async function chat(backend, token, d, fail, deps) {
   const ctx = { backend, deps, principal: principalFor(token.uid, customer), customer, chat: chatDoc, day: new Date(now).toISOString().slice(0, 10), handedOff: false, links: [],
     handoff, tools: handoff ? TOOLS : TOOLS.filter((t) => t.name !== 'handoff_to_human') };
 
-  /* one message at a time per customer */
+  /* one message at a time per customer. The work continues on the document read INSIDE the lock: the copy read above
+     may predate a request that finished in between (a double-tapped «تأكيد» would otherwise run the same card twice and
+     the later save would overwrite the earlier one). */
   const locked = await backend.runTransaction(async (tx) => {
     const cur = (await backend.adapter.get(tx, docPath(token.uid))) || null;
-    if (cur && cur.chatId === chatDoc.chatId && +cur.busyUntil > now) return false;
-    backend.adapter.set(tx, docPath(token.uid), { ...(cur && cur.chatId === chatDoc.chatId ? cur : chatDoc), busyUntil: now + LIMITS.busyMs });
-    return true;
+    if (cur && cur.chatId === chatDoc.chatId && +cur.busyUntil > now) return null;
+    const next = { ...(cur && cur.chatId === chatDoc.chatId ? cur : chatDoc), busyUntil: now + LIMITS.busyMs };
+    backend.adapter.set(tx, docPath(token.uid), next);
+    return next;
   });
   if (!locked) fail('aborted', 'لحظة — لسه برد على رسالتك اللي فاتت');
+  chatDoc = { ...locked, ui: Array.isArray(locked.ui) ? locked.ui : [], actions: locked.actions || {}, notes: Array.isArray(locked.notes) ? locked.notes : [] };
+  ctx.chat = chatDoc;
   let saved = false;
   const save = async () => { saved = true; chatDoc.busyUntil = 0; chatDoc.updatedAt = iso(Date.now()); chatDoc.expiresAt = iso(Date.now() + LIMITS.keepMs); chatDoc.ui = chatDoc.ui.slice(-LIMITS.uiKeep); await backend.setDoc(docPath(token.uid), chatDoc); };
 
@@ -498,7 +506,7 @@ async function chat(backend, token, d, fail, deps) {
     const snapshot = hist.length;
     hist.push({ role: 'user', text });
     const notes = [];
-    if (snapshot === 0) notes.push(`Context: customer first name «${firstName(customer.name)}». Today is ${new Date(now).toISOString().slice(0, 10)} (Cairo). The customer is signed in; their phone is on the account.`);
+    if (snapshot === 0) notes.push(`Context: customer first name «${firstName(customer.name)}». Today is ${cairoDay(now)} (Cairo). The customer is signed in; their phone is on the account.`);
     for (const n of chatDoc.notes.splice(0)) notes.push(n);
     if (notes.length) hist.push({ role: 'note', text: notes.join('\n') });
     chatDoc.ui.push({ role: 'me', text, at: iso(now) });
@@ -543,4 +551,4 @@ async function retentionTick(backend, now) {
 }
 
 const _resetLimits = () => { minuteHits.clear(); llm.resetHealth(); };
-module.exports = { chat, retentionTick, _resetLimits, cleanInput, cleanOutput, TOOLS, systemPrompt, LIMITS, POLICY, REQUEST_ACTIONS, chatProviders, catalogSearch, projectRequest };
+module.exports = { chat, retentionTick, _resetLimits, cairoDay, cleanInput, cleanOutput, TOOLS, systemPrompt, LIMITS, POLICY, REQUEST_ACTIONS, chatProviders, catalogSearch, projectRequest };
