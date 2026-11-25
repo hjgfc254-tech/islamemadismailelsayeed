@@ -385,11 +385,13 @@ hansalhlak/
 ├── docs/
 │   ├── agent-briefs/
 │   │   ├── callcenter-ai.md
+│   │   ├── design-micro-audit.md
 │   │   ├── digest.md
 │   │   ├── README.md
 │   │   ├── security-audit.md
 │   │   ├── teams-alerts.md
-│   │   └── tech-center.md
+│   │   ├── tech-center.md
+│   │   └── tech-micro-audit.md
 │   ├── AI_CONTEXT/
 │   │   ├── DOMAIN_MAPS/
 │   │   │   ├── ADMIN.md

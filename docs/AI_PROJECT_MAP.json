@@ -2,8 +2,8 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 692,
-    "total_files": 692,
+    "file_count": 694,
+    "total_files": 694,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 33,
@@ -22,7 +22,7 @@
       "IMPLEMENTED (SHELL PARTS)": 1,
       "IMPLEMENTED (SHELL, DEMO)": 1,
       "IMPLEMENTED (SHELL)": 2,
-      "NEEDS_REVIEW": 341,
+      "NEEDS_REVIEW": 343,
       "PARTIALLY IMPLEMENTED": 1,
       "PLACEHOLDER": 64,
       "TEST": 78
@@ -9606,6 +9606,18 @@
       "bytes": 4945
     },
     {
+      "path": "docs/agent-briefs/design-micro-audit.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "design-micro-audit.md",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "4a6f01e7a999b511718363ad68741e2506c209b21e01f4aeded2378155b8dcbc",
+      "bytes": 4150
+    },
+    {
       "path": "docs/agent-briefs/digest.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
@@ -9664,6 +9676,18 @@
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "de83ccc48265553ec78e058294a46b70f51fcfca9a30b0b065e3d9a618cefde9",
       "bytes": 1667
+    },
+    {
+      "path": "docs/agent-briefs/tech-micro-audit.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "tech-micro-audit.md",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "315f3aab38ea22403f6de72d007d76246501a92ae9b4ff0eff474eaa22b2147a",
+      "bytes": 3676
     },
     {
       "path": "docs/AI_AGENT_CONTINUATION_PROTOCOL.md",
@@ -9991,7 +10015,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "37833d6f738095088848107d1ddb49f17d80517050ca9402ae189a0a437bda9c",
+      "sha256": "1d63a102c9ef586c3e58f470ff77d27e2ddfbdfdc6ff1383fd2f4b6a6c73de5b",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -10027,7 +10051,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 303220
+      "bytes": 303706
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -10087,7 +10111,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "f3e327b1b3bc840586f732466ff4ac1a6003cf51e7fb7bfab390b01391c27789",
+      "sha256": "92ebaa77ad7495da956ec671799b9058ee9d326a128ad5e5c975c9dd7eea1051",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -10123,7 +10147,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 172178
+      "bytes": 172618
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -11242,7 +11266,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "2c03f05aeb80d29552d01fef587a23442ea1cbd5a38d39591ee763fea217df44",
+      "sha256": "0e4f375ee9a5bf59455602629cf7d49c9332fa05b132e5223579484a9cd80a5c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11279,7 +11303,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 32507
+      "bytes": 32593
     },
     {
       "path": "docs/README.md",
