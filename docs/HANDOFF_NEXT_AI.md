@@ -3,6 +3,14 @@
 > The newest entry is at the top; everything below this section is a dated history log. Source code wins over any older statement below
 > (in particular, entries that say the legacy bridge "must be kept" or that profile editing is "disabled" are superseded).
 
+## 2026-11-25 — Architecture tidy + maintenance guide (branch `worktree-agent-a1258fe39eb6b067a`)
+- New `docs/MAINTENANCE_GUIDE.md` (system map, wiring tables, feature dossiers, runbooks, troubleshooting,
+  conventions, known gaps / proposed refactors) and `tests/unit/wiring.test.js` (14 checks; fails on drift).
+- `functions/src/service.js`: header dispatch table, helpers `adminDocOf`, `isUnlockedAdmin`, `adminOnly`, `remember`
+  (identical envelopes, parity test); `plan.js`: dead `approved` variable removed; «Called by / Collections» headers.
+- `apps/admin/modules/admin-live.js`: stale header corrected (comment only). `services/README.md` updated.
+- No behaviour change; a functions deploy is optional (same behaviour). Next: guide §7 items 1 (digests TTL) and 4 (AI routing test).
+
 **Commits (on `main`):**
 - `e75650e`: palette and intro.
 - `cb3789f`: marketplace rules, role isolation, legacy migration.

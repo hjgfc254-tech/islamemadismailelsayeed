@@ -14,6 +14,10 @@
 
 - **2026-11-25 later — AI chat «موظف خدمة العملاء» (human hand-off off until the owner has a team):** Customer Support centre chat (`apps/customer/pages/support-chat.js`) → session op `chat` (`functions/src/support-chat.js` + provider-neutral `chat-llm.js`: DeepSeek / OpenAI-compatible / Gemini / Claude, fail-over in priority order) with 12 strict tools — most customer self-service actions, never phone / e-mail / delete / money — through `agent-gateway.handle()` as the signed-in customer; writes only after the customer's confirm button; masking, quotas, busy lock, audit, 30-day retention. Off until the owner adds a provider with the «شات» role (Admin › التوجيه الذكي). Details: `docs/AI_CALLCENTER.md` § Chat.
 
+- **2026-11-25 — architecture tidy + maintenance guide (no behaviour change, not deployed):** `docs/MAINTENANCE_GUIDE.md` (single entry point); `tests/unit/wiring.test.js` pins routes → `plan.js`, functions exports, session ops, env vars, Admin pages → permission, Firestore queries → indexes; `functions/src/service.js` dispatch table + de-duplicated helpers. Proposed refactors not done: guide §7.
+
+**Maintenance guide (system map, every route / session op / Admin page / RBAC role / clock / env var, runbooks, troubleshooting):** `docs/MAINTENANCE_GUIDE.md` — pinned by `tests/unit/wiring.test.js`.
+
 **Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md` · **Handoff:** `docs/HANDOFF_NEXT_AI.md` (newest entry on top)  
 **Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md` · **Project skills:** `.claude/skills/` (`finish-gate`, `vm-script-test`, `browser-qa`)
 

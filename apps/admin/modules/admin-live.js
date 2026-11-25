@@ -5,8 +5,10 @@
  *   orders     → cancel                POST /requests/:id/cancel            (the only admin lifecycle action)
  *   customers  → active | suspended    POST /admin/customers/:id/status
  *   providers  → approved | rejected | suspended   POST /admin/providers/:id/status
+ *   providers  → warned                POST /admin/providers/:id/warn {reason}
+ *   settlements → completed            POST /admin/transactions/:id/collection {status: 'collected'} (each pending row of the provider)
  *   complaints → resolved              POST /complaints/:id/resolve {resolution}
- *   reviews    → read-only (no moderation route exists)
+ *   reviews    → hidden | published    POST /admin/reviews/:id/visibility {hidden, reason}
  * Any other page action has NO backend route: it is refused with an explicit message, never simulated locally.
  * Business rules stay on the server (e.g. rejecting is only for pending registrations); this module invents nothing.
  */
