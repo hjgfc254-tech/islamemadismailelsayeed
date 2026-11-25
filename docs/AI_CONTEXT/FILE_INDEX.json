@@ -573,8 +573,8 @@
       "path": "apps/customer/app.js",
       "area": "apps/customer",
       "status": "PARTIALLY IMPLEMENTED",
-      "bytes": 102058,
-      "sha256": "a1f64565656a8f9845d54e36027279e025a65962ad05baad5506bd63fa0dc5ef"
+      "bytes": 102177,
+      "sha256": "218de1503ac72e2ad520cc662c0cad995275a00e3365f30bbe1684a6f255990c"
     },
     {
       "path": "apps/customer/brand-icons.js",
@@ -643,8 +643,8 @@
       "path": "apps/customer/pages/home.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 10668,
-      "sha256": "5882ac402ef2caacea46348322b1a4361ede8b433be1e0f10bdebd750fb263d0"
+      "bytes": 11102,
+      "sha256": "d3cb6799db93d8e53d41454506a6e6212156ed269da276e1aa02afb7fda80192"
     },
     {
       "path": "apps/customer/pages/live-map.js",
@@ -762,8 +762,8 @@
       "path": "apps/customer/styles/brand-2026.css",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 61678,
-      "sha256": "e55ecaeb0bf98da6b26c599318f4464b87269de2d7fbe000f8779ffbd330cd37"
+      "bytes": 66166,
+      "sha256": "3d655a5e1488854d03fee98a79f638a7713ecdb5d9c486f2fbc410b498e7dc2e"
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -3423,14 +3423,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 12071,
-      "sha256": "6f175e621dbdf678f3b9b0dbc1dc4b89c5537eb5404311abb009f1fbd9a90670"
+      "sha256": "01ddaf16ac378916cafbf3c31bea8685ef9c2636a2d9877e50d1e97c7de1b88d"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 196,
-      "sha256": "b028ede0aa38de7986ab0adbaf2f055183a352ee0677eb3cf3c14ee148402990"
+      "sha256": "376f3f6526cf479f24ebf39c0bae7383e331ac28e68afb49761bcb45b464119d"
     },
     {
       "path": "services/admin-api.js",
@@ -4717,8 +4717,8 @@
       "path": "tests/unit/smart-help.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 5074,
-      "sha256": "647ecd86fa4bac3867daceac55c377adf00111d1b4b53d5518f403b96c9f3a58"
+      "bytes": 5124,
+      "sha256": "ce3b42c2a5f6f6c83740eaa9bd5fd574002867c9d61a7bc4a97aa98d068f493c"
     },
     {
       "path": "tests/unit/static-audit.test.js",

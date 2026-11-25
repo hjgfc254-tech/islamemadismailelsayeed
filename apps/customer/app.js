@@ -670,9 +670,9 @@ function renderCommonProblems(){
   } catch {}
   if (!rows.length) return '';
   /* 2026-11-25 (owner): a compact swipe row right under the search — one tap starts the request on that problem */
-  const label = (p, it) => (String(p.name).includes(it.name) ? p.name : `${it.name} ${p.name}`);
-  return `<section class="cp-row" aria-labelledby="cpT"><h2 class="cp-h" id="cpT">مشكلات شائعة</h2>
-    <div class="cp-scroll" role="list">${rows.map(({p,it}) => `<button type="button" class="cp-chip" role="listitem" data-wz-hit="problem|${esc(p.id)}">${icp(icItem(it, p.cat),'dev')}<span>${esc(label(p, it))}</span></button>`).join('')}</div></section>`;
+  /* round 7: each chip keeps the old card's two lines (problem + device) in a compact swipe row */
+  return `<section class="cp-row" aria-labelledby="cpT"><h2 class="sec-title cp-h" id="cpT">${ic('bulb')}مشكلات شائعة<small class="cp-hint" aria-hidden="true">اسحب ←</small></h2>
+    <div class="cp-scroll" role="list">${rows.map(({p,it}) => `<button type="button" class="cp-chip" role="listitem" data-wz-hit="problem|${esc(p.id)}">${icp(icItem(it, p.cat),'dev')}<span><b>${esc(p.name)}</b><small>${esc(it.name)}</small></span></button>`).join('')}</div></section>`;
 }
 
 /* العناوين المحفوظة — من نفس طبقة العناوين (MP.addressesFor)؛ تُدار من شاشة addresses */

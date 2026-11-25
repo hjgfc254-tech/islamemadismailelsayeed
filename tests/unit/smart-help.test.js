@@ -20,7 +20,7 @@ test('smart-help loads before Home and is precached', () => {
   const html = read('apps/customer/index.html');
   assert.ok(html.indexOf('pages/smart-help.js') > -1 && html.indexOf('pages/smart-help.js') < html.indexOf('pages/home.page.js'));
   assert.match(read('service-worker.js'), /'apps\/customer\/pages\/smart-help\.js'/);
-  assert.match(read('apps/customer/pages/home.page.js'), /root\.HSSmartHelp\?root\.HSSmartHelp\.homeCard\(\)\+root\.HSSmartHelp\.myHome\(\):''/);
+  assert.match(read('apps/customer/pages/home.page.js'), /root\.HSSmartHelp\?root\.HSSmartHelp\.homeCard\(\):''[\s\S]*?data-chat-open[\s\S]*?root\.HSSmartHelp\?root\.HSSmartHelp\.myHome\(\):''/);
 });
 
 test('emergency: safety steps first, real emergency numbers, gas is never sent straight to a technician', () => {

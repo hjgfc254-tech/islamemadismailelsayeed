@@ -30,7 +30,7 @@
     const heroTitle=h?title:'كل خدمة<br>تصليح وصيانة', heroAccent=h?accent:'في مكان واحد', heroSub=h?sub:'';   // the trust row under the search says it — no small text over the street photo
     const bi=(n,fb)=>(root.HSBrandIcons&&root.HSBrandIcons.svg(n))||ic(fb);   // 2026 two-tone icons (brand-icons.js), old icon as fallback
     const steps=[['choose','grid','اختار الخدمة'],['schedule','calendar','حدّد الموعد'],['arrive','user','يوصلك الفني'],['rate','star','قيّم الخدمة']];
-    const how4=ctx.firstVisit===false?'':`<section class="how-v3" aria-labelledby="howT"><h2 id="howT">إزاي هنصلحلك بتشتغل؟</h2><ol>${steps.map(([b,i,t])=>`<li><i>${bi(b,i)}</i><span>${t}</span></li>`).join('')}</ol></section>`;
+    const how4=ctx.firstVisit===false?'':`<section class="how-v3" aria-labelledby="howT"><h2 id="howT">${ic('info')}إزاي هنصلحلك بتشتغل؟</h2><ol>${steps.map(([b,i,t])=>`<li><i>${bi(b,i)}</i><span>${t}</span></li>`).join('')}</ol></section>`;
     /* the customer's own work comes right after the search (round 4: the header always flows into the photo); the greeting is a
        slim line under the trust strip so the header flows straight into the photo (owner mock-up). Rendered in this
        order (greeting → draft → active) so the dependency call order stays stable. */
@@ -53,11 +53,13 @@
   ${renderCommonProblems()}
   ${draftHtml}
   ${activeHtml}
-  ${root.HSSmartHelp?root.HSSmartHelp.homeCard()+root.HSSmartHelp.myHome():''}
+  ${root.HSSmartHelp?root.HSSmartHelp.homeCard():''}
+  ${root.HSSupportChat&&root.HSSupportChat.enabled()?`<button type="button" class="cs-card" data-chat-open><span class="cs-av" aria-hidden="true">${ic('chat')}</span><span class="cs-tx"><b>خدمة العملاء 24 ساعة</b><small>اكتب مشكلتك في الشات — نتابع طلبك ونحلها معاك</small></span><span class="cs-on">متاح</span></button>`:''}
+  ${root.HSSmartHelp?root.HSSmartHelp.myHome():''}
   ${ctx.addressBar||''}
   ${ctx.care||''}
   <section aria-labelledby="tilesT">
-    <div class="sec-head"><h2 id="tilesT">أشهر الخدمات</h2><button type="button" class="more" data-go="sections">عرض الكل <span aria-hidden="true">←</span></button></div>
+    <div class="sec-head"><h2 id="tilesT">${ic('grid')}أشهر الخدمات</h2><button type="button" class="more" data-go="sections">عرض الكل <span aria-hidden="true">←</span></button></div>
     ${String(tiles()).replace(/<\/div>\s*$/,`<button type="button" class="tile all-tile" data-go="sections" aria-label="كل الأقسام"><span class="tart brand" aria-hidden="true">${bi('all','grid')}</span><span class="tl">كل الأقسام</span></button></div>`)}
   </section>
   <section class="why-card" aria-labelledby="whyT"><h2 id="whyT">ليه تختار هنصلحلك؟</h2>
