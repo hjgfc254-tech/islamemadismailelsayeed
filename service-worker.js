@@ -18,7 +18,7 @@
    • CLEAR_CACHE  — مسح كل الكاش (لأدوات العرض التجريبي).
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'hansalhlak-v11-firebase-101';
+const CACHE = 'hansalhlak-v11-firebase-102';
 
 /* الملفات الأساسية — يجب أن تعمل offline بعد أول زيارة */
 const FILES = [
@@ -116,6 +116,7 @@ const FILES = [
   'apps/customer/pages/discover.page.js',
   'apps/customer/pages/addresses.page.js',
   'apps/customer/pages/account.page.js',
+  'apps/customer/pages/support-chat.js',
   'apps/customer/pages/support.page.js',
   'manifest.json',
   'services/firebase-config.js',

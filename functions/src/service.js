@@ -31,6 +31,7 @@ const { applyStatsDelta } = require('./provider-stats');
 const viaCode = async (p) => { try { return await p; } catch (e) { if (e && e.isServiceError) fail(e.code, e.message); throw e; } };
 const content = require('./content');
 const ai = require('./ai');
+const supportChat = require('./support-chat');
 const { invalidateShared } = require('./partial');
 const agentGateway = require('./agent-gateway');
 
@@ -448,6 +449,15 @@ function aiIpAllow(ip) {
   aiIpHits.set(k, n); return n <= AI_IP_DAILY;
 }
 
+const CHAT_IP_DAILY = 200; const chatIpHits = new Map(); let chatIpDay = '';
+function chatIpAllow(ip) {
+  const day = new Date().toISOString().slice(0, 10);
+  if (day !== chatIpDay) { chatIpDay = day; chatIpHits.clear(); }
+  const k = String(ip || 'unknown'), n = (chatIpHits.get(k) || 0) + 1;
+  if (chatIpHits.size > 50000) chatIpHits.clear();
+  chatIpHits.set(k, n); return n <= CHAT_IP_DAILY;
+}
+
 async function session(backend, { auth, data, ip }) {
   const d = data || {};
   const token = tokenOf(auth);
@@ -540,6 +550,11 @@ async function session(backend, { auth, data, ip }) {
       const actor = { role: 'customer', id: out.result.id, name: out.result.name };
       await linkUser(backend, token.uid, actor, 'customer');
       return { actor, db: scopeFor(out.db, actor) };
+    }
+    case 'chat': {   /* «مساعد هنصلحلك» AI support chat (support-chat.js): signed-in customers; owner switch + daily quotas inside */
+      if (await maintenanceOn(backend)) fail('unavailable', 'المنصة في صيانة دلوقتي — جرّب تاني بعد شوية');
+      if (d.action === 'send' && !chatIpAllow(ip)) fail('resource-exhausted', 'رسايل كتير من نفس الشبكة النهارده — كلّم موظف من «تواصل مع الدعم»');
+      return supportChat.chat(backend, token, d, fail, AGENT_DEPS);
     }
     case 'ai': if (!aiIpAllow(ip)) fail('resource-exhausted', 'وصلت للحد اليومي — اختار المشكلة بنفسك'); return ai.classify(backend, token, d, fail);   // «اكتب مشكلتك» / «صوّر المشكلة» → catalogue item + problem
     case 'content': {

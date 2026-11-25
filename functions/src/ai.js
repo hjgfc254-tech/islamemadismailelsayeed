@@ -18,13 +18,20 @@
 const crypto = require('crypto');
 const runtime = require('./runtime');
 
-const KINDS = ['deepseek', 'gemini', 'openai'];
-const DEFAULT_MODEL = { deepseek: 'deepseek-chat', gemini: 'gemini-2.5-flash', openai: 'gpt-4o-mini' };
+const KINDS = ['deepseek', 'gemini', 'openai', 'anthropic'];
+const DEFAULT_MODEL = { deepseek: 'deepseek-chat', gemini: 'gemini-2.5-flash', openai: 'gpt-4o-mini', anthropic: 'claude-opus-5-5' };
 const TIMEOUT_MS = 8000;
 const PATH_RE = /^\/admin\/ai(\/|$)/;
 
 let fetchImpl = (...a) => globalThis.fetch(...a);
 const setFetch = f => { fetchImpl = f; };                 // tests inject a fake network
+let claudeOverride = null; const claudeClients = new Map();
+const setClaude = c => { claudeOverride = c; };
+function claudeClient(key) {
+  if (claudeOverride) return claudeOverride;
+  if (!claudeClients.has(key)) { const mod = require('@anthropic-ai/sdk'); const A = mod.Anthropic || mod.default || mod; claudeClients.clear(); claudeClients.set(key, new A({ apiKey: key })); }
+  return claudeClients.get(key);
+}
 const down = new Map();                                    // providerId → time until which it is skipped
 const resetHealth = () => down.clear();
 
@@ -52,27 +59,29 @@ function catalog() {
 /* ── config ── */
 async function loadConfig(adapter, tx) {
   const c = (await adapter.get(tx || null, 'system/ai')) || {};
-  return { providers: Array.isArray(c.providers) ? c.providers : [], features: { text: !!(c.features && c.features.text), photo: !!(c.features && c.features.photo) },
+  return { providers: Array.isArray(c.providers) ? c.providers : [], features: { text: !!(c.features && c.features.text), photo: !!(c.features && c.features.photo), chat: !!(c.features && c.features.chat) },
+    chatDailyLimit: Number.isFinite(+c.chatDailyLimit) ? +c.chatDailyLimit : 60, chatGlobalDailyLimit: Number.isFinite(+c.chatGlobalDailyLimit) ? +c.chatGlobalDailyLimit : 3000,
     dailyLimit: Number.isFinite(+c.dailyLimit) ? +c.dailyLimit : 20, globalDailyLimit: Number.isFinite(+c.globalDailyLimit) ? +c.globalDailyLimit : 2000 };
 }
 const view = c => ({
-  features: c.features, dailyLimit: c.dailyLimit, globalDailyLimit: c.globalDailyLimit,
+  features: c.features, dailyLimit: c.dailyLimit, globalDailyLimit: c.globalDailyLimit, chatDailyLimit: c.chatDailyLimit, chatGlobalDailyLimit: c.chatGlobalDailyLimit, chatEnvKey: !!process.env.ANTHROPIC_API_KEY,
   providers: c.providers.map(p => ({ id: p.id, label: p.label, kind: p.kind, model: p.model, baseUrl: p.baseUrl || '', roles: p.roles, enabled: p.enabled !== false,
     hasKey: !!p.apiKey, keyLast4: p.apiKey ? String(p.apiKey).slice(-4) : '' }))
 });
 const publicFlags = c => ({
   text: c.features.text && c.providers.some(p => p.enabled !== false && p.apiKey && p.roles.includes('text')),
-  photo: c.features.photo && c.providers.some(p => p.enabled !== false && p.apiKey && p.roles.includes('vision'))
+  photo: c.features.photo && c.providers.some(p => p.enabled !== false && p.apiKey && p.roles.includes('vision')),
+  chat: !!c.features.chat && (c.providers.some(p => p.kind === 'anthropic' && p.enabled !== false && p.apiKey && p.roles.includes('chat')) || !!process.env.ANTHROPIC_API_KEY)
 });
 
 function cleanConfig(cur, body) {
   const errors = {};
   const next = { ...cur, features: { ...cur.features }, providers: cur.providers.map(p => ({ ...p })) };
-  if (body.features !== undefined) next.features = { text: !!(body.features && body.features.text), photo: !!(body.features && body.features.photo) };
-  for (const k of ['dailyLimit', 'globalDailyLimit']) {
+  if (body.features !== undefined) next.features = { text: !!(body.features && body.features.text), photo: !!(body.features && body.features.photo), chat: !!(body.features && body.features.chat) };
+  for (const k of ['dailyLimit', 'globalDailyLimit', 'chatDailyLimit', 'chatGlobalDailyLimit']) {
     if (body[k] === undefined) continue;
     const n = Math.round(+body[k]);
-    if (!(n >= 0 && n <= (k === 'dailyLimit' ? 500 : 100000))) errors[k] = 'رقم غير صالح'; else next[k] = n;
+    if (!(n >= 0 && n <= (k === 'dailyLimit' || k === 'chatDailyLimit' ? 500 : 100000))) errors[k] = 'رقم غير صالح'; else next[k] = n;
   }
   if (body.providers !== undefined) {
     if (!Array.isArray(body.providers) || body.providers.length > 10) errors.providers = 'حتى 10 مزوّدين';
@@ -87,7 +96,7 @@ function cleanConfig(cur, body) {
         const baseUrl = str(b && b.baseUrl, 200);
         if (baseUrl && !/^https:\/\/[^\s]+$/.test(baseUrl)) errors.providers = 'الرابط لازم يبدأ بـ https://';
         if (kind === 'openai' && !baseUrl) errors.providers = 'المزوّد المتوافق مع OpenAI محتاج رابط';
-        const roles = (Array.isArray(b && b.roles) ? b.roles : []).filter(r => r === 'text' || r === 'vision');
+        const roles = (Array.isArray(b && b.roles) ? b.roles : []).filter(r => r === 'text' || r === 'vision' || (r === 'chat' && kind === 'anthropic'));
         return { id: old ? old.id : 'ai' + crypto.randomBytes(5).toString('hex'), label: str(b && b.label, 40) || (kind || 'AI'), kind, model: str(b && b.model, 80) || DEFAULT_MODEL[kind] || '',
           baseUrl, apiKey: key || (old ? old.apiKey : ''), roles: roles.length ? roles : ['text'], enabled: !(b && b.enabled === false) };
       });
@@ -107,6 +116,12 @@ async function postJson(url, headers, body) {
   } finally { clearTimeout(t); }
 }
 async function askProvider(p, system, userText, image) {
+  if (p.kind === 'anthropic') {                       // Claude through the official SDK (support-chat.js shares the client)
+    const content = image ? [{ type: 'image', source: { type: 'base64', media_type: image.mime, data: image.data } }, { type: 'text', text: userText }] : userText;
+    const r = await claudeClient(p.apiKey).messages.create({ model: p.model || DEFAULT_MODEL.anthropic, max_tokens: 1000, output_config: { effort: 'low' },
+      system: system + '\nAnswer with the JSON object only.', messages: [{ role: 'user', content }] }, { timeout: TIMEOUT_MS, maxRetries: 0 });
+    return r && r.stop_reason !== 'refusal' ? (r.content || []).filter(b => b.type === 'text').map(b => b.text).join('') : '';
+  }
   if (p.kind === 'gemini') {
     const parts = [{ text: userText }];
     if (image) parts.push({ inline_data: { mime_type: image.mime, data: image.data } });
@@ -232,4 +247,4 @@ async function handle({ backend, tx, method, path, body, admin }) {
   return env(404, 'NOT_FOUND', 'مسار غير معروف');
 }
 
-module.exports = { classify, handle, PATH_RE, setFetch, resetHealth, catalog, KINDS, DEFAULT_MODEL };
+module.exports = { classify, handle, PATH_RE, setFetch, setClaude, resetHealth, catalog, KINDS, DEFAULT_MODEL, loadConfig, publicFlags };

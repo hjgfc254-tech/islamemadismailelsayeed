@@ -322,6 +322,8 @@ async function start() {
     setTyping, onTyping,
     /** «اكتب مشكلتك» / «صوّر المشكلة»: {kind:'text', text} | {kind:'photo', image} → {cat, item, problem, …} (throws when unavailable) */
     async ai(payload) { return (await callSession({ op: 'ai', ...payload })).data; },
+  /** «مساعد هنصلحلك» support chat (functions/src/support-chat.js): action history | send {text} | confirm {id, yes} | reset */
+  async chat(payload) { return (await callSession({ op: 'chat', ...payload })).data; },
     get actor() { return actor; },
     get lastSync() { return last; },
     sync,

@@ -168,4 +168,6 @@ exports.agentApi = onRequest({ region: 'me-central1', cors: false, maxInstances:
 exports.callLogsClock = onSchedule({ schedule: 'every 24 hours', region: 'me-central1', timeoutSeconds: 120 }, async () => {
   try { const r = await agentGateway.retentionTick(backend); if (r.deleted) logger.info('callLogsClock', r); }
   catch (e) { logger.error('callLogsClock failed', { error: e && e.message }); }
+  try { const r = await require('./src/support-chat').retentionTick(backend); if (r.deleted) logger.info('callLogsClock chats', r); }
+  catch (e) { logger.error('callLogsClock failed', { error: e && e.message }); }
 });

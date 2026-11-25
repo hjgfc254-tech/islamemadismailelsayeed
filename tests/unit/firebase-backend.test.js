@@ -721,7 +721,7 @@ test('AI routing: keys stay on the server, providers fail over in order, answers
   assert.equal(save.ok, true, JSON.stringify(save.error));
   assert.deepEqual(save.data.providers.map(p => [p.label, p.hasKey, p.keyLast4, p.apiKey]), [['DeepSeek 1', true, '1111', undefined], ['Gemini', true, '2222', undefined]], 'keys never come back');
   const guest = await service.session(b, { auth: null, data: { op: 'sync', app: 'customer' } });
-  assert.deepEqual(guest.db.settings.ai, { text: true, photo: true }, 'apps only see the on/off flags');
+  assert.deepEqual(guest.db.settings.ai, { text: true, photo: true, chat: false }, 'apps only see the on/off flags (chat: support-chat.js, off until a Claude chat provider is set)');
   assert.equal(JSON.stringify(guest).includes('sk-aaaa'), false);
   /* keep a key when the admin saves without retyping it */
   const again = await call(b, OWNER, 'admin', 'PATCH', '/admin/ai', { providers: save.data.providers.map(p => ({ id: p.id, label: p.label, kind: p.kind, roles: p.roles })) });

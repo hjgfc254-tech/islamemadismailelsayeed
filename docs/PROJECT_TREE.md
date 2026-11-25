@@ -111,6 +111,7 @@ hansalhlak/
 │   │   │   ├── request-wizard.page.js
 │   │   │   ├── search.page.js
 │   │   │   ├── smart-help.js
+│   │   │   ├── support-chat.js
 │   │   │   ├── support.page.js
 │   │   │   └── trust-features.js
 │   │   ├── styles/
@@ -532,6 +533,7 @@ hansalhlak/
 │   │   ├── scope.js
 │   │   ├── service.js
 │   │   ├── store.js
+│   │   ├── support-chat.js
 │   │   ├── tech-status.js
 │   │   ├── telemetry.js
 │   │   ├── usage.js
@@ -763,6 +765,7 @@ hansalhlak/
 │       ├── static-audit.test.js
 │       ├── status-badge.test.js
 │       ├── super-dashboard.test.js
+│       ├── support-chat.test.js
 │       ├── support-contacts-policy.test.js
 │       ├── sw-cache-guard.test.js
 │       ├── system-settings.test.js

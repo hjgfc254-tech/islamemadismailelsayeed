@@ -108,6 +108,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | apps/customer/pages/request-wizard.page.js | IMPLEMENTED | Multi-step service request creation, validation, draft handling and attachment references. | Protect with regression tests; do not rewrite unnecessarily. |
 | apps/customer/pages/search.page.js | IMPLEMENTED | Arabic-aware catalog search engine and result binding. | Protect with regression tests; do not rewrite unnecessarily. |
 | apps/customer/pages/smart-help.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| apps/customer/pages/support-chat.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | apps/customer/pages/support.page.js | IMPLEMENTED | Customer support, FAQs, policies, complaints and support history. | Protect with regression tests; do not rewrite unnecessarily. |
 | apps/customer/pages/trust-features.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | apps/customer/README.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
@@ -464,6 +465,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | functions/src/scope.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/service.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/store.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| functions/src/support-chat.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/tech-status.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/telemetry.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/usage.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
@@ -678,6 +680,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | tests/unit/static-audit.test.js | IMPLEMENTED | Existing unit/static regression test. | Protect with regression tests; do not rewrite unnecessarily. |
 | tests/unit/status-badge.test.js | TEST | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
 | tests/unit/super-dashboard.test.js | TEST | Unit tests for the owner dashboard: every KPI/attention item derived from the source pages' APIs, severity ordering, all-zero/unavailable/all-failed sources, live follow of injected sources, module links, HTML escaping and the read-only/no-network/no-mutation boundary (10 checks). | Extend when the page behavior changes. |
+| tests/unit/support-chat.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/support-contacts-policy.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/sw-cache-guard.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/system-settings.test.js | TEST | Unit tests for the system-settings page logic: defaults, validation, coercion, diff, reviewed save, and the no-persistence/no-network boundary (7 checks). | Extend when the page behavior changes. |

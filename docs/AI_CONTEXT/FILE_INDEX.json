@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 688,
+  "file_count": 691,
   "files": [
     {
       "path": "_redirects",
@@ -195,8 +195,8 @@
       "path": "apps/admin/modules/ai-settings.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 9304,
-      "sha256": "9a271b73c01aae40e80255f66df20b1b15be72a57402f7d13cd1201356af061f"
+      "bytes": 10773,
+      "sha256": "ddd479073667d6afdea2376c403a019e181172e95e9a7a6251a8749cc0b4d52e"
     },
     {
       "path": "apps/admin/modules/audit/audit-details.js",
@@ -608,8 +608,8 @@
       "path": "apps/customer/index.html",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 10443,
-      "sha256": "43db36ab8ef4b0c5b886d95f0bea62cbf55191227f7ec89dcc61d26a8e5dff95"
+      "bytes": 10490,
+      "sha256": "d6e2c63afb53d72a09209a794edf3469863e5277f098da35a8774b847c080767"
     },
     {
       "path": "apps/customer/pages/account.page.js",
@@ -731,11 +731,18 @@
       "sha256": "c42a15c8d9a6e4cc1366efb77dc78b010b3cd2340589556e21cd91925b3a5e5e"
     },
     {
+      "path": "apps/customer/pages/support-chat.js",
+      "area": "apps/customer",
+      "status": "NEEDS_REVIEW",
+      "bytes": 10961,
+      "sha256": "081c9fd8610f83c2b87e040fd42f89ad92cc3b2ffab26f6ec48932b68c288e39"
+    },
+    {
       "path": "apps/customer/pages/support.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 22147,
-      "sha256": "af92d052f390d6f187659ec091b81efae2438af6d495f5c81bfee4c4b6047151"
+      "bytes": 22621,
+      "sha256": "9130020ad1615f088636bc244aa1f62deac970ae88c7471fcaabef28e2b308ae"
     },
     {
       "path": "apps/customer/pages/trust-features.js",
@@ -755,8 +762,8 @@
       "path": "apps/customer/styles/brand-2026.css",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 56143,
-      "sha256": "7e26079f55742e3c50a0e641aa5bbf82bf26b4bf4f188e290fb2020bb1e1fc2a"
+      "bytes": 61350,
+      "sha256": "b5b22a8dac3024199c2795263d6c0dfd5713fafd0ba487e57f093e0408df75c5"
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -2281,8 +2288,8 @@
       "path": "docs/AI_CALLCENTER.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 13668,
-      "sha256": "f83ff641fa7b217736112da257cb4637783c10c49bb56903c77874dfd97db733"
+      "bytes": 17872,
+      "sha256": "357c3a4b617aac7503767627da590b3ecf172562dffed10a49d475f2f50a7ac0"
     },
     {
       "path": "docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md",
@@ -2358,8 +2365,8 @@
       "path": "docs/AI_CONTEXT/START_HERE.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 9269,
-      "sha256": "996735b9e5f23ddc8c567944eb44161645a7c34578da76778f8b38ff8ffaec9c"
+      "bytes": 9894,
+      "sha256": "09439ee6556c7d8f025b8c14458fc6e6e33ed6a9d4d90391e5f49759ebb473cf"
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -2379,8 +2386,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 302279,
-      "sha256": "84aab4e3aa730c5af49a44c7a4a3cac12c7e35ad6b886d9d0079b745abe669fd"
+      "bytes": 302994,
+      "sha256": "79cfa0c4d40b960871e0338f67bd63baeb790f76e880a4620f3f86a2ee910dc1"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2393,8 +2400,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 171330,
-      "sha256": "e4db281e5a8418d45ba9091bc30619afad6d87382ab0ef4d09311bea88bdfb10"
+      "bytes": 171971,
+      "sha256": "d70906161b37a4fb414a3e8f0ec14fb50079a1b04d32ae3be38151e764bea9e6"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2827,8 +2834,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 32350,
-      "sha256": "96f28ae3d632ddb941678a978081cddff7637179ec31a84831c7be9bacc3fb00"
+      "bytes": 32473,
+      "sha256": "05e1c8d9e1d20b6e86851d886e58a9d1dbc555a04a392aa63c2c1ae79be2bd6c"
     },
     {
       "path": "docs/README.md",
@@ -2890,8 +2897,8 @@
       "path": "functions/.env.example",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 889,
-      "sha256": "80f453f4ea4fcb544246b7fcbf7029db040db3b903cee3ff606eb809b29caf3c"
+      "bytes": 1094,
+      "sha256": "b92b8e9520c7c1ef49323678e720ef7ae10c872aefb9f7f51d9f4a2df2c0120c"
     },
     {
       "path": "functions/.gitignore",
@@ -3065,22 +3072,22 @@
       "path": "functions/index.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 12118,
-      "sha256": "04d7a44f3dc044e173d218bc800f81e6effa2e6aea1b9f35cbe5eb91393a5c97"
+      "bytes": 12333,
+      "sha256": "c6ca2109015a24730c075d2e12fa87f4f4d9184986576ea53b7a83fdfd72eedd"
     },
     {
       "path": "functions/package-lock.json",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 108091,
-      "sha256": "ca543b84415a02bcb5b2cff1846c2bcc51a65758cd5c0567985dffe78dbeb6d5"
+      "bytes": 111337,
+      "sha256": "88608e3862a7499fea169fb264d97cc10dc354b2a69a71896677bf70208ab676"
     },
     {
       "path": "functions/package.json",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 566,
-      "sha256": "05eb2a543764eb8fe1a408a62b043fb5c72abe15b503494a13cbb8531d83c919"
+      "bytes": 606,
+      "sha256": "a107a288d0018003dd90f7dc24a0d7a54240ae252c8f7cc230d9da8f2b0499a9"
     },
     {
       "path": "functions/src/admin-code.js",
@@ -3100,15 +3107,15 @@
       "path": "functions/src/agent-gateway.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 29383,
-      "sha256": "3558844272f41dd100eb4ad857ae7a95dc5efbe268235ce5e4cdfa6ef5696138"
+      "bytes": 29453,
+      "sha256": "e9e724eb1f6cb80a60d964ffca2b8d8fccb45687324fab8d2019651f53f8788d"
     },
     {
       "path": "functions/src/ai.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 14736,
-      "sha256": "40087173418d1d7d9a1212623b2cf70af7bde150178a230ccb84ff6006928544"
+      "bytes": 16624,
+      "sha256": "15d267006a7c959f914f63b95fb8ae99fe78a6f745affb52d4cfbe1b309a57f2"
     },
     {
       "path": "functions/src/alerts-adapter.js",
@@ -3212,8 +3219,8 @@
       "path": "functions/src/service.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 50107,
-      "sha256": "4fd7e51c34a7879efeee9582e2c352b012a661ee54391ffe1c89c44bbb02972e"
+      "bytes": 51121,
+      "sha256": "87406acde89d05bb99966e67c037fb62b2e12b09e05d8d997699b444d586c2b7"
     },
     {
       "path": "functions/src/store.js",
@@ -3221,6 +3228,13 @@
       "status": "NEEDS_REVIEW",
       "bytes": 1838,
       "sha256": "fabc05e6c6e19bd649a8a54a972c98562ce2d2c136e8486ca3b5a1b8ec716969"
+    },
+    {
+      "path": "functions/src/support-chat.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 34669,
+      "sha256": "3f0a105ede025f18a9cb41cbe0b8f4797be473ed7bb91f96fa49634f6cb6aff8"
     },
     {
       "path": "functions/src/tech-status.js",
@@ -3282,8 +3296,8 @@
       "path": "legal/privacy.html",
       "area": "legal",
       "status": "NEEDS_REVIEW",
-      "bytes": 16983,
-      "sha256": "6f18a83a3d2dfed15de81ca58dc58f74f56f24031178db61bc0a27e824c473c7"
+      "bytes": 18487,
+      "sha256": "7fc65457fc10cc63a1dfa420526874c876459a3d7698813eeb13512a829283d6"
     },
     {
       "path": "legal/terms.html",
@@ -3401,15 +3415,15 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 12030,
-      "sha256": "c8da5456f5039ebba430a76cff4407cce2c82678b2e0f3fdb76c36046cafc527"
+      "bytes": 12071,
+      "sha256": "a7a396fcfd6f4c3a60c6957ed021d07e0eef595befcebc2ad768acd292052921"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 196,
-      "sha256": "5338d6d6237dd8d573daddd1831806394b271934f55e0e84c7716961bec44cfd"
+      "sha256": "a8c5087339d11921b4c48601b5988523fad90d2876c8bb43f19e4ad1d8d1a884"
     },
     {
       "path": "services/admin-api.js",
@@ -3457,8 +3471,8 @@
       "path": "services/firebase-backend.js",
       "area": "services",
       "status": "NEEDS_REVIEW",
-      "bytes": 38704,
-      "sha256": "9e2ed46591e36035ea86ef4f3f466d0f07f7a24c239eb4ad575207e3c8339bd1"
+      "bytes": 38934,
+      "sha256": "6b93886c51b10c25d541467bdc4f4962ce51e8b180eaf251de530fae736eb601"
     },
     {
       "path": "services/firebase-config.js",
@@ -4339,8 +4353,8 @@
       "path": "tests/unit/firebase-backend.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 65035,
-      "sha256": "3a9c0adf9f2ab453dd1678ab963a0e087feb8ead50dbaba5f3d28fea77c2c951"
+      "bytes": 65113,
+      "sha256": "a7f382361685d0098dafc24668e885175deb2f765ee1676f0ea9436da69c5b67"
     },
     {
       "path": "tests/unit/firebase-integration-contract.test.js",
@@ -4719,6 +4733,13 @@
       "status": "TEST",
       "bytes": 9992,
       "sha256": "7765a2e23fbf953bfaaa19caeeb626c749509e07da40dd8970609b4cf9b12671"
+    },
+    {
+      "path": "tests/unit/support-chat.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 14118,
+      "sha256": "a5f42e860ff9ec0c7a7801a408f2c51c26182a77b0e6954ed43146267c917a03"
     },
     {
       "path": "tests/unit/support-contacts-policy.test.js",

@@ -248,7 +248,7 @@ async function cancelRequest({ backend, id, body, principal, deps }) {
       if (fee && body.confirmFee !== true) {
         return bad(409, 'FEE_CONFIRMATION_REQUIRED', 'فيه رسوم انتقال ' + fee + ' ج.م لأن الفني في الطريق — اقرأها للمتصل، ولو وافق ابعت confirmFee: true', { fee });
       }
-      const by = principal.channel === 'ai' ? 'المساعد الصوتي' : 'خدمة العملاء';
+      const by = principal.channel === 'ai' ? 'المساعد الصوتي' : principal.channel === 'chat' ? 'المساعد الذكي (شات)' : 'خدمة العملاء';
       const res = await e.client.request('POST', `/requests/${id}/cancel`, { body: { reason: 'إلغاء عن طريق ' + by + ': ' + reason }, actor: ctx.actor });
       if (!res.ok) return res;
       return { ok: true, status: 200, data: { ...requestSummary(e.mp.get('serviceRequests', id)), cancelFee: fee }, subject: id };

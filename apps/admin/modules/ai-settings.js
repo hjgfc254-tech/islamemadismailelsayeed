@@ -9,14 +9,14 @@
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const C = () => root.HSApiClient;
   const errText = (r) => (r && r.error && (r.error.details ? Object.values(r.error.details)[0] : r.error.message)) || 'تعذّر الحفظ';
-  const KINDS = [['deepseek', 'DeepSeek'], ['gemini', 'Google Gemini'], ['openai', 'متوافق مع OpenAI (رابط مخصص)']];
-  const MODEL_HINT = { deepseek: 'deepseek-chat', gemini: 'gemini-2.5-flash', openai: 'gpt-4o-mini' };
+  const KINDS = [['anthropic', 'Claude (Anthropic)'], ['deepseek', 'DeepSeek'], ['gemini', 'Google Gemini'], ['openai', 'متوافق مع OpenAI (رابط مخصص)']];
+  const MODEL_HINT = { deepseek: 'deepseek-chat', gemini: 'gemini-2.5-flash', openai: 'gpt-4o-mini', anthropic: 'claude-opus-5-5' };
 
   async function mount(host) {
     if (!host || !C()) return;
     const res = await C().request('GET', '/admin/ai');
     if (!res.ok) { host.innerHTML = `<p>${esc(errText(res))}</p>`; return; }
-    const work = { features: { ...res.data.features }, dailyLimit: res.data.dailyLimit, globalDailyLimit: res.data.globalDailyLimit,
+    const work = { features: { ...res.data.features }, dailyLimit: res.data.dailyLimit, globalDailyLimit: res.data.globalDailyLimit, chatDailyLimit: res.data.chatDailyLimit, chatGlobalDailyLimit: res.data.chatGlobalDailyLimit, chatEnvKey: !!res.data.chatEnvKey,
       providers: res.data.providers.map((p) => ({ ...p, apiKey: '' })) };
     const status = (m) => { const s = host.querySelector('[data-ai-status]'); if (s) s.textContent = m || ''; };
 
@@ -28,6 +28,9 @@
         <fieldset class="ord-dlg-in"><legend>تشغيل</legend>
           <label class="hs-grid-field"><span>«اكتب مشكلتك» (نص)</span><input type="checkbox" data-ai-f="text" ${work.features.text ? 'checked' : ''}></label>
           <label class="hs-grid-field"><span>«صوّر المشكلة» (صور — محتاج مزوّد بيفهم الصور زي Gemini)</span><input type="checkbox" data-ai-f="photo" ${work.features.photo ? 'checked' : ''}></label>
+          <label class="hs-grid-field"><span>«مساعد هنصلحلك» (شات خدمة عملاء ذكي — محتاج مزوّد Claude بدور «شات»${work.chatEnvKey ? ' أو المفتاح المحفوظ على السيرفر' : ''})</span><input type="checkbox" data-ai-f="chat" ${work.features.chat ? 'checked' : ''}></label>
+          <label class="hs-grid-field"><span>رسايل الشات لكل عميل في اليوم</span><input type="number" min="0" max="500" data-ai-n="chatDailyLimit" value="${esc(work.chatDailyLimit)}"></label>
+          <label class="hs-grid-field"><span>رسايل الشات للمنصة كلها في اليوم (حماية للتكلفة)</span><input type="number" min="0" max="100000" data-ai-n="chatGlobalDailyLimit" value="${esc(work.chatGlobalDailyLimit)}"></label>
           <label class="hs-grid-field"><span>الحد لكل عميل في اليوم</span><input type="number" min="0" max="500" data-ai-n="dailyLimit" value="${esc(work.dailyLimit)}"></label>
           <label class="hs-grid-field"><span>الحد للمنصة كلها في اليوم (حماية للتكلفة)</span><input type="number" min="0" max="100000" data-ai-n="globalDailyLimit" value="${esc(work.globalDailyLimit)}"></label>
         </fieldset>
@@ -39,12 +42,13 @@
             ${p.kind === 'openai' ? `<label class="hs-grid-field"><span>الرابط (https://…/v1)</span><input data-ai-p="baseUrl" value="${esc(p.baseUrl)}" dir="ltr"></label>` : ''}
             <label class="hs-grid-field"><span>مفتاح API ${p.hasKey ? `(محفوظ …${esc(p.keyLast4)} — سيبه فاضي عشان يفضل)` : ''}</span><input type="password" data-ai-p="apiKey" autocomplete="off" dir="ltr" placeholder="${p.hasKey ? '••••••••' : 'الصق المفتاح هنا'}"></label>
             <label class="hs-grid-field"><span>نص</span><input type="checkbox" data-ai-role="text" ${p.roles.includes('text') ? 'checked' : ''}></label>
+            ${p.kind === 'anthropic' ? `<label class="hs-grid-field"><span>شات</span><input type="checkbox" data-ai-role="chat" ${p.roles.includes('chat') ? 'checked' : ''}></label>` : ''}
             <label class="hs-grid-field"><span>صور</span><input type="checkbox" data-ai-role="vision" ${p.roles.includes('vision') ? 'checked' : ''}></label>
             <label class="hs-grid-field"><span>شغّال</span><input type="checkbox" data-ai-p="enabled" ${p.enabled ? 'checked' : ''}></label>
             <span class="ai-actions"><button type="button" class="adm-btn" data-ai-up="${i}" ${i ? '' : 'disabled'} aria-label="أعلى">▲</button><button type="button" class="adm-btn" data-ai-down="${i}" ${i < work.providers.length - 1 ? '' : 'disabled'} aria-label="أسفل">▼</button>
               ${p.id ? `<button type="button" class="adm-btn" data-ai-test="${i}">تجربة</button>` : ''}<button type="button" class="adm-btn" data-ai-del="${i}">حذف</button></span>
             <p class="ord-muted ai-test-out" data-ai-out="${i}"></p></div>`).join('') : '<p class="ord-muted">مفيش مزوّدين لسه — ضيف واحد.</p>'}
-          ${work.providers.length < 10 ? '<p class="ai-add"><button type="button" class="adm-btn" data-ai-add="deepseek">+ DeepSeek</button><button type="button" class="adm-btn" data-ai-add="gemini">+ Gemini</button><button type="button" class="adm-btn" data-ai-add="openai">+ مزوّد متوافق مع OpenAI</button></p>' : ''}
+          ${work.providers.length < 10 ? '<p class="ai-add"><button type="button" class="adm-btn" data-ai-add="anthropic">+ Claude</button><button type="button" class="adm-btn" data-ai-add="deepseek">+ DeepSeek</button><button type="button" class="adm-btn" data-ai-add="gemini">+ Gemini</button><button type="button" class="adm-btn" data-ai-add="openai">+ مزوّد متوافق مع OpenAI</button></p>' : ''}
         </fieldset>
         <p><button type="button" class="adm-btn adm-btn-p" data-ai-save>حفظ</button></p>
       </section>`;
@@ -62,7 +66,7 @@
     host.addEventListener('click', async (e) => {
       const b = e.target.closest('button'); if (!b) return;
       const d = b.dataset;
-      if (d.aiAdd) { work.providers.push({ id: '', label: d.aiAdd === 'deepseek' ? 'DeepSeek ' + (work.providers.filter((p) => p.kind === 'deepseek').length + 1) : d.aiAdd === 'gemini' ? 'Gemini' : 'مزوّد', kind: d.aiAdd, model: '', baseUrl: '', apiKey: '', roles: d.aiAdd === 'gemini' ? ['text', 'vision'] : ['text'], enabled: true, hasKey: false }); render(); return; }
+      if (d.aiAdd) { work.providers.push({ id: '', label: d.aiAdd === 'deepseek' ? 'DeepSeek ' + (work.providers.filter((p) => p.kind === 'deepseek').length + 1) : d.aiAdd === 'gemini' ? 'Gemini' : d.aiAdd === 'anthropic' ? 'Claude' : 'مزوّد', kind: d.aiAdd, model: '', baseUrl: '', apiKey: '', roles: d.aiAdd === 'gemini' ? ['text', 'vision'] : d.aiAdd === 'anthropic' ? ['chat', 'text', 'vision'] : ['text'], enabled: true, hasKey: false }); render(); return; }
       if (d.aiDel !== undefined) { work.providers.splice(+d.aiDel, 1); render(); return; }
       if (d.aiUp !== undefined) { const i = +d.aiUp; [work.providers[i - 1], work.providers[i]] = [work.providers[i], work.providers[i - 1]]; render(); return; }
       if (d.aiDown !== undefined) { const i = +d.aiDown; [work.providers[i + 1], work.providers[i]] = [work.providers[i], work.providers[i + 1]]; render(); return; }
@@ -75,7 +79,7 @@
       }
       if (d.aiSave !== undefined) {
         b.disabled = true; status('جارٍ الحفظ…');
-        const r = await C().request('PATCH', '/admin/ai', { body: { features: work.features, dailyLimit: work.dailyLimit, globalDailyLimit: work.globalDailyLimit,
+        const r = await C().request('PATCH', '/admin/ai', { body: { features: work.features, dailyLimit: work.dailyLimit, globalDailyLimit: work.globalDailyLimit, chatDailyLimit: work.chatDailyLimit, chatGlobalDailyLimit: work.chatGlobalDailyLimit,
           providers: work.providers.map((p) => ({ id: p.id || undefined, label: p.label, kind: p.kind, model: p.model, baseUrl: p.baseUrl, apiKey: p.apiKey || undefined, roles: p.roles, enabled: p.enabled })) } });
         b.disabled = false;
         if (r.ok) { work.providers = r.data.providers.map((p) => ({ ...p, apiKey: '' })); render(); status('تم الحفظ. المفاتيح محفوظة على الخادم بس.'); }

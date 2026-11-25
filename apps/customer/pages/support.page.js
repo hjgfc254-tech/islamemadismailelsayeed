@@ -49,6 +49,7 @@ const Support = (() => {
     return `<div class="screen">${typeof head === 'function' ? head('مركز الدعم', true) : ''}
       ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'':`<div class="demo-banner">${safeIc('info')}<span>وضع العرض التجريبي — الشكاوى تُحفظ محليًا ولا تُرسل لفريق دعم حقيقي.</span></div>`}
       ${openTickets ? `<div class="need">${safeIc('info')}<span>لديك ${openTickets} شكوى/شكاوى مفتوحة — يمكنك متابعتها من "سجل الشكاوى".</span></div>` : ''}
+      ${globalThis.HSSupportChat && globalThis.HSSupportChat.enabled() ? `<button type="button" class="hc-entry" data-chat-open>${safeIc('chat')}<span><b>اسأل مساعد هنصلحلك</b><small>${globalThis.HSSupportChat.live() ? 'بيرد فورًا 24 ساعة — يتابع طلبك ويجهّزلك طلب أو إلغاء بتأكيدك' : 'نسخة تجريبية — ردود ثابتة على جهازك'}</small></span>${safeIc('chev','chev')}</button>` : ''}
       <div class="plist" style="gap:8px;margin-top:14px">
         <button class="prow glass neon" data-support="faq">
           ${safeIcp('info','sv')}
