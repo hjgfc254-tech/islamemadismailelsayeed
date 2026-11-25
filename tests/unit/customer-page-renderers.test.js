@@ -29,7 +29,7 @@ test('order details renderer handles a missing request without crashing',()=>{
 test('order details renderer shows tracking state, provider search and customer actions only',()=>{
  const req={id:'r1',no:12,status:'searching',cat:'appliances',catName:'أجهزة',serviceName:'غسالة',gov:'الجيزة',area:'العجوزة',addr:'شارع 1',desc:'لا تعمل',createdAt:'2026-11-12'};
  const html=Details.render(detailsContext(req));
- assert.match(html,/متابعة الطلب #12/);assert.match(html,/جارٍ البحث عن مقدم خدمة/);
+ assert.match(html,/متابعة الطلب (?:<bdi class="code">)?#12/);assert.match(html,/جارٍ البحث عن مقدم خدمة/);
  assert.match(html,/مسار الطلب/);assert.match(html,/history/);assert.match(html,/لا تعمل/);
  assert.match(html,/data-act="viewMatches"/);assert.match(html,/data-act="cancelReq"/);
  assert.match(html,/data-act="complain"/);

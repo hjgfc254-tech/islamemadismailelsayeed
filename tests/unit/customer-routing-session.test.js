@@ -140,7 +140,7 @@ test('app: deep links open the right screen on boot for a signed-in customer', a
   assert.match(orders.html(), /<h2 tabindex="-1">طلباتي<\/h2>/);
   assert.equal(orders.run('state.tab'), 'orders');
   const track = boot({ hash: '#/track/' + id, local: { ...SIGNED_IN, hs_mp_db: store } });
-  assert.match(track.html(), /متابعة الطلب #HS-/);
+  assert.match(track.html(), /متابعة الطلب (?:<bdi class="code">)?#HS-/);
   assert.equal(track.run('state.tab'), 'orders');
   assert.deepEqual(plain(track.run('state.stack')), ['track:' + id], 'Back returns to Orders like an in-app open');
   const prov = boot({ hash: '#/provider/p_demo1', local: SIGNED_IN });
@@ -155,7 +155,7 @@ test('app: a guest opening a customer-only link is asked to sign in, then return
   assert.match(app.toast(), /سجّل الدخول/);
   assert.equal(app.session._map.get('hs_return_to'), '#/track/' + id);
   await app.submitDoc('loginFormAcc', { name: 'سارة أحمد', phone: '01011112222' });
-  assert.match(app.html(), /متابعة الطلب #HS-/, 'returned to the requested tracking page');
+  assert.match(app.html(), /متابعة الطلب (?:<bdi class="code">)?#HS-/, 'returned to the requested tracking page');
   assert.equal(app.session._map.has('hs_return_to'), false);
 });
 

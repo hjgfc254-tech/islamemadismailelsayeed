@@ -66,7 +66,7 @@ test('opening a request from the orders list focuses the tracking heading; track
   app.run("show('orders')");
   app.doc.activeElement = app.body;
   await app.clickDoc({ track: id });
-  assert.match(app.html(), /<h2 tabindex="-1">متابعة الطلب #HS-/);
+  assert.match(app.html(), /<h2 tabindex="-1">متابعة الطلب (?:<bdi class="code">)?#HS-/);
   assert.equal(app.focus.current, 'heading');
   // Provider side (shared store) completes the job; the customer's own action then re-renders tracking.
   app.run(`(()=>{const id=${JSON.stringify(id)};if(!MP.activeAssignment(id))MP.assign(id,'p_demo1');MP.respond(id,true);MP.confirmTime(id,'provider');['enroute','arrived','started'].forEach(s=>MP.advance(id,s));MP.complete(id,150);})()`);
