@@ -1201,7 +1201,7 @@ function openNotes(){
   const group = (title, list) => list.length ? `<div class="note-group">${title}</div>${list.map(row).join('')}` : '';
   sheet(`<h4>${ic('bell')} الإشعارات</h4><div class="sub">تحديثات طلباتك</div>
     ${ns.length ? group('النهارده', ns.filter(isToday)) + group('قبل كده', ns.filter(n => !isToday(n)))
-      : `<div class="empty" style="padding:24px">${ic('bell')}<p>لا توجد إشعارات بعد</p><small>هنبلغك هنا بكل تحديث على طلباتك.</small></div>`}`);
+      : `<div class="empty" style="padding:24px">${ic('bell')}<p>لسه مفيش إشعارات</p><small>هنبلغك هنا بكل تحديث على طلباتك.</small></div>`}`);
 }
 
 function openMenu(){

@@ -791,3 +791,14 @@ html.hc-open{overflow:hidden}
 /* provider card: «• ٣٤٢ خدمة منجزة» broke inside its piece next to the stars — pieces wrap whole */
 #view .prov-inline .prov-head{min-width:0}
 #view .prov-inline .prov-stats{flex-wrap:wrap;white-space:nowrap;column-gap:6px;row-gap:2px}
+/* saved addresses: the non-default card dropped «حذف» onto its own full-width row — one even row of actions on every card */
+#view .addr-card .acts{display:flex;flex-wrap:nowrap;gap:8px}
+#view .addr-card .acts button{flex:1 1 0;min-width:0;min-height:44px;padding-inline:6px;white-space:nowrap}
+/* desktop: sheets (menu, notifications, support, emergency…) stretched across the whole 1280px screen — a centred panel */
+@media (min-width:900px){#sheet{max-width:640px;margin-inline:auto}}
+/* support chat: the «كلّم موظف» button is [hidden] while hand-off is off, but .hc-ic{display:grid} still drew it;
+   on 320px the title then broke over three lines */
+.hc-ic[hidden]{display:none}
+.hc-head{gap:8px}
+.hc-who b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hc-who small{line-height:1.4}

@@ -21,7 +21,7 @@
   --surface-primary:#FFFFFF;--surface-secondary:#F7F9FC;--surface-sunken:#EEF2F7;
   --text-primary:#0F1B2D;--text-secondary:#3A4A61;--text-muted:#5E6B7E;
   --border-subtle:#E4E9F0;--border-default:#CBD5E1;--border-strong:#94A3B8;--border-input:#8592A6;
-  --focus-ring:0 0 0 3px rgba(225,37,27,.35);
+  --focus-ring:0 0 0 2px #FFFFFF,0 0 0 4px #E1251B;   /* solid red ring with a white gap (was 35% red, ~1.6:1 — below the 3:1 a focus mark needs) */
   /* legacy aliases */
   --glow:rgba(11,31,58,.14);--glow-soft:rgba(11,31,58,.07);
   --canvas:linear-gradient(180deg,#F7F9FC 0,var(--bg-primary) 560px) no-repeat,var(--bg-primary);

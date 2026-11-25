@@ -47,7 +47,7 @@ const Support = (() => {
     const complaints = u ? MP.db().complaints.filter(k => isMine(k, u)) : [];
     const openTickets = complaints.filter(k => k.status === 'open').length;
     return `<div class="screen">${typeof head === 'function' ? head('مركز الدعم', true) : ''}
-      ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'':`<div class="demo-banner">${safeIc('info')}<span>وضع العرض التجريبي — الشكاوى تُحفظ محليًا ولا تُرسل لفريق دعم حقيقي.</span></div>`}
+      ${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'':`<div class="demo-banner">${safeIc('info')}<span>وضع تجريبي — الشكاوى بتتحفظ على جهازك بس ومش بتوصل لفريق دعم حقيقي.</span></div>`}
       ${openTickets ? `<div class="need">${safeIc('info')}<span>لديك ${openTickets} شكوى/شكاوى مفتوحة — يمكنك متابعتها من "سجل الشكاوى".</span></div>` : ''}
       ${globalThis.HSSupportChat && globalThis.HSSupportChat.enabled() ? `<button type="button" class="hc-entry" data-chat-open>${safeIc('chat')}<span><b>كلّم موظف خدمة العملاء</b><small>${globalThis.HSSupportChat.live() ? 'شات متاح 24 ساعة — يتابع طلبك ويحل مشكلتك' : 'نسخة تجريبية — ردود ثابتة على جهازك'}</small></span>${safeIc('chev','chev')}</button>` : ''}
       <div class="plist" style="gap:8px;margin-top:14px">
@@ -63,12 +63,12 @@ const Support = (() => {
         </button>
         <button class="prow glass neon" data-support="history">
           ${safeIcp('list','sv')}
-          <span class="tx">سجل الشكاوى (${complaints.length})<small>متابعة الشكاوى السابقة</small></span>
+          <span class="tx">سجل الشكاوى (${complaints.length})<small>تابع شكاويك اللي فاتت</small></span>
           ${safeIc('chev','chev')}
         </button>
         <button class="prow glass neon" data-support="contact">
           ${safeIcp('chat','sv')}
-          <span class="tx">التواصل مع الدعم<small>طرق مباشرة للتواصل</small></span>
+          <span class="tx">التواصل مع الدعم<small>كلّمنا مباشرة</small></span>
           ${safeIc('chev','chev')}
         </button>
         <button class="prow glass neon" data-support="report">
@@ -147,7 +147,7 @@ const Support = (() => {
     const provs = MP.db().providers.filter(p => p.status === 'approved');
     if (typeof sheet !== 'function') return;
     sheet(`<h4>${safeIc('shield')} الإبلاغ عن مقدم خدمة</h4>
-      <div class="sub">سيتم مراجعة البلاغ من الإدارة</div>
+      <div class="sub">الإدارة هتراجع البلاغ وترد عليك</div>
       <form class="form" id="supReportForm">
         <div><label for="rep-provider">مقدم الخدمة *</label>
           <select id="rep-provider" name="providerId" required>
@@ -191,7 +191,7 @@ const Support = (() => {
           <small style="color:var(--muted)">${new Date(k.at).toLocaleString('ar-EG')}</small>
           ${k.resolution ? `<small style="color:#6ee7b7">القرار: ${_esc(k.resolution)}</small>` : ''}
         </div>`;
-      }).join('') : `<div class="empty" style="padding:24px">${safeIc('shield')}<p>لا توجد شكاوى سابقة</p></div>`}`);
+      }).join('') : `<div class="empty" style="padding:24px">${safeIc('shield')}<p>لسه ما قدمتش أي شكوى</p></div>`}`);
   };
 
   /* ═════════ التواصل ═════════ */
