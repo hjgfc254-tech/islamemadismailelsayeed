@@ -21,7 +21,7 @@
       return `<div class="screen">${head('طلباتي')}<div class="plist" aria-busy="true" aria-label="جارٍ تحميل طلباتك">${'<div class="sk-card"><span class="sk sk-line w60"></span><span class="sk sk-line w40"></span><span class="sk sk-line w80"></span></div>'.repeat(3)}</div></div>`;
     }
     if(!customer||!all.length){
-      return `<div class="screen">${head('طلباتي')}${demoBanner()}${offlineNotice()}${empty('list','مفيش طلبات لسه','اختر خدمة من الرئيسية وأرسل طلبك')}<button class="cta" data-go="home">${buttonIcon('home')} اطلب خدمة</button></div>`;
+      return `<div class="screen">${head('طلباتي')}${demoBanner()}${offlineNotice()}${empty('list','مفيش طلبات لسه','اختر خدمة من الرئيسية وأرسل طلبك')}<button class="cta cta-req" data-act="newReq">${buttonIcon('plus')} اطلب خدمة</button></div>`;
     }
     const selected=FILTERS.some(x=>x.id===filter)?filter:'active';
     const groups={

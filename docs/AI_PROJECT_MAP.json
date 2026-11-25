@@ -2837,7 +2837,7 @@
         "tests/e2e/customer-sheet-focus.browser.py"
       ],
       "notes": "2026-11-13 TASK 04: Bottom Sheet initial focus, Tab/Shift+Tab containment, Escape, focus restoration/fallback, and background inert/aria-hidden isolation implemented and browser-tested. origin remains the legacy problem-list return context; route-style close focuses the destination #view.",
-      "sha256": "218de1503ac72e2ad520cc662c0cad995275a00e3365f30bbe1684a6f255990c",
+      "sha256": "ab4a0ed071aa17f1b3488cd12bc38b2c4ba0680a7d846ee4ab40d7cca03bf72a",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2876,7 +2876,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 102177
+      "bytes": 104251
     },
     {
       "path": "apps/customer/brand-icons.js",
@@ -3254,7 +3254,7 @@
       "next_action": "Keep this module presentation-only; extract individual sections only when tests establish stable contracts.",
       "explicit_references": [],
       "notes": "Extracted from screens.home on 2026-11-13. Script loaded before app.js. Tests: customer-page-renderers.test.js and home.test.js.",
-      "sha256": "d3cb6799db93d8e53d41454506a6e6212156ed269da276e1aa02afb7fda80192",
+      "sha256": "fef43d2a41e58c28e9debac18dea8e3d8c30633cff70c255c45cab387292ca78",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3291,7 +3291,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 11102
+      "bytes": 11276
     },
     {
       "path": "apps/customer/pages/live-map.js",
@@ -3451,7 +3451,7 @@
       "next_action": "Keep MP reads and event handlers in market-ui until a separately tested state/controller contract is approved.",
       "explicit_references": [],
       "notes": "Extracted from market-ui.page.js on 2026-11-13. Script loaded before market-ui.page.js. Tests: customer-page-renderers.test.js and customer-workflow.test.js.",
-      "sha256": "9e9926e50f5895f485dd80a19f24da26fb3df3fc481076626b43485762270d3a",
+      "sha256": "c3cf3d7ac3a848019d29e4d1716eb37b1f8c9dc1bd17cdeb3b4766f7a68908a2",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3488,7 +3488,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 3051
+      "bytes": 3062
     },
     {
       "path": "apps/customer/pages/providers.page.js",
@@ -3835,8 +3835,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "3d655a5e1488854d03fee98a79f638a7713ecdb5d9c486f2fbc410b498e7dc2e",
-      "bytes": 66166
+      "sha256": "7c060eeeff822404b9b70e7e73b1e94a3e3117b12728b14114a908dbb897b08a",
+      "bytes": 71168
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -12498,7 +12498,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "01ddaf16ac378916cafbf3c31bea8685ef9c2636a2d9877e50d1e97c7de1b88d",
+      "sha256": "e83c568a7f2a54452f4e22132f0fcb1ec98b72adcfc2f8cded43d4f7d903237f",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12546,7 +12546,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "376f3f6526cf479f24ebf39c0bae7383e331ac28e68afb49761bcb45b464119d",
+      "sha256": "b92e68d2950cade656ee66c5a21e4385c337d568ba23ce644034bc3a98e7851a",
       "bytes": 196
     },
     {
@@ -12852,8 +12852,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "6b93886c51b10c25d541467bdc4f4962ce51e8b180eaf251de530fae736eb601",
-      "bytes": 38934
+      "sha256": "14057379dc6525d168cce23b33c04cc32ce33324e4179892517fbca148b0d5c6",
+      "bytes": 39064
     },
     {
       "path": "services/firebase-config.js",
@@ -15988,8 +15988,8 @@
       "next_action": "Extend when page renderer contracts or markup behavior changes.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "07121fba179c1902ec2e4741b339e3c0830d39e1eae3ef22e1bfdfa9ec6f7581",
-      "bytes": 6285
+      "sha256": "dca0ff87bb450ea8c312ba42328a45a25465c7c3c8e2f991b98324a845fb5d1b",
+      "bytes": 6364
     },
     {
       "path": "tests/unit/customer-polish.test.js",

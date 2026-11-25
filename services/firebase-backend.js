@@ -326,6 +326,8 @@ async function start() {
   async chat(payload) { return (await callSession({ op: 'chat', ...payload })).data; },
     get actor() { return actor; },
     get lastSync() { return last; },
+  /** a signed-in Firebase session exists (the first sync may still be running) */
+  hasSession() { return !!auth.currentUser; },
     sync,
     /** Admin Center mutation through the server; resolves after the read model (workforce/RBAC included) is refreshed. */
     async admin(method, path, body) {

@@ -694,3 +694,50 @@ html.hc-open{overflow:hidden}
 #view .home-v3 .why-card h2{display:flex;flex-direction:column;gap:8px}
 #view .home-v3 .why-card h2::after{content:"";width:36px;height:3px;border-radius:3px;background:var(--hs-red)}
 
+
+/* ═════ round 8 (owner, 2026-11-25): professional polish — one corner / shadow scale, one icon box, one floating button ═════ */
+:root{--hs-r-sm:12px;--hs-r-md:18px;--hs-r-lg:24px;--hs-shadow-sm:0 2px 8px rgba(11,31,58,.06);--hs-shadow-lg:0 14px 30px rgba(11,31,58,.18)}
+/* cards: 18px + the soft shadow; feature bands: 24px + the deep shadow */
+#view .home-v3 .tile,#view .home-v3 .act-card,#view .home-v3 .smart-help .sh-btn,#view .home-v3 .cs-card,#view .home-v3 .join,#view .home-v3 .how-v3,#view .home-v3 .smart-card,#view .home-v3 .my-home,#view .home-v3 .when-pick{border-radius:var(--hs-r-md)}
+#view .home-v3 .tile,#view .home-v3 .cs-card,#view .home-v3 .join,#view .home-v3 .smart-help .sh-dx{box-shadow:var(--hs-shadow)}
+#view .home-v3 .why-card,#view .home-v3 .gov-banner,#view .home-v3 .slide{border-radius:var(--hs-r-lg);box-shadow:var(--hs-shadow-lg)}
+#view .home-v3 .cp-chip{border-radius:var(--hs-r-md);box-shadow:var(--hs-shadow-sm)}
+
+/* one icon box: 40px, 12px corners, soft navy — red only where it means urgency */
+#view .home-v3 .cp-chip .ip,#view .home-v3 .cp-chip .ip:not(.ph),#view .smart-help .sh-btn>svg,#view .home-v3 .cs-av,#view .home-v3 .join>svg{width:40px;height:40px;flex:none;padding:9px;border-radius:var(--hs-r-sm);box-sizing:border-box}
+#view .home-v3 .cp-chip .ip svg{width:22px;height:22px}
+#view .home-v3 .cs-av{display:grid;place-items:center;padding:0;background:var(--brand-primary-soft);color:var(--hs-navy)}
+#view .home-v3 .cs-av svg{width:22px;height:22px;--ic-a:var(--hs-navy)}
+#view .home-v3 .join>svg{background:var(--accent-soft);color:var(--hs-red)}
+#view .home-v3 .why-card .trust-strip li svg.bi{width:40px;height:40px;padding:7px;border-radius:var(--hs-r-sm)}
+
+/* the greeting over the photo: a readable glass pill instead of pale pink text */
+#view .home-v3 .hero .greet b{display:inline-flex;align-items:center;gap:7px;padding:5px 12px 5px 14px;border-radius:999px;background:rgba(6,20,42,.55);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);color:#fff;font-size:clamp(12px,3.4vw,13.5px);font-weight:700}
+#view .home-v3 .hero .greet b::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--hs-red);box-shadow:0 0 0 3px rgba(225,37,27,.25)}
+
+/* discover slides: no template-like «01 / 02» numbers — a clean icon badge */
+#view .home-v3 .slide .s-num{display:none}
+#view .home-v3 .slide .s-ic{display:grid;place-items:center;width:64px;height:64px;border-radius:20px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18)}
+#view .home-v3 .slide .s-ic svg{width:32px;height:32px;color:#fff;--ic-a:#fff}
+
+/* one floating button on phones: help moves into the header (the «+» in the tab bar stays the only floating action) */
+#view .topbar .tb-help svg{--ic-a:currentColor}
+@media (max-width:899px){body>.help-fab{visibility:hidden;pointer-events:none}}
+@media (min-width:900px){#view .topbar .tb-help{display:none}}
+
+/* loading placeholder on Home while the first sync runs */
+#view .home-v3 .home-sk .sk-card{border-radius:var(--hs-r-md)}#view .home-v3 .hero .greet b{white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+#view .home-v3 .hero h1{text-shadow:0 2px 14px rgba(6,20,42,.45)}
+/* round 8 — the same section heading on every screen: a plain red icon + display font (no soft box) */
+#view .screen .sec-title>.ip,#view .screen .sec-title>svg.i{width:22px;height:22px;flex:none;padding:0;background:none;box-shadow:none;border:0;border-radius:0;color:var(--hs-red);--ic-a:var(--hs-red)}
+#view .screen .sec-title>.ip svg{width:22px;height:22px}
+#view .screen .sec-title{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:800;color:var(--text-primary)}
+#view .screen .lbl{font-family:var(--font-display);font-size:16px;font-weight:800;color:var(--text-primary)}
+/* «اطلب خدمة» is always the red action, like the hero button and the «+» */
+#view .screen .cta.cta-req{background:var(--hs-red);border-color:var(--hs-red);color:#fff;box-shadow:0 10px 22px rgba(225,37,27,.25)}/* real platform numbers inside the why-card (only when big enough) */
+#view .home-v3 .why-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(0,1fr));gap:8px;margin:14px 0 0;padding-top:14px;border-top:1px solid rgba(255,255,255,.14)}
+#view .home-v3 .why-stats div{display:flex;flex-direction:column-reverse;align-items:center;gap:2px;text-align:center}
+#view .home-v3 .why-stats dd{margin:0;font-family:var(--font-display);font-size:22px;font-weight:800;color:#fff}
+#view .home-v3 .why-stats dt{font-size:12px;color:rgba(255,255,255,.75)}
+/* round 8: the same light press feedback on every main button and card */
+@media (prefers-reduced-motion:no-preference){#view .cta,#view .tile,#view .act-card,#view .prow,#view .gov-banner,#view .why-card li{transition:transform .14s ease}#view .cta:active,#view .tile:active,#view .act-card:active,#view .prow:active,#view .gov-banner:active{transform:scale(.98)}}

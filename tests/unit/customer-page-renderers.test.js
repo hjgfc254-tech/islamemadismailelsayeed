@@ -69,7 +69,7 @@ test('home renderer composes all home sections in stable order',()=>{
 test('home renderer rejects incomplete dependency contracts',()=>assert.throws(()=>Home.render({topbar(){}}),/missing dependencies/));
 test('orders page renders demo empty state and call to action for signed-out customers',()=>{
  const html=Orders.render(orderContext({customer:null}));
- assert.match(html,/طلباتي/);assert.match(html,/DEMO/);assert.match(html,/مفيش طلبات لسه/);assert.match(html,/data-go="home"/);
+ assert.match(html,/طلباتي/);assert.match(html,/DEMO/);assert.match(html,/مفيش طلبات لسه/);assert.match(html,/class="cta cta-req" data-act="newReq"/);   // round 8: the empty state starts a request directly
 });
 test('orders page groups statuses and preserves selected filter state',()=>{
  const orders=[{id:'active-1',status:'accepted',createdAt:'2026-11-12'},{id:'done-1',status:'closed',createdAt:'2026-11-10'},{id:'cancel-1',status:'cancelled',createdAt:'2026-11-11'},{id:'failed-1',status:'failed',createdAt:'2026-11-09'}];

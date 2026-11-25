@@ -210,6 +210,7 @@ const topbar = () => {
   <div class="logo"><span class="hs-logo" aria-label="هنصلحلك HANSALEHLAK">${typeof HSBrandIcons !== 'undefined' && HSBrandIcons.mark ? HSBrandIcons.mark(46) : '<img src="../../assets/brand/hsl-mark.svg" alt="" width="38" height="38" decoding="async" draggable="false">'}<span class="w" aria-hidden="true"><b>هنصلحلك</b><small>HANSALEHLAK</small></span></span></div>
   <div class="tb-actions">
     <button class="ic-btn mini-search" data-act="miniSearch" aria-label="ابحث عن خدمة">${ic('search')}</button>
+    <button type="button" class="ic-btn tb-help" data-help-open aria-label="المساعدة وخدمة العملاء">${ic('chat')}</button>
     <button class="ic-btn ${hasNotes?'dot':''}" data-act="bell" aria-label="الإشعارات">${ic('bell')}</button>
   </div>
 </header>`;
@@ -635,7 +636,11 @@ function nextStepOf(r){
 
 function renderActiveRequests(){
   const list = homeActiveRequests();
-  if (!list.length) return '';
+  if (!list.length) {
+    /* round 8: signed in but the first server sync is still running → a placeholder, not an empty gap that jumps later */
+    const loading = !!(globalThis.HSFirebaseConfig && HSFirebaseConfig.mode === 'firebase' && globalThis.HSBackend && !HSBackend.lastSync && typeof HSBackend.hasSession === 'function' && HSBackend.hasSession());
+    return loading ? `<div class="plist home-sk" aria-busy="true" aria-label="جارٍ تحميل طلباتك"><div class="sk-card"><span class="sk sk-line w60"></span><span class="sk sk-line w40"></span><span class="sk sk-line w80"></span></div></div>` : '';
+  }
   const card = (r) => {
     const n = nextStepOf(r);
     const stg = ({ received:0, searching:0, sent:0, accepted:1, scheduled:1, enroute:2, arrived:3, started:3, quote:3, completed:4 })[r.status];
@@ -794,6 +799,22 @@ function bindHomeSearch(){
   q.addEventListener('blur', () => setTimeout(close, 200));
 }
 
+/* round 8: real platform numbers for «ليه تختار هنصلحلك؟» — from the approved providers and reviews the app already has.
+   Shown only once they are big enough to build trust (never padded, never invented). */
+function homeTrustStats(){
+  try {
+    const ps = (MP.db().providers || []).filter(p => p && p.status === 'approved' && !p.demo);   // demo seed data never counts
+    const jobs = ps.reduce((n, p) => n + (+((p.stats && p.stats.jobs) || p.jobs) || 0), 0);
+    const rv = (MP.db().reviews || []).filter(r => r && !r.hidden && +r.stars > 0);
+    const avg = rv.length ? rv.reduce((n, r) => n + +r.stars, 0) / rv.length : 0;
+    const out = [];
+    if (ps.length >= 10) out.push([String(ps.length), 'فني موثّق']);
+    if (jobs >= 50) out.push([String(jobs), 'خدمة اتنفذت']);
+    if (rv.length >= 20 && avg >= 4) out.push([avg.toFixed(1) + '★', 'متوسط التقييم']);
+    return out.length >= 2 ? out : [];
+  } catch { return []; }
+}
+
 /* ───────── الشاشات ───────── */
 const screens = {
   home(){
@@ -806,7 +827,7 @@ const screens = {
   siteBanner: (globalThis.HSSiteContent && typeof HSSiteContent.banner === 'function' && HSSiteContent.banner()) || null,
       demo: !(globalThis.HSFirebaseConfig && HSFirebaseConfig.mode === 'firebase'),
       firstVisit: !(homeMe() && MP.reqs().some(r => r.customerId === homeMe().id)),
-      latestReviews: homeLatestReviews(),
+      latestReviews: homeLatestReviews(), trustStats: homeTrustStats(),
       addressBar: homeAddressBar(), care: globalThis.HSTrust ? HSTrust.homeReminder() : '', when: homeWhen(), trending: homeTrending(), packages: homePackages(), invite: homeInvite()
     });
   },
@@ -1378,6 +1399,8 @@ function mountHelpAndNet(){
     /* 2026: the help button is «مساعد هنصلحلك» (experience.js) — a short menu; without it, straight to support */
     b.innerHTML = '<img src="../../assets/brand/hsl-mark.svg" alt="" width="30" height="30" decoding="async"><span>مساعدة</span>';
     b.addEventListener('click', () => { try { if (globalThis.HSExperience) HSExperience.menu(); else go('support'); } catch {} });
+    /* round 8: on phones the help lives in the header (one floating button only — the «+» in the tab bar) */
+    document.addEventListener('click', (e) => { if (e.target.closest && e.target.closest('[data-help-open]')) { try { if (globalThis.HSExperience) HSExperience.menu(); else go('support'); } catch {} } });
     document.body.appendChild(b);
   }
   if (!document.getElementById('net-banner')) {

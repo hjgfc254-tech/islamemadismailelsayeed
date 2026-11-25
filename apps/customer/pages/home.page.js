@@ -67,7 +67,7 @@
       <li>${bi('verified','shield')}<span><b>فنيين موثوقين</b><small>بتراجعهم الإدارة قبل التفعيل</small></span></li>
       <li>${bi('price','wallet')}<span><b>سعر واضح</b><small>تعرفه قبل الحجز ومايتغيّرش إلا بموافقتك</small></span></li>
       <li>${bi('track','clock')}<span><b>متابعة لحظة بلحظة</b><small>من قبول الطلب لحد ما الشغل يخلص</small></span></li>
-    </ul>
+    </ul>${Array.isArray(ctx.trustStats)&&ctx.trustStats.length?`<dl class="why-stats">${ctx.trustStats.map(([n,l])=>`<div><dt>${e(l)}</dt><dd>${e(n)}</dd></div>`).join('')}</dl>`:''}
   </section>
   <button type="button" class="gov-banner" data-go="sections">
     <span class="gb-pin" aria-hidden="true">${ic('pin')}</span>
