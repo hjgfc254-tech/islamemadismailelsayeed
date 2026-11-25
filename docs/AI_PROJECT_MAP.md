@@ -451,6 +451,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | functions/src/ai.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/alerts-adapter.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/alerts.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| functions/src/chat-llm.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/content.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/digest-admin.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | functions/src/digest.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |

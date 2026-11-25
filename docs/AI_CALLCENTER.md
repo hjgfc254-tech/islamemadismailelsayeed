@@ -155,64 +155,94 @@ Any stack that can call HTTPS tools works (e.g. a SIP trunk + a realtime voice L
 
 ## Chat employee in the Customer app («مساعد هنصلحلك», 2026-11-25)
 
-The same gateway also serves an AI **chat** employee inside the Customer app (Support centre → «اسأل مساعد هنصلحلك»).
+An AI **chat** employee inside the Customer app (Support centre → «اسأل مساعد هنصلحلك»).
 
 - **Server:** `functions/src/support-chat.js`, session op `chat` (`history | send {text} | confirm {id, yes} | reset`).
-- **Client:** `apps/customer/pages/support-chat.js` renders text only. Local demo mode gives fixed answers and is labelled as a demo.
-- **Model:** Claude via `@anthropic-ai/sdk`, server-side only.
-  - Default model `claude-opus-5-5` at effort `low`.
-  - Server-side refusal fallback is on (`fallbacks: "default"`).
-  - A manual tool loop of at most 6 rounds; the last round is forced to answer without tools.
+- **Providers:** `functions/src/chat-llm.js` is provider-neutral, so the owner chooses the provider. Supported kinds:
+  - DeepSeek;
+  - any OpenAI-compatible API (needs its https base URL);
+  - Google Gemini;
+  - Claude (official SDK), optional.
+- **Fail-over:** the providers marked «شات» are tried in priority order, and a failing one rests for 1–10 minutes. History is stored in a neutral form, so a conversation can move between providers.
+- **Client:** `apps/customer/pages/support-chat.js` renders text, server-built cards and app-screen buttons. Local demo mode gives fixed answers and is labelled as a demo.
 
 ### Turning it on
 
 1. Admin → الإعدادات → التوجيه الذكي.
-2. Add «Claude», paste the Anthropic API key, tick «شات».
-3. Tick «مساعد هنصلحلك».
-4. Set the daily limits (defaults: 60 messages per customer, 3000 for the platform).
+2. Add a provider and paste its key. New providers get the «شات» role by default.
+3. Tick «مساعد هنصلحلك» and set the daily limits (defaults: 60 messages per customer, 3000 for the platform).
 
-Alternative: set `ANTHROPIC_API_KEY` (and optionally `CHAT_MODEL`) in `functions/.env`. The key is never sent to any client.
+Fallback without the Admin: put `CHAT_KIND` + `CHAT_API_KEY` (+ `CHAT_MODEL`, `CHAT_BASE_URL`) in `functions/.env`.
 
-### Tools
+### What the assistant can do
 
-The tools run AS the signed-in customer and go through `agent-gateway.handle()`, so they get the same validation, rate limit and audit:
+Every change is confirmed by the customer on a server-built card. It runs AS the customer through the app's own routes, under the same rules.
 
-| Tool | What it does |
-|---|---|
-| `get_my_requests` | Lists the customer's own requests |
-| `get_request_status` | Status of one of the customer's requests |
-| `search_services` | Searches the catalogue and prices |
-| `prepare_new_request` | Prepares a new request (customer confirms) |
-| `prepare_cancel` | Prepares a cancellation (customer confirms) |
-| `prepare_complaint` | Prepares a complaint (customer confirms) |
-| `handoff_to_human` | Opens an ops ticket and alert, at most 3 per day |
-| `get_policy` | Returns fixed official facts |
+**Look up:**
+- the customer's requests and request details (quote, offers, appointment, ETA, cancel fee);
+- the catalogue and prices;
+- saved addresses;
+- policies.
+
+**Act on the customer's requests:**
+- new request (also from a saved address);
+- cancel;
+- approve or reject a quote;
+- choose an offer;
+- confirm the proposed appointment;
+- confirm completion;
+- rate the technician;
+- warranty «المشكلة رجعت»;
+- repeat a request;
+- widen the search;
+- accept or decline a free-service offer;
+- message the assigned technician.
+
+**Account and support:**
+- complaint;
+- save an address;
+- add a «بيتي» device;
+- fix the name (name only);
+- app-screen buttons;
+- hand-off to a human (ops ticket + alert, at most 3 per day).
+
+### What it cannot do (abusable)
+
+- Change the phone number, e-mail or password.
+- Delete the account.
+- Refunds, promo codes, credit, tips or cash disputes.
+- Prices.
+- Photo-sharing consent and attachments.
+- Provider contact data.
+- Anything about other customers, providers or admins.
+
+For these it explains where to do them in the app, or hands off to a human.
 
 ### Security layers
 
-1. **Identity binding.** Firebase token → the customer record (`users/{uid}` link, or `customers.uid`). The model never names a customer or a phone number; the server fills in the account phone.
+1. **Identity binding.** The Firebase token maps to the customer record. The model never names a customer or a phone number. Ownership is enforced by the app routes (`load(store, actor, id)`) and the gateway, so another customer's request returns 404.
 2. **Switches.** The owner switch `system/ai.features.chat` (off by default) and the maintenance switch.
 3. **Limits:**
    - per customer: 6 messages a minute and a daily quota;
    - platform daily quota;
    - per IP: 200 messages a day;
-   - one message in flight per customer (busy lock);
-   - 800 characters per message, 30 turns per chat, 6 tool rounds per message.
-4. **Input masking.** Card numbers, national IDs, phone numbers and e-mails are masked, and invisible or bidi-override characters are stripped, before anything reaches the model.
-5. **Strict tools.** 8 tools with strict schemas (`additionalProperties:false`). The server validates again with the app's rules. Ownership is checked on every request id; another customer's request returns 404, so its existence never leaks.
-6. **Human confirmation.** Writes happen only when the customer presses the button on a card the **server** built from validated data. Action ids are random, single-use, bound to the account, and expire after 10 minutes.
-7. **Output cleaning.** Links other than the platform's, digit runs of 8 or more, and markdown/HTML are removed, and replies are capped at 1500 characters. The client renders text only.
-8. **Prompt-injection stance.** Customer text and tool results are data. Platform notes (confirm results, context) travel as mid-conversation `system` messages.
-9. **Audit.** Every tool call and confirm writes an `audit` entry (`agent.*`, channel `chat`) without the message text.
-10. **Retention.** `supportChats/{uid}` is deleted 30 days after the last message by `callLogsClock`. The privacy policy (§5, §6, §10) names Anthropic as the processor.
-11. **Failure handling.** An API error, a refusal or exhausted tool rounds produce a fixed answer and the «كلّم موظف» button. The history is rolled back, so nothing is left half-done.
+   - one message in flight per customer;
+   - 800 characters per message, 30 turns per chat, 6 tool rounds per message, at most 6 tool calls per round.
+4. **Input masking.** Card numbers, national IDs, phone numbers and e-mails are masked. Invisible and bidi characters are stripped, and so are forged `<platform-note>` tags.
+5. **Validated tools.** An allow-list of 12 tools with strict schemas. The server re-validates every call, and the model sees request data through a whitelist projection (no phones, addresses, PINs or coordinates).
+6. **Human confirmation.** Writes happen only after the customer presses the button on a card the server built from validated data. Action ids are random, single-use, bound to the account, and expire after 10 minutes. There is one open card per action and request.
+7. **Output cleaning.** Foreign links, digit runs of 8 or more, and markup are removed, and replies are length-capped. The client renders text only.
+8. **Trusted platform notes.** Notes travel as `system` messages (OpenAI-compatible APIs) or inside `<platform-note key="…">` with a per-chat random key (Gemini, Claude).
+9. **Audit.** Gateway calls write `agent.*` entries and app-route writes write `chat.*` entries, both with channel `chat` and without the message text.
+10. **Retention.** Chats are deleted 30 days after the last message by `callLogsClock`. The privacy policy names the AI processor generically.
+11. **Failure handling.** A provider error, a refusal or exhausted tool rounds produce a fixed answer and the «كلّم موظف» button. The history is rolled back.
 
 ### Tests
 
-`tests/unit/support-chat.test.js` covers the layers above with a scripted fake model.
+`tests/unit/support-chat.test.js` covers the layers above with fake DeepSeek, Gemini and Claude providers.
 
 ### Not covered
 
-- A live call against the real API has not been run, because no key is configured.
-- There is no LLM-based content-moderation classifier.
+- No live call has been run against a real provider.
+- DeepSeek processes data in China: a cross-border transfer to check against Law 151/2020 before going live.
 - Abuse is bounded by quotas, not detected.

@@ -5,7 +5,7 @@
  * Prepared actions arrive as server-built cards; nothing is created / cancelled / sent until the customer presses the
  * card's confirm button. Local demo mode: fixed on-device answers, clearly labelled as a demo (no model, no server).
  * Opened by any element with [data-chat-open] (support centre row). Uses Customer app globals when present:
- * esc, ic, toast, show, me, MP, Support.
+ * esc, ic, toast, show, go, openRoute, me, MP, Support.
  */
 'use strict';
 (function (root) {
@@ -14,7 +14,8 @@
   const E = (s) => (typeof esc === 'function' ? esc(s) : String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
   const I = (n) => (typeof ic === 'function' ? ic(n) : '');
   const say = (m) => (typeof toast === 'function' ? toast(m) : void 0);
-  const QUICK = ['فين طلبي؟', 'عايز فني تكييف', 'عايز ألغي طلب', 'عندي شكوى', 'الدفع إزاي؟'];
+  const QUICK = ['فين طلبي؟', 'عايز فني تكييف', 'الفني بعت سعر', 'عايز ألغي طلب', 'المشكلة رجعت', 'عندي شكوى'];
+  const LINK = { home: 'الرئيسية', orders: 'طلباتي', order: 'افتح الطلب', new_request: 'اطلب خدمة', account: 'حسابي', addresses: 'عناويني', my_home: '«بيتي»', support: 'مركز الدعم', complaint: 'تقديم شكوى' };
   let state = { messages: [], cards: [], busy: false }, box = null, lastFocus = null;
 
   /* ── demo answers (local mode only — no model, no server) ── */
@@ -36,7 +37,7 @@
   function bubble(m) {
     if (m.role === 'sys') return `<li class="hc-sys">${E(m.text)}</li>`;
     const mine = m.role === 'me';
-    return `<li class="hc-msg ${mine ? 'me' : 'bot'}${m.fail ? ' fail' : ''}${m.ok ? ' ok' : ''}"><p dir="auto">${fmt(m.text)}</p>${m.handoff ? `<small class="hc-tag">${I('user')} اتحوّلت لموظف — هيكلمك على رقمك</small>` : ''}</li>`;
+    return `<li class="hc-msg ${mine ? 'me' : 'bot'}${m.fail ? ' fail' : ''}${m.ok ? ' ok' : ''}"><p dir="auto">${fmt(m.text)}</p>${m.handoff ? `<small class="hc-tag">${I('user')} اتحوّلت لموظف — هيكلمك على رقمك</small>` : ''}${Array.isArray(m.links) && m.links.length ? `<div class="hc-links">${m.links.filter((l) => LINK[l.screen]).map((l) => `<button type="button" data-chat-link="${E(l.screen)}" data-id="${E(l.id || '')}">${E(LINK[l.screen])} ←</button>`).join('')}</div>` : ''}</li>`;
   }
   function card(c) {
     return `<li class="hc-card" data-card="${E(c.id)}"><b>${E(c.title)}</b><dl>${(c.lines || []).map((l) => `<div><dt>${E(l.k)}</dt><dd dir="auto">${E(l.v)}</dd></div>`).join('')}</dl>
@@ -104,6 +105,7 @@
     const d = b.dataset;
     if (d.chatClose !== undefined) return close();
     if (d.chatQ) return send(d.chatQ);
+    if (d.chatLink) return openLink(d.chatLink, d.id || '');
     if (d.chatYes) return decide(d.chatYes, true);
     if (d.chatNo) return decide(d.chatNo, false);
     if (d.chatHuman !== undefined) { if (live()) return send('عايز أكلم موظف من خدمة العملاء'); close(); if (root.Support && root.Support.openContact) root.Support.openContact(''); return; }
@@ -113,6 +115,17 @@
       try { state.busy = true; paint(); apply(await call({ action: 'reset' })); } catch (x) { say((x && x.message) || 'جرّب تاني'); }
       state.busy = false; paint();
     }
+  }
+
+  /* buttons the assistant adds under a reply (open_screen tool) — app navigation only */
+  function openLink(screen, id) {
+    close();
+    try {
+      if (screen === 'order' && id && typeof openRoute === 'function') return openRoute({ screen: 'tracking', tab: 'orders', id });
+      if (screen === 'complaint' && root.Support) return root.Support.openComplaint(id || '');
+      const tab = { new_request: 'sections', my_home: 'home' }[screen] || screen;
+      if (typeof go === 'function') go(tab);
+    } catch (e) { say('مقدرناش نفتح الشاشة'); }
   }
 
   async function open() {

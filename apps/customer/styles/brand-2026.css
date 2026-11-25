@@ -647,4 +647,4 @@ html.hc-open{overflow:hidden}
 .hc-send svg{width:22px;height:22px;transform:scaleX(-1)}.hc-send:disabled{opacity:.5;cursor:default}.hc-send:focus-visible{outline:none;box-shadow:var(--focus-ring)}
 .hc-note{margin:0;padding:6px 14px 10px;background:var(--surface-primary);color:var(--text-muted);font-size:.75rem;display:flex;align-items:center;gap:6px}
 .hc-note svg{width:14px;height:14px;flex:none}
-@media (prefers-reduced-motion:no-preference){.hc-panel{animation:hcUp .22s ease-out}@keyframes hcUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}}
+@media (prefers-reduced-motion:no-preference){.hc-panel{animation:hcUp .22s ease-out}@keyframes hcUp{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}}.hc-links{display:flex;flex-wrap:wrap;gap:6px}.hc-links button{min-height:40px;padding:0 14px;border-radius:999px;border:1px solid var(--brand-primary);background:var(--surface-primary);color:var(--brand-ink);font:inherit;font-weight:700;cursor:pointer}.hc-links button:focus-visible{outline:none;box-shadow:var(--focus-ring)}

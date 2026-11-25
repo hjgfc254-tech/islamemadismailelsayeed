@@ -64,14 +64,14 @@ async function loadConfig(adapter, tx) {
     dailyLimit: Number.isFinite(+c.dailyLimit) ? +c.dailyLimit : 20, globalDailyLimit: Number.isFinite(+c.globalDailyLimit) ? +c.globalDailyLimit : 2000 };
 }
 const view = c => ({
-  features: c.features, dailyLimit: c.dailyLimit, globalDailyLimit: c.globalDailyLimit, chatDailyLimit: c.chatDailyLimit, chatGlobalDailyLimit: c.chatGlobalDailyLimit, chatEnvKey: !!process.env.ANTHROPIC_API_KEY,
+  features: c.features, dailyLimit: c.dailyLimit, globalDailyLimit: c.globalDailyLimit, chatDailyLimit: c.chatDailyLimit, chatGlobalDailyLimit: c.chatGlobalDailyLimit, chatEnvKey: !!(process.env.CHAT_API_KEY || process.env.ANTHROPIC_API_KEY),
   providers: c.providers.map(p => ({ id: p.id, label: p.label, kind: p.kind, model: p.model, baseUrl: p.baseUrl || '', roles: p.roles, enabled: p.enabled !== false,
     hasKey: !!p.apiKey, keyLast4: p.apiKey ? String(p.apiKey).slice(-4) : '' }))
 });
 const publicFlags = c => ({
   text: c.features.text && c.providers.some(p => p.enabled !== false && p.apiKey && p.roles.includes('text')),
   photo: c.features.photo && c.providers.some(p => p.enabled !== false && p.apiKey && p.roles.includes('vision')),
-  chat: !!c.features.chat && (c.providers.some(p => p.kind === 'anthropic' && p.enabled !== false && p.apiKey && p.roles.includes('chat')) || !!process.env.ANTHROPIC_API_KEY)
+  chat: !!c.features.chat && (c.providers.some(p => p.enabled !== false && p.apiKey && p.roles.includes('chat') && (p.kind !== 'openai' || !!p.baseUrl)) || !!(process.env.CHAT_API_KEY || process.env.ANTHROPIC_API_KEY))
 });
 
 function cleanConfig(cur, body) {
@@ -96,7 +96,7 @@ function cleanConfig(cur, body) {
         const baseUrl = str(b && b.baseUrl, 200);
         if (baseUrl && !/^https:\/\/[^\s]+$/.test(baseUrl)) errors.providers = 'الرابط لازم يبدأ بـ https://';
         if (kind === 'openai' && !baseUrl) errors.providers = 'المزوّد المتوافق مع OpenAI محتاج رابط';
-        const roles = (Array.isArray(b && b.roles) ? b.roles : []).filter(r => r === 'text' || r === 'vision' || (r === 'chat' && kind === 'anthropic'));
+        const roles = (Array.isArray(b && b.roles) ? b.roles : []).filter(r => r === 'text' || r === 'vision' || r === 'chat');
         return { id: old ? old.id : 'ai' + crypto.randomBytes(5).toString('hex'), label: str(b && b.label, 40) || (kind || 'AI'), kind, model: str(b && b.model, 80) || DEFAULT_MODEL[kind] || '',
           baseUrl, apiKey: key || (old ? old.apiKey : ''), roles: roles.length ? roles : ['text'], enabled: !(b && b.enabled === false) };
       });
@@ -116,7 +116,7 @@ async function postJson(url, headers, body) {
   } finally { clearTimeout(t); }
 }
 async function askProvider(p, system, userText, image) {
-  if (p.kind === 'anthropic') {                       // Claude through the official SDK (support-chat.js shares the client)
+  if (p.kind === 'anthropic') {                       // Claude through the official SDK
     const content = image ? [{ type: 'image', source: { type: 'base64', media_type: image.mime, data: image.data } }, { type: 'text', text: userText }] : userText;
     const r = await claudeClient(p.apiKey).messages.create({ model: p.model || DEFAULT_MODEL.anthropic, max_tokens: 1000, output_config: { effort: 'low' },
       system: system + '\nAnswer with the JSON object only.', messages: [{ role: 'user', content }] }, { timeout: TIMEOUT_MS, maxRetries: 0 });
