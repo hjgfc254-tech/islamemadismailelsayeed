@@ -27,7 +27,7 @@
 
   /* ── warranty ── */
   function warrantyStrip(r) {
-    if (r.warrantyOf) { const o = MP.get('serviceRequests', r.warrantyOf); return `<div class="warranty-strip is-claim">${ic('shield')}<span><b>طلب ضمان</b><small>على الطلب #${esc(o ? o.no : '')} — الفني بيرجع يشوف المشكلة من غير تكلفة شغل</small></span></div>`; }
+    if (r.warrantyOf) { const o = MP.get('serviceRequests', r.warrantyOf); return `<div class="warranty-strip is-claim">${ic('shield')}<span><b>طلب ضمان</b><small>على الطلب <bdi class="code">#${esc(o ? o.no : '')}</bdi> — الفني بيرجع يشوف المشكلة من غير تكلفة شغل</small></span></div>`; }
     if (!r.warrantyUntil || !['completed', 'closed'].includes(r.status)) return '';
     const until = Date.parse(r.warrantyUntil), active = until > Date.now();
     const claim = r.warrantyClaimId && MP.get('serviceRequests', r.warrantyClaimId);
@@ -38,7 +38,7 @@
   }
   function openWarrantyClaim(id) {
     const r = MP.get('serviceRequests', id); if (!r) return;
-    sheet(`<h4>${ic('shield')} المشكلة رجعت؟</h4><div class="sub">هنبعت طلب ضمان لنفس الفني على الطلب #${esc(r.no)}.</div>
+    sheet(`<h4>${ic('shield')} المشكلة رجعت؟</h4><div class="sub">هنبعت طلب ضمان لنفس الفني على الطلب <bdi class="code">#${esc(r.no)}</bdi>.</div>
       <form class="form" id="warrantyForm" data-id="${esc(id)}"><div><label for="wr-desc">إيه اللي حصل؟</label><textarea id="wr-desc" name="desc" maxlength="1000" placeholder="مثلًا: التكييف رجع ينقّط مية من نفس المكان"></textarea></div>
       <button class="cta" type="submit">${ic('send')} ابعت طلب الضمان</button></form>`);
   }
@@ -205,7 +205,7 @@
       <div class="w-cert-card" role="group" aria-label="شهادة ضمان الطلب ${esc(r.no)}">
         <div class="w-cert-head"><b>شهادة ضمان</b><small>هنصلحلك</small></div>
         <dl>
-          <div><dt>رقم الطلب</dt><dd>#${esc(r.no)}</dd></div>
+          <div><dt>رقم الطلب</dt><dd><bdi class="code">#${esc(r.no)}</bdi></dd></div>
           <div><dt>الخدمة</dt><dd>${esc(r.serviceName || '')}</dd></div>
           ${c.name ? `<div><dt>العميل</dt><dd>${esc(c.name)}</dd></div>` : ''}
           ${p.name ? `<div><dt>الفني</dt><dd>${esc(p.name)}</dd></div>` : ''}

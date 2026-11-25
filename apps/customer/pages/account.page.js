@@ -63,7 +63,7 @@ const Account = (() => {
     const label = (typeof STATUS_LABEL !== 'undefined') ? (STATUS_LABEL[r.status] || r.status) : r.status;
     return `<button class="prow glass neon" data-track="${_esc(r.id)}">
       ${safeIcp(stIco, 'st')}
-      <span class="tx">${_esc(r.serviceName)}<small>#${_esc(r.no)} • ${fmtDTShort(r.createdAt)}</small></span>
+      <span class="tx">${_esc(r.serviceName)}<small><bdi class="code">#${_esc(r.no)}</bdi> • ${fmtDTShort(r.createdAt)}</small></span>
       <span class="tag">${safeIc(stIco)} ${_esc(label)}</span>
     </button>`;
   };
@@ -141,7 +141,7 @@ const Account = (() => {
       const p = MP.get('providers', v.providerId);
       const r = MP.get('serviceRequests', v.reqId);
       return `<div class="card2 glass neon">
-        <div class="top"><b>${_esc(p ? p.name : '—')}</b>${r ? `<span class="tag">#${_esc(r.no)}</span>` : ''}</div>
+        <div class="top"><b>${_esc(p ? p.name : '—')}</b>${r ? `<span class="tag"><bdi class="code">#${_esc(r.no)}</bdi></span>` : ''}</div>
         <div style="margin:4px 0">${typeof starsHtml === 'function' ? starsHtml(v.stars) : ''}</div>
         <small>${_esc(v.quality || '')}${v.comment ? ' • ' + _esc(v.comment) : ''}</small>
         <small style="color:var(--muted);font-size:11.5px">${fmtDTShort(v.at)}</small>
