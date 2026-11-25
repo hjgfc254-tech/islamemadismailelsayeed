@@ -505,7 +505,7 @@ html.is-scrolling body>.help-fab{opacity:.25;transform:scale(.82)}
 .hs-map .hs-map-help{margin-inline-start:6px;padding:4px 10px;border:0;border-radius:999px;background:var(--hs-red);color:#fff;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer}
 
 /* request sent: a navy brand card, and «what happens now» with a live "searching" step */
-#view .done{position:relative;overflow:hidden;border:0;border-radius:24px;color:#fff;padding:26px 18px 20px;
+#view div.done{position:relative;overflow:hidden;border:0;border-radius:24px;color:#fff;padding:26px 18px 20px;
   background:var(--hs-navy) url(../../../assets/brand/bg-navy.svg) center/cover no-repeat;box-shadow:0 16px 34px rgba(11,31,58,.28)}
 #view .done h3{color:#fff;font-family:var(--font-display);font-size:24px;font-weight:800}
 #view .done .hint,#view .done .done-no{color:rgba(255,255,255,.82)}
@@ -741,3 +741,24 @@ html.hc-open{overflow:hidden}
 #view .home-v3 .why-stats dt{font-size:12px;color:rgba(255,255,255,.75)}
 /* round 8: the same light press feedback on every main button and card */
 @media (prefers-reduced-motion:no-preference){#view .cta,#view .tile,#view .act-card,#view .prow,#view .gov-banner,#view .why-card li{transition:transform .14s ease}#view .cta:active,#view .tile:active,#view .act-card:active,#view .prow:active,#view .gov-banner:active{transform:scale(.98)}}
+
+
+/* ═════ round 9 (2026-11-25): design micro-audit — small, safe fixes; identity unchanged ═════ */
+/* order numbers stay one LTR unit («#HS-2026-1005», never «HS-2026-1005#» or split over two lines) */
+#view bdi.code,#sheet bdi.code{white-space:nowrap}
+/* request sent: the order number pill was white-on-white over the navy card */
+#view div.done .done-no b{background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff}
+/* «عرض الكل (5)» / «إدارة (1)» sit at the end of the heading like Home's «عرض الكل ←», same red link style */
+#view .sec-title .sec-more{margin-inline-start:auto;min-height:44px;padding:0 4px;border:0;border-radius:var(--hs-r-sm);background:none;color:var(--hs-red-ink);font-family:var(--font-display);font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+#view .sec-title .sec-more::after{content:"←";font-family:inherit}
+#view .sec-title .sec-more:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+/* guide bubble: on phones the help button lives in the header, so the tail pointed at nothing; 44px targets */
+@media (max-width:899px){.hs-say-in::after{display:none}}
+.hs-say-acts button{min-height:44px}
+.hs-say-x{width:44px;height:44px;top:2px;inset-inline-end:4px}
+.hs-say-acts button:focus-visible,.hs-say-x:focus-visible{outline:none;box-shadow:0 0 0 3px #fff,0 0 0 5px var(--hs-red)}/* «خدماتك في محافظتك»: the arrow used the Back icon (→); forward in RTL points ← like every other «go» arrow */
+#view .home-v3 .gov-banner .gb-go svg{width:20px;height:20px;transform:scaleX(-1)}
+/* provider card on tracking: the initials were navy on the navy avatar (design-system forces the text colour) */
+#view .prov-card .prov-avatar{color:#fff!important}
+/* tracking chat: the heading carried the page-level top margin inside its card (an empty band above it) */
+#view .chat-box>.sec-title{margin-top:0}

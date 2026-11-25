@@ -133,7 +133,7 @@
     return `<div class="screen">${head('مقدمو الخدمة المتاحون', true)}${demoBanner()}
       ${uiOfflineIfNeeded()}
       <div class="sumbox glass neon" style="margin-top:6px">
-        <div><small>الطلب</small><b>#${esc(r.no)} — ${esc(r.serviceName)}</b></div>
+        <div><small>الطلب</small><b><bdi class="code">#${esc(r.no)}</bdi> — ${esc(r.serviceName)}</b></div>
         <div><small>الموقع</small><b>${esc(r.gov)} — ${esc(r.area)}</b></div>
         <div><small>الحالة</small><b>${ic(icStatus(r.status))} ${STATUS_LABEL[r.status]||''}</b></div>
       </div>

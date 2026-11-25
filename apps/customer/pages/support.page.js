@@ -31,14 +31,14 @@ const Support = (() => {
 
   /* ═════════ بيانات الأسئلة الشائعة (Demo) ═════════ */
   const FAQ = [
-    {q:'كيف أطلب خدمة؟', a:'من الصفحة الرئيسية اختر القسم أو استخدم البحث، اختر الجهاز والمشكلة، أجب عن الأسئلة، حدد موقعك وموعدك، ثم أرسل الطلب.'},
-    {q:'هل الأسعار نهائية؟', a:'الأسعار تقديرية. الفني يحدد التكلفة النهائية بعد المعاينة. تُعرض عليك للموافقة قبل بدء العمل.'},
-    {q:'كيف أتابع طلبي؟', a:'من تبويب "طلباتي" اضغط على أي طلب لفتح صفحة المتابعة حيث تظهر الحالة الحالية وسجل التغييرات.'},
-    {q:'هل يمكنني إلغاء الطلب؟', a:'يمكنك الإلغاء قبل بدء الخدمة. بعد البدء، تواصل مع الدعم لحل الأمر مع الفني.'},
-    {q:'كيف أقيّم الفني؟', a:'بعد إغلاق الطلب، يظهر زر "قيّم مقدم الخدمة" في صفحة المتابعة. اختر النجوم وأضف تعليقًا إن أردت.'},
-    {q:'ماذا أفعل لو تأخر الفني؟', a:'استخدم زر "تقديم شكوى" من صفحة الطلب. فريق الدعم سيتواصل معك.'},
-    {q:'كيف أضيف عنوانًا محفوظًا؟', a:'من "حسابي" ← "إدارة العناوين" ← "إضافة عنوان جديد". سيظهر في خطوة الموقع أثناء الطلب.'},
-    {q:'هل بياناتي آمنة؟', a:(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'أيوه. بياناتك محفوظة على خوادم مؤمَّنة، والفني ما بيشوفش عنوانك ورقمك غير بعد ما يقبل طلبك.':'في الوضع التجريبي تُحفظ بياناتك على جهازك فقط. عند التكامل مع Backend ستُحدَّث السياسة.'}
+    {q:'إزاي أطلب خدمة؟', a:'من الرئيسية اختار القسم أو اكتب المشكلة في البحث، اختار الجهاز والمشكلة، جاوب على الأسئلة، حدد مكانك والموعد، وبعدين ابعت الطلب.'},
+    {q:'الأسعار نهائية؟', a:'الأسعار تقديرية. الفني بيحدد التكلفة النهائية بعد المعاينة، وبتوصلك توافق عليها قبل ما الشغل يبدأ.'},
+    {q:'أتابع طلبي إزاي؟', a:'من «طلباتي» دوس على أي طلب، هتفتح صفحة المتابعة وفيها الحالة دلوقتي وكل اللي حصل في الطلب.'},
+    {q:'أقدر ألغي الطلب؟', a:'أيوه، قبل ما الخدمة تبدأ. لو الشغل بدأ، كلّم الدعم وهنحلها مع الفني.'},
+    {q:'أقيّم الفني إزاي؟', a:'بعد ما الطلب يتقفل هيظهرلك زرار «قيّم مقدم الخدمة» في صفحة المتابعة. اختار النجوم واكتب تعليق لو حابب.'},
+    {q:'أعمل إيه لو الفني اتأخر؟', a:'دوس «تقديم شكوى» من صفحة الطلب، وفريق الدعم هيتواصل معاك.'},
+    {q:'أضيف عنوان محفوظ إزاي؟', a:'من «حسابي» ← «إدارة العناوين» ← «إضافة عنوان جديد». هيظهرلك في خطوة المكان وانت بتطلب.'},
+    {q:'بياناتي في أمان؟', a:(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'أيوه. بياناتك محفوظة على خوادم مؤمَّنة، والفني ما بيشوفش عنوانك ورقمك غير بعد ما يقبل طلبك.':'في النسخة التجريبية بياناتك محفوظة على جهازك بس. لما المنصة تشتغل رسميًا هنحدّث السياسة.'}
   ];
 
   /* ═════════ الشاشة الرئيسية ═════════ */
@@ -111,7 +111,7 @@ const Support = (() => {
     const myReqs = u ? MP.reqs().filter(r => r.customerId === u.id) : [];
     if (typeof sheet !== 'function') return;
     sheet(`<h4>${safeIc('warn')} تقديم شكوى</h4>
-      <div class="sub">${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'فريق الدعم هيراجعها ويرد عليك في الإشعارات':'سيتم حفظها محليًا في الوضع التجريبي'}</div>
+      <div class="sub">${(globalThis.HSFirebaseConfig&&globalThis.HSFirebaseConfig.mode==='firebase')?'فريق الدعم هيراجعها ويرد عليك في الإشعارات':'في النسخة التجريبية بتتحفظ على جهازك بس'}</div>
       <form class="form" id="supComplaintForm">
         <div><label for="sup-kind">نوع الشكوى *</label>
           <select id="sup-kind" name="kind" required>
@@ -130,7 +130,7 @@ const Support = (() => {
           </select>
         </div>` : ''}
         <div><label for="sup-text">تفاصيل الشكوى *</label>
-          <textarea id="sup-text" name="text" required minlength="10" maxlength="1000" placeholder="اشرح ما حدث بالتفصيل"></textarea>
+          <textarea id="sup-text" name="text" required minlength="10" maxlength="1000" placeholder="احكيلنا اللي حصل بالتفصيل"></textarea>
         </div>
         <div><span class="lbl-like" id="sup-att-lbl">مرفقات (اختياري)</span>
           <div class="thumbs" id="sup-thumbs" role="list" aria-labelledby="sup-att-lbl"></div>
@@ -165,7 +165,7 @@ const Support = (() => {
           </select>
         </div>
         <div><label for="rep-text">تفاصيل *</label>
-          <textarea id="rep-text" name="text" required minlength="10" maxlength="1000" placeholder="اشرح ما حدث"></textarea>
+          <textarea id="rep-text" name="text" required minlength="10" maxlength="1000" placeholder="احكيلنا اللي حصل"></textarea>
         </div>
         <button class="cta" type="submit">${safeIc('send')} إرسال البلاغ</button>
       </form>`);
@@ -186,7 +186,7 @@ const Support = (() => {
           <div class="top"><b>${_esc(kindLabel)}</b>
             <span class="tag ${k.status === 'open' ? 'warn' : ''}">${k.status === 'open' ? 'مفتوحة' : 'تم الحل'}</span>
           </div>
-          ${r ? `<small>طلب #${_esc(r.no)} — ${_esc(r.serviceName)}</small>` : ''}
+          ${r ? `<small>طلب <bdi class="code">#${_esc(r.no)}</bdi> — ${_esc(r.serviceName)}</small>` : ''}
           <small>${_esc(k.text)}</small>
           <small style="color:var(--muted)">${new Date(k.at).toLocaleString('ar-EG')}</small>
           ${k.resolution ? `<small style="color:#6ee7b7">القرار: ${_esc(k.resolution)}</small>` : ''}

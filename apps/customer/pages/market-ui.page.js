@@ -289,7 +289,7 @@ document.addEventListener('click', e => {
 function openRateSheet(reqId) {
   const r = MP.get('serviceRequests', reqId);
   if (!r) return;
-  sheet(`<h4>${ic('medal')} قيّم مقدم الخدمة</h4><div class="sub">#${esc(r.no)} — ${esc(r.serviceName)}</div>
+  sheet(`<h4>${ic('medal')} قيّم مقدم الخدمة</h4><div class="sub"><bdi class="code">#${esc(r.no)}</bdi> — ${esc(r.serviceName)}</div>
     <div class="stars-in" role="group" aria-label="عدد النجوم">${[1,2,3,4,5].map(n=>`<button type="button" data-star="${n}" aria-pressed="false" aria-label="${n} من 5 نجوم">${ic('star')}</button>`).join('')}</div>
     <p class="rv-star-label" id="rv-star-label" aria-live="polite">اضغط على النجوم</p>
     <div class="rv-tags" role="group" aria-label="اختيارات سريعة">${RV_TAGS.map(t=>`<button type="button" class="chip" data-rv-tag="${esc(t)}" aria-pressed="false">${esc(t)}</button>`).join('')}</div>
@@ -332,7 +332,7 @@ function openComplainSheet(reqId) {
           <option value="other">أخرى</option>
         </select>
       </div>
-      <div><label for="cmp-text">تفاصيل الشكوى</label><textarea id="cmp-text" name="text" required minlength="10" maxlength="1000" placeholder="اشرح ما حدث بالتفصيل"></textarea></div>
+      <div><label for="cmp-text">تفاصيل الشكوى</label><textarea id="cmp-text" name="text" required minlength="10" maxlength="1000" placeholder="احكيلنا اللي حصل بالتفصيل"></textarea></div>
       <button class="cta" type="submit">${ic('send')} إرسال الشكوى</button>
     </form>`);
 }
@@ -425,7 +425,7 @@ function openReceipt(reqId) {
   sheet(`<div class="receipt" id="receipt">
     <div class="rc-head"><b>هنصلحلك</b><small>إيصال خدمة</small></div>
     <dl>
-      <div><dt>رقم الطلب</dt><dd>#${esc(r.no)}</dd></div>
+      <div><dt>رقم الطلب</dt><dd><bdi class="code">#${esc(r.no)}</bdi></dd></div>
       <div><dt>الخدمة</dt><dd>${esc(r.serviceName)}</dd></div>
       <div><dt>مقدم الخدمة</dt><dd>${esc(p ? p.name : '—')}</dd></div>
       <div><dt>التاريخ</dt><dd>${fmtDT(t.at)}</dd></div>

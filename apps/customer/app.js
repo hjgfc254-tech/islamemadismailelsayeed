@@ -443,7 +443,7 @@ function homeTrending(){
   const top = Object.entries(tr.cats).filter(([k, n]) => n > 0 && CAT.category(k) && CAT.category(k).active !== false).sort((a, b) => b[1] - a[1]).slice(0, 4);
   if (top.reduce((s, [, n]) => s + n, 0) < 3) return '';                      // too few to say anything (and nothing identifiable)
   return `<section class="trend" aria-labelledby="trendT"><h2 class="sec-title" id="trendT">${ic('bolt')}الأكثر طلبًا النهارده</h2>
-    <div class="chips trend-row">${top.map(([k, n]) => `<button type="button" class="chip" data-wz-hit="cat|${esc(k)}">${esc(CAT.category(k).name)}<small>${n.toLocaleString('ar-EG')} طلب</small></button>`).join('')}</div></section>`;
+    <div class="chips trend-row">${top.map(([k, n]) => `<button type="button" class="chip" data-wz-hit="cat|${esc(k)}">${esc(CAT.category(k).name)}<small>${n.toLocaleString('ar-EG')} ${n >= 3 && n <= 10 ? 'طلبات' : 'طلب'}</small></button>`).join('')}</div></section>`;
 }
 function homePackages(){
   const pk = ((MP.db().settings || {}).packages || []).filter(p => p && p.active !== false);
@@ -651,7 +651,7 @@ function renderActiveRequests(){
     const quick = prov && !['completed'].includes(r.status) ? `<div class="ac-quick" role="group" aria-label="إجراءات سريعة للطلب ${esc(r.no)}">${eta != null ? `<span class="ac-eta">${ic('clock')} ${eta > 1 ? `هيوصل خلال ${eta} د` : 'وصل تقريبًا'}</span>` : ''}<button type="button" class="chip" data-act="openChat" data-id="${esc(r.id)}">${ic('chat')} رسالة لـ${esc(String(prov.name || '').split(' ')[0])}</button><button type="button" class="chip" data-act="shareReq" data-id="${esc(r.id)}">${ic('share')} شارك</button></div>` : '';
     return `<div class="act-wrap"><button class="act-card glass neon ${n.need?'need':''}" data-track="${esc(r.id)}">
       <span class="ac-top">${icp(icStatus(r.status),'st')}
-        <span class="tx">${esc(r.serviceName)}<small>#${esc(r.no)} • ${esc(STATUS_LABEL[r.status]||'')}</small></span>
+        <span class="tx">${esc(r.serviceName)}<small><bdi class="code">#${esc(r.no)}</bdi> • ${esc(STATUS_LABEL[r.status]||'')}</small></span>
         ${ic('chev','chev')}</span>
       ${mini}
       ${n.text?`<span class="ac-next">${ic(n.need?'warn':'info')}<span>${esc(n.text)}</span></span>`:''}
@@ -1194,7 +1194,7 @@ function openNotes(){
   const today = new Date().toDateString();
   const isToday = n => { const d = new Date(n.at); return !Number.isNaN(d.getTime()) && d.toDateString() === today; };
   const row = n => {
-    const inner = `${ic(n.reqId ? 'list' : 'bell')}<div><b>${esc(n.text)}</b><small>${fmtDT(n.at)}</small></div>${n.read ? '' : '<span class="note-dot" aria-label="جديد"></span>'}`;
+    const inner = `${ic(n.reqId ? 'list' : 'bell')}<div><b>${esc(n.text).replace(/#?HS-\d+-\d+/g, '<bdi class="code">$&</bdi>')}</b><small>${fmtDT(n.at)}</small></div>${n.read ? '' : '<span class="note-dot" aria-label="جديد"></span>'}`;
     return n.reqId ? `<button type="button" class="note ${n.read ? '' : 'unread'}" data-act="noteOpen" data-id="${esc(n.reqId)}">${inner}${ic('chev','chev')}</button>`
                    : `<div class="note ${n.read ? '' : 'unread'}">${inner}</div>`;
   };
