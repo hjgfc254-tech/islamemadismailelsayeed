@@ -802,3 +802,5 @@ html.hc-open{overflow:hidden}
 .hc-head{gap:8px}
 .hc-who b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hc-who small{line-height:1.4}
+/* desktop: with the narrower sheet the floating help button stayed visible (but unusable) beside it — hide it while a sheet is open */
+body:has(#app.open) .help-fab{visibility:hidden}
