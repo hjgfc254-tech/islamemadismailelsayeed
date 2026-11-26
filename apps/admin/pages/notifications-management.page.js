@@ -10,7 +10,7 @@
 (function (root) {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const icon = (n) => (typeof ic === 'function' ? ic(n) : '');
-  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
+  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn').format(n); } catch (e) { return String(n); } };
   const norm = (v) => String(v == null ? '' : v).replace(/\s+/g, ' ').trim().toLowerCase();
 
   const STATUS = { draft: { label: 'مسودة', tone: 'neutral', icon: 'st-closed' }, active: { label: 'مفعّل', tone: 'success', icon: 'check' }, disabled: { label: 'معطّل', tone: 'warning', icon: 'warn' } };
@@ -23,7 +23,7 @@
   const AUDIENCES = { customers: 'العملاء', providers: 'مقدمو الخدمة', all: 'الجميع' };
   const NEXT = { draft: [{ to: 'active', text: 'تفعيل القالب محليًا', cls: 'adm-btn-p' }], active: [{ to: 'disabled', text: 'تعطيل القالب محليًا', cls: 'adm-btn-d' }], disabled: [{ to: 'active', text: 'إعادة التفعيل محليًا', cls: 'adm-btn-p' }] };
   const LIMITS = { name: 60, title: 60, body: 200 };
-  const SAMPLE = { name: 'أحمد', order_no: '1024', date: '٢٠٢٦/١١/١٥' };
+  const SAMPLE = { name: 'أحمد', order_no: '1024', date: '2026/11/15' };
   const PLACEHOLDERS = Object.keys(SAMPLE);
 
   /* ───── Fixtures (demo) ───── */

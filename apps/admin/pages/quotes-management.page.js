@@ -15,7 +15,7 @@
   const ORD = root.HSAdminOrdersPage || (typeof require === 'function' ? require('./orders-management.page.js') : null);
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const icon = (n) => (typeof ic === 'function' ? ic(n) : '');
-  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium', timeZone: 'UTC' }).format(t); } catch (e) { return iso; } };
+  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium', timeZone: 'UTC' }).format(t); } catch (e) { return iso; } };
   const nf = (n) => M.number(n);
   const DEMO_NOW = '2026-11-09T12:00:00Z', REASON_MIN = 3, REASON_MAX = 300, DAY = 86400000;
 

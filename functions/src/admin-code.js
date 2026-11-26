@@ -41,8 +41,8 @@ async function audit(backend, uid, action, status) {
 async function setCode(backend, uid, admin, code, current, now = Date.now()) {
   if (!admin || admin.status !== 'active') throw err('permission-denied', 'هذا الحساب ليس له صلاحية إدارة');
   code = String(code || '');
-  if (!CODE_RE.test(code)) throw err('invalid-argument', 'الكود لازم يكون ٨ أرقام');
-  if (weak(code)) throw err('invalid-argument', 'الكود سهل التخمين — اختار ٨ أرقام مش متتالية ولا متكررة');
+  if (!CODE_RE.test(code)) throw err('invalid-argument', 'الكود لازم يكون 8 أرقام');
+  if (weak(code)) throw err('invalid-argument', 'الكود سهل التخمين — اختار 8 أرقام مش متتالية ولا متكررة');
   if (admin.codeHash) {
     if (+admin.codeLockUntil > now) throw err('resource-exhausted', 'محاولات كتير — جرّب بعد شوية');
     if (!same(hashOf(current || '', admin.codeSalt), admin.codeHash)) { await fail(backend, uid, admin, now); throw err('permission-denied', 'الكود الحالي غلط'); }
@@ -65,17 +65,17 @@ async function fail(backend, uid, admin, now) {
   });
   if (already) return { fails, lock };
   await audit(backend, uid, 'admin.code.unlock', lock ? 'locked' : 'failed');
-  if (lock) await require('./owner-alerts').notifyOwner(backend, `حساب إداري (${admin.name || admin.email || uid}) اتقفل ١٥ دقيقة بعد ${MAX_FAILS} محاولات كود غلط`, 'apps/admin/index.html#/audit');
+  if (lock) await require('./owner-alerts').notifyOwner(backend, `حساب إداري (${admin.name || admin.email || uid}) اتقفل 15 دقيقة بعد ${MAX_FAILS} محاولات كود غلط`, 'apps/admin/index.html#/audit');
   return { fails, lock };
 }
 
 async function unlock(backend, uid, admin, code, now = Date.now()) {
   if (!admin || admin.status !== 'active') throw err('permission-denied', 'هذا الحساب ليس له صلاحية إدارة');
   if (!admin.codeHash) throw err('failed-precondition', 'اعمل كود الدخول الأول');
-  if (+admin.codeLockUntil > now) throw err('resource-exhausted', 'محاولات كتير غلط — الحساب مقفول ١٥ دقيقة');
+  if (+admin.codeLockUntil > now) throw err('resource-exhausted', 'محاولات كتير غلط — الحساب مقفول 15 دقيقة');
   if (!CODE_RE.test(String(code || '')) || !same(hashOf(code, admin.codeSalt), admin.codeHash)) {
     const r = await fail(backend, uid, admin, now);
-    throw err(r.lock ? 'resource-exhausted' : 'permission-denied', r.lock ? 'محاولات كتير غلط — الحساب مقفول ١٥ دقيقة' : `الكود غلط — فاضل ${MAX_FAILS - r.fails} محاولات`);
+    throw err(r.lock ? 'resource-exhausted' : 'permission-denied', r.lock ? 'محاولات كتير غلط — الحساب مقفول 15 دقيقة' : `الكود غلط — فاضل ${MAX_FAILS - r.fails} محاولات`);
   }
   /* the right code is honoured only if the account is not locked at commit time (a parallel guess may have locked it) */
   const granted = await backend.runTransaction(async (tx) => {
@@ -84,7 +84,7 @@ async function unlock(backend, uid, admin, code, now = Date.now()) {
     backend.adapter.set(tx, `admins/${uid}`, { ...cur, codeFails: 0, codeLockUntil: 0, unlockedUntil: now + UNLOCK_MS, lastUnlockAt: new Date(now).toISOString() });
     return true;
   });
-  if (!granted) throw err('resource-exhausted', 'محاولات كتير غلط — الحساب مقفول ١٥ دقيقة');
+  if (!granted) throw err('resource-exhausted', 'محاولات كتير غلط — الحساب مقفول 15 دقيقة');
   await audit(backend, uid, 'admin.code.unlock', 'ok');
   return { ok: true, unlockedUntil: new Date(now + UNLOCK_MS).toISOString() };
 }

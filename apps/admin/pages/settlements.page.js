@@ -21,7 +21,7 @@
   const FIN = root.HSAdminFinanceDashboardPage || (typeof require === 'function' ? require('./finance-dashboard.page.js') : null);
   const nf = (n) => M.number(n);
   const money = (n) => M.format(n);
-  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium', timeZone: 'UTC' }).format(t); } catch (e) { return iso; } };
+  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium', timeZone: 'UTC' }).format(t); } catch (e) { return iso; } };
 
   const DEMO_TODAY = '2026-11-09';
   const REASON_MIN = 3, REASON_MAX = 300;
@@ -242,7 +242,7 @@
     const L = root.HSAdminLive && root.HSAdminLive.enabled() ? root.HSAdminLive : null;   /* server backend mode: provider balances from real transactions */
     if (L) settlements = L.rows('settlements', { CATS: FIN ? FIN.CATEGORIES : [] });
     const wrap = root.document.createElement('div'); wrap.className = 'ord stl';
-    wrap.innerHTML = `<div class="fin-banner" role="note">${icon('info')}<span>بيانات تجريبية محلية — ليست مستحقات حقيقية. لا يتم تحويل أي مبلغ لأي مقدم خدمة، ولا توجد بوابة دفع. الأرقام الأولية مشتقة من لوحة الماليات (٣٠ يومًا) وتعديلاتك المحلية هنا لا تنعكس عليها. تاريخ العرض الثابت: ${esc(dt(DEMO_TODAY))}.</span></div>
+    wrap.innerHTML = `<div class="fin-banner" role="note">${icon('info')}<span>بيانات تجريبية محلية — ليست مستحقات حقيقية. لا يتم تحويل أي مبلغ لأي مقدم خدمة، ولا توجد بوابة دفع. الأرقام الأولية مشتقة من لوحة الماليات (30 يومًا) وتعديلاتك المحلية هنا لا تنعكس عليها. تاريخ العرض الثابت: ${esc(dt(DEMO_TODAY))}.</span></div>
       <div id="stl-sum"></div><div id="stl-prov"></div><div id="stl-grid"></div><div id="stl-log"></div><dialog class="ord-dlg" id="stl-dlg" aria-labelledby="ord-dlg-t"></dialog>`;
     const dlgEl = wrap.querySelector('#stl-dlg');
     let st = null, grid = null;

@@ -16,7 +16,7 @@
     const e = r && r.error; if (!e) return 'حصل خطأ، جرّب تاني';
     return e.message + (e.details && typeof e.details === 'object' && e.code === 'VALIDATION' ? ' — ' + Object.entries(e.details).map(([k, v]) => k + ': ' + v).join('، ') : '');
   };
-  const when = (iso) => { const t = Date.parse(iso); return Number.isFinite(t) ? new Date(t).toLocaleString('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }) : ''; };
+  const when = (iso) => { const t = Date.parse(iso); return Number.isFinite(t) ? new Date(t).toLocaleString('ar-EG-u-nu-latn', { dateStyle: 'medium', timeStyle: 'short' }) : ''; };
   const OUTCOME = { request_created: 'طلب جديد', status_given: 'استعلام عن حالة', cancelled: 'إلغاء', complaint: 'شكوى', handoff: 'تحويل لموظف', info: 'استفسار', dropped: 'المكالمة فصلت', other: 'أخرى' };
   const PERIOD = { morning: 'الصبح', noon: 'الضهر', evening: 'بالليل' };
 

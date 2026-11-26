@@ -323,7 +323,7 @@ test('completion form previews platform commission and net live, using the provi
   assert.equal(rate, 12);
   assert.match(app.html(), /id="pv-complete-form" data-id="[^"]+" data-rate="12"/);
   assert.match(app.html(), /<p class="pv-calc" id="pv-complete-preview" aria-live="polite">أدخل القيمة لمعاينة عمولة المنصة \(12%\)/);
-  const money = n => n.toLocaleString('ar-EG', { maximumFractionDigits: 2 }) + ' ج.م';
+  const money = n => n.toLocaleString('ar-EG-u-nu-latn', { maximumFractionDigits: 2 }) + ' ج.م';
   app.input('pv-complete-form', { value: '500', deductions: '20' });
   const x = app.MP.calc(500, 12, 20);
   assert.equal(x.commission, 60); assert.equal(x.net, 420);

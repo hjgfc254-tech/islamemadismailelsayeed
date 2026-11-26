@@ -58,7 +58,7 @@
       ? `<div class="prov-inline prov-card glass neon">
           <div class="prov-avatar" aria-hidden="true" style="background:${p.avatar||'#FF3D8F'}">${esc((p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>
           <div class="prov-head"><b>${esc(p.name)}${p.status==='approved'?` <span class="verified">${ic('shield')} موثّق</span>`:''}</b><small>${p.cats.map(c=>MP.catName(c)).join('، ')}${p.demo?' • محاكاة':''}</small>
-            ${rating || p.jobs ? `<small class="prov-stats">${rating?`${starsHtml(rating)} <b>${(+rating).toLocaleString('ar-EG',{minimumFractionDigits:1,maximumFractionDigits:1})}</b>`:''}${rating && p.jobs?' • ':''}${p.jobs?`${(+p.jobs).toLocaleString('ar-EG')} خدمة منجزة`:''}</small>`:''}</div>
+            ${rating || p.jobs ? `<small class="prov-stats">${rating?`${starsHtml(rating)} <b>${(+rating).toLocaleString('ar-EG-u-nu-latn',{minimumFractionDigits:1,maximumFractionDigits:1})}</b>`:''}${rating && p.jobs?' • ':''}${p.jobs?`${(+p.jobs).toLocaleString('ar-EG-u-nu-latn')} خدمة منجزة`:''}</small>`:''}</div>
           <button class="tag" data-provider-details="${esc(p.id)}">${ic('info')} التفاصيل</button>
         </div>`
       : as
@@ -133,7 +133,7 @@
     const etaBlock = r.status === 'enroute' && r.etaAt ? (() => {
       const at = new Date(r.etaAt); if (Number.isNaN(at.getTime())) return '';
       const mins = Math.round((at.getTime() - Date.now()) / 60000);
-      const t = at.toLocaleTimeString('ar-EG', { hour: 'numeric', minute: '2-digit' });
+      const t = at.toLocaleTimeString('ar-EG-u-nu-latn', { hour: 'numeric', minute: '2-digit' });
       return `<div class="eta-card" role="status">${ic('clock')}<span><b>${mins > 1 ? `هيوصل خلال حوالي ${mins} دقيقة` : 'المفروض يوصل دلوقتي'}</b><small>حوالي الساعة ${esc(t)} — تقدير الفني وقت ما اتحرك</small></span></div>`;
     })() : '';
     const chat = Array.isArray(r.chat) ? r.chat : [];

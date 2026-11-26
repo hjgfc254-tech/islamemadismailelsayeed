@@ -10,7 +10,7 @@
 (function (root) {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const icon = (n) => (typeof ic === 'function' ? ic(n) : '');
-  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
+  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn').format(n); } catch (e) { return String(n); } };
 
   /* ───── Fixtures (demo) ───── */
   const PERIODS = [{ id: '7', label: '7 أيام' }, { id: '30', label: '30 يومًا' }, { id: '90', label: '90 يومًا' }];
@@ -48,7 +48,7 @@
   let state = fresh();
 
   /* ───── Pure model (unit-tested) ───── */
-  const fmtValue = (k, raw) => (k.decimal ? new Intl.NumberFormat('ar-EG', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(raw) : nf(raw));
+  const fmtValue = (k, raw) => (k.decimal ? new Intl.NumberFormat('ar-EG-u-nu-latn', { minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(raw) : nf(raw));
   const buildModel = (period, st) => {
     st = st || state;
     const p = PERIODS.some((x) => x.id === period) ? period : '30';

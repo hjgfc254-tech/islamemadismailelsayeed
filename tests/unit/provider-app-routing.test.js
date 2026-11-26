@@ -41,7 +41,7 @@ test('الطلبات: three filters with counts; older group routes select the m
   let rid;
   const app = boot({ session: PROVIDER, setup: ({ MP }) => { rid = offerRequest(MP, PROVIDER).id; MP.respond(rid, true); } });
   app.go('#/accepted');
-  assert.match(app.html(), /data-pv-route="progress" class="is-on" aria-pressed="true">شغالة <b>١<\/b>/);
+  assert.match(app.html(), /data-pv-route="progress" class="is-on" aria-pressed="true">شغالة <b>1<\/b>/);
   assert.match(app.html(), new RegExp('data-pv-route="request/' + rid));
   app.go('#/done');
   assert.match(app.html(), /data-pv-route="done" class="is-on"/);

@@ -20,9 +20,9 @@
 const DEMO_NOTE = 'وضع تجريبي — الطلبات مش بتوصل لفنيين حقيقيين.';   /* one line: the page content leads */
 /* the demo notice describes the offline demo only; with the Firebase backend requests are real */
 const demoBanner = () => (typeof HSFirebaseConfig !== 'undefined' && HSFirebaseConfig.mode === 'firebase') ? '' : `<div class="demo-banner">${ic('info')}<span>${DEMO_NOTE}</span></div>`;
-const fmtDT = s => { try{ if(!s) return ''; const d = new Date(s); if(Number.isNaN(d.getTime())) return ''; return d.toLocaleString('ar-EG',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}); }catch{ return ''; } };
-const fmtDateOnly = s => { try{ return new Date(s).toLocaleDateString('ar-EG',{day:'numeric',month:'long',weekday:'short'}); }catch{ return s||''; } };
-const money = n => (+n||0).toLocaleString('ar-EG',{maximumFractionDigits:2})+' ج.م';
+const fmtDT = s => { try{ if(!s) return ''; const d = new Date(s); if(Number.isNaN(d.getTime())) return ''; return d.toLocaleString('ar-EG-u-nu-latn',{day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}); }catch{ return ''; } };
+const fmtDateOnly = s => { try{ return new Date(s).toLocaleDateString('ar-EG-u-nu-latn',{day:'numeric',month:'long',weekday:'short'}); }catch{ return s||''; } };
+const money = n => (+n||0).toLocaleString('ar-EG-u-nu-latn',{maximumFractionDigits:2})+' ج.م';
 const stars = n => starsHtml(n);
 const me = () => (typeof HSCustomerSession !== 'undefined' ? HSCustomerSession.customer()
   : (u => u ? MP.db().customers.find(c=>c.phone===u.phone) || null : null)(store.get('user',null)));
@@ -410,7 +410,7 @@ async function shareText(title, text) {
 }
 function requestShareText(r) {
   const p = MP.providerOf(r.id), L = typeof STATUS_LABEL !== 'undefined' ? STATUS_LABEL : {};
-  const eta = r.status === 'enroute' && r.etaAt ? new Date(r.etaAt).toLocaleTimeString('ar-EG', { hour: 'numeric', minute: '2-digit' }) : '';
+  const eta = r.status === 'enroute' && r.etaAt ? new Date(r.etaAt).toLocaleTimeString('ar-EG-u-nu-latn', { hour: 'numeric', minute: '2-digit' }) : '';
   return [`طلبي على هنصلحلك #${r.no} — ${r.serviceName}`,
     p ? `الفني: ${p.name}${p.status === 'approved' ? ' (موثّق من المنصة)' : ''}` : '',
     `الحالة: ${L[r.status] || r.status}`,

@@ -7,9 +7,9 @@
 'use strict';
 (function (root) {
   const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const nf = n => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
+  const nf = n => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn').format(n); } catch (e) { return String(n); } };
   const dayKey = d => { const x = new Date(d); return Number.isNaN(x.getTime()) ? '' : x.toISOString().slice(0, 10); };
-  const dayLabel = k => { try { return new Intl.DateTimeFormat('ar-EG', { day: 'numeric', month: 'short' }).format(new Date(k + 'T12:00:00')); } catch (e) { return k; } };
+  const dayLabel = k => { try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { day: 'numeric', month: 'short' }).format(new Date(k + 'T12:00:00')); } catch (e) { return k; } };
 
   /** Bucket items into the last `days` calendar days: value(item) summed per day (count when value is omitted). */
   function daily(items, days, at, value) {

@@ -28,7 +28,7 @@
       .map((a) => ({ key: r.id + '|' + a.providerId + '|' + a.offer.at, r, a, p: MP.get('providers', a.providerId) || {} })));
   }
   const viewing = (reqId) => !!(typeof state !== 'undefined' && state.lastShown && state.lastShown.name === 'tracking' && state.lastShown.arg === reqId && doc.visibilityState !== 'hidden');
-  const fmt = (n) => (typeof money === 'function' ? money(n) : (+n || 0).toLocaleString('ar-EG') + ' ج.م');
+  const fmt = (n) => (typeof money === 'function' ? money(n) : (+n || 0).toLocaleString('ar-EG-u-nu-latn') + ' ج.م');
   const safe = (s) => (typeof esc === 'function' ? esc(s) : String(s == null ? '' : s).replace(/[&<>"']/g, (c) => '&#' + c.charCodeAt(0) + ';'));
 
   function paintTitle() {
@@ -47,7 +47,7 @@
     banner.className = 'offer-alert'; banner.setAttribute('role', 'status'); banner.setAttribute('aria-live', 'polite');
     const who = o.p.name ? safe(o.p.name) : 'فني';
     banner.innerHTML = `<span class="oa-ic" aria-hidden="true">${typeof ic === 'function' ? ic('bell') : ''}</span>
-      <span class="oa-txt"><b>وصلك عرض جديد${more ? ` (+${(more).toLocaleString('ar-EG')})` : ''}</b><small>${who} — ${safe(fmt(o.a.offer.total))} على ${safe(o.r.serviceName || 'طلبك')}</small></span>
+      <span class="oa-txt"><b>وصلك عرض جديد${more ? ` (+${(more).toLocaleString('ar-EG-u-nu-latn')})` : ''}</b><small>${who} — ${safe(fmt(o.a.offer.total))} على ${safe(o.r.serviceName || 'طلبك')}</small></span>
       <button type="button" class="oa-go" data-oa-open="${safe(o.r.id)}">شوف العروض</button>
       <button type="button" class="oa-x" data-oa-close aria-label="إخفاء">×</button>`;
     banner.addEventListener('click', (e) => {
@@ -63,7 +63,7 @@
       if (root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase') return;     // the server push covers this
       if (!('Notification' in root) || root.Notification.permission !== 'granted' || !root.navigator.serviceWorker) return;
       root.navigator.serviceWorker.ready.then((reg) => reg.showNotification('وصلك عرض جديد', {
-        body: `${o.p.name || 'فني'} — ${fmt(o.a.offer.total)}${total > 1 ? ` (${total.toLocaleString('ar-EG')} عروض جديدة)` : ''}`,
+        body: `${o.p.name || 'فني'} — ${fmt(o.a.offer.total)}${total > 1 ? ` (${total.toLocaleString('ar-EG-u-nu-latn')} عروض جديدة)` : ''}`,
         icon: APP_ICON, badge: APP_ICON, dir: 'rtl', lang: 'ar', tag: 'offers-' + o.r.id, renotify: true,
         data: { link: 'apps/customer/index.html#/track/' + o.r.id }
       })).catch(() => {});

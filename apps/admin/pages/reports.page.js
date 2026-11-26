@@ -20,7 +20,7 @@
   const SET = root.HSAdminSettlementsPage || (typeof require === 'function' ? require('./settlements.page.js') : null);
   const nf = (n) => M.number(n);
   const money = (n) => M.format(n);
-  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium', timeZone: 'UTC' }).format(t); } catch (e) { return iso; } };
+  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium', timeZone: 'UTC' }).format(t); } catch (e) { return iso; } };
 
   const DEMO_TODAY = (SET && SET.DEMO_TODAY) || '2026-11-09';
   const PERIODS = FIN ? FIN.PERIODS : [{ id: '7', label: '7 أيام' }, { id: '30', label: '30 يومًا' }, { id: '90', label: '90 يومًا' }];

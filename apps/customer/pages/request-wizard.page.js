@@ -390,7 +390,7 @@ function wzVoiceToggle(btn){
   if (wzRec) { try { wzRec.stop(); } catch {} return; }
   const box = document.getElementById('wz-desc'); if (!box) return;
   const base = box.value ? box.value.replace(/\s+$/, '') + ' ' : '';
-  const rec = new SR(); rec.lang = 'ar-EG'; rec.interimResults = true; rec.continuous = true;
+  const rec = new SR(); rec.lang = 'ar-EG-u-nu-latn'; rec.interimResults = true; rec.continuous = true;
   rec.onresult = (e) => { let txt = ''; for (let i = 0; i < e.results.length; i++) txt += e.results[i][0].transcript; box.value = (base + txt).slice(0, 1000); WZ.desc = box.value; };
   const end = () => { wzRec = null; btn.classList.remove('is-rec'); btn.setAttribute('aria-pressed', 'false'); btn.lastChild.textContent = ' احكي المشكلة بصوتك'; wzSaveDraft(); };
   rec.onend = end;
@@ -416,7 +416,7 @@ function wzSay(w){
   if (s.flexible) when = 'في أي وقت يناسب الفني';
   else if (s.date) {
     const iso = n => { const d = new Date(); d.setDate(d.getDate() + n); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
-    const day = s.date === iso(0) ? 'النهارده' : s.date === iso(1) ? 'بكرة' : (() => { try { return new Date(s.date + 'T12:00:00').toLocaleDateString('ar-EG', { weekday: 'long', day: 'numeric', month: 'long' }); } catch { return s.date; } })();
+    const day = s.date === iso(0) ? 'النهارده' : s.date === iso(1) ? 'بكرة' : (() => { try { return new Date(s.date + 'T12:00:00').toLocaleDateString('ar-EG-u-nu-latn', { weekday: 'long', day: 'numeric', month: 'long' }); } catch { return s.date; } })();
     when = day + (s.period ? ' ' + ({ morning: 'الصبح', noon: 'الضهر', evening: 'بالليل' })[s.period] : '');
   }
   const area = w.address && (w.address.area || w.address.gov);
@@ -445,7 +445,7 @@ function crumbHtml(w){
 }
 
 /* ═════════ تنسيق التاريخ/الوقت ═════════ */
-const fmtDateShort = s => { try { return new Date(s + 'T00:00:00').toLocaleDateString('ar-EG', {day:'numeric', month:'long', weekday:'short'}); } catch { return s; } };
+const fmtDateShort = s => { try { return new Date(s + 'T00:00:00').toLocaleDateString('ar-EG-u-nu-latn', {day:'numeric', month:'long', weekday:'short'}); } catch { return s; } };
 const fmtTime = (dateStr, slot) => {
   if (!dateStr) return 'لم يُحدد';
   const map = { morning: 'صباحًا (9–12)', noon: 'ظهرًا (12–3)', evening: 'مساءً (3–8)' };
@@ -460,7 +460,7 @@ function dateChipsHtml(current){
     const d = new Date(today); d.setDate(today.getDate() + i);
     /* local calendar day (toISOString is UTC: in Cairo it named the day before, so «الجمعة» was selected for Thursday) */
     const iso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-    const lbl = i === 0 ? 'النهارده' : i === 1 ? 'بكرة' :d.toLocaleDateString('ar-EG', {weekday:'short', day:'numeric'});
+    const lbl = i === 0 ? 'النهارده' : i === 1 ? 'بكرة' :d.toLocaleDateString('ar-EG-u-nu-latn', {weekday:'short', day:'numeric'});
     out.push(`<button type="button" class="chip date-chip ${current===iso?'on':''}" data-wz-date="${iso}" aria-pressed="${current===iso}">${_esc(lbl)}</button>`);
   }
   return `<div class="chips" role="group" aria-label="اختيار اليوم المفضل">${out.join('')}</div>`;
@@ -511,7 +511,7 @@ function wzPriceBar(w){
   }
   if (!wzPriceCache) return wzPriceCache === null ? '<div class="wz-pricebar is-loading" data-wz-pricebar aria-hidden="true"></div>' : '';
   const price = wzPriceCache[w.item];
-  return `<div class="wz-pricebar" data-wz-pricebar role="status">${safeIc('wallet')}<span>${price ? `سعر الخدمة: <b>${Number(price).toLocaleString('ar-EG')} ج.م</b> — ثابت وشامل رسوم المنصة` : 'السعر بيتحدد بعد ما الفني يعاين — وبتوافق عليه قبل التنفيذ'}</span></div>`;
+  return `<div class="wz-pricebar" data-wz-pricebar role="status">${safeIc('wallet')}<span>${price ? `سعر الخدمة: <b>${Number(price).toLocaleString('ar-EG-u-nu-latn')} ج.م</b> — ثابت وشامل رسوم المنصة` : 'السعر بيتحدد بعد ما الفني يعاين — وبتوافق عليه قبل التنفيذ'}</span></div>`;
 }
 
 Object.assign(screens, {
@@ -719,6 +719,7 @@ Object.assign(screens, {
         <div class="pc-body"><small>سعر الخدمة</small><b class="pc-amount"><span class="sk sk-line w40"></span></b><span class="pc-note"><span class="pc-lock">${safeIc('shield')}</span><span class="pc-text">جارٍ حساب السعر…</span></span></div>
       </div>
       ${CAT.needsVisit(w.item, w.unknown ? '' : w.problem) ? `<div class="need">${safeIc('info')}<span>الفني سيعاين المشكلة أولًا ثم يحدد التكلفة النهائية.</span></div>` : ''}
+      <div class="need wz-reassure">${safeIc('shield')}<span>مش هتدفع أي حاجة دلوقتي، وتقدر تلغي الطلب ببلاش لحد ما الفني يتحرك.</span></div>
       <div class="promo-field"><label for="wz-promo">كود خصم أو كود دعوة (اختياري)</label><input id="wz-promo" value="${_esc(w.promo || '')}" maxlength="16" autocomplete="off" autocapitalize="characters" dir="ltr" placeholder="مثال: RAMADAN"><small>الخصم بيتحسب على المبلغ لما الخدمة تخلص.</small></div>
       ${(typeof HSFirebaseConfig !== 'undefined' && HSFirebaseConfig.mode === 'firebase') ? '' : `<div class="demo-banner">${safeIc('info')}<span>وضع العرض التجريبي — الطلب يُحفظ محليًا ولا يُرسل لفنيين حقيقيين.</span></div>`}`;
     }
@@ -729,7 +730,7 @@ Object.assign(screens, {
         const key = el.getAttribute('data-wz-price-key'), price = res.ok && res.data && res.data.prices ? res.data.prices[key] : null;
         el.classList.remove('is-loading'); el.classList.toggle('is-fixed', !!price);
         const amount = el.querySelector('.pc-amount'), note = el.querySelector('.pc-text');
-        if (amount) amount.textContent = price ? (Number(price).toLocaleString('ar-EG') + ' ج.م') : 'بعد المعاينة';
+        if (amount) amount.textContent = price ? (Number(price).toLocaleString('ar-EG-u-nu-latn') + ' ج.م') : 'بعد المعاينة';
         if (note) note.textContent = price ? 'السعر ده ثابت وشامل رسوم المنصة — مش هيتغير إلا بموافقتك.' : 'الفني هيعاين المشكلة ويبعتلك عرض سعر توافق عليه قبل التنفيذ.';
       });
     }, 0);
@@ -765,6 +766,8 @@ Object.assign(screens, {
     }).join('');
     /* contact details hidden because the saved ones are valid → one line with «تعديل» */
     if (wzStageOf(w.step) === 2 && !shown.includes(8)) body += `<div class="wz-contact-mini">${safeIc('call')}<span>هنتواصل معاك على <b>${_esc(w.contact.name)} • ${_esc(w.contact.phone)}</b></span><button type="button" data-act="wzShowContact">تعديل</button></div>`;
+    /* screen 2 was skipped (nothing required): photos / a note stay one tap away */
+    if (wzStageOf(w.step) === 2 && !w.unknown && !(w.desc || '').trim() && !(w.attachmentMeta || []).length) body = `<div class="wz-contact-mini">${safeIc('camera')}<span>عايز تضيف صور أو تفاصيل للفني؟ <small>(اختياري)</small></span><button type="button" data-wz-edit="4">أضف</button></div>` + body;
     /* the price of the chosen service stays visible on every screen until the review (which has the full card) */
     if (w.item && w.step > 1 && w.step < 9) body = wzPriceBar(w) + body;
 
@@ -1007,7 +1010,13 @@ document.addEventListener('click', e => {
   }
   /* picking stays on the same screen («المطلوب»): the list folds into one row and the questions / details appear */
   const wzPick = () => { if (WZ.step < 3) WZ.step = 3; wzSaveDraft(); if (hasUI()) show('wizard'); };
-  if (d.wzProb) { WZ.problem = d.wzProb; WZ.unknown = false; WZ.answers = {}; return wzPick(); }
+  if (d.wzProb) {
+    WZ.problem = d.wzProb; WZ.unknown = false; WZ.answers = {};
+    /* nothing required for this problem (e.g. «تركيب باب جديد») → straight to «المكان والموعد»; Back returns to the picked
+       problem, and the place screen offers «ضيف صور أو تفاصيل» */
+    if (!CAT.questionsFor(WZ.item, WZ.problem).some(q => q.required)) { WZ.step = 2; return wzGo(6); }
+    return wzPick();
+  }
   if ('wzUnknown' in d) { WZ.unknown = true; WZ.problem = ''; WZ.answers = {}; return wzPick(); }
   if (d.wzSugg) { WZ.desc = d.wzSugg; return show('wizard'); }
   if ('wzEdit' in d) { if (+d.wzEdit === 6) WZ.editAddr = true; return wzGo(+d.wzEdit); }

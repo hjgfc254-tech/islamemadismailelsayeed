@@ -8,7 +8,7 @@
 'use strict';
 (function (root) {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const nf = (n, d = 0) => { try { return new Intl.NumberFormat('ar-EG', { maximumFractionDigits: d }).format(+n || 0); } catch (e) { return String(n); } };
+  const nf = (n, d = 0) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn', { maximumFractionDigits: d }).format(+n || 0); } catch (e) { return String(n); } };
   const live = () => !!(root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase');
   const isOwner = () => { try { const R = root.HSAdminRbac; return !!(R && R.state && R.state.actor === 'owner'); } catch (e) { return false; } };
   const api = () => root.HSApiClient;
@@ -18,7 +18,7 @@
     if (s < 60) return 'من لحظات'; if (s < 3600) return 'من ' + nf(Math.round(s / 60)) + ' دقيقة'; if (s < 86400) return 'من ' + nf(Math.round(s / 3600)) + ' ساعة';
     return 'من ' + nf(Math.round(s / 86400)) + ' يوم';
   };
-  const when = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }).format(t); } catch (e) { return iso; } };
+  const when = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium', timeStyle: 'short' }).format(t); } catch (e) { return iso; } };
   const APP = { customer: 'العميل', provider: 'مقدم الخدمة', admin: 'الإدارة', server: 'السيرفر', other: 'أخرى' };
   const STATE = { ok: ['✓', 'سليم', 'ok'], warn: ['!', 'بطيء', 'warn'], down: ['✗', 'واقع', 'down'], unknown: ['—', 'غير معروف', 'unknown'] };
   const AREAS = [['firestore', 'قاعدة البيانات'], ['rtdb', 'الإشارات اللحظية'], ['auth', 'تسجيل الدخول']];
@@ -45,7 +45,7 @@
     const clock = o ? { state: !o.ok ? 'down' : o.stale ? 'warn' : 'ok', ms: null } : { state: 'unknown' };
     return `<section class="tech-card" aria-labelledby="tech-h-health"><div class="tech-head"><h2 id="tech-h-health">حالة الأنظمة</h2><span class="tech-pill is-${(STATE[d.health.overall] || STATE.unknown)[2]}">${(STATE[d.health.overall] || STATE.unknown)[0]} ${(STATE[d.health.overall] || STATE.unknown)[1]}</span></div>
       <div class="tech-lights">${AREAS.map(([k, n]) => light(n, d.health.areas[k])).join('')}${light('ساعة جولات العروض', clock, o ? ago(o.at) : 'لسه ما اشتغلتش')}</div>
-      <p class="tech-note">آخر فحص ${esc(ago(d.health.checkedAt))} (${d.health.source === 'live' ? 'فحص جديد' : 'من آخر فحص دوري كل ١٠ دقايق'}).</p></section>`;
+      <p class="tech-note">آخر فحص ${esc(ago(d.health.checkedAt))} (${d.health.source === 'live' ? 'فحص جديد' : 'من آخر فحص دوري كل 10 دقايق'}).</p></section>`;
   }
   function deployHtml(d) {
     const dep = d.deploy;
@@ -79,7 +79,7 @@
     const rows = p.groups.map((g) => `<div role="row" class="tech-row${g.slow ? ' is-slow' : ''}"><span role="rowheader">${esc(g.label)}</span><span role="cell">${nf(g.count)}</span><span role="cell">${g.p50 == null ? '—' : nf(g.p50)}</span><span role="cell">${g.p95 == null ? '—' : (g.p95 >= p.cappedAt ? '+' : '') + nf(g.p95)}</span></div>`).join('');
     return `<section class="tech-card" aria-labelledby="tech-h-perf"><h2 id="tech-h-perf">السرعة (${scope})</h2>
       ${p.groups.length ? `<div role="table" class="tech-table" aria-label="زمن الاستجابة بالمللي ثانية لكل مجموعة طلبات"><div role="row" class="tech-row tech-row-h"><span role="columnheader">المجموعة</span><span role="columnheader">طلبات</span><span role="columnheader">P50 (ms)</span><span role="columnheader">P95 (ms)</span></div>${rows}</div>` : '<p class="tech-empty">لسه مفيش طلبات متسجلة.</p>'}
-      <p class="tech-note">نسبة أخطاء السيرفر: <b>${nf(p.errorRate * 100, 1)}٪</b> من ${nf(p.calls)} طلب · مرفوضة (٤xx): ${nf(p.rejected)}. الأزمنة تقريبية (أعلى حد للفئة).</p></section>`;
+      <p class="tech-note">نسبة أخطاء السيرفر: <b>${nf(p.errorRate * 100, 1)}٪</b> من ${nf(p.calls)} طلب · مرفوضة (4xx): ${nf(p.rejected)}. الأزمنة تقريبية (أعلى حد للفئة).</p></section>`;
   }
   function limitsHtml(d) {
     const l = d.limits, yes = (v, a, b) => `<b class="tech-lv is-${v ? 'warn' : 'ok'}">${v ? a : b}</b>`;

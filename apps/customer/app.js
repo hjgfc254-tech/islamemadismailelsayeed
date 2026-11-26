@@ -414,7 +414,7 @@ function homeLatestReviews(){
 /* category tiles: «يبدأ من» from the public price list (customer prices), fetched once and cached for 5 minutes */
 let _priceFrom = null, _priceAt = 0;
 function fillTilePrices(){
-  const paint = map => document.querySelectorAll('[data-from-cat]').forEach(el => { const v = map[el.dataset.fromCat]; if (v) { el.textContent = 'يبدأ من ' + Number(v).toLocaleString('ar-EG') + ' ج.م'; el.hidden = false; } });
+  const paint = map => document.querySelectorAll('[data-from-cat]').forEach(el => { const v = map[el.dataset.fromCat]; if (v) { el.textContent = 'يبدأ من ' + Number(v).toLocaleString('ar-EG-u-nu-latn') + ' ج.م'; el.hidden = false; } });
   if (_priceFrom && Date.now() - _priceAt < 300000) return paint(_priceFrom);
   if (typeof HSApiClient === 'undefined') return;
   HSApiClient.request('GET', '/pricing').then(res => {
@@ -443,7 +443,7 @@ function homeTrending(){
   const top = Object.entries(tr.cats).filter(([k, n]) => n > 0 && CAT.category(k) && CAT.category(k).active !== false).sort((a, b) => b[1] - a[1]).slice(0, 4);
   if (top.reduce((s, [, n]) => s + n, 0) < 3) return '';                      // too few to say anything (and nothing identifiable)
   return `<section class="trend" aria-labelledby="trendT"><h2 class="sec-title" id="trendT">${ic('bolt')}الأكثر طلبًا النهارده</h2>
-    <div class="chips trend-row">${top.map(([k, n]) => `<button type="button" class="chip" data-wz-hit="cat|${esc(k)}">${esc(CAT.category(k).name)}<small>${n.toLocaleString('ar-EG')} ${n >= 3 && n <= 10 ? 'طلبات' : 'طلب'}</small></button>`).join('')}</div></section>`;
+    <div class="chips trend-row">${top.map(([k, n]) => `<button type="button" class="chip" data-wz-hit="cat|${esc(k)}">${esc(CAT.category(k).name)}<small>${n.toLocaleString('ar-EG-u-nu-latn')} ${n >= 3 && n <= 10 ? 'طلبات' : 'طلب'}</small></button>`).join('')}</div></section>`;
 }
 function homePackages(){
   const pk = ((MP.db().settings || {}).packages || []).filter(p => p && p.active !== false);
@@ -451,12 +451,12 @@ function homePackages(){
   return `<section class="pkgs" aria-labelledby="pkgT"><h2 class="sec-title" id="pkgT">${ic('calendar')}باقات الصيانة الدورية</h2>
     <div class="pkg-row">${pk.map(p => `<article class="pkg-card glass neon"><b>${esc(p.name)}</b>${p.desc ? `<p>${esc(p.desc)}</p>` : ''}
       <ul><li>${ic('calendar')} ${Number(p.visits) || 1} ${Number(p.visits) > 2 && Number(p.visits) < 11 ? 'زيارات' : 'زيارة'}</li>${p.cat && CAT.category(p.cat) ? `<li>${ic('wrench')} ${esc(CAT.category(p.cat).name)}</li>` : ''}</ul>
-      <div class="pkg-foot"><span class="pkg-price">${Number(p.price) ? Number(p.price).toLocaleString('ar-EG') + ' ج.م' : 'السعر مع الفني'}</span><button type="button" class="cta" data-act="pkgStart" data-id="${esc(p.id)}">اطلب الباقة</button></div></article>`).join('')}</div>
+      <div class="pkg-foot"><span class="pkg-price">${Number(p.price) ? Number(p.price).toLocaleString('ar-EG-u-nu-latn') + ' ج.م' : 'السعر مع الفني'}</span><button type="button" class="cta" data-act="pkgStart" data-id="${esc(p.id)}">اطلب الباقة</button></div></article>`).join('')}</div>
     <p class="pkg-note">بتطلب الباقة زي أي طلب، والفني بيتفق معاك على مواعيد الزيارات. الدفع كاش للفني.</p></section>`;
 }
 function homeInvite(){
   const ref = (MP.db().settings || {}).referral; if (!ref || !ref.on || !(+ref.reward > 0) || !homeMe()) return '';
-  return `<button type="button" class="invite-card" data-act="invite">${ic('share')}<span><b>ادعُ صاحبك وخد ${(+ref.reward).toLocaleString('ar-EG')} ج.م</b><small>صاحبك بياخد خصم على أول طلب، وانت بيتضافلك رصيد لما يخلّص</small></span>${ic('chev')}</button>`;
+  return `<button type="button" class="invite-card" data-act="invite">${ic('share')}<span><b>ادعُ صاحبك وخد ${(+ref.reward).toLocaleString('ar-EG-u-nu-latn')} ج.م</b><small>صاحبك بياخد خصم على أول طلب، وانت بيتضافلك رصيد لما يخلّص</small></span>${ic('chev')}</button>`;
 }
 function openInvite(btn){
   apiCall('invite', btn, () => HSCustomerApi.refCode(), res => {
@@ -585,7 +585,7 @@ function openCatPeek(k){
   const from = _priceFrom && _priceFrom[k];
   const avail = (MP.db().providers || []).filter(p => p.status === 'approved' && p.available !== false && (p.cats || []).includes(k)).length;
   sheet(`<h4>${esc(c.name)}</h4>
-    <div class="sub">${items.length} ${items.length > 10 ? 'خدمة' : 'خدمات'}${from ? ` • يبدأ من ${Number(from).toLocaleString('ar-EG')} ج.م` : ''}${avail ? ` • ${avail} فني متاح` : ''}</div>
+    <div class="sub">${items.length} ${items.length > 10 ? 'خدمة' : 'خدمات'}${from ? ` • يبدأ من ${Number(from).toLocaleString('ar-EG-u-nu-latn')} ج.م` : ''}${avail ? ` • ${avail} فني متاح` : ''}</div>
     ${probs.length ? `<p class="peek-h">أشهر المشاكل — اضغط وابدأ الطلب على طول</p><div class="plist peek-list">${probs.map(({ p, i }) => `<button type="button" class="prow glass neon" data-wz-hit="problem|${esc(p.id)}">${ic('wrench')}<span class="tx">${esc(p.name)}<small>${esc(i.name)}</small></span>${ic('chev', 'chev')}</button>`).join('')}</div>` : ''}
     <button type="button" class="cta" data-wz-hit="cat|${esc(k)}">${ic('grid')} كل خدمات ${esc(c.name)}</button>`);
   if (!_priceFrom) fillTilePrices();
@@ -704,8 +704,12 @@ function renderDraftResume(){
     const u = typeof me === 'function' ? me() : null;
     const d = u && MP && MP.getDraft ? MP.getDraft(u.id) : null;
     if (!d || !d.data || !(d.data.cat || d.data.item)) return '';
-    const step = Math.max(1, Math.min(10, (+d.step || 0) + 1));
-    return `<section class="draft-resume" aria-label="استكمال طلب غير مكتمل"><div><b>عندك طلب لم يكتمل</b><small>حفظنا بياناتك — توقفت عند الخطوة ${step} من 10.</small></div><button type="button" class="cta" data-act="wzResume">استكمال الطلب</button><button type="button" class="draft-discard" data-act="wzDiscardDraft" aria-label="حذف مسودة الطلب">حذف المسودة</button></section>`;
+    /* the request has 4 screens (request-wizard.page.js WZ_STAGES); say what is left, with the service name */
+    const total = typeof WZ_STAGES !== 'undefined' ? WZ_STAGES.length : 4;
+    const st = typeof wzStageOf === 'function' ? Math.min(total - 1, wzStageOf(+d.step || 0)) : 0;
+    const it = d.data.item && typeof CAT !== 'undefined' ? CAT.item(d.data.item) : null;
+    const left = total - st;
+    return `<section class="draft-resume" aria-label="استكمال طلب غير مكتمل"><div><b>كمّل طلبك${it ? ' — ' + esc(it.name) : ''}</b><small>حفظنا اختياراتك — ${left <= 1 ? 'فاضل التأكيد بس' : left === 2 ? 'فاضل خطوتين وتخلص' : 'فاضل ' + left + ' خطوات'}.</small></div><button type="button" class="cta" data-act="wzResume">كمّل الطلب</button><button type="button" class="draft-discard" data-act="wzDiscardDraft" aria-label="حذف مسودة الطلب">حذف المسودة</button></section>`;
   } catch { return ''; }
 }
 

@@ -11,8 +11,8 @@
 (function (root) {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const icon = (n) => (typeof ic === 'function' ? ic(n) : '');
-  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }).format(t); } catch (e) { return iso; } };
-  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
+  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }).format(t); } catch (e) { return iso; } };
+  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn').format(n); } catch (e) { return String(n); } };
   const DEMO_NOW = '2026-11-09T12:00:00Z', REASON_MIN = 3, REASON_MAX = 300;
 
   const ALERT = {
@@ -44,7 +44,7 @@
     { id: 'al3', at: '2026-11-09T08:30:00Z', severity: 'medium', status: 'acknowledged', title: 'محاولة تنفيذ إجراء بلا صلاحية', detail: 'رُفض الإجراء بسبب تجاوز سلطة المنفّذ (مثال).', actorId: 'a4', ip: '192.0.2.44' },
     { id: 'al4', at: '2026-11-08T19:45:00Z', severity: 'high', status: 'escalated', title: 'جلسات متزامنة من جهازين', detail: 'جلستان نشطتان لنفس الحساب في وقت واحد (مثال).', actorId: 'a3', ip: '192.0.2.31', escalation: 'طلب مراجعة من المالك' },
     { id: 'al5', at: '2026-11-07T14:00:00Z', severity: 'low', status: 'resolved', title: 'تغيير كلمة مرور', detail: 'تغيير كلمة المرور (محاكاة).', actorId: 'a2', ip: '192.0.2.10', resolution: 'إجراء معتاد' },
-    { id: 'al6', at: '2026-11-06T09:10:00Z', severity: 'medium', status: 'open', title: 'جلسة خاملة طويلة', detail: 'جلسة نشطة دون نشاط منذ أكثر من ٧٢ ساعة (مثال).', actorId: 'a3', ip: '192.0.2.31' }
+    { id: 'al6', at: '2026-11-06T09:10:00Z', severity: 'medium', status: 'open', title: 'جلسة خاملة طويلة', detail: 'جلسة نشطة دون نشاط منذ أكثر من 72 ساعة (مثال).', actorId: 'a3', ip: '192.0.2.31' }
   ];
   const buildSessions = () => [
     { id: 'ss1', actorId: 'a1', device: 'Chrome — Windows', ip: '192.0.2.1', startedAt: '2026-11-09T07:00:00Z', lastSeenAt: '2026-11-09T11:58:00Z', status: 'active', current: true },

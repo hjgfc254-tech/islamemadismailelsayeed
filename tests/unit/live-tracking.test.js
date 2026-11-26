@@ -69,7 +69,7 @@ test('customer tracking renders a lazy map card while enroute; live-map module a
   const M = ctx.HSLiveMap;
   assert.match(M.noteText(null, null), /لما الفني يشارك موقعه/);
   const at = new Date(Date.now() - 3 * 60000).toISOString();
-  assert.match(M.noteText({ lat: 30.0444, lng: 31.2357, at }, { lat: 30.0626, lng: 31.2497 }), /آخر تحديث من ٣ دقيقة · على بعد/);
+  assert.match(M.noteText({ lat: 30.0444, lng: 31.2357, at }, { lat: 30.0626, lng: 31.2497 }), /آخر تحديث من 3 دقيقة · على بعد/);
 });
 
 /* server path: the real callable code over an in-memory Firestore stand-in */

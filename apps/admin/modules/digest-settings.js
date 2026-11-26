@@ -15,10 +15,10 @@
   const C = () => root.HSApiClient;
   const live = () => !!(root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase');
   const errText = (r) => (r && r.error && (r.error.details ? Object.values(r.error.details)[0] : r.error.message)) || 'تعذّر تنفيذ الطلب';
-  const ar = (n) => Number(n).toLocaleString('ar-EG');
-  const hourLabel = (h) => `${Number(h).toLocaleString('ar-EG', { minimumIntegerDigits: 2 })}:٠٠`;
+  const ar = (n) => Number(n).toLocaleString('ar-EG-u-nu-latn');
+  const hourLabel = (h) => `${Number(h).toLocaleString('ar-EG-u-nu-latn', { minimumIntegerDigits: 2 })}:00`;
   const STATUS = { sent: 'اتبعت', partial: 'اتبعت لبعض المستلمين', failed: 'فشل', stored: 'اتجهّز واتخزّن من غير إرسال', sending: 'بيتبعت دلوقتي', skipped: 'اتخطّى' };
-  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }).format(t); } catch (e) { return iso; } };
+  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium', timeStyle: 'short' }).format(t); } catch (e) { return iso; } };
 
   const options = (list, sel) => list.map(([v, l]) => `<option value="${esc(v)}" ${String(v) === String(sel) ? 'selected' : ''}>${esc(l)}</option>`).join('');
   const hours = Array.from({ length: 24 }, (_, h) => [h, hourLabel(h)]);

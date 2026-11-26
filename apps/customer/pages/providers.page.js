@@ -35,7 +35,7 @@
     ${!compact && p.bio?`<small class="prov-bio">${esc(p.bio)}</small>`:''}
     <div class="prov-meta">
       <span class="tag">${ic('star')} ${rating?rating:'—'}</span>
-      ${p.jobs?`<span class="tag">${ic('medal')} ${(+p.jobs).toLocaleString('ar-EG')} خدمة</span>`:''}
+      ${p.jobs?`<span class="tag">${ic('medal')} ${(+p.jobs).toLocaleString('ar-EG-u-nu-latn')} خدمة</span>`:''}
       ${areaText?`<span class="tag">${ic('pin')} ${esc(areaText)}</span>`:''}
     </div>
     ${!compact?`<div class="acts">
@@ -60,10 +60,10 @@
     /* rating distribution (5 → 1) from the reviews this device can see */
     const dist = [5,4,3,2,1].map(n => [n, allReviews.filter(v => Math.round(+v.stars) === n).length]);
     const breakdown = ratingCount ? `<div class="rating-break glass neon" aria-label="توزيع التقييمات">
-        <div class="rb-score"><b>${(+rating || 0).toLocaleString('ar-EG', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</b>${starsHtml(Math.round(+rating || 0))}<small>${ratingCount} تقييم</small></div>
+        <div class="rb-score"><b>${(+rating || 0).toLocaleString('ar-EG-u-nu-latn', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</b>${starsHtml(Math.round(+rating || 0))}<small>${ratingCount} تقييم</small></div>
         <ul class="rb-bars">${dist.map(([n, c]) => `<li><span>${n}</span><i style="--w:${Math.round(c / ratingCount * 100)}%"></i><small>${c}</small></li>`).join('')}</ul>
       </div>` : '';
-    const since = p.createdAt ? (() => { const d = new Date(p.createdAt); return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' }); })() : '';
+    const since = p.createdAt ? (() => { const d = new Date(p.createdAt); return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('ar-EG-u-nu-latn', { month: 'long', year: 'numeric' }); })() : '';
     return `<div class="screen">${head('تفاصيل مقدم الخدمة', true)}${demoBanner()}
       <div class="provider-hero glass neon">
         <div class="prov-avatar" aria-hidden="true" style="background:${p.avatar||'#FF3D8F'}">${esc((p.name||'?').split(' ').map(w=>w[0]).slice(0,2).join(''))}</div>

@@ -9,9 +9,9 @@
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const C = () => root.HSApiClient;
   const call = (method, path, body) => (root.HSBackend && root.HSBackend.admin ? root.HSBackend.admin(method, path, body) : C().request(method, path, { body }));
-  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
+  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn').format(n); } catch (e) { return String(n); } };
   const money = (n) => nf(Math.round((+n || 0) * 100) / 100) + ' ج.م';
-  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }).format(t); } catch (e) { return iso; } };
+  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium', timeStyle: 'short' }).format(t); } catch (e) { return iso; } };
   const db = () => (typeof MP !== 'undefined' ? MP.db() : {});
   const errText = (res) => (res && res.error && res.error.message) || 'تعذّر تنفيذ الإجراء.';
   const table = (heads, rows) => rows.length
@@ -40,7 +40,7 @@
         if (/\/admin\/controls/.test(a.path || '')) return 'مفاتيح الطوارئ';
         return (a.method || '') + ' ' + (a.path || '');
       };
-      const RESULT = (a) => ({ ok: 'تم', failed: 'كود غلط', locked: 'اتقفل ١٥ دقيقة' })[a.status] || (a.status >= 400 ? 'اترفض' : a.status ? 'تم' : '—');
+      const RESULT = (a) => ({ ok: 'تم', failed: 'كود غلط', locked: 'اتقفل 15 دقيقة' })[a.status] || (a.status >= 400 ? 'اترفض' : a.status ? 'تم' : '—');
       const items = res.data.items;
       let kind = 'all', person = '';
       const people = [...new Set(items.map(who))].sort();
@@ -109,10 +109,10 @@
       const res = await C().request('GET', '/admin/security/admins');
       if (!res.ok) { host.innerHTML = frame('الأمان', `<p>${esc(errText(res))}</p>`); return; }
       const codeText = (u) => (u.codeLocked ? 'مقفول (محاولات غلط)' : u.hasCode ? 'متعمل' + (u.lastUnlockAt ? ' · آخر استخدام ' + dt(u.lastUnlockAt) : '') : 'لسه ما اتعملش');
-      host.innerHTML = frame('الأمان', table(['الموظف', 'البريد', 'الدور', 'آخر دخول', 'كود الدخول (٨ أرقام)', ''], res.data.items.map((u) => [
+      host.innerHTML = frame('الأمان', table(['الموظف', 'البريد', 'الدور', 'آخر دخول', 'كود الدخول (8 أرقام)', ''], res.data.items.map((u) => [
         esc(u.name), esc(u.email), esc(u.role), esc(u.lastSignIn ? dt(u.lastSignIn) : '—'), esc(codeText(u)),
         `${u.role === 'owner' ? '' : `<button type="button" class="adm-btn" data-reset-code="${esc(u.uid)}">إعادة ضبط الكود</button> `}<button type="button" class="adm-btn adm-btn-d" data-revoke="${esc(u.uid)}">إنهاء كل الجلسات</button>`])) +
-        '<p class="ord-muted">الدخول للإدارة: إيميل مؤكَّد + كلمة مرور + كود شخصي من ٨ أرقام. ٥ محاولات غلط بتقفل الحساب ١٥ دقيقة. «إعادة ضبط الكود» بتخلّي الموظف يعمل كود جديد في دخوله الجاي. إنهاء الجلسات يُخرج الحساب من كل الأجهزة (للمالك فقط، ولا يشمل حسابك).</p>');
+        '<p class="ord-muted">الدخول للإدارة: إيميل مؤكَّد + كلمة مرور + كود شخصي من 8 أرقام. 5 محاولات غلط بتقفل الحساب 15 دقيقة. «إعادة ضبط الكود» بتخلّي الموظف يعمل كود جديد في دخوله الجاي. إنهاء الجلسات يُخرج الحساب من كل الأجهزة (للمالك فقط، ولا يشمل حسابك).</p>');
       host.querySelectorAll('[data-reset-code]').forEach((b) => b.addEventListener('click', async () => {
         if (!(await (root.HSUiDialog ? root.HSUiDialog.confirm('إعادة ضبط كود الدخول للموظف ده؟ هيعمل كود جديد في دخوله الجاي.', { danger: true }) : Promise.resolve(root.confirm ? root.confirm('إعادة ضبط كود الدخول للموظف ده؟ هيعمل كود جديد في دخوله الجاي.') : true)))) return;
         const r = await call('POST', '/admin/security/reset-code/' + encodeURIComponent(b.dataset.resetCode), {});

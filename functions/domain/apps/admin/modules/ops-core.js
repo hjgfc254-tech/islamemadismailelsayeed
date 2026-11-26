@@ -98,7 +98,7 @@
   function validateTicket(input) {
     const i = input || {}, errors = {};
     const title = str(i.title, LIMITS.title), description = String(i.description == null ? '' : i.description).trim().slice(0, LIMITS.desc);
-    if (title.length < 3) errors.title = 'اكتب عنوان البلاغ (٣ حروف على الأقل)';
+    if (title.length < 3) errors.title = 'اكتب عنوان البلاغ (3 حروف على الأقل)';
     const team = i.team == null || i.team === '' ? 'ops' : i.team; if (!TEAMS[team] || team === 'owner') errors.team = 'اختار فريق من القايمة';
     const priority = i.priority == null || i.priority === '' ? 'normal' : i.priority; if (!PRIORITIES.includes(priority)) errors.priority = 'أولوية غير معروفة';
     return { ok: !Object.keys(errors).length, errors, value: { title, description, team, priority, link: str(i.link, LIMITS.link), alertId: str(i.alertId, 60) } };

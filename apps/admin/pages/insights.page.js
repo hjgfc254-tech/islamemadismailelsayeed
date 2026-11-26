@@ -8,7 +8,7 @@
 'use strict';
 (function (root) {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
+  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn').format(n); } catch (e) { return String(n); } };
   const money = (n) => nf(Math.round(+n || 0)) + ' ج.م';
   const isOwner = () => { try { const R = root.HSAdminRbac; return !!(R && R.state && R.state.actor === 'owner'); } catch (e) { return false; } };
   const TABS = [
@@ -45,7 +45,7 @@
       ${card('مقدمو الخدمة', nf(c.providers.total), [['متاحين دلوقتي', nf(c.providers.available)], ...Object.entries(c.providers.byStatus).map(([k, v]) => [PSTATUS[k] || k, nf(v)])], 'providers')}
       ${card('العملاء', nf(c.customers.total), [], 'customers')}
       ${card('الشكاوى', nf(c.complaints.total), [['مفتوحة', nf(c.complaints.open)]], 'complaints')}
-      ${card('التقييمات', nf(c.reviews.total), [['المتوسط', c.reviews.total ? c.reviews.avg.toLocaleString('ar-EG', { maximumFractionDigits: 1 }) + ' / ٥' : '—']], 'reviews')}
+      ${card('التقييمات', nf(c.reviews.total), [['المتوسط', c.reviews.total ? c.reviews.avg.toLocaleString('ar-EG-u-nu-latn', { maximumFractionDigits: 1 }) + ' / 5' : '—']], 'reviews')}
       ${card('الفلوس', money(c.money.value), [['حصة المنصة', money(c.money.commission)], ['لسه ما اتحصّلتش', money(c.money.pending)]], 'settlements')}
     </div>`;
   }

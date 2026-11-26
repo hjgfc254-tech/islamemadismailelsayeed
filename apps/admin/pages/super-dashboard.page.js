@@ -12,7 +12,7 @@
 (function (root) {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const icon = (n) => (typeof ic === 'function' ? ic(n) : '');
-  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
+  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn').format(n); } catch (e) { return String(n); } };
   const need = (g, f) => { const m = root[g] || (typeof require === 'function' ? require(f) : null); if (!m) throw new Error('unavailable: ' + g); return m; };
   const money = (n) => need('HSMoney', '../../../shared/utils/money.js').format(n);
 
@@ -54,7 +54,7 @@
       kpi('customers', 'العملاء', 'user', 'customers', c && c.total, c && nf(c.total), c && ('نشطون ' + nf(c.active) + ' · موقوفون ' + nf(c.suspended))),
       kpi('quotes', 'عروض بانتظار المراجعة', 'send', 'quotes', q && q.awaiting, q && nf(q.awaiting), q && ('منتهية الصلاحية ' + nf(q.expired)), q && q.awaiting ? 'info' : ''),
       kpi('complaints', 'شكاوى مفتوحة', 'warn', 'complaints', cp && (cp.new + cp.review), cp && nf(cp.new + cp.review), cp && ('عالية الأولوية ' + nf(cp.hot)), cp && cp.hot ? 'danger' : ''),
-      kpi('commission', 'العمولات المحسوبة (٣٠ يومًا)', 'wallet', 'finance', f && f.commission, f && money(f.commission), f && ('غير محصّلة ' + money(f.uncollected))),
+      kpi('commission', 'العمولات المحسوبة (30 يومًا)', 'wallet', 'finance', f && f.commission, f && money(f.commission), f && ('غير محصّلة ' + money(f.uncollected))),
       kpi('dues', 'مستحقات مقدمي الخدمة المتبقية', 'earnings', 'settlements', st && st.outstanding, st && money(st.outstanding), st && ('تمت تسويتها (محاكاة) ' + money(st.settled))),
       kpi('security', 'تنبيهات أمنية مفتوحة', 'shield', 'security', s && s.openAlerts, s && nf(s.openAlerts), s && ('حرجة ' + nf(s.critical) + ' · جلسات نشطة ' + nf(s.activeSessions)), s && s.critical ? 'danger' : '')
     ];

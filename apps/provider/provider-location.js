@@ -33,7 +33,7 @@
   function formatKm(km) {
     if (!Number.isFinite(km) || km < 0) return '';
     const v = km < 10 ? Math.round(km * 10) / 10 : Math.round(km);
-    return v.toLocaleString('ar-EG', { maximumFractionDigits: 1 }) + ' كم';
+    return v.toLocaleString('ar-EG-u-nu-latn', { maximumFractionDigits: 1 }) + ' كم';
   }
 
   /** Directions to the customer's pin, or a search by the written address when no pin exists. */

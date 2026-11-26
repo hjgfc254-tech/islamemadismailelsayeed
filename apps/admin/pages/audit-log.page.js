@@ -11,8 +11,8 @@
 (function (root) {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const icon = (n) => (typeof ic === 'function' ? ic(n) : '');
-  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }).format(t); } catch (e) { return iso; } };
-  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
+  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }).format(t); } catch (e) { return iso; } };
+  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn').format(n); } catch (e) { return String(n); } };
   const DEMO_NOW = '2026-11-09T12:00:00Z';
 
   const RESULT = {
@@ -44,7 +44,7 @@
     E(10, '2026-11-08T14:10:00Z', 'a2', 'finance', 'اعتماد تسوية', 'STL-DEMO-0004', 'success', 'اعتماد محاكاة (لم يُحوَّل أي مبلغ)', { ip: '192.0.2.10' }),
     E(11, '2026-11-08T13:50:00Z', 'a2', 'finance', 'تعليق تسوية', 'STL-DEMO-0006', 'success', 'السبب: بيانات استلام غير مكتملة', { ip: '192.0.2.10', reason: 'بيانات استلام غير مكتملة' }),
     E(12, '2026-11-08T12:00:00Z', 'a3', 'providers', 'مراجعة مزود', 'pv-014', 'success', 'اعتماد ملف المزود (محاكاة)', { ip: '192.0.2.31' }),
-    E(13, '2026-11-07T15:30:00Z', 'a1', 'settings', 'تعديل إعداد', 'commission.default', 'success', 'تغيير نسبة افتراضية من ١٠٪ إلى ١٢٪ (محاكاة)', { ip: '192.0.2.1', reason: 'مراجعة ربع سنوية' }),
+    E(13, '2026-11-07T15:30:00Z', 'a1', 'settings', 'تعديل إعداد', 'commission.default', 'success', 'تغيير نسبة افتراضية من 10٪ إلى 12٪ (محاكاة)', { ip: '192.0.2.1', reason: 'مراجعة ربع سنوية' }),
     E(14, '2026-11-07T11:11:00Z', 'a4', 'providers', 'إيقاف مزود', 'pv-009', 'denied', 'رفض: لا صلاحية لإيقاف المزودين', { ip: '192.0.2.44', reason: 'لا صلاحية' }),
     E(15, '2026-11-06T10:00:00Z', 'a1', 'workforce', 'تغيير دور موظف', 'emp-003', 'denied', 'رفض: آخر مالك مفعّل محمي', { ip: '192.0.2.1', reason: 'حماية آخر مالك' }),
     E(16, '2026-11-05T09:20:00Z', 'a3', 'orders', 'إضافة ملاحظة داخلية', 'ORD-DEMO-1031', 'success', 'ملاحظة داخلية', { ip: '192.0.2.31' }),

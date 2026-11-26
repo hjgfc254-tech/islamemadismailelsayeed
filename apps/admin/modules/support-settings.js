@@ -25,10 +25,10 @@
         <h3 id="sup-h">بيانات تواصل الدعم</h3>
         <p class="ord-muted">بتظهر للعملاء في «المساعدة» ولمقدمي الخدمة في «حسابي». أي خانة فاضية مش بتظهر خالص.</p>
         <form data-sup-form class="ord-dlg-in" novalidate>
-          ${field('phone', 'رقم الاتصال', c.phone, 'inputmode="tel" autocomplete="off" dir="ltr" placeholder="01xxxxxxxxx أو 19xxx"', 'موبايل أو أرضي أو خط ساخن من ٥ أرقام', errs.phone)}
+          ${field('phone', 'رقم الاتصال', c.phone, 'inputmode="tel" autocomplete="off" dir="ltr" placeholder="01xxxxxxxxx أو 19xxx"', 'موبايل أو أرضي أو خط ساخن من 5 أرقام', errs.phone)}
           ${field('whatsapp', 'واتساب', c.whatsapp, 'inputmode="tel" autocomplete="off" dir="ltr" placeholder="01xxxxxxxxx"', 'العميل بيفتح محادثة فيها رقم طلبه تلقائيًا', errs.whatsapp)}
           ${field('email', 'البريد الإلكتروني', c.email, 'type="email" inputmode="email" autocomplete="off" dir="ltr"', '', errs.email)}
-          ${field('hours', 'مواعيد الدعم', c.hours, 'maxlength="80" placeholder="مثال: يوميًا من ٩ الصبح لـ ١٠ بالليل"', '', errs.hours)}
+          ${field('hours', 'مواعيد الدعم', c.hours, 'maxlength="80" placeholder="مثال: يوميًا من 9 الصبح لـ 10 بالليل"', '', errs.hours)}
           <p><button type="submit" class="adm-btn adm-btn-p">حفظ بيانات التواصل</button> <span role="status" aria-live="polite" class="ord-muted" data-sup-status>${esc(status || '')}</span></p>
         </form>
       </section>

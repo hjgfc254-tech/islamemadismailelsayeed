@@ -11,7 +11,7 @@
 'use strict';
 (function (root) {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return ''; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }).format(t); } catch (e) { return iso; } };
+  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return ''; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium', timeStyle: 'short' }).format(t); } catch (e) { return iso; } };
   const SWITCHES = [
     { key: 'maintenance', title: 'وضع الصيانة — إيقاف المنصة كلها', danger: true,
       on: 'العملاء ومقدمو الخدمة شايفين شاشة صيانة ومش قادرين يعملوا أي حاجة. فريق الإدارة شغال عادي.',
@@ -32,7 +32,7 @@
       <div class="ctl-head"><h2 id="ctl-h-${s.key}">${esc(s.title)}</h2><span class="ctl-state">${on ? 'شغّال' : 'مقفول'}</span></div>
       <p>${esc(on ? s.on : s.off)}</p>
       ${on && v.at ? `<p class="ord-muted">اتشغّل ${esc(dt(v.at))}${v.by ? ' — ' + esc(staffName(v.by)) : ''}${v.message ? ` · الرسالة: «${esc(v.message)}»` : ''}</p>` : ''}
-      ${!on && s.message ? `<label class="hs-grid-field"><span>رسالة تظهر للمستخدمين (اختياري)</span><input type="text" maxlength="200" data-ctl-msg="${s.key}" placeholder="${s.key === 'maintenance' ? 'مثال: صيانة لمدة ساعة — ارجع الساعة ٣' : 'مثال: الطلبات هترجع الساعة ٦'}"></label>` : ''}
+      ${!on && s.message ? `<label class="hs-grid-field"><span>رسالة تظهر للمستخدمين (اختياري)</span><input type="text" maxlength="200" data-ctl-msg="${s.key}" placeholder="${s.key === 'maintenance' ? 'مثال: صيانة لمدة ساعة — ارجع الساعة 3' : 'مثال: الطلبات هترجع الساعة 6'}"></label>` : ''}
       ${!on && s.confirmWord ? `<label class="hs-grid-field"><span>للتأكيد اكتب «${esc(s.confirmWord)}»</span><input type="text" data-ctl-confirm="${s.key}" autocomplete="off"></label>` : ''}
       <p><button type="button" class="adm-btn ${on ? 'adm-btn-p' : (s.danger ? 'adm-btn-d' : 'adm-btn-p')}" data-ctl="${s.key}" data-next="${!on}">${on ? 'إيقاف وإرجاع المنصة طبيعي' : 'تشغيل'}</button></p>
     </section>`;

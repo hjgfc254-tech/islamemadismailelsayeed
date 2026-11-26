@@ -72,5 +72,5 @@ test('«بيتي» lists only this customer\'s finished devices; voice descripti
   assert.doesNotMatch(h, /plumbing\/faucets|appliances\/fridge/, 'open requests and other customers are left out');
   const wiz = read('apps/customer/pages/request-wizard.page.js');
   assert.match(wiz, /\$\{wzVoiceOk\(\) \? `<button type="button" class="chip wz-voice" data-wz-voice/);
-  assert.match(wiz, /rec\.lang = 'ar-EG'/);
+  assert.match(wiz, /rec\.lang = 'ar-EG-u-nu-latn'/);
 });

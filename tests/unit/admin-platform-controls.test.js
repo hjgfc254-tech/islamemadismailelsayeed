@@ -113,7 +113,7 @@ test('8-digit access code: required after email + password, never stored in clea
   const before = await call(b, OWNER, 'admin', 'GET', '/admin/controls');
   assert.equal(before.ok, false, 'admin API refused until the code is entered');
   for (const weak of ['1234567', '12345678', '11111111', '87654321', 'abcdefgh']) {
-    await assert.rejects(service.session(b, { auth: OWNER, data: { op: 'adminCode', action: 'set', code: weak } }), /٨ أرقام|سهل/);
+    await assert.rejects(service.session(b, { auth: OWNER, data: { op: 'adminCode', action: 'set', code: weak } }), /8 أرقام|سهل/);
   }
   await service.session(b, { auth: OWNER, data: { op: 'adminCode', action: 'set', code: '24681357' } });
   const doc = b.docs.get('admins/u_owner');

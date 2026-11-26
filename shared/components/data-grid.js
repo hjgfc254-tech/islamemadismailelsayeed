@@ -19,7 +19,7 @@
 (function (root) {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
-  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
+  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn').format(n); } catch (e) { return String(n); } };
   const icon = (n) => (typeof ic === 'function' ? ic(n) : '');
   const PAGE_SIZES = [10, 25, 50];
 
@@ -39,7 +39,7 @@
       return B && col.statusDomain ? B.label(col.statusDomain, v) : String(v == null ? '' : v);
     }
     if (col.type === 'number') return Number.isFinite(Number(v)) && v !== '' && v != null ? nf(Number(v)) : '';
-    if (col.type === 'date') { const t = Date.parse(v); if (!Number.isFinite(t)) return ''; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium' }).format(t); } catch (e) { return String(v); } }
+    if (col.type === 'date') { const t = Date.parse(v); if (!Number.isFinite(t)) return ''; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium' }).format(t); } catch (e) { return String(v); } }
     return String(v == null ? '' : v);
   };
 

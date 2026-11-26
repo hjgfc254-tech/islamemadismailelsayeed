@@ -4,14 +4,14 @@
  *   and rate application with a single rounding rule. Pure functions; no currency conversion, no real accounting.
  * STATUS: IMPLEMENTED (DEMO). Extracted when the second finance page (commissions) needed the same formatter as the
  *   finance dashboard. Amounts are plain numbers of whole pounds; rates are percentages (12 = 12٪).
- * API: format(n) → "١٢٬٠٠٠ ج.م" · number(n) · percent(p) → "١٢٪" · applyRate(amount, ratePercent) → whole pounds (round half up,
+ * API: format(n) → "12٬000 ج.م" · number(n) · percent(p) → "12٪" · applyRate(amount, ratePercent) → whole pounds (round half up,
  *   rate converted to hundredths of a percent first so 12.5٪ of 1000 is exactly 125) · isRate(p, max?) · RATE_MAX_DECIMALS
  */
 'use strict';
 (function (root) {
   const RATE_MAX_DECIMALS = 2;
   const num = (n) => { const v = Number(n); return Number.isFinite(v) ? v : 0; };
-  const number = (n, opts) => { try { return new Intl.NumberFormat('ar-EG', opts).format(num(n)); } catch (e) { return String(num(n)); } };
+  const number = (n, opts) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn', opts).format(num(n)); } catch (e) { return String(num(n)); } };
   const format = (n) => number(n) + ' ج.م';
   const percent = (p) => number(p, { maximumFractionDigits: RATE_MAX_DECIMALS }) + '٪';
   const applyRate = (amount, ratePercent) => Math.round(num(amount) * Math.round(num(ratePercent) * 100) / 10000);

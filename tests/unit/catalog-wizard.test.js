@@ -46,13 +46,19 @@ const settle=async()=>{ for(let k=0;k<4;k++) await new Promise(r=>setImmediate(r
 for(const [c,i,p] of journeys){
   run('startRequest()'); click({wzCat:c}); ok(wz().step===1&&wz().cat===c,'cat step '+c);
   click({wzItem:i}); ok(wz().step===2&&wz().item===i,'item '+i);
-  click({wzProb:p}); ok(wz().step===3&&wz().problem===p,'problem '+p);
-  const qs=run(`CAT.questionsFor('${i}','${p}')`);
-  if(c==='cars') { click({act:'wzNext'}); ok(wz().step===3&&String(toasts.pop()).startsWith('أجب عن'),'car make required'); }
-  /* 4 screens: the problem, questions, description and photos are one screen («المطلوب») */
-  ok(run('screens.wizard()').includes('الخطوة 2 من 4'),'details is screen 2 of 4 '+c);
-  ok(run('screens.wizard()').includes('data-act="wzProbChange"'),'the picked problem folds into one row with «غيّر» '+c);
-  setq(c==='cars'?{make:'تويوتا كورولا 2018'}:{}); setf({'wz-desc':''}); click({act:'wzNext'}); ok(wz().step===6,'a listed problem needs no description → place and time '+c);
+  click({wzProb:p});
+  const needs=run(`CAT.questionsFor('${i}','${p}').some(q=>q.required)`);
+  if(!needs){
+    /* nothing required → straight to «المكان والموعد»; Back shows the picked problem with «غيّر», photos / details */
+    ok(wz().step===6&&wz().problem===p,'no required question → place and time at once '+p);
+    ok(run('screens.wizard()').includes('data-wz-edit="4"'),'«add photos / details» link on the place screen '+c);
+    click({act:'wzPrev'}); ok(wz().step===2&&run('screens.wizard()').includes('data-act="wzProbChange"')&&run('screens.wizard()').includes('الخطوة 2 من 4'),'back → the picked problem, screen 2 of 4 '+c);
+    setf({'wz-desc':''}); click({act:'wzNext'}); ok(wz().step===6,'a listed problem needs no description → place and time '+c);
+  } else {
+    ok(wz().step===3&&wz().problem===p,'required questions keep screen 2 '+p);
+    click({act:'wzNext'}); ok(wz().step===3&&String(toasts.pop()).startsWith('أجب عن'),'required answer asked '+c);
+    setq(c==='cars'?{make:'تويوتا كورولا 2018'}:{}); setf({'wz-desc':''}); click({act:'wzNext'}); ok(wz().step===6,'answered → place and time '+c);
+  }
   run("WZ.address=Object.assign({},WZ.address,{id:'',gov:'',area:'',addr:''})");   /* the default saved address is pre-filled; clear it to exercise validation */
   click({act:'wzNext'}); ok(wz().step===6&&toasts.pop()==='اختر المحافظة','gov required');
   ok(wz().schedule.flexible===true,'«أقرب وقت» is preselected');
@@ -82,7 +88,7 @@ ok(wz().item==='electric/lighting'&&wz().problem==='electric/lighting/flicker','
 run('startRequest("appliances","appliances/ac")'); ok(wz().step===2,'start at problems from item'); click({wzUnknown:''}); ok(wz().unknown&&wz().step===3,'unknown path');
 setf({'wz-desc':''}); click({act:'wzNext'}); ok(wz().step===6,'unknown does not need description (details screen → location)');
 /* 4b) the three ways on one screen: «غيّر» reopens the list; writing it with nothing picked becomes «مشكلة أخرى» */
-run('startRequest("carpentry","carpentry/doors")'); click({wzProb:run("CAT.problems('carpentry/doors')[0].id")}); ok(wz().step===3&&wz().problem,'door job picked on the same screen');
+run('startRequest("carpentry","carpentry/doors")'); click({wzProb:run("CAT.problems('carpentry/doors')[0].id")}); ok(wz().step===6&&wz().problem==='carpentry/doors/install','door install: nothing required → place and time at once');
 click({act:'wzProbChange'}); ok(wz().step===2&&!wz().problem&&!wz().unknown,'«غيّر» clears the pick');
 ok(run('screens.wizard()').includes('data-wz-prob')&&run('screens.wizard()').includes('id="wz-desc"')&&run('screens.wizard()').includes('data-wz-unknown'),'list, free text and «الفني يشخّص» shown together');
 setf({'wz-desc':''}); click({act:'wzNext'}); ok(wz().step===2&&String(toasts.pop()).startsWith('اختار المشكلة'),'nothing picked or written → asked');

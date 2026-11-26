@@ -12,7 +12,7 @@
   if (!doc || root.HSLiveMap) return;
   const parse = (v) => { try { const g = JSON.parse(v || 'null'); return g && Number.isFinite(+g.lat) && Number.isFinite(+g.lng) ? g : null; } catch (e) { return null; } };
   const metres = (a, b) => { const R = 6371e3, r = (x) => x * Math.PI / 180, dl = r(b.lat - a.lat), dn = r(b.lng - a.lng); const h = Math.sin(dl / 2) ** 2 + Math.cos(r(a.lat)) * Math.cos(r(b.lat)) * Math.sin(dn / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); };
-  const nf = (n, d = 0) => (+n || 0).toLocaleString('ar-EG', { maximumFractionDigits: d });
+  const nf = (n, d = 0) => (+n || 0).toLocaleString('ar-EG-u-nu-latn', { maximumFractionDigits: d });
   function noteText(tech, home) {
     if (!tech) return 'لما الفني يشارك موقعه هيظهر هنا على الخريطة.';
     const mins = Math.max(0, Math.round((Date.now() - Date.parse(tech.at)) / 60000));

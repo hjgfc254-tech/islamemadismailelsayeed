@@ -16,7 +16,7 @@
   const M = root.HSMoney || (typeof require === 'function' ? require('../../../shared/utils/money.js') : null);
   const FIN = root.HSAdminFinanceDashboardPage || (typeof require === 'function' ? require('./finance-dashboard.page.js') : null);
   const nf = (n) => M.number(n);
-  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium', timeZone: 'UTC' }).format(t); } catch (e) { return iso; } };
+  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium', timeZone: 'UTC' }).format(t); } catch (e) { return iso; } };
 
   const DEMO_TODAY = '2026-11-09';
   const RATE_MAX = 30; // demo bound, not a business rule from the specification
@@ -66,10 +66,10 @@
   const validate = (list, d, ignoreId) => {
     const e = {};
     const name = String(d.name == null ? '' : d.name).trim();
-    if (name.length < 3 || name.length > 60) e.name = 'اسم القاعدة من ٣ إلى ٦٠ حرفًا.';
+    if (name.length < 3 || name.length > 60) e.name = 'اسم القاعدة من 3 إلى 60 حرفًا.';
     else if (list.some((r) => r.id !== ignoreId && r.name.trim().toLowerCase() === name.toLowerCase())) e.name = 'اسم القاعدة مستخدم من قبل.';
     if (!SCOPES.some((s) => s.id === d.category)) e.category = 'اختر نطاقًا من القائمة.';
-    if (!M.isRate(d.rate, RATE_MAX)) e.rate = 'النسبة رقم بين ٠ و' + nf(RATE_MAX) + ' بحد أقصى منزلتين عشريتين (حد تجريبي).';
+    if (!M.isRate(d.rate, RATE_MAX)) e.rate = 'النسبة رقم بين 0 و' + nf(RATE_MAX) + ' بحد أقصى منزلتين عشريتين (حد تجريبي).';
     if (!isDate(d.from)) e.from = 'أدخل تاريخ سريان صحيحًا.';
     if (d.to != null && d.to !== '') { if (!isDate(d.to)) e.to = 'تاريخ الانتهاء غير صحيح.'; else if (isDate(d.from) && d.to < d.from) e.to = 'تاريخ الانتهاء قبل تاريخ السريان.'; }
     if (!e.category && !e.from && !e.to && d.enabled) {
@@ -144,7 +144,7 @@
       <p class="ord-sim" role="note">${icon('info')}<span>محاكاة محلية: لا تُطبَّق النسبة على أي طلب حقيقي. الحفظ يمر بمراجعة الأثر ثم تأكيد بسبب مكتوب.</span></p>
       <div class="hs-grid-field"><label for="cm-name">اسم القاعدة</label><input id="cm-name" value="${esc(d.name)}" maxlength="60" autocomplete="off"${inv('name')}>${fieldErr(e, 'name')}</div>
       <div class="hs-grid-field"><label for="cm-cat">النطاق</label><select id="cm-cat"${inv('category')}>${SCOPES.map((s) => `<option value="${esc(s.id)}" ${d.category === s.id ? 'selected' : ''}>${esc(s.label)}</option>`).join('')}</select>${fieldErr(e, 'category')}</div>
-      <div class="hs-grid-field"><label for="cm-rate">النسبة ٪ (من ٠ إلى ${nf(RATE_MAX)})</label><input id="cm-rate" type="number" inputmode="decimal" step="0.01" min="0" max="${RATE_MAX}" value="${esc(d.rate)}"${inv('rate')}>${fieldErr(e, 'rate')}</div>
+      <div class="hs-grid-field"><label for="cm-rate">النسبة ٪ (من 0 إلى ${nf(RATE_MAX)})</label><input id="cm-rate" type="number" inputmode="decimal" step="0.01" min="0" max="${RATE_MAX}" value="${esc(d.rate)}"${inv('rate')}>${fieldErr(e, 'rate')}</div>
       <div class="hs-grid-field"><label for="cm-from">تاريخ السريان</label><input id="cm-from" type="date" value="${esc(d.from)}"${inv('from')}>${fieldErr(e, 'from')}</div>
       <div class="hs-grid-field"><label for="cm-to">تاريخ الانتهاء (اختياري)</label><input id="cm-to" type="date" value="${esc(d.to || '')}"${inv('to')}>${fieldErr(e, 'to')}</div>
       <label class="cm-chk"><input id="cm-en" type="checkbox" ${d.enabled ? 'checked' : ''}> <span>القاعدة مفعّلة</span></label>

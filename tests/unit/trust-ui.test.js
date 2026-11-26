@@ -8,7 +8,7 @@ const assert = require('node:assert/strict');
 const customer = require('../helpers/customer-app-harness.js');
 const provider = require('../helpers/provider-app-harness.js');
 
-const ar = (n, d = 0) => (+n).toLocaleString('ar-EG', { minimumFractionDigits: d, maximumFractionDigits: d });
+const ar = (n, d = 0) => (+n).toLocaleString('ar-EG-u-nu-latn', { minimumFractionDigits: d, maximumFractionDigits: d });
 
 function seed(t) {
   t.run(`(() => { const s = MP.db().settings; s.autoAssign = false; s.bidding = true;
@@ -31,8 +31,8 @@ test('offers: tags, «why the best», countdown ring, undo bar, Arabic digits', 
   assert.match(html, /class="of-why"/); assert.match(html, /الأنسب: /);
   assert.match(html, /class="of-ring" style="--p:\d+"/, 'countdown ring');
   assert.match(html, /data-of-undo-bar hidden/, 'undo bar ready, hidden');
-  assert.ok(html.includes('★ ' + ar(4.9, 1)), 'rating in Arabic digits');
-  assert.doesNotMatch(html.replace(/style="[^"]*"|data-[\w-]+="[^"]*"|aria-[\w-]+="[^"]*"|#HS-[\d-]+|id="[^"]*"/g, ''), /★ \d/, 'no Latin digits after the star');
+  assert.ok(html.includes('★ ' + ar(4.9, 1)), 'rating in the platform digit style');
+  assert.doesNotMatch(html, /★ [٠-٩]/, 'one digit style: no Arabic-Indic digits after the star');
 });
 
 test('after choosing: «السعر ثابت» seal; a new price shows its difference; the warranty certificate after completion', () => {
@@ -48,7 +48,7 @@ test('after choosing: «السعر ثابت» seal; a new price shows its differ
   assert.doesNotMatch(t.html(), /class="price-seal"/, 'no seal while a new price waits');
   const q = t.run(`MP.currentQuote(${JSON.stringify(id)}).customerTotal`);
   assert.match(t.html(), /quote-diff is-up/); assert.match(t.html(), /أعلى من المتفق عليه/);
-  assert.ok(t.html().includes('+' + (q - agreed).toLocaleString('ar-EG')), 'difference shown');
+  assert.ok(t.html().includes('+' + (q - agreed).toLocaleString('ar-EG-u-nu-latn')), 'difference shown');
   t.run(`MP.approveQuote(${JSON.stringify(id)}); MP.complete(${JSON.stringify(id)})`);
   t.run(`show('tracking', ${JSON.stringify(id)})`);
   assert.match(t.html(), /class="w-cert"/); assert.match(t.html(), /شهادة ضمان/); assert.match(t.html(), /data-act="printCert"/);
@@ -66,7 +66,7 @@ test('provider: the offer form previews what the customer will see; the bonus ca
   } });
   a.go('#/earnings');   // the bonus card lives in «فلوسي» (2026-11-20)
   assert.match(a.html(), /class="pv-level pv-bonus"/); assert.match(a.html(), /فضي/);
-  assert.ok(a.html().includes('باقي ' + ar(4) + ' على بونص'), 'weekly target in Arabic digits'); assert.match(a.html(), /العميل يأكد إنه دفع/);
+  assert.ok(a.html().includes('باقي ' + ar(4) + ' على بونص'), 'weekly target in the platform digit style'); assert.match(a.html(), /العميل يأكد إنه دفع/);
   a.go('#/request/' + rid);
   await a.click({ 'data-pv-action': 'bid', 'data-id': rid });
   assert.match(a.html(), /class="pv-bid-pair pv-wide" data-bid="quote"/, 'labor and parts side by side');

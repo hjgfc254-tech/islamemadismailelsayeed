@@ -9,7 +9,7 @@
 (function (root) {
   const ST = root.HSAdminEmployeeStatus || (typeof require === 'function' ? require('./employee-status.js') : null);
   if (!ST) throw new Error('employee-form.js requires employee-status.js to load first');
-  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
+  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn').format(n); } catch (e) { return String(n); } };
 
   const DEPARTMENTS = { ops: 'العمليات', support: 'الدعم', finance: 'المالية', content: 'المحتوى', tech: 'التقنية', exec: 'الإدارة العليا' };
   const ROLES = { owner: 'المالك', admin: 'مدير', support: 'دعم فني', finance: 'المالية', moderator: 'مراقب محتوى', ops: 'عمليات ودعم', content: 'المحتوى والأسعار', tech: 'التقنية', callcenter: 'خدمة العملاء (كول سنتر)' };

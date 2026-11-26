@@ -3,7 +3,7 @@
 const { chromium } = require('playwright');
 const base = process.argv[2] || 'http://127.0.0.1:8099';
 let failed = 0; const ok = (c, m) => { console.log((c ? '✓ ' : '✗ ') + m); if (!c) failed++; };
-const nf = (n) => new Intl.NumberFormat('ar-EG').format(n);
+const nf = (n) => new Intl.NumberFormat('ar-EG-u-nu-latn').format(n);
 const kpiText = (page, id) => page.locator('[data-kpi="' + id + '"] .sd-v').innerText();
 (async () => {
   const browser = await chromium.launch();

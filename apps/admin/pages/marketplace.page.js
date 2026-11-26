@@ -14,7 +14,7 @@
 (function (root) {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const mp = () => (typeof MP !== 'undefined' ? MP : null);   /* top-level const in local-market-store.js (global lexical binding) */
-  const money = (n) => { try { return new Intl.NumberFormat('ar-EG', { maximumFractionDigits: 2 }).format(+n || 0) + ' ج.م'; } catch (e) { return (+n || 0) + ' ج.م'; } };
+  const money = (n) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn', { maximumFractionDigits: 2 }).format(+n || 0) + ' ج.م'; } catch (e) { return (+n || 0) + ' ج.م'; } };
   const TABS = [['providers', 'مقدمو الخدمة'], ['orders', 'الطلبات'], ['customers', 'العملاء'], ['complaints', 'الشكاوى'], ['commissions', 'العمولات والتحصيل']];
   const PSTATUS = { pending: 'قيد المراجعة', approved: 'مقبول', suspended: 'معلّق', rejected: 'مرفوض' };
   const COLL = { pending: 'لم تُحصَّل', collected: 'تم التحصيل', settled: 'تمت التسوية', none: 'بلا مقابل (خدمة مجانية)' };

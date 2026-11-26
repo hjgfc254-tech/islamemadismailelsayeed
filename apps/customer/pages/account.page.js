@@ -68,7 +68,7 @@ const Account = (() => {
     </button>`;
   };
   const fmtDTShort = s => {
-    try { return new Date(s).toLocaleDateString('ar-EG', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); }
+    try { return new Date(s).toLocaleDateString('ar-EG-u-nu-latn', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); }
     catch { return s || ''; }
   };
 

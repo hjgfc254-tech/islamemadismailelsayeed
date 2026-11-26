@@ -8,7 +8,7 @@ const O = page('orders-management'), P = page('providers-management'), C = page(
 const S = page('super-dashboard');
 const SHELL_NAV = require(path.join(root, 'apps/admin/admin-shell.js')).NAV;
 const money = require(path.join(root, 'shared/utils/money.js'));
-const nf = (n) => new Intl.NumberFormat('ar-EG').format(n);
+const nf = (n) => new Intl.NumberFormat('ar-EG-u-nu-latn').format(n);
 const kp = (m, id) => m.kpis.find((k) => k.id === id);
 const readers = (over) => Object.assign({}, S.SOURCES, over || {});
 const zero = {
@@ -71,7 +71,7 @@ test('the model follows the sources (live), and maintenance mode is surfaced as 
   const b = S.buildModel(S.readSources(Object.assign({}, zero, { orders: () => ({ total: 9, new: 1, active: 2, done: 3, problem: 3 }), settings: () => ({ platformName: 'م', maintenance: true, providerApproval: false, taxEnabled: true, taxRatePct: 14 }) })));
   assert.strictEqual(kp(a, 'orders').value, 0); assert.strictEqual(kp(b, 'orders').value, 9);
   const mt = b.attention.find((x) => x.id === 'maintenance'); assert(mt && /محاكاة/.test(mt.text) && mt.level === 'warning' && mt.module === 'settings');
-  assert.deepStrictEqual(b.ops.slice(0, 3), [['وضع الصيانة', 'مفعّل (محاكاة)'], ['اعتماد المزود الجديد', 'غير مطلوب'], ['الضريبة', 'مفعّلة ١٤٪ (غير معتمدة بعد)']]);
+  assert.deepStrictEqual(b.ops.slice(0, 3), [['وضع الصيانة', 'مفعّل (محاكاة)'], ['اعتماد المزود الجديد', 'غير مطلوب'], ['الضريبة', 'مفعّلة 14٪ (غير معتمدة بعد)']]);
 });
 test('module links: self excluded, only registered pages are links, the rest are disabled «قريبًا»', () => {
   const shell = { NAV: SHELL_NAV, isRegistered: (id) => id !== 'quotes' };   // the owner board is a tab of «الإحصائيات» now (not in NAV)

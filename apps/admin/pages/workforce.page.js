@@ -12,8 +12,8 @@
 (function (root) {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const icon = (n) => (typeof ic === 'function' ? ic(n) : '');
-  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
-  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium' }).format(t); } catch (e) { return iso; } };
+  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn').format(n); } catch (e) { return String(n); } };
+  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium' }).format(t); } catch (e) { return iso; } };
   const norm = (v) => String(v == null ? '' : v).replace(/\s+/g, ' ').trim().toLowerCase();
 
   /* Browser: modules load before this page (index.html). Node tests: required relative to this file. */
@@ -81,7 +81,7 @@
       ${creating ? '' : `<section aria-labelledby="ord-h-act"><h3 id="ord-h-act">الحساب والدعوة (محاكاة)</h3><div class="ord-act">
         ${acts.filter((a) => !(a.to === 'disabled' && lastOwner)).map((a) => `<button type="button" class="adm-btn ${a.cls}" data-ord-status="${a.to}">${a.text}</button>`).join('')}
         ${m.status === 'invited' ? '<button type="button" class="adm-btn" data-wf-resend>إعادة إرسال الدعوة (محاكاة)</button>' : ''}</div>
-        ${m.status === 'invited' && m.inviteExpired ? '<p class="ord-err" role="note">الدعوة انتهت (صالحة 7 أيام) — ابعتها تاني عشان الموظف يقدر يفعّل حسابه.</p>' : m.status === 'invited' && m.inviteExpiresAt ? `<p class="ord-muted">الدعوة صالحة لحد ${esc(new Date(m.inviteExpiresAt).toLocaleDateString('ar-EG', { day: 'numeric', month: 'long' }))}.</p>` : ''}</section>
+        ${m.status === 'invited' && m.inviteExpired ? '<p class="ord-err" role="note">الدعوة انتهت (صالحة 7 أيام) — ابعتها تاني عشان الموظف يقدر يفعّل حسابه.</p>' : m.status === 'invited' && m.inviteExpiresAt ? `<p class="ord-muted">الدعوة صالحة لحد ${esc(new Date(m.inviteExpiresAt).toLocaleDateString('ar-EG-u-nu-latn', { day: 'numeric', month: 'long' }))}.</p>` : ''}</section>
       <section aria-labelledby="wf-h-log"><h3 id="wf-h-log">سجل الإجراءات</h3><ul class="ord-tl">${m.log.slice().reverse().map((l) => `<li><span>${esc(l.text)}</span><small>${esc(dt(l.at))}</small></li>`).join('')}</ul></section>`}</form>`;
   };
 

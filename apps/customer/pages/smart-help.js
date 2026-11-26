@@ -99,7 +99,7 @@
     sheet(`${dots(2)}<div class="dx-result"><span class="dx-badge">${unsure ? 'محتاج كشف' : 'التشخيص المبدئي'}</span>
         <h4>${E(it.name)}${p ? ' — ' + E(p.name) : ''}</h4>
         <ul class="dx-facts">
-          <li>${I('wallet')}<span>${price ? `سعر الخدمة <b>${Number(price).toLocaleString('ar-EG')} ج.م</b> — ثابت وشامل` : 'السعر بيتحدد بعد ما الفني يعاين — وبتوافق عليه قبل التنفيذ'}</span></li>
+          <li>${I('wallet')}<span>${price ? `سعر الخدمة <b>${Number(price).toLocaleString('ar-EG-u-nu-latn')} ج.م</b> — ثابت وشامل` : 'السعر بيتحدد بعد ما الفني يعاين — وبتوافق عليه قبل التنفيذ'}</span></li>
           <li>${I('clock')}<span>${visit ? 'محتاجة زيارة فني يكشف ويصلّح' : 'غالبًا تتصلّح في نفس الزيارة'}</span></li>
           <li>${I('shield')}<span>فنيين بتراجعهم الإدارة، وتقدر تتابع الطلب خطوة بخطوة</span></li>
         </ul>
@@ -158,7 +158,7 @@
     for (const r of reqs) { const prev = seen.get(r.itemId); const at = r.closedAt || r.completedAt || r.createdAt || ''; if (!prev || at > prev.at) seen.set(r.itemId, { r, at }); }
     const rows = [...seen.values()].slice(0, 6).map(({ r, at }) => {
       const it = C && C.item(r.itemId); if (!it) return '';
-      let when = ''; try { when = at ? new Date(at).toLocaleDateString('ar-EG', { month: 'long', year: 'numeric' }) : ''; } catch (e) {}
+      let when = ''; try { when = at ? new Date(at).toLocaleDateString('ar-EG-u-nu-latn', { month: 'long', year: 'numeric' }) : ''; } catch (e) {}
       const due = readR().find((x) => x.item === it.id);
       return `<button type="button" class="mh-item" data-wz-hit="item|${E(it.id)}">${B(it.cat) || I('wrench')}<span><b>${E(it.name)}</b><small>${when ? 'آخر خدمة ' + E(when) : ''}${due ? ' • الصيانة الجاية ' + E(due.due) : ''}</small></span><em>اطلب تاني</em></button>`;
     }).join('');

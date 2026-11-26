@@ -85,9 +85,9 @@ test('render: team sections, Arabic numerals, brand RTL layout, plain-text twin'
   assert.match(m.subject, /^ملخص هنصلحلك اليومي — /);
   assert.match(m.html, /<html lang="ar" dir="rtl">/); assert.match(m.html, /logo-v10-lockup\.webp/); assert.match(m.html, /#B4511C/);
   const visible = m.html.replace(/<style[\s\S]*?<\/style>/g, '').replace(/<[^>]+>/g, ' ');
-  assert.ok(!/[0-9]/.test(visible), 'every visible number is written with Arabic digits: ' + (visible.match(/.{0,12}[0-9].{0,12}/) || [''])[0]);
-  assert.ok(!/[0-9]/.test(m.subject));
-  assert.match(m.text, /الفلوس:/); assert.match(m.text, /- طلبات جديدة: ٦/);
+  assert.ok(!/[٠-٩]/.test(visible), 'every visible number is written with Latin digits (one style across the platform): ' + (visible.match(/.{0,12}[٠-٩].{0,12}/) || [''])[0]);
+  assert.ok(!/[٠-٩]/.test(m.subject));
+  assert.match(m.text, /الفلوس:/); assert.match(m.text, /- طلبات جديدة: 6/);
   const fin = D.render(D.buildModel(stats, 'daily', 'finance'));
   assert.ok(!/الشكاوى|مقدمو الخدمة|العمليات/.test(fin.html), 'finance does not receive operations sections');
   const tech = D.render(D.buildModel(stats, 'daily', 'tech'));
@@ -120,7 +120,7 @@ test('weekly «ملاحظات»: rules over week-over-week numbers, filtered by 
   const s = stats({ requests: { total: 40, completed: 20, cancelled: 12, byCat: {}, offers: null }, complaints: { opened: 6, resolved: 2 }, money: { services: 20, value: 9000, commission: 1350, pending: 900, collected: 450 } },
     { requests: { total: 40, completed: 32, cancelled: 5, byCat: {}, offers: null }, complaints: { opened: 3, resolved: 3 } }, { pendingProviders: 8 });
   const ops = D.buildModel(s, 'weekly', 'ops').notes.join('\n');
-  assert.match(ops, /الإلغاءات زادت ١٤٠٪/); assert.match(ops, /نسبة الإنجاز نزلت من ٨٠٪ لـ ٥٠٪/); assert.match(ops, /الشكاوى زادت ١٠٠٪/); assert.match(ops, /٨ فني مستني المراجعة/);
+  assert.match(ops, /الإلغاءات زادت 140٪/); assert.match(ops, /نسبة الإنجاز نزلت من 80٪ لـ 50٪/); assert.match(ops, /الشكاوى زادت 100٪/); assert.match(ops, /8 فني مستني المراجعة/);
   assert.ok(!/العمولات/.test(ops));
   assert.match(D.buildModel(s, 'weekly', 'finance').notes.join('\n'), /العمولات اللي لسه ما اتحصّلتش أكتر/);
   assert.deepEqual(D.buildModel(stats(zero(), zero()), 'weekly', 'owner').notes, ['مفيش حاجة غريبة الأسبوع ده.']);
@@ -129,7 +129,7 @@ test('weekly «ملاحظات»: rules over week-over-week numbers, filtered by 
 });
 
 test('deltas: better / worse colouring, missing previous period, teamOfRole mapping', () => {
-  assert.deepEqual(D.delta(12, 10), { text: '▲ ٢٠٪', cls: 'up', good: true, pct: 20 });
+  assert.deepEqual(D.delta(12, 10), { text: '▲ 20٪', cls: 'up', good: true, pct: 20 });
   assert.equal(D.delta(12, 10, false).good, false); assert.equal(D.delta(5, 0), null); assert.equal(D.delta(10, 10).cls, 'flat');
   assert.deepEqual(['owner', 'admin', 'support', 'finance', 'moderator', 'tech', 'custom'].map(D.teamOfRole), ['owner', 'ops', 'ops', 'finance', 'content', 'tech', 'ops']);
 });

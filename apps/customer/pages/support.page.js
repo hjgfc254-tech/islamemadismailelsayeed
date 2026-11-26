@@ -188,7 +188,7 @@ const Support = (() => {
           </div>
           ${r ? `<small>طلب <bdi class="code">#${_esc(r.no)}</bdi> — ${_esc(r.serviceName)}</small>` : ''}
           <small>${_esc(k.text)}</small>
-          <small style="color:var(--muted)">${new Date(k.at).toLocaleString('ar-EG')}</small>
+          <small style="color:var(--muted)">${new Date(k.at).toLocaleString('ar-EG-u-nu-latn')}</small>
           ${k.resolution ? `<small style="color:#6ee7b7">القرار: ${_esc(k.resolution)}</small>` : ''}
         </div>`;
       }).join('') : `<div class="empty" style="padding:24px">${safeIc('shield')}<p>لسه ما قدمتش أي شكوى</p></div>`}`);

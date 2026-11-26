@@ -4,8 +4,8 @@
  */
 'use strict';
 const DEFAULTS=Object.freeze({
- appName:'هنصلحلك',version:'8.0.0',locale:'ar-EG',direction:'rtl',currency:'EGP',
- supportPhone:'',demoMode:true,storagePrefix:'hs-v8',dateLocale:'ar-EG'
+ appName:'هنصلحلك',version:'8.0.0',locale:'ar-EG-u-nu-latn',direction:'rtl',currency:'EGP',
+ supportPhone:'',demoMode:true,storagePrefix:'hs-v8',dateLocale:'ar-EG-u-nu-latn'
 });
 const createConfig=(overrides={})=>{
  const input=overrides&&typeof overrides==='object'?overrides:{};

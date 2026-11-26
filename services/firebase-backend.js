@@ -124,9 +124,9 @@ async function start() {
         for (let tries = 0; tries < 6; tries++) {
           const first = !gate.hasCode;
           const num = 'inputmode="numeric" pattern="[0-9]{8}" maxlength="8" autocomplete="one-time-code" required';
-          const v = await dialog(first ? 'اعمل كود دخول من ٨ أرقام' : 'كود الدخول',
-            first ? [{ name: 'code', label: 'كود جديد (٨ أرقام، مش متتالي ولا متكرر)', type: 'password', attrs: num }, { name: 'again', label: 'اكتبه تاني للتأكيد', type: 'password', attrs: num }]
-                  : [{ name: 'code', label: 'اكتب كود الدخول الخاص بيك (٨ أرقام)', type: 'password', attrs: num }],
+          const v = await dialog(first ? 'اعمل كود دخول من 8 أرقام' : 'كود الدخول',
+            first ? [{ name: 'code', label: 'كود جديد (8 أرقام، مش متتالي ولا متكرر)', type: 'password', attrs: num }, { name: 'again', label: 'اكتبه تاني للتأكيد', type: 'password', attrs: num }]
+                  : [{ name: 'code', label: 'اكتب كود الدخول الخاص بيك (8 أرقام)', type: 'password', attrs: num }],
             first ? 'حفظ الكود والدخول' : 'دخول');
           if (!v) return false;
           if (first && v.code !== v.again) { await uiAlert('الكودين مش زي بعض — اكتبهم تاني.'); continue; }
@@ -400,7 +400,7 @@ async function start() {
     /** Admin: change my own 8-digit code (current code required). */
     async changeAdminCode() {
       const num = 'inputmode="numeric" pattern="[0-9]{8}" maxlength="8" autocomplete="off" required';
-      const v = await dialog('تغيير كود الدخول', [{ name: 'current', label: 'الكود الحالي', type: 'password', attrs: num }, { name: 'code', label: 'الكود الجديد (٨ أرقام)', type: 'password', attrs: num }, { name: 'again', label: 'الكود الجديد تاني', type: 'password', attrs: num }], 'تغيير');
+      const v = await dialog('تغيير كود الدخول', [{ name: 'current', label: 'الكود الحالي', type: 'password', attrs: num }, { name: 'code', label: 'الكود الجديد (8 أرقام)', type: 'password', attrs: num }, { name: 'again', label: 'الكود الجديد تاني', type: 'password', attrs: num }], 'تغيير');
       if (!v) return false;
       if (v.code !== v.again) { await uiAlert('الكودين الجداد مش زي بعض.'); return false; }
       try { await callSession({ op: 'adminCode', action: 'set', code: v.code, current: v.current }); await uiAlert('اتغيّر كود الدخول.'); return true; }

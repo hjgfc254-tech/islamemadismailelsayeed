@@ -47,8 +47,8 @@ function dayStart(y, m, d, tz = TZ) {
 function addDays(day, n) { const t = new Date(Date.UTC(day.y, day.m - 1, day.d + n)); return { y: t.getUTCFullYear(), m: t.getUTCMonth() + 1, d: t.getUTCDate() }; }
 const ymd = (day) => `${day.y}-${String(day.m).padStart(2, '0')}-${String(day.d).padStart(2, '0')}`;
 
-const nf = (n, d = 0) => (Number.isFinite(+n) ? (+n).toLocaleString('ar-EG', { maximumFractionDigits: d, minimumFractionDigits: d }) : '—');
-function dateLabel(ms, tz = TZ) { return new Intl.DateTimeFormat('ar-EG', { timeZone: tz, day: 'numeric', month: 'long' }).format(new Date(ms)); }
+const nf = (n, d = 0) => (Number.isFinite(+n) ? (+n).toLocaleString('ar-EG-u-nu-latn', { maximumFractionDigits: d, minimumFractionDigits: d }) : '—');
+function dateLabel(ms, tz = TZ) { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { timeZone: tz, day: 'numeric', month: 'long' }).format(new Date(ms)); }
 
 /** Window of the digest sent at nowMs (Cairo): daily = yesterday, weekly = the 7 full days before today; prev = the period before. */
 function windowFor(type, nowMs, tz = TZ) {
@@ -189,7 +189,7 @@ const SECTIONS = {
     row('مستنيين المراجعة', nf(s.now.pendingProviders)),
     row('تسجيلات جديدة', nf(s.cur.providersNew), delta(s.cur.providersNew, s.prev.providersNew))] }),
   quality: (s) => ({ title: 'الجودة', rows: [
-    row('متوسط التقييم', s.cur.reviews.avg == null ? '—' : `${nf(s.cur.reviews.avg, 1)} من ٥`, s.cur.reviews.avg != null && s.prev.reviews.avg != null ? delta(s.cur.reviews.avg, s.prev.reviews.avg) : null, `من ${nf(s.cur.reviews.count)} تقييم`)] }),
+    row('متوسط التقييم', s.cur.reviews.avg == null ? '—' : `${nf(s.cur.reviews.avg, 1)} من 5`, s.cur.reviews.avg != null && s.prev.reviews.avg != null ? delta(s.cur.reviews.avg, s.prev.reviews.avg) : null, `من ${nf(s.cur.reviews.count)} تقييم`)] }),
   money: (s) => ({ title: 'الفلوس', rows: [
     row('خدمات مدفوعة', nf(s.cur.money.services), delta(s.cur.money.services, s.prev.money.services)),
     row('قيمة الخدمات', money(s.cur.money.value), delta(s.cur.money.value, s.prev.money.value)),

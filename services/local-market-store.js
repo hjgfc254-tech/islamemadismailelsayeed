@@ -878,7 +878,7 @@ const MP = (() => {
       const pend = db.providers.filter(p => p.status === 'pending' && min(p.createdAt) >= 1440);
       if (pend.length) { raiseAlert({ team:'ops', severity:'normal', kind:'provider.pending', title:'طلبات انضمام مستنية مراجعة', body: pend.length + ' مقدم خدمة مستني المراجعة من أكتر من يوم', link:'#/providers', dedupeKey:'providers-pending' }); n++; }
       const due = db.transactions.filter(t => !t.free && t.collection === 'pending' && min(t.at) >= 7 * 1440);
-      if (due.length) { raiseAlert({ team:'finance', severity:'normal', kind:'collection.overdue', title:'عمولات متأخرة التحصيل', body: due.length + ' عمولة لسه ما اتحصّلتش من أكتر من ٧ أيام', link:'#/settlements', dedupeKey:'collection-overdue' }); n++; }
+      if (due.length) { raiseAlert({ team:'finance', severity:'normal', kind:'collection.overdue', title:'عمولات متأخرة التحصيل', body: due.length + ' عمولة لسه ما اتحصّلتش من أكتر من 7 أيام', link:'#/settlements', dedupeKey:'collection-overdue' }); n++; }
       return n;
     },
     raiseAlert,

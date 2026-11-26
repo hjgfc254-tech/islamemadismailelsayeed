@@ -12,7 +12,7 @@
   const RV_TAGS = ['ملتزم بالموعد', 'شغله نضيف', 'أسعاره مناسبة', 'محترم في التعامل', 'سريع'];
   const live = () => !!(root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase');
   const settings = () => (MP.db().settings || {});
-  const dayFmt = (iso) => { const d = new Date(iso); return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long' }); };
+  const dayFmt = (iso) => { const d = new Date(iso); return Number.isNaN(d.getTime()) ? '' : d.toLocaleDateString('ar-EG-u-nu-latn', { day: 'numeric', month: 'long' }); };
 
   /* ── arrival: estimate + 4-digit code (shown to the technician at the door) ── */
   function arrivalCard(r) {
@@ -20,7 +20,7 @@
     const at = r.status === 'enroute' && r.etaAt ? new Date(r.etaAt) : null;
     const mins = at && !Number.isNaN(at.getTime()) ? Math.round((at.getTime() - Date.now()) / 60000) : null;
     if (!showPin && mins == null) return '';
-    const eta = mins == null ? '' : `<div class="ar-eta">${ic('clock')}<span><b>${mins > 1 ? `هيوصل خلال حوالي ${mins} دقيقة` : 'المفروض يوصل دلوقتي'}</b><small>حوالي الساعة ${esc(at.toLocaleTimeString('ar-EG', { hour: 'numeric', minute: '2-digit' }))} — تقدير الفني</small></span></div>`;
+    const eta = mins == null ? '' : `<div class="ar-eta">${ic('clock')}<span><b>${mins > 1 ? `هيوصل خلال حوالي ${mins} دقيقة` : 'المفروض يوصل دلوقتي'}</b><small>حوالي الساعة ${esc(at.toLocaleTimeString('ar-EG-u-nu-latn', { hour: 'numeric', minute: '2-digit' }))} — تقدير الفني</small></span></div>`;
     const pin = showPin ? `<div class="ar-pin"><small>كود الوصول</small><div class="pin-digits" dir="ltr" role="img" aria-label="كود الوصول ${esc(r.pin.split('').join(' '))}">${r.pin.split('').map((d) => `<b>${esc(d)}</b>`).join('')}</div><small>ورّيه للفني لما يوصل — من غيره ما يقدرش يسجّل إنه وصل</small></div>` : '';
     return `<section class="arrive-card" aria-label="الوصول">${eta}${pin}</section>`;
   }
@@ -113,7 +113,7 @@
   }
   function tagChips(providerId, max) {
     const list = tagCounts(providerId).slice(0, max || 5); if (!list.length) return '';
-    return `<ul class="praise" aria-label="العملاء بيقولوا عنه">${list.map(([t, n]) => `<li>${esc(t)}<b>${n.toLocaleString('ar-EG')}</b></li>`).join('')}</ul>`;
+    return `<ul class="praise" aria-label="العملاء بيقولوا عنه">${list.map(([t, n]) => `<li>${esc(t)}<b>${n.toLocaleString('ar-EG-u-nu-latn')}</b></li>`).join('')}</ul>`;
   }
 
   /* ── provider portfolio (customers' consent only) ── */

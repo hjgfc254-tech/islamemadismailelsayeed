@@ -8,8 +8,8 @@
 'use strict';
 (function (root) {
   const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG').format(n); } catch (e) { return String(n); } };
-  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }).format(t); } catch (e) { return iso; } };
+  const nf = (n) => { try { return new Intl.NumberFormat('ar-EG-u-nu-latn').format(n); } catch (e) { return String(n); } };
+  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return '—'; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium', timeStyle: 'short' }).format(t); } catch (e) { return iso; } };
   const APP = { customer: 'العميل', provider: 'مقدم الخدمة', admin: 'الإدارة', server: 'السيرفر' };
   const live = () => !!(root.HSFirebaseConfig && root.HSFirebaseConfig.mode === 'firebase');
   const call = (method, path, body) => (root.HSBackend && root.HSBackend.admin ? root.HSBackend.admin(method, path, body) : root.HSApiClient.request(method, path, { body }));
@@ -25,7 +25,7 @@
 
   function html(items) {
     const head = `<h3 id="cerr-h">أخطاء عند المستخدمين</h3>
-      <p class="ord-muted">أعطال حصلت فعلًا في متصفحات الزوار، متجمّعة حسب الرسالة والملف. ${live() ? 'من كل الأجهزة (آخر ٣٠ يوم).' : 'وضع العرض التجريبي: أخطاء هذا الجهاز فقط.'} الأرقام والإيميلات بتتشال قبل الحفظ.</p>`;
+      <p class="ord-muted">أعطال حصلت فعلًا في متصفحات الزوار، متجمّعة حسب الرسالة والملف. ${live() ? 'من كل الأجهزة (آخر 30 يوم).' : 'وضع العرض التجريبي: أخطاء هذا الجهاز فقط.'} الأرقام والإيميلات بتتشال قبل الحفظ.</p>`;
     if (!items.length) return head + '<p class="cerr-empty">' + (typeof ic === 'function' ? ic('check') + ' ' : '') + 'مفيش أخطاء متسجلة — كويس</p>';
     return head + `<div class="hs-grid-scroll"><table class="hs-grid-table" aria-labelledby="cerr-h"><thead><tr>
       <th scope="col">الرسالة</th><th scope="col">التطبيق</th><th scope="col">المكان</th><th scope="col">المرات</th><th scope="col">آخر مرة</th></tr></thead><tbody>${items.map((x) => `<tr>

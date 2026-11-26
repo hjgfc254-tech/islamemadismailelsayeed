@@ -17,7 +17,7 @@
   const clone = (o) => JSON.parse(JSON.stringify(o));
   const newSlug = (p) => p + Date.now().toString(36).slice(-6) + Math.random().toString(36).slice(2, 4);
   const TYPES = [['select', 'اختيارات جاهزة'], ['number', 'رقم'], ['input', 'كتابة']];
-  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return ''; try { return new Intl.DateTimeFormat('ar-EG', { dateStyle: 'medium', timeStyle: 'short' }).format(t); } catch (e) { return iso; } };
+  const dt = (iso) => { const t = Date.parse(iso); if (!Number.isFinite(t)) return ''; try { return new Intl.DateTimeFormat('ar-EG-u-nu-latn', { dateStyle: 'medium', timeStyle: 'short' }).format(t); } catch (e) { return iso; } };
 
   /* the catalogue the app runs on now → an editable v3 draft (bank questions referenced by id) */
   function fromApp() {

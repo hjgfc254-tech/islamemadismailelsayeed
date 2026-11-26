@@ -15,13 +15,13 @@ const toDate = value => {
 const toISODate = value => { const d=toDate(value); return d ? d.toISOString().slice(0,10) : null; };
 const formatDate = (value, options={}) => {
   const d=toDate(value); if(!d) return '';
-  return new Intl.DateTimeFormat(options.locale || 'ar-EG', {
+  return new Intl.DateTimeFormat(options.locale || 'ar-EG-u-nu-latn', {
     day:'numeric', month:'short', year:'numeric', ...options
   }).format(d);
 };
 const formatDateTime = (value, options={}) => {
   const d=toDate(value); if(!d) return '';
-  return new Intl.DateTimeFormat(options.locale || 'ar-EG', {
+  return new Intl.DateTimeFormat(options.locale || 'ar-EG-u-nu-latn', {
     day:'numeric', month:'short', year:'numeric', hour:'numeric', minute:'2-digit', ...options
   }).format(d);
 };

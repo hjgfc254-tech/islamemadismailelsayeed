@@ -126,13 +126,13 @@ function evaluateAlerts({ health, perf, est, clocks, now }) {
     if (a.state === 'down') out.push({ key: 'health:' + k, level: 'critical', text: `${names[k] || k} مش بترد${a.error ? ' (' + a.error + ')' : ''}`, link });
     else if (a.state === 'warn') out.push({ key: 'slow:' + k, level: 'normal', text: `${names[k] || k} بطيئة (${a.ms} مللي ثانية)`, link });
   }
-  if (clocks && clocks.offers && clocks.offers.stale) out.push({ key: 'clock:offers', level: 'normal', text: 'ساعة جولات العروض ما اشتغلتش من أكتر من ٢٠ دقيقة', link });
+  if (clocks && clocks.offers && clocks.offers.stale) out.push({ key: 'clock:offers', level: 'normal', text: 'ساعة جولات العروض ما اشتغلتش من أكتر من 20 دقيقة', link });
   if (clocks && clocks.offers && clocks.offers.ok === false) out.push({ key: 'clock:offers:fail', level: 'normal', text: 'ساعة جولات العروض فشلت في آخر تشغيل', link });
   if (perf && perf.calls >= THRESHOLDS.minCallsForRate) {
     if (perf.errorRate >= THRESHOLDS.errorRateCritical) out.push({ key: 'errors:rate', level: 'critical', text: `نسبة أخطاء السيرفر ${Math.round(perf.errorRate * 100)}٪ من ${perf.calls} طلب`, link });
     else if (perf.errorRate >= THRESHOLDS.errorRateWarn) out.push({ key: 'errors:rate', level: 'normal', text: `نسبة أخطاء السيرفر ${Math.round(perf.errorRate * 100)}٪ من ${perf.calls} طلب`, link });
   }
-  if (est && est.level === 'critical') out.push({ key: 'cost', level: 'critical', text: `التكلفة المتوقعة للشهر ${est.projectedEGP} ج.م — أكتر من ١٣٠٪ من الميزانية (${est.budgetEGP})`, link });
+  if (est && est.level === 'critical') out.push({ key: 'cost', level: 'critical', text: `التكلفة المتوقعة للشهر ${est.projectedEGP} ج.م — أكتر من 130٪ من الميزانية (${est.budgetEGP})`, link });
   else if (est && est.level === 'warn') out.push({ key: 'cost', level: 'normal', text: `التكلفة المتوقعة للشهر ${est.projectedEGP} ج.م — عدّت الميزانية (${est.budgetEGP})`, link });
   return out;
 }

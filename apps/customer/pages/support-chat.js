@@ -43,7 +43,7 @@
   function card(c) {
     return `<li class="hc-card" data-card="${E(c.id)}"><b>${E(c.title)}</b><dl>${(c.lines || []).map((l) => `<div><dt>${E(l.k)}</dt><dd dir="auto">${E(l.v)}</dd></div>`).join('')}</dl>
       <div class="hc-card-act"><button type="button" class="cta" data-chat-yes="${E(c.id)}">${I('check')} ${E(c.confirm || 'تأكيد')}</button><button type="button" class="cta ghost" data-chat-no="${E(c.id)}">لأ</button></div>
-      <small>التأكيد صالح لحد ${E(new Date(c.exp).toLocaleTimeString('ar-EG', { hour: 'numeric', minute: '2-digit' }))}</small></li>`;
+      <small>التأكيد صالح لحد ${E(new Date(c.exp).toLocaleTimeString('ar-EG-u-nu-latn', { hour: 'numeric', minute: '2-digit' }))}</small></li>`;
   }
   function paint() {
     if (!box) return;

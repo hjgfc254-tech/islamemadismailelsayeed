@@ -8,7 +8,7 @@
  */
 'use strict';
 (function (root) {
-  const num = (n, d = 0) => (+n || 0).toLocaleString('ar-EG', { maximumFractionDigits: d, minimumFractionDigits: d });
+  const num = (n, d = 0) => (+n || 0).toLocaleString('ar-EG-u-nu-latn', { maximumFractionDigits: d, minimumFractionDigits: d });
   const untilMs = (r) => { const t = Date.parse(r.bidding && r.bidding.until); return Number.isFinite(t) ? t - Date.now() : 0; };
   const minutesLeft = (r) => Math.max(0, Math.round(untilMs(r) / 60000));
   const minutesSince = (r) => Math.max(0, -untilMs(r) / 60000);

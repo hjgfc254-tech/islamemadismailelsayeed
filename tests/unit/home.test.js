@@ -104,6 +104,6 @@ ok(run("screens.sections().includes('data-wz-hit')"),'sections tab tiles route t
 /* 10) (removed 2026-11-14) the legacy Provider workspace no longer loads in the Customer app — see tests/unit/legacy-migration.test.js */
 /* 11) C5 — مسودة الطلب تظهر على الرئيسية بعد العودة */
 run("WZ=null; const __c=MP.db().customers.find(c=>c.phone==='01000000000'); MP.saveDraft(__c.id,{step:4,data:{cat:'appliances',item:'appliances/ac',desc:'مسودة من الرئيسية'}}); show('home')");
-ok(view().includes('عندك طلب لم يكتمل')&&view().includes('data-act="wzResume"'),'home exposes saved draft resume action');
+ok(view().includes('كمّل طلبك')&&view().includes('data-act="wzResume"'),'home exposes saved draft resume action');
 click({act:'wzResume'}); ok(run('WZ&&WZ.desc')==='مسودة من الرئيسية'&&view().includes('طلب خدمة'),'resume action restores draft and opens wizard');
 console.log(`\n${pass} passed, ${fail} failed`); process.exit(fail?1:0);

@@ -3,9 +3,9 @@
 (function (root) {
   const $ = (selector, scope=document) => scope.querySelector(selector);
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const money = value => (Number(value)||0).toLocaleString('ar-EG',{maximumFractionDigits:2})+' ج.م';
-const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{minimumFractionDigits:digits,maximumFractionDigits:digits});   /* Arabic digits like money() */
-  const date = value => { if(!value) return 'لم يحدد'; const d=new Date(value); return Number.isNaN(d.getTime())?esc(value):d.toLocaleString('ar-EG',{weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}); };
+  const money = value => (Number(value)||0).toLocaleString('ar-EG-u-nu-latn',{maximumFractionDigits:2})+' ج.م';
+const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG-u-nu-latn',{minimumFractionDigits:digits,maximumFractionDigits:digits});   /* Arabic digits like money() */
+  const date = value => { if(!value) return 'لم يحدد'; const d=new Date(value); return Number.isNaN(d.getTime())?esc(value):d.toLocaleString('ar-EG-u-nu-latn',{weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'}); };
   const icon = name => typeof ic==='function' ? ic(name) : '';
   let dom, toastTimer;
   const session = root.HSProviderSession;
@@ -132,7 +132,7 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
     const nextL=LEVELS[li+1], prog=nextL?Math.min(100,Math.round(jobs/nextL[1]*100)):100;
     const levelCard=`<section class="pv-level" aria-label="مستواك على المنصة"><div><small>مستواك</small><b>${LEVELS[li][0]}</b></div><div class="pv-goal">${nextL?`<small>عشان توصل «${nextL[0]}»: ${Math.max(0,nextL[1]-jobs)} خدمة كمان${rating<nextL[2]?` وتقييم ${nextL[2]} أو أعلى`:''}</small><i style="--p:${prog}%" role="progressbar" aria-valuenow="${prog}" aria-valuemin="0" aria-valuemax="100" aria-label="التقدّم للمستوى التالي"></i>`:'<small>وصلت لأعلى مستوى — كمّل كده</small>'}</div></section>`;
     /* round 11: the admin's bonus program replaces the generic level card when it is on */
-    const bcfg=MP.bonusCfg&&MP.bonusCfg(); let bonusCard=''; const an=(n,d=0)=>(+n||0).toLocaleString('ar-EG',{minimumFractionDigits:d,maximumFractionDigits:d});
+    const bcfg=MP.bonusCfg&&MP.bonusCfg(); let bonusCard=''; const an=(n,d=0)=>(+n||0).toLocaleString('ar-EG-u-nu-latn',{minimumFractionDigits:d,maximumFractionDigits:d});
     if(bcfg){ const st=MP.bonusStats(p.id), tier=MP.tierOf(p.id), tiers=bcfg.tiers||[], ti=tier?tier.rank:0, next=tiers[ti], w=bcfg.weekly||{};
       const need=next?Math.max(0,(+next.minJobs||0)-st.jobs):0, prog=next&&+next.minJobs?Math.min(100,Math.round(st.jobs/next.minJobs*100)):100;
       const wprog=w.on&&+w.target?Math.min(100,Math.round(st.weekJobs/w.target*100)):0;
@@ -149,7 +149,7 @@ const num = (value, digits = 0) => (Number(value)||0).toLocaleString('ar-EG',{mi
     const wk=transactions.filter(x=>inDays(x.at,0,7)), pw=transactions.filter(x=>inDays(x.at,7,14));
     const wn=domain.totals(wk).net, pn=domain.totals(pw).net, delta=pn>0?Math.round((wn-pn)/pn*100):null;
     const wr=(MP.db().reviews||[]).filter(v=>v.providerId===p.id&&inDays(v.at,0,7)), ravg=wr.length?num(wr.reduce((s,v)=>s+(+v.stars||0),0)/wr.length,1):'—';
-    const weekCard=`<section class="pv-week" aria-labelledby="pvxweek-h"><h2 id="pvxweek-h">آخر ٧ أيام</h2><dl><div><dt>مكسبك</dt><dd>${money(wn)}</dd>${delta!=null?`<small class="${delta>=0?'up':'down'}">${delta>=0?'أعلى':'أقل'} ${num(Math.abs(delta))}٪ من الأسبوع اللي قبله</small>`:''}</div><div><dt>خدمات</dt><dd>${num(wk.length)}</dd></div><div><dt>تقييمك</dt><dd>${ravg}</dd></div></dl></section>`;
+    const weekCard=`<section class="pv-week" aria-labelledby="pvxweek-h"><h2 id="pvxweek-h">آخر 7 أيام</h2><dl><div><dt>مكسبك</dt><dd>${money(wn)}</dd>${delta!=null?`<small class="${delta>=0?'up':'down'}">${delta>=0?'أعلى':'أقل'} ${num(Math.abs(delta))}٪ من الأسبوع اللي قبله</small>`:''}</div><div><dt>خدمات</dt><dd>${num(wk.length)}</dd></div><div><dt>تقييمك</dt><dd>${ravg}</dd></div></dl></section>`;
     let demandCard='';
     const tr=(MP.db().settings||{}).trend;
     if(tr&&tr.areas&&typeof MP.cairoDay==='function'&&tr.day===MP.cairoDay()){
