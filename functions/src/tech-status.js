@@ -6,7 +6,8 @@
  *   POST /admin/tech/config            {budgetEGP, usdToEgp}   owner only
  * Allowed: admin role `owner` or `tech`. Handled outside a Firestore transaction (service.js), mutations are audited.
  * healthTick() is the 10-minute scheduled probe (functions/index.js healthClock): it stores system/health, tracks the
- * deployed revision in system/deploy, evaluates thresholds and sends team alerts (alerts-adapter.js), de-duplicated.
+ * deployed revision in system/deploy, evaluates thresholds and sends team alerts (alerts-adapter.js), de-duplicated;
+ * critical alerts are also e-mailed to the owner / tech recipients (alert-mail.js, max one per key per hour).
  * Everything leaving this module goes through safeText()/safeRoute(): emails, phones, tokens, order numbers and
  * record ids are masked even if an error message happened to contain one.
  */
@@ -143,7 +144,7 @@ function alertsToSend(alerts, sent, now) {
 
 /** the scheduled probe (every 10 minutes) */
 let deployMemo = '';   // the deployed revision is checked once per instance, not every tick
-async function healthTick(backend, now = Date.now()) {
+async function healthTick(backend, now = Date.now(), deps = {}) {
   /* cost: the month's usage documents (one per instance per day — hundreds by month end) and the budget are read once an
      hour, not every 10 minutes; in between the last perf / cost summary stored in system/health is reused. */
   const prev = await backend.getDoc('system/health').catch(() => null);
@@ -162,12 +163,15 @@ async function healthTick(backend, now = Date.now()) {
   const toSend = alertsToSend(alerts, sent, now);
   const { notifyTeam } = require('./alerts-adapter');
   for (const a of toSend) { await notifyTeam(backend, 'tech', a.level, { text: a.text, link: a.link, key: a.key }); sent[a.key] = now; }
+  /* critical ones also go out by e-mail (alert-mail.js: digest transport, max one per key per hour, quiet without a transport) */
+  let mailed = 0;
+  try { mailed = (await require('./alert-mail').mailAlerts(backend, toSend, now, deps)).sent; } catch (e) { /* e-mail never breaks the probe */ }
   for (const k of Object.keys(sent)) if (!alerts.some((a) => a.key === k) && now - sent[k] > 24 * 3600000) delete sent[k];
   const perfLite = { calls: +perf.calls || 0, errorRate: +perf.errorRate || 0 }, estLite = est ? { level: est.level, projectedEGP: est.projectedEGP, budgetEGP: est.budgetEGP } : {};
   await backend.setDoc('system/health', { ...h, alertsSent: sent, perfLite, estLite, costAtMs: hourly ? now : prev.costAtMs }, false);
   const rev = process.env.K_REVISION || '';
   if (rev && rev !== deployMemo) { deployMemo = rev; const dep = await backend.getDoc('system/deploy').catch(() => null); if (!dep || dep.revision !== rev) await backend.setDoc('system/deploy', { revision: rev, at: new Date(now).toISOString(), node: process.version }, true).catch(() => {}); }
-  return { overall: h.overall, alerts: alerts.length, sent: toSend.length };
+  return { overall: h.overall, alerts: alerts.length, sent: toSend.length, mailed };
 }
 /* cost: the 5-minute clocks used to write system/clocks on every run (288 writes a day each). Now a write happens only when
    the result changes (ok / work done) or 15 minutes passed — still well inside offersClockStaleMs (20 min). Per instance. */
@@ -182,7 +186,7 @@ async function recordClock(backend, name, data, now = Date.now()) {
 /* ───── HTTP-like handler ───── */
 let lastCheck = 0;
 const _resetCooldown = () => { lastCheck = 0; };
-async function audit(backend, actor, method, path) { try { await backend.addDoc('audit', { at: new Date().toISOString(), uid: actor.id, actor: { role: 'admin', id: actor.id, adminRole: actor.adminRole }, app: 'admin', method, path, status: 200 }); } catch (e) {} }
+async function audit(backend, actor, method, path) { try { await backend.addDoc('audit', require('./retention').auditRow({ at: new Date().toISOString(), uid: actor.id, actor: { role: 'admin', id: actor.id, adminRole: actor.adminRole }, app: 'admin', method, path, status: 200 })); } catch (e) {} }
 
 async function handle({ backend, method, path, body, actor, now = Date.now() }) {
   if (!actor || actor.role !== 'admin') return env(actor ? 403 : 401, actor ? 'FORBIDDEN' : 'UNAUTHENTICATED', 'admin only');

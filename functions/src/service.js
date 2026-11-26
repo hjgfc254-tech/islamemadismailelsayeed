@@ -35,6 +35,7 @@ const runtime = require('./runtime');
 const { keyOf, colName, KNOWN_ARRAYS } = require('./store');
 const crypto = require('crypto');
 const { PartialDb } = require('./partial');
+const retention = require('./retention');
 const { plan, syncPlan, deltaPlan } = require('./plan');
 const DELTA_MAX_AGE_MS = 6 * 3600000;   // an Admin tab older than this does a full sync
 const { normalizePhone, APPS } = require('./identity');
@@ -263,7 +264,7 @@ async function api(backend, { auth, data, ip }) {
     if (!token || !isUnlockedAdmin(adm) || adm.role === 'callcenter') return adminOnly(!!token);
     if (!isRead) await rateLimit(backend, token.uid);
     const out = await digestAdmin.handle({ backend, method: req.method, path: req.path, query: req.query, body: req.body, admin: adm, uid: token.uid, deps: backend.digestDeps });
-    if (!isRead && out.ok) await backend.addDoc('audit', { at: new Date().toISOString(), uid: token.uid, actor: { role: 'admin', id: token.uid, adminRole: adm.role }, app: 'admin', method: req.method, path: req.path, status: out.status, changes: { digest: { set: 1, del: 0 } } });
+    if (!isRead && out.ok) await backend.addDoc('audit', retention.auditRow({ at: new Date().toISOString(), uid: token.uid, actor: { role: 'admin', id: token.uid, adminRole: adm.role }, app: 'admin', method: req.method, path: req.path, status: out.status, changes: { digest: { set: 1, del: 0 } } }));
     return out;
   }
   if (agentGateway.PATH_RE.test(req.path)) {     /* call centre (agent-gateway.js): a code-unlocked employee with callcenter.* — same routes as the AI agents */
@@ -393,11 +394,11 @@ async function api(backend, { auth, data, ip }) {
   /* live tracking points change every ~30 s: no audit row per point (the change signal still reaches the customer) */
   const liveTrack = req.method === 'POST' && /^\/requests\/[^/]+\/location$/.test(req.path);
   if (Object.keys(out.changes).length) {
-    if (!liveTrack) await backend.addDoc('audit', {
+    if (!liveTrack) await backend.addDoc('audit', retention.auditRow({
       at: new Date().toISOString(), uid: token ? token.uid : null, actor: out.actor ? { role: out.actor.role, id: out.actor.id, adminRole: out.actor.adminRole || null } : null,
       app: req.app, method: req.method, path: req.path, status: out.envelope.status,
       changes: Object.fromEntries(Object.entries(out.changes).map(([k, c]) => [k, { set: c.set.length, del: c.del.length }]))
-    });
+    }));
     if (out.quiet) { /* no change signals: site content travels on public/content */ }
     else if (out.workforce) { const admins = await backend.queryDocs('admins', 'status', '==', 'active'); await backend.signal(admins.map(a => a.id), { full: true }); }   // employees / RBAC travel only with full syncs
     else await notifyChanges(backend, out.changes, out.db, token && token.uid);
@@ -464,7 +465,7 @@ async function tickOffers(backend) {
   });
   if (out.alerts && out.alerts.length) await alerts.ingest(backend, out.alerts);   // «جولة العروض خلصت من غير عروض» → team ops
   if (Object.keys(out.changes).length) {
-    await backend.addDoc('audit', { at: new Date().toISOString(), uid: null, actor: null, app: 'system', action: 'offersClock', status: 200, changes: Object.fromEntries(Object.entries(out.changes).map(([k, c]) => [k, { set: c.set.length, del: c.del.length }])) });
+    await backend.addDoc('audit', retention.auditRow({ at: new Date().toISOString(), uid: null, actor: null, app: 'system', action: 'offersClock', status: 200, changes: Object.fromEntries(Object.entries(out.changes).map(([k, c]) => [k, { set: c.set.length, del: c.del.length }])) }));
     await notifyChanges(backend, out.changes, out.db, null);
   }
   return { changed: out.ids.length };

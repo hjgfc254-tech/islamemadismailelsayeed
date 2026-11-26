@@ -43,7 +43,7 @@ async function handle({ backend, tx, method, path, query, body, admin, token }) 
     if (!isRole(admin, 'owner')) return deny();   /* «سجل الإداريين» is the owner's view (2026-11-20) */
     const limit = Math.min(100, Math.max(1, parseInt(query.limit, 10) || 50));
     const rows = await a.query(tx, 'audit', { orderBy: ['at', 'desc'], limit });
-    return okEnv({ items: rows.map((r) => ({ id: r.id, ...r.data })) });
+    return okEnv({ items: rows.map((r) => ({ id: r.id, ...require('./retention').withoutTtl(r.data) })) });
   }
 
   if (area === 'settings') {

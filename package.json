@@ -16,6 +16,8 @@
                     "sw:check":  "node scripts/sw-cache.cjs --check",
                     "sw:bump":  "node scripts/sw-cache.cjs --bump",
                     "deploy:record":  "node scripts/record-deploy.cjs",
+                    "deploy:staging":  "firebase deploy -P staging --only functions,hosting,firestore",
+                    "deploy:prod":  "node scripts/deploy-prod.cjs",
                     "bench:cost":  "node scripts/bench-firestore-cost.cjs",
                     "test:emulators":  "firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak \"node --test tests/emulator/\"",
                     "test:emulators:e2e":  "firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak \"node tests/e2e/firebase-emulator.cdp.js\""
