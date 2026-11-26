@@ -696,6 +696,7 @@ hansalhlak/
 │       ├── admin-platform-controls.test.js
 │       ├── admin-runtime.test.js
 │       ├── admin-shell.test.js
+│       ├── ai-classify.test.js
 │       ├── api-adapters.test.js
 │       ├── api-gaps.test.js
 │       ├── audit-log.test.js
@@ -769,6 +770,7 @@ hansalhlak/
 │       ├── responsive-sweep-regression.test.js
 │       ├── reviews-management.test.js
 │       ├── round5-features.test.js
+│       ├── routes-coverage.test.js
 │       ├── security-audit-2026-11-23.test.js
 │       ├── security-fixes.test.js
 │       ├── security-round2.test.js
