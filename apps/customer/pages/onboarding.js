@@ -11,7 +11,7 @@
   const SLIDES = [
     { img: 'hero-tech-v3.jpg', t: 'فني موثّق لحد باب بيتك', s: 'فنيين بتراجعهم الإدارة قبل ما يشتغلوا، وبيوصلوا في الميعاد اللي اتفقتوا عليه.' },
     { art: ['choose', 'price', 'track'], t: 'اطلب في دقيقة من مكانك', s: 'اختار المشكلة، واعرف السعر قبل ما تأكد، وتابع الفني خطوة بخطوة.' },
-    { art: ['verified', 'rate', 'schedule'], t: 'شغل نضيف وانت مطمّن', s: 'قيّم الشغل بعد ما يخلص، وادفع كاش للفني — من غير مفاجآت.' }
+    { art: ['verified', 'rate', 'schedule'], t: 'شغل نضيف وانت مطمّن', s: 'قيّم الشغل بعد ما يخلص، وادفع كاش أو أونلاين — من غير مفاجآت.' }
   ];
   const seen = () => { try { return !!localStorage.getItem(KEY); } catch (e) { return true; } };
   const mark = () => { try { localStorage.setItem(KEY, '1'); } catch (e) {} };

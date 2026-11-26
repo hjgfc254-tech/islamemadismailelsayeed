@@ -452,7 +452,7 @@ function homePackages(){
     <div class="pkg-row">${pk.map(p => `<article class="pkg-card glass neon"><b>${esc(p.name)}</b>${p.desc ? `<p>${esc(p.desc)}</p>` : ''}
       <ul><li>${ic('calendar')} ${Number(p.visits) || 1} ${Number(p.visits) > 2 && Number(p.visits) < 11 ? 'زيارات' : 'زيارة'}</li>${p.cat && CAT.category(p.cat) ? `<li>${ic('wrench')} ${esc(CAT.category(p.cat).name)}</li>` : ''}</ul>
       <div class="pkg-foot"><span class="pkg-price">${Number(p.price) ? Number(p.price).toLocaleString('ar-EG-u-nu-latn') + ' ج.م' : 'السعر مع الفني'}</span><button type="button" class="cta" data-act="pkgStart" data-id="${esc(p.id)}">اطلب الباقة</button></div></article>`).join('')}</div>
-    <p class="pkg-note">بتطلب الباقة زي أي طلب، والفني بيتفق معاك على مواعيد الزيارات. الدفع كاش للفني.</p></section>`;
+    <p class="pkg-note">بتطلب الباقة زي أي طلب، والفني بيتفق معاك على مواعيد الزيارات. وتدفع كاش للفني أو أونلاين.</p></section>`;
 }
 function homeInvite(){
   const ref = (MP.db().settings || {}).referral; if (!ref || !ref.on || !(+ref.reward > 0) || !homeMe()) return '';
