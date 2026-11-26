@@ -245,7 +245,10 @@ async function cancelRequest({ backend, id, body, principal, deps }) {
       const r = e.mp.get('serviceRequests', id), a = e.mp.activeAssignment(id);
       /* the same rule as MP.cancel: a travel fee once the accepted provider is on the way / arrived */
       const fee = a && a.status === 'accepted' && ['enroute', 'arrived'].includes(r.status) ? e.mp.cancelFee() : 0;
-      if (fee && body.confirmFee !== true) {
+      /* confirmFee: true (voice / human agent who just read the amount) or the exact amount the customer agreed to (chat
+         card) — an amount that no longer matches the current fee is asked again */
+      const agreed = body.confirmFee === true || (typeof body.confirmFee === 'number' && body.confirmFee === fee);
+      if (fee && !agreed) {
         return bad(409, 'FEE_CONFIRMATION_REQUIRED', 'فيه رسوم انتقال ' + fee + ' ج.م لأن الفني في الطريق — اقرأها للمتصل، ولو وافق ابعت confirmFee: true', { fee });
       }
       const by = principal.channel === 'ai' ? 'المساعد الصوتي' : principal.channel === 'chat' ? 'خدمة العملاء (شات)' : 'خدمة العملاء';

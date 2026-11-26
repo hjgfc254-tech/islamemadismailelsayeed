@@ -864,7 +864,7 @@ const screens = {
     if (!d) return `<div class="screen">${head('تفاصيل المشكلة',true)}<div class="empty">${ic('search')}<p>الخدمة دي مش موجودة أو اتشالت.</p><button class="cta" data-go="sections">تصفّح الخدمات</button></div></div>`;   /* stale / wrong link */
     return `<div class="screen">${head('تفاصيل المشكلة',true)}
   <section class="dcard neon">
-    <div class="info"><span class="badge">${ic(icSec(d.icon))} ${d.cat}</span><h3>${d.name}</h3><p>اختر نوع المشكلة لمعرفة الحل</p></div>
+    <div class="info"><span class="badge">${ic(icSec(d.icon))} ${esc(d.cat)}</span><h3>${esc(d.name)}</h3><p>اختر نوع المشكلة لمعرفة الحل</p></div>
     <div class="art">${ART[d.art]}</div>
   </section>
   <h2 class="sec-title">${ic('wrench')}اختر نوع المشكلة</h2>
@@ -1152,11 +1152,11 @@ function openProblem(key, ret){
   const warn = p.lvl==='يحتاج فني';
   sheet(`${ret?`<button class="sheet-back" data-act="slide" data-s="${ret}">${ic('back')} رجوع للقائمة</button>`:''}
     <button class="fav-btn ${fav?'on':''}" data-fav="${key}" aria-label="مفضلة">${ic('heart')}</button>
-    <h4>${p.t}</h4><div class="sub">${d.name} • ${d.cat}</div>
+    <h4>${esc(p.t)}</h4><div class="sub">${esc(d.name)} • ${esc(d.cat)}</div>
     <div class="meta"><span class="tag ${warn?'warn':''}">${ic(warn?'warn':'check')} ${p.lvl}</span><span class="tag">${ic('clock')} حوالي ${p.min} دقيقة</span></div>
     <div class="need ${warn?'warn':''}">${ic(warn?'warn':'info')}<span>${NEED[p.lvl]||''}</span></div>
-    ${p.warn?`<div class="safety">${ic('shield')}<div><b>تنبيه أمان</b><span>${p.warn}</span></div></div>`:''}
-    <button class="cta" data-act="tech" data-key="${key}">${ic('wrench')} اطلب متخصصًا — ${d.cat}</button>
+    ${p.warn?`<div class="safety">${ic('shield')}<div><b>تنبيه أمان</b><span>${esc(p.warn)}</span></div></div>`:''}
+    <button class="cta" data-act="tech" data-key="${key}">${ic('wrench')} اطلب متخصصًا — ${esc(d.cat)}</button>
     <h5>${ic('info')} الأسباب المحتملة (للفهم فقط)</h5>
     ${p.causes.map(c=>`<div class="cause">${c}</div>`).join('')}
     <h5>${ic('wrench')} ${warn?'إجراءات أمان وتشخيص أولي':'نصائح سريعة'}</h5>
@@ -1227,14 +1227,14 @@ function openSlide(id){
   if (id==='steps'){ sheet(`<h4>${ic('wrench')} خدمتك على بُعد خطوات</h4><div class="sub">اختر الخدمة، حدد موقعك، وسنساعدك في الوصول لمقدم الخدمة المناسب</div>
       <div class="steps3"><div><i>1</i>اختر الخدمة</div><div><i>2</i>صف الطلب وحدد موقعك</div><div><i>3</i>تابع طلبك</div></div>${tiles(true)}`); origin=null; return; }
   if (id==='specialists'){ sheet(`<h4>${ic('grid')} متخصصون في مختلف الخدمات</h4><div class="sub">اضغط على الخدمة لعرض أنواعها وإرسال طلبك</div>
-      ${HOME_ORDER.map(k=>{ const d=DEVICES[k], t=MP.db().services.filter(s=>s.cat===k); return `<details class="gd"><summary>${ic(icSec(d.icon))}<span>${d.name}</span><small>${t.length} خدمات</small>${ic('chev','chev')}</summary><div class="gd-in">${t.map(s=>`<button class="prow glass neon" data-req="${k}|${s.id}"><span class="tx">${s.name}</span>${ic('chev','chev')}</button>`).join('')}</div></details>`; }).join('')}`); origin=null; return; }
+      ${HOME_ORDER.map(k=>{ const d=DEVICES[k], t=MP.db().services.filter(s=>s.cat===k); return `<details class="gd"><summary>${ic(icSec(d.icon))}<span>${esc(d.name)}</span><small>${t.length} خدمات</small>${ic('chev','chev')}</summary><div class="gd-in">${t.map(s=>`<button class="prow glass neon" data-req="${k}|${s.id}"><span class="tx">${esc(s.name)}</span>${ic('chev','chev')}</button>`).join('')}</div></details>`; }).join('')}`); origin=null; return; }
   if (id==='track'){ if(myReqs().length){ closeSheet(true); return go('orders'); }
     sheet(`<h4>${ic('clock')} تابع طلبك خطوة بخطوة</h4><div class="sub">من لحظة إرسال الطلب حتى اكتمال الخدمة</div>
       <ol class="tl">${FLOW.map(([k,l],i)=>`<li><i>${i+1}</i><span>${l}</span></li>`).join('')}</ol><button class="cta" data-go="home">${ic('wrench')} ابدأ طلبك</button>`); origin=null; return; }
   if (id==='guide'){
     sheet(`<h4>${ic('book')} دليل الصيانة</h4><div class="sub">نصائح وقائية لكل خدمة — الوقاية أرخص من الإصلاح</div>
-      ${HOME_ORDER.map(k=>{ const d=DEVICES[k]; return `<details class="gd"><summary>${ic(icSec(d.icon))}<span>${d.name}</span><small>${d.tips.length} نصائح</small>${ic('chev','chev')}</summary>
-        <div class="gd-in">${d.tips.map(t=>`<div class="cause">${t}</div>`).join('')}
+      ${HOME_ORDER.map(k=>{ const d=DEVICES[k]; return `<details class="gd"><summary>${ic(icSec(d.icon))}<span>${esc(d.name)}</span><small>${d.tips.length} نصائح</small>${ic('chev','chev')}</summary>
+        <div class="gd-in">${d.tips.map(t=>`<div class="cause">${esc(t)}</div>`).join('')}
         <button class="cta ghost" data-dev="${k}">${ic('wrench')} مشاكل ${d.cat} وحلولها (${d.problems.length})</button></div></details>`; }).join('')}
       <h5>${ic('shield')} قاعدة أمان</h5><div class="cause">افصل الجهاز من الكهرباء قبل أي فحص، ولو شميت غاز أو شفت شرر اخرج واطلب الطوارئ.</div>`);
     origin = null; return;

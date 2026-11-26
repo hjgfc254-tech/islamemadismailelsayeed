@@ -251,6 +251,7 @@ async function adminSummary(ld) {
 async function api(backend, { auth, data, ip }) {
   const req = validateApi(data);
   const token = tokenOf(auth);
+  await runtime.refreshCatalog(backend);          // the published catalogue (cached 5 min per instance)
   const isRead = req.method === 'GET';
   if (telemetry.PATH_RE.test(req.path)) {        // client error reports: rate limited in memory (limits.js), never audited
     const adm = await adminDocOf(backend, token, req.app);
@@ -334,6 +335,7 @@ async function api(backend, { auth, data, ip }) {
     if (catalogAdmin.PATH_RE.test(req.path)) {   // service catalogue draft / publish (catalog-admin.js; customers read the CDN feed)
       if (!actor || actor.role !== 'admin' || actor.adminRole === 'callcenter') return { envelope: adminOnly(!!actor), changes: {}, actor };
       const envelope = await catalogAdmin.handle({ backend, tx, method: req.method, path: req.path, body: req.body, admin });
+      if (envelope.ok && !isRead) runtime.invalidateCatalog();
       return { envelope, changes: envelope.ok && !isRead ? { admin: { set: [req.path], del: [] } } : {}, actor, db: {}, quiet: true };
     }
     if (ai.PATH_RE.test(req.path)) {          // AI providers / keys (server-only document system/ai)
@@ -495,6 +497,7 @@ function chatIpAllow(ip) {
 async function session(backend, { auth, data, ip }) {
   const d = data || {};
   const token = tokenOf(auth);
+  await runtime.refreshCatalog(backend);
   const app = APPS.includes(d.app) ? d.app : 'customer';
   switch (d.op) {
     case 'sync': {
@@ -587,7 +590,9 @@ async function session(backend, { auth, data, ip }) {
     }
     case 'chat': {   /* «مساعد هنصلحلك» AI support chat (support-chat.js): signed-in customers; owner switch + daily quotas inside */
       if (await maintenanceOn(backend)) fail('unavailable', 'المنصة في صيانة دلوقتي — جرّب تاني بعد شوية');
-      if (d.action === 'send' && !chatIpAllow(ip)) fail('resource-exhausted', 'رسايل كتير من نفس الشبكة النهارده — كلّم موظف من «تواصل مع الدعم»');
+      /* the per-network quota counts signed-in sends only: anonymous calls are refused inside chat() and must not use up
+         the quota of everyone on the same network */
+      if (d.action === 'send' && token && !chatIpAllow(ip)) fail('resource-exhausted', 'رسايل كتير من نفس الشبكة النهارده — كلّم موظف من «تواصل مع الدعم»');
       return supportChat.chat(backend, token, d, fail, AGENT_DEPS);
     }
     case 'ai': if (!aiIpAllow(ip)) fail('resource-exhausted', 'وصلت للحد اليومي — اختار المشكلة بنفسك'); return ai.classify(backend, token, d, fail);   // «اكتب مشكلتك» / «صوّر المشكلة» → catalogue item + problem
@@ -719,6 +724,6 @@ async function domainOp(backend, { load, run }) {
 }
 const AGENT_DEPS = Object.freeze({ domain: domainOp });
 /** https `agentApi` (functions/index.js): AI agents with an AGENT_API_KEYS key. */
-const agentHttp = (backend, req, opts) => agentGateway.http(backend, req, { ...(opts || {}), deps: AGENT_DEPS });
+const agentHttp = async (backend, req, opts) => { await runtime.refreshCatalog(backend); return agentGateway.http(backend, req, { ...(opts || {}), deps: AGENT_DEPS }); };
 
 module.exports = { aiIpAllow, AI_IP_DAILY, tickOffers, scanOps, api, session, importLocal, validateApi, affectedTags, ServiceError, WRITE_LIMIT_PER_MIN, agentHttp, domainOp, _adminOnly: adminOnly };

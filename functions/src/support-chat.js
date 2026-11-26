@@ -383,7 +383,7 @@ async function execute(ctx, a) {
       : { ok: false, text: 'مقدرتش أسجل الطلب: ' + errOf(r).error, note: 'create failed: ' + errOf(r).error };
   }
   if (d.kind === 'cancel') {
-    r = await gw(ctx, 'POST', `/agent/requests/${d.id}/cancel`, { phone, reason: d.reason, confirmFee: d.fee > 0 });
+    r = await gw(ctx, 'POST', `/agent/requests/${d.id}/cancel`, { phone, reason: d.reason, confirmFee: d.fee > 0 ? +d.fee : false });   // the exact amount on the confirmed card
     return r.ok ? { ok: true, text: 'تم إلغاء الطلب' + (r.data.cancelFee ? ` — رسم الانتقال ${r.data.cancelFee} ج.م.` : ' من غير أي رسوم.'), note: `cancelled request ${d.id}, fee ${r.data.cancelFee || 0}` }
       : { ok: false, text: 'مقدرتش ألغي الطلب: ' + errOf(r).error, note: 'cancel failed: ' + errOf(r).error };
   }

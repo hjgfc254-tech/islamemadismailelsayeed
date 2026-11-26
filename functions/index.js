@@ -83,8 +83,10 @@ const OPTS = { enforceAppCheck: process.env.ENFORCE_APP_CHECK === 'true', cors: 
 const readLimiter = createLimiter();
 const telemetryLimiter = createTelemetryLimiter();
 
+/* `session` carries the AI chat (several model round trips with tools) — 120 s instead of the 60 s default */
+const TIMEOUTS = { session: 120 };
 function wrap(name, fn) {
-  return onCall(OPTS, async request => {
+  return onCall(TIMEOUTS[name] ? { ...OPTS, timeoutSeconds: TIMEOUTS[name] } : OPTS, async request => {
     if (isTelemetryCall(name, request.data)) {
       /* error reports are best-effort: over the limit they are dropped quietly (the client never retries) */
       if (!telemetryLimiter.allow({ uid: request.auth && request.auth.uid, ip: clientIp(request.rawRequest) })) { usage.addRateLimited(); return { ok: true, status: 202, data: { stored: 0, dropped: true } }; }

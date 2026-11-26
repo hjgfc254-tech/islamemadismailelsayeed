@@ -39,8 +39,23 @@ function memStorage(init) {
  * Creates a fresh domain context over `db` (a plain MP database object, or null for a brand-new backend).
  * roster: admin employees visible to the RBAC guard ([{id,name,role,status}]).
  */
+/* The catalogue the owner published (system/catalogPub, functions/src/catalog-admin.js): every domain context starts
+   from it, so the AI chat, «اكتب مشكلتك», the call centre and the served-governorate check see what customers see.
+   Cached per instance for CATALOG_TTL_MS (one Firestore read per instance every 5 minutes at most). */
+const CATALOG_TTL_MS = 5 * 60 * 1000;
+let pubCatalog = { json: '', at: 0 };
+function invalidateCatalog() { pubCatalog.at = 0; }
+function setPublishedCatalog(json) { pubCatalog = { json: typeof json === 'string' ? json : '', at: Date.now() }; }
+async function refreshCatalog(backend) {
+  if (Date.now() - pubCatalog.at < CATALOG_TTL_MS || !backend || typeof backend.getDoc !== 'function') return;
+  try { const p = await backend.getDoc('system/catalogPub'); setPublishedCatalog(p && !p.off ? p.json : ''); }
+  catch (e) { pubCatalog.at = Date.now(); }   // keep the last copy; try again after the TTL
+}
+
 function createContext(db, roster, rbac) {
-  const local = memStorage(db ? { [DB_KEY]: JSON.stringify(db) } : {});
+  const init = db ? { [DB_KEY]: JSON.stringify(db) } : {};
+  if (pubCatalog.json) init.hs_catalog_pub = pubCatalog.json;
+  const local = memStorage(init);
   const ctx = {
     console, setTimeout, clearTimeout, Promise, JSON, Date, Math,
     localStorage: local, sessionStorage: memStorage(),
@@ -90,4 +105,4 @@ function operation({ db, roster, rbac }, fn) {
 /** Empty, valid database (what a brand-new backend starts from). */
 function emptyDb() { return snapshot(createContext(null, [])); }
 
-module.exports = { request, operation, emptyDb, createContext, snapshot, ORDER, DERIVED };
+module.exports = { request, operation, emptyDb, createContext, snapshot, ORDER, DERIVED, refreshCatalog, setPublishedCatalog, invalidateCatalog };

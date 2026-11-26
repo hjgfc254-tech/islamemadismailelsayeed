@@ -88,6 +88,8 @@
     const errors = {};
     for (const k of REQUIRED) if (!String(b[k] || '').trim()) errors[k] = 'مطلوب';
     if (String(b.desc || '').length > 2000) errors.desc = 'الوصف أطول من 2000 حرف';
+    /* the governorates the owner serves (published catalogue, CAT.govs) — also enforced here, not only in the app */
+    if (!errors.gov && typeof CAT !== 'undefined' && CAT.govs) { const served = CAT.govs(); if (served.length && !served.includes(String(b.gov).trim())) errors.gov = 'لسه مش متاحين في المحافظة دي'; }
     if (b.geo != null) {   /* optional map pin: two finite numbers in range, nothing else is stored */
       const g = b.geo, lat = g && Number(g.lat), lng = g && Number(g.lng);
       if (typeof g !== 'object' || !Number.isFinite(lat) || !Number.isFinite(lng) || Math.abs(lat) > 90 || Math.abs(lng) > 180) errors.geo = 'موقع غير صالح';
