@@ -48,7 +48,7 @@ const digestAdmin = require('./digest-admin');
 const alerts = require('./alerts');
 const { applyStatsDelta } = require('./provider-stats');
 /* admin-code errors carry a callable error code: rethrow them as ServiceError (index.js maps those to HttpsError) */
-const viaCode = async (p) => { try { return await p; } catch (e) { if (e && e.isServiceError) fail(e.code, e.message); throw e; } };
+const viaCode = async (p) => { try { return await p; } catch (e) { if (e && e.isServiceError) { const se = new ServiceError(e.code, e.message); if (e.details) se.details = e.details; throw se; } throw e; } };
 const content = require('./content');
 const ai = require('./ai');
 const catalogAdmin = require('./catalog-admin');
@@ -627,14 +627,18 @@ async function session(backend, { auth, data, ip }) {
         return { ok: true, replay: res.replay, employeeId: res.employee.id };
       });
     }
-    case 'adminCode': {   /* {action: 'set' | 'unlock' | 'lock', code?, current?} — the 8-digit access code */
+    case 'adminCode': {   /* {action: 'set' | 'unlock' | 'lock' | 'totpStatus' | 'totpSetup' | 'totpEnable' | 'totpDisable', code?, current?, totp?} — the 8-digit access code + optional authenticator app */
       if (!token) fail('unauthenticated', 'سجّل الدخول أولًا');
       const admin = await backend.getDoc(`admins/${token.uid}`);
       if (!admin || admin.status !== 'active') fail('permission-denied', 'هذا الحساب ليس له صلاحية إدارة');
       await rateLimit(backend, token.uid);
-      if (d.action === 'set') return viaCode(adminCode.setCode(backend, token.uid, admin, d.code, d.current));
-      if (d.action === 'unlock') return viaCode(adminCode.unlock(backend, token.uid, admin, d.code));
+      if (d.action === 'set') return viaCode(adminCode.setCode(backend, token.uid, admin, d.code, d.current, Date.now(), d.totp));
+      if (d.action === 'unlock') return viaCode(adminCode.unlock(backend, token.uid, admin, d.code, Date.now(), d.totp));
       if (d.action === 'lock') { await adminCode.lockNow(backend, token.uid); return { ok: true }; }
+      if (d.action === 'totpStatus') return viaCode((async () => adminCode.totpStatus(admin))());
+      if (d.action === 'totpSetup') return viaCode(adminCode.totpSetup(backend, token.uid, admin, token.email));
+      if (d.action === 'totpEnable') return viaCode(adminCode.totpEnable(backend, token.uid, admin, d.code));
+      if (d.action === 'totpDisable') return viaCode(adminCode.totpDisable(backend, token.uid, admin, d.code));
       fail('invalid-argument', 'unknown adminCode action');
       break;
     }
