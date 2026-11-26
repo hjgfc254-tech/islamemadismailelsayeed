@@ -164,6 +164,20 @@ exports.agentApi = onRequest({ region: 'me-central1', cors: false, maxInstances:
   }
 });
 
+/* Published service catalogue for the apps: GET https://<site>/catalog-feed (firebase.json Hosting rewrite). Public, read
+   only; the CDN caches it (s-maxage) so customers never read Firestore for the catalogue — src/catalog-admin.js feed. */
+const catalogAdmin = require('./src/catalog-admin');
+exports.catalogFeed = onRequest({ region: 'me-central1', cors: true, maxInstances: 3, timeoutSeconds: 15, memory: '256MiB' }, async (req, res) => {
+  try {
+    if (req.method !== 'GET' && req.method !== 'HEAD') { res.status(405).send(''); return; }
+    const out = await catalogAdmin.feed(backend);
+    res.set(out.headers).status(out.status).send(out.body);
+  } catch (e) {
+    logger.error('catalogFeed failed', { error: e && e.message });
+    res.set('Cache-Control', 'no-store').status(503).json({ ok: false });
+  }
+});
+
 /* call transcripts are kept 30 days, then removed (the call summary stays) — docs/AI_CALLCENTER.md «Retention» */
 exports.callLogsClock = onSchedule({ schedule: 'every 24 hours', region: 'me-central1', timeoutSeconds: 120 }, async () => {
   try { const r = await agentGateway.retentionTick(backend); if (r.deleted) logger.info('callLogsClock', r); }

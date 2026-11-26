@@ -77,6 +77,15 @@
       ".github/**",
       "tools/**"
     ],
+    "rewrites": [
+      {
+        "source": "/catalog-feed",
+        "function": {
+          "functionId": "catalogFeed",
+          "region": "me-central1"
+        }
+      }
+    ],
     "redirects": [
       {
         "source": "/",

@@ -35,6 +35,7 @@ hansalhlak/
 │   │   │   ├── admin-live-panels.js
 │   │   │   ├── admin-live.js
 │   │   │   ├── ai-settings.js
+│   │   │   ├── catalog-editor.js
 │   │   │   ├── client-errors.js
 │   │   │   ├── command-palette.js
 │   │   │   ├── digest-settings.js
@@ -386,6 +387,7 @@ hansalhlak/
 │   ├── agent-briefs/
 │   │   ├── architecture-maintenance.md
 │   │   ├── callcenter-ai.md
+│   │   ├── catalog-question-bank.md
 │   │   ├── design-micro-audit-2.md
 │   │   ├── design-micro-audit.md
 │   │   ├── digest.md
@@ -503,6 +505,7 @@ hansalhlak/
 │   │   │   ├── api-client.js
 │   │   │   ├── auth-api.js
 │   │   │   ├── catalog-api.js
+│   │   │   ├── catalog-question-bank.js
 │   │   │   ├── customer-api.js
 │   │   │   ├── finance-api.js
 │   │   │   ├── local-catalog.js
@@ -524,6 +527,7 @@ hansalhlak/
 │   │   ├── ai.js
 │   │   ├── alerts-adapter.js
 │   │   ├── alerts.js
+│   │   ├── catalog-admin.js
 │   │   ├── chat-llm.js
 │   │   ├── content.js
 │   │   ├── digest-admin.js
@@ -572,6 +576,8 @@ hansalhlak/
 │   ├── api-client.js
 │   ├── auth-api.js
 │   ├── catalog-api.js
+│   ├── catalog-question-bank.js
+│   ├── catalog-remote.js
 │   ├── customer-api.js
 │   ├── finance-api.js
 │   ├── firebase-backend.js
@@ -691,6 +697,8 @@ hansalhlak/
 │       ├── api-gaps.test.js
 │       ├── audit-log.test.js
 │       ├── callcenter-agent.test.js
+│       ├── catalog-publish.test.js
+│       ├── catalog-question-bank.test.js
 │       ├── catalog-wizard.test.js
 │       ├── categories-management.test.js
 │       ├── client-error-telemetry.test.js

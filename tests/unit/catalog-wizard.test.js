@@ -13,7 +13,7 @@ const fields={}, qfields={};
 vm.createContext(ctx);
 /* The wizard submits through the API adapters (2026-11-14): load them with the customer demo session. */
 ctx.sessionStorage={getItem:k=>mem['ss_'+k]||null,setItem:(k,v)=>mem['ss_'+k]=String(v),removeItem:k=>delete mem['ss_'+k]}; ctx.globalThis=ctx;
-for(const f of ['services/local-catalog.js','services/local-market-store.js','services/api-client.js','services/auth-api.js','services/orders-api.js','services/customer-api.js','apps/customer/customer-session.js']) vm.runInContext(fs.readFileSync(path.join(dir,f),'utf8').replace(/^'use strict';/m,''),ctx,{filename:f});
+for(const f of ['services/catalog-question-bank.js','services/local-catalog.js','services/local-market-store.js','services/api-client.js','services/auth-api.js','services/orders-api.js','services/customer-api.js','apps/customer/customer-session.js']) vm.runInContext(fs.readFileSync(path.join(dir,f),'utf8').replace(/^'use strict';/m,''),ctx,{filename:f});
 vm.runInContext(fs.readFileSync(path.join(dir,'apps/customer/pages/request-wizard.page.js'),'utf8').replace(/^'use strict';/m,''),ctx,{filename:'apps/customer/pages/request-wizard.page.js'});
 const run=c=>vm.runInContext(c,ctx);
 let pass=0, fail=0; const ok=(c,m)=>{ if(c){pass++;} else {fail++; console.log('FAIL:',m);} };

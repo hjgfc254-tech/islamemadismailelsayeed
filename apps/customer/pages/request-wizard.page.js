@@ -87,7 +87,7 @@ let wzMapPick = null, wzMapAddr = null;
 /* the place found on the map / by GPS fills the empty address fields (governorate, area, street) — never overwrites typing */
 function wzFillFromAddr(a){
   if (!WZ || !a) return;
-  const A = WZ.address, govs = (MP && MP.GOVS) || [];
+  const A = WZ.address, govs = (typeof CAT !== 'undefined' && CAT.govs) ? CAT.govs() : ((MP && MP.GOVS) || []);
   if (a.gov && govs.includes(a.gov) && !A.gov) A.gov = a.gov;
   if (a.area && !(A.area || '').trim()) A.area = a.area;
   if (a.street && !(A.addr || '').trim()) A.addr = a.street;
@@ -281,6 +281,8 @@ function wzCheckStep(step){
   }
   if (step === 6) {
     if (!w.address.gov) return 'اختر المحافظة';
+    /* the owner chooses the served governorates (Admin › كتالوج الخدمات); a saved address elsewhere is not accepted */
+    if (typeof CAT !== 'undefined' && CAT.govs && !CAT.govs().includes(w.address.gov)) return 'لسه مش متاحين في ' + w.address.gov + ' — اختار محافظة تانية';
     if (!w.address.area.trim()) return 'اكتب المنطقة';
     if (w.address.addr.trim().length < 5) return 'اكتب العنوان بالتفصيل';
     return '';
@@ -632,7 +634,7 @@ Object.assign(screens, {
       body = `<div class="form">
         ${geoCard}
         ${addrChips}
-        <div><label for="wz-gov">المحافظة *</label><select id="wz-gov" required aria-required="true"><option value="">اختر المحافظة</option>${(MP ? MP.GOVS : []).map(g=>`<option ${g===w.address.gov?'selected':''}>${_esc(g)}</option>`).join('')}</select></div>
+        <div><label for="wz-gov">المحافظة *</label><select id="wz-gov" required aria-required="true"><option value="">اختر المحافظة</option>${((typeof CAT !== 'undefined' && CAT.govs) ? CAT.govs() : (MP ? MP.GOVS : [])).map(g=>`<option ${g===w.address.gov?'selected':''}>${_esc(g)}</option>`).join('')}</select></div>
         <div><label for="wz-area">المنطقة *</label><input id="wz-area" required aria-required="true" list="areas" value="${_esc(w.address.area)}" placeholder="المنطقة / الحي"><datalist id="areas">${((MP && MP.AREA_HINTS[w.address.gov]) || []).map(a=>`<option value="${_esc(a)}">`).join('')}</datalist></div>
         <div><label for="wz-addr">الشارع ورقم العقار *</label><input id="wz-addr" required aria-required="true" value="${_esc(w.address.addr)}" placeholder="الشارع، رقم العمارة"></div>
         <div><label for="wz-detail">الدور / الشقة / تفاصيل</label><input id="wz-detail" value="${_esc(w.address.detail)}" placeholder="الدور، الشقة، علامة مميزة"></div>

@@ -10,7 +10,7 @@ const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const ROOT = path.resolve(__dirname, '..');
 const OUT = path.join(ROOT, 'functions', 'domain');
 const FILES = [
-  'shared/config/legacy-data.js', 'services/local-catalog.js', 'services/local-market-store.js',
+  'shared/config/legacy-data.js', 'services/catalog-question-bank.js', 'services/local-catalog.js', 'services/local-market-store.js',
   'services/api-client.js', 'services/auth-api.js', 'services/orders-api.js', 'services/quotes-api.js',
   'services/catalog-api.js', 'services/provider-api.js', 'services/customer-api.js', 'services/notifications-api.js',
   'services/support-api.js', 'services/finance-api.js', 'services/admin-api.js',

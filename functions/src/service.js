@@ -51,6 +51,7 @@ const { applyStatsDelta } = require('./provider-stats');
 const viaCode = async (p) => { try { return await p; } catch (e) { if (e && e.isServiceError) fail(e.code, e.message); throw e; } };
 const content = require('./content');
 const ai = require('./ai');
+const catalogAdmin = require('./catalog-admin');
 const supportChat = require('./support-chat');
 const { invalidateShared } = require('./partial');
 const agentGateway = require('./agent-gateway');
@@ -329,6 +330,11 @@ async function api(backend, { auth, data, ip }) {
     /* the call centre works one caller at a time through /agent/* — no AI keys, site content, admin extras or dashboard counts */
     if (actor && actor.role === 'admin' && actor.adminRole === 'callcenter' && (ai.PATH_RE.test(req.path) || content.PATH_RE.test(req.path) || adminExtra.PATH_RE.test(req.path) || /^\/admin\/(summary|employees|rbac)(\/|$)/.test(req.path))) {
       return { envelope: { ok: false, status: 403, error: { code: 'FORBIDDEN', message: 'دور الكول سنتر بيشتغل من صفحة «الكول سنتر» بس' } }, changes: {}, actor };
+    }
+    if (catalogAdmin.PATH_RE.test(req.path)) {   // service catalogue draft / publish (catalog-admin.js; customers read the CDN feed)
+      if (!actor || actor.role !== 'admin' || actor.adminRole === 'callcenter') return { envelope: adminOnly(!!actor), changes: {}, actor };
+      const envelope = await catalogAdmin.handle({ backend, tx, method: req.method, path: req.path, body: req.body, admin });
+      return { envelope, changes: envelope.ok && !isRead ? { admin: { set: [req.path], del: [] } } : {}, actor, db: {}, quiet: true };
     }
     if (ai.PATH_RE.test(req.path)) {          // AI providers / keys (server-only document system/ai)
       if (!actor || actor.role !== 'admin') return { envelope: adminOnly(!!actor), changes: {}, actor };

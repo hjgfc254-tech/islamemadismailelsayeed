@@ -108,6 +108,7 @@ Global options: `region: 'me-central1'`, `maxInstances: 10`. Callables use `{ en
 | `digestClock` | Cloud Scheduler | me-central1 | `5 * * * *` (timeZone Africa/Cairo) | 300 s | `RESEND_API_KEY` or `SMTP_*`, `MAIL_FROM` | `digest-admin.tick` |
 | `alertsClock` | Cloud Scheduler | me-central1 | `every 5 minutes` | 120 s | — | `alerts.tick` + `service.scanOps` (MP.opsScan) |
 | `agentApi` | HTTPS (`onRequest`, `cors: false`) | me-central1 | `maxInstances: 5`; per key `AGENT_RATE_PER_MIN` (default 120); bad auth 20/min per IP | 30 s | `AGENT_API_KEYS`, `AGENT_RATE_PER_MIN` | `service.agentHttp` → `agent-gateway.http` |
+| `catalogFeed` | HTTPS (`onRequest`, public GET) via the Hosting rewrite `/catalog-feed` | me-central1 | `maxInstances: 3`; CDN `s-maxage=300` (about one Firestore read per edge every 5 minutes) | 15 s | — | `catalog-admin.feed` (published `system/catalogPub`) |
 | `callLogsClock` | Cloud Scheduler | me-central1 | `every 24 hours` | 120 s | — | `agent-gateway.retentionTick` + `support-chat.retentionTick` |
 
 Unexpected errors inside `api` / `session` are logged, reported into «أخطاء عند المستخدمين» as app `server`
@@ -136,6 +137,7 @@ Unexpected errors inside `api` / `session` are logged, reported into «أخطا�
 | `ai.js` | AI routing «اكتب مشكلتك / صوّر المشكلة», provider config `system/ai` | service, support-chat |
 | `support-chat.js` / `chat-llm.js` | AI chat «موظف خدمة العملاء» with 12 tools, provider-neutral LLM calls | service |
 | `agent-gateway.js` | call-centre routes `/agent/*` for humans (api) and AI agents (agentApi) | service, index, support-chat |
+| `catalog-admin.js` | service catalogue draft / publish (`/admin/catalog`, owner / admin) and the public CDN feed; the apps load it with `services/catalog-remote.js`, and the default questions come from `services/catalog-question-bank.js` | service, index |
 | `digest.js` / `digest-admin.js` / `mailer.js` | e-mail digests (render, schedule, send via Resend / SMTP) | service, index |
 
 ### 1.5 Firestore collections
@@ -637,6 +639,16 @@ Any change under `apps/`, `shared/`, `services/`, `assets/`, `index.html` or `ma
   can also resend the invite. **Reset the 8-digit code:** owner → `#/security` → the reset-code action
   (`POST /admin/security/reset-code/:uid`, never self). **Sign someone out everywhere:** `POST /admin/security/revoke/:uid`.
 - **Disable:** `#/employee-details` → status disabled (`POST /admin/employees/:id/status`); takes effect on the next request.
+
+### 4.6b Edit and publish the service catalogue (services, questions, governorates)
+
+1. Open Admin › الخدمات (Firebase mode). The «كتالوج الخدمات» editor starts from the catalogue the app runs on now.
+2. Add, rename, pause or delete categories, services and problems.
+3. Pick each service's and each problem's questions from «بنك الأسئلة» and mark them «إجباري» or not. Edit the bank itself if needed.
+4. Choose the served governorates under «المحافظات».
+5. Click «حفظ المسودة», then «انشر للعملاء» (`POST /admin/catalog/publish`, rev + 1). Customers get it within about 5 minutes: the CDN caches `/catalog-feed` with `s-maxage=300`, and the apps keep a device copy in `hs_catalog_pub`.
+6. To roll back, publish an older draft again, or call `POST /admin/catalog/unpublish`; the apps then fall back to the built-in catalogue (`services/local-catalog.js` together with `services/catalog-question-bank.js`).
+7. Old requests are not affected, because ids are stable. Never reuse a deleted service's id for something else.
 
 ### 4.7 Maintenance mode and the AI chat
 - **Maintenance on/off:** owner → `#/controls` «الطوارئ والصيانة» → «وضع الصيانة» with an optional message

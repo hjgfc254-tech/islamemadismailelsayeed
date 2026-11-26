@@ -450,16 +450,33 @@ function buildSeed(){
       problems.push({id:itemId+'/other',item:itemId,cat:cid,slug:'other',name:'مشكلة أخرى',warn:'',needsVisit:true,active:true,order:99,extraQuestions:[],attachments:{photos:'optional',video:'optional'},isOther:true});
     });
   }
+  /* the question bank (services/catalog-question-bank.js, loaded before this file): items / problems reference bank
+     questions by id ({id, required}); without the bank the legacy Q_SETS composition below is used */
+  const G = typeof globalThis !== 'undefined' ? globalThis : {};
+  if (Array.isArray(G.HS_Q_BANK) && G.HS_Q_ITEM) {
+    items.forEach(i => { i.qs = (G.HS_Q_ITEM[i.id] || []).map(r => ({id:r.id, required:!!r.required})); });
+    problems.forEach(p => { p.qs = ((G.HS_Q_PROBLEM || {})[p.id] || []).map(r => ({id:r.id, required:!!r.required})); });
+    return {v:3,bank:G.HS_Q_BANK.map(q => Object.assign({}, q, q.options ? {options:q.options.slice()} : {})),govs:null,categories:cats,items,problems};
+  }
   return {v:2,categories:cats,items,problems};
+}
+/* the catalogue published by the admin (GET /catalog-feed, CDN-cached) — validated shape, or null */
+function validPublished(d){
+  return !!(d && d.v === 3 && +d.rev > 0 && Array.isArray(d.bank) && Array.isArray(d.categories) && Array.isArray(d.items) && Array.isArray(d.problems) && d.categories.length && d.items.length);
 }
 
 /* ═════════ الكائن العام CAT ═════════ */
 const CAT = (() => {
   const KEY='hs_catalog_v1';   /* نحتفظ بنفس المفتاح — الإصدار يُدار عبر db.v */
+  const PUB_KEY='hs_catalog_pub';   /* the last published catalogue from the server (wins over the built-in seed) */
   let db;
-  const load=()=>{ try{ const r=localStorage.getItem(KEY); db=r?JSON.parse(r):buildSeed(); }catch{ db=buildSeed(); }
-    if(!db||!db.v||db.v<2){ db=buildSeed(); } };
-  const save=()=>{ try{ localStorage.setItem(KEY,JSON.stringify(db)); }catch(e){ console.warn('catalog storage',e); } if(api.onChange) api.onChange(); };
+  const load=()=>{
+    try{ const p=localStorage.getItem(PUB_KEY); if(p){ const d=JSON.parse(p); if(validPublished(d)){ db=d; return; } } }catch{}
+    try{ const r=localStorage.getItem(KEY); db=r?JSON.parse(r):buildSeed(); }catch{ db=buildSeed(); }
+    /* a device copy older than the built-in seed's version (v2 → v3 bank) is rebuilt */
+    const seedV = (typeof globalThis!=='undefined' && Array.isArray(globalThis.HS_Q_BANK)) ? 3 : 2;
+    if(!db||!db.v||db.v<seedV){ db=buildSeed(); } };
+  const save=()=>{ try{ localStorage.setItem(db && db.rev ? PUB_KEY : KEY,JSON.stringify(db)); }catch(e){ console.warn('catalog storage',e); } if(api.onChange) api.onChange(); };
   load();
   const ord=(a,b)=>a.order-b.order;
   const act=(l,all)=>all?l.slice().sort(ord):l.filter(x=>x.active).sort(ord);
@@ -489,6 +506,16 @@ const CAT = (() => {
     questionsFor(itemId, problemId){
       const i = api.item(itemId); if(!i) return [];
       const c = api.category(i.cat), p = problemId && api.problem(problemId);
+      /* bank catalogue (v3): the item's chosen questions, then the problem's — each resolved from the bank */
+      if (Array.isArray(i.qs) && Array.isArray(db.bank)) {
+        const seenB = new Set(), out = [];
+        [].concat(i.qs, (p && Array.isArray(p.qs)) ? p.qs : []).forEach(r => {
+          const q = r && db.bank.find(b => b.id === r.id);
+          if (!q || seenB.has(q.id)) return; seenB.add(q.id);
+          out.push(Object.assign({}, q, {required: !!r.required}, q.options ? {options: q.options.slice()} : {}));
+        });
+        return out;
+      }
       const catKind = c ? c.kind : 'fault';
       const base = Array.isArray(Q_SETS[catKind]) ? Q_SETS[catKind].slice() : [];
       const ex = (i.qset && Q_SETS[i.qset]) ? Q_SETS[i.qset].slice() : [];
@@ -551,6 +578,17 @@ const CAT = (() => {
       if(col==='item'){ db.problems=db.problems.filter(p=>p.item!==id); }
       db[k]=db[k].filter(x=>x.id!==id); save(); },
     reset(){ db=buildSeed(); save(); },
+    /* ── server-published catalogue (admin «انشر» → GET /catalog-feed) ── */
+    bank:()=>Array.isArray(db.bank)?db.bank:[],
+    rev:()=>+db.rev||0,
+    /* the governorates the platform serves (null = all of them) */
+    govs(){ const all=(typeof MP!=='undefined'&&MP&&MP.GOVS)||[]; return Array.isArray(db.govs)&&db.govs.length ? all.filter(g=>db.govs.includes(g)).concat(db.govs.filter(g=>!all.includes(g))) : all.slice(); },
+    /* adopt a newer published catalogue; returns true when it changed what customers see */
+    applyRemote(d){ if(!validPublished(d) || (+d.rev||0) <= api.rev() && db.rev) return false; db=d; save(); return true; },
+    /* back to the built-in seed (e.g. the server has nothing published yet) */
+    dropRemote(){ try{ localStorage.removeItem(PUB_KEY); }catch{} if(db.rev){ db=null; load(); if(!db) db=buildSeed(); if(api.onChange) api.onChange(); } },
+    seed:()=>buildSeed(),
+    valid3:validPublished,
     onChange:null
   };
   return api;

@@ -173,9 +173,12 @@
       const prices = p.ok ? p.data.prices : {}, m = p.ok ? +p.data.markupRate : 0;
       const c = typeof CAT !== 'undefined' && CAT.db ? CAT.db() : { categories: [], items: [] };
       const catName = (id) => { const k = (c.categories || []).find((x) => x.id === id); return k ? k.name : id; };
-      host.innerHTML = frame('الخدمات', table(['الخدمة', 'القسم', 'مبلغ مقدم الخدمة', 'سعر العميل'], (c.items || []).map((it) => {
+      /* the catalogue editor (modules/catalog-editor.js) sits above the price list */
+      host.innerHTML = '<div data-catalog-editor></div>' + frame('الخدمات', table(['الخدمة', 'القسم', 'مبلغ مقدم الخدمة', 'سعر العميل'], (c.items || []).map((it) => {
         const b = prices[it.id]; return [esc(it.name), esc(catName(it.cat)), esc(b ? money(b) : '—'), esc(b ? money(Math.round(b * (1 + m / 100))) : 'بعد المعاينة')];
       })) + '<p class="ord-muted">تعديل الأسعار من صفحة «التصنيفات» (اختر الجهاز أو نوع العمل).</p>');
+      const ce = host.querySelector('[data-catalog-editor]');
+      if (ce && root.HSCatalogEditor) root.HSCatalogEditor.mount(ce).catch(() => { ce.innerHTML = '<p class="ord-muted">تعذّر تحميل كتالوج الخدمات.</p>'; });
     }
   };
 

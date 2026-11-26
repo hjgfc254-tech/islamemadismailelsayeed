@@ -78,7 +78,7 @@ const Addresses = (() => {
       <form class="form" id="addrForm" data-id="${a ? a.id : ''}">
         <div><label for="addr-gov">المحافظة *</label>
           <select id="addr-gov" required><option value="">اختر المحافظة</option>
-            ${(MP.GOVS || []).map(g => `<option ${g === v.gov ? 'selected' : ''}>${_esc(g)}</option>`).join('')}
+            ${((typeof CAT !== 'undefined' && CAT.govs) ? CAT.govs() : (MP.GOVS || [])).map(g => `<option ${g === v.gov ? 'selected' : ''}>${_esc(g)}</option>`).join('')}
           </select>
         </div>
         <div><label for="addr-area">المنطقة *</label>

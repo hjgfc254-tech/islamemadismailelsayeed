@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 699,
+  "file_count": 707,
   "files": [
     {
       "path": "_redirects",
@@ -146,8 +146,8 @@
       "path": "apps/admin/index.html",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL HOST)",
-      "bytes": 6792,
-      "sha256": "10bdd98300f94bbfb0938fa82be507b6fca1174ae8b43d986721ff0373c23893"
+      "bytes": 6905,
+      "sha256": "9ca50511bc57533b6cc4e23cb644d2b45a0176017a40ee536c27a40c24e1877e"
     },
     {
       "path": "apps/admin/login.html",
@@ -181,8 +181,8 @@
       "path": "apps/admin/modules/admin-live-panels.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 21111,
-      "sha256": "95fa6a3abcaf55e2f8f139523d42f479db5e4f74c046dc7ae90dfacc81cfee15"
+      "bytes": 21477,
+      "sha256": "7a995b4d1afb82d07f1541ff638e2e62cb79654639c6df27dc1d19155eb33491"
     },
     {
       "path": "apps/admin/modules/admin-live.js",
@@ -211,6 +211,13 @@
       "status": "IMPLEMENTED (FRONTEND DEMO)",
       "bytes": 1382,
       "sha256": "416ef5cf821b1ee1b7d6d0b248a56053c6c684746027b26b54399f83952e5448"
+    },
+    {
+      "path": "apps/admin/modules/catalog-editor.js",
+      "area": "apps/admin",
+      "status": "NEEDS_REVIEW",
+      "bytes": 15939,
+      "sha256": "661c46edc42314360fd905ae52ab22e6ad98a1a813e40862bd0d6490f59f6bf8"
     },
     {
       "path": "apps/admin/modules/client-errors.js",
@@ -608,8 +615,8 @@
       "path": "apps/customer/index.html",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 10490,
-      "sha256": "d6e2c63afb53d72a09209a794edf3469863e5277f098da35a8774b847c080767"
+      "bytes": 10611,
+      "sha256": "05324e32fbde52e2c2019c67d66feeee9d2154ca70b844d768d70036567393f4"
     },
     {
       "path": "apps/customer/pages/account.page.js",
@@ -622,8 +629,8 @@
       "path": "apps/customer/pages/addresses.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 10307,
-      "sha256": "0a8114cfb9a5c44c69b3cda5f1c5c386378b9830c776df14a7f356eff320c083"
+      "bytes": 10365,
+      "sha256": "1ea89c72ad0853dd50a7e1dcd5d744e5bbcc86ac465b3c3a0f82a71d9b9d7f41"
     },
     {
       "path": "apps/customer/pages/ai-assist.js",
@@ -713,8 +720,8 @@
       "path": "apps/customer/pages/request-wizard.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 77948,
-      "sha256": "a257d059c4ad4f85a92bf91f5afeba7c49abaedf5b5178f066c0a6675a43a93a"
+      "bytes": 78387,
+      "sha256": "e5da3fee763668079613c602188e283d3d649fdddf39fd22f6478f2ce92766e9"
     },
     {
       "path": "apps/customer/pages/search.page.js",
@@ -811,8 +818,8 @@
       "path": "apps/provider/index.html",
       "area": "apps/provider",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
-      "bytes": 3734,
-      "sha256": "72f543b7c271cb32451117964aaa9c7cefa45bbcca23cd17ef533df91617ff9c"
+      "bytes": 3855,
+      "sha256": "3b59773dcb643b0d101c7d3ca1c8e7f3d3b155747d6b01177fae16a2c4eea238"
     },
     {
       "path": "apps/provider/login.html",
@@ -2250,6 +2257,13 @@
       "sha256": "7468fa29ca39a769493c6306d7b5e463608346d811894f3e705025c2414e6ee5"
     },
     {
+      "path": "docs/agent-briefs/catalog-question-bank.md",
+      "area": "docs",
+      "status": "NEEDS_REVIEW",
+      "bytes": 4561,
+      "sha256": "3415ac794b19195175baaff1e20d81f13f1a6c696a864f39df4cee7d82b7bacd"
+    },
+    {
       "path": "docs/agent-briefs/design-micro-audit-2.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
@@ -2414,8 +2428,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 304914,
-      "sha256": "efb02706ff9caefe0daef4356d87f11937150d0ee2850467aea2ba1bf1543e80"
+      "bytes": 306885,
+      "sha256": "59eb17215769d268176b9afbea23205858bc84873b5a1786b84e08ccb9d531b8"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2428,8 +2442,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 173700,
-      "sha256": "389b26e1b0b9346a06f1639d5dddb6b888d562592cf467b925c2aafb1509d979"
+      "bytes": 175447,
+      "sha256": "838cb0ededd66152a79c1b5f544cf45fbca96a298bf0469da4cb1a359da7c66c"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2827,8 +2841,8 @@
       "path": "docs/MAINTENANCE_GUIDE.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 66579,
-      "sha256": "7af6808d5707e36adf256c13436dec93012b04d4cbba0c56c15b29c095aa8304"
+      "bytes": 68204,
+      "sha256": "847369d4a61b9d1d5079e084e7382b5af5a547ebd0dbce2072c5062400761809"
     },
     {
       "path": "docs/MIGRATION_PLAN.md",
@@ -2869,8 +2883,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 32807,
-      "sha256": "da301a20a087632426d594427e41687ff5e1b8b385b297ba509c3e3dc806a29e"
+      "bytes": 33161,
+      "sha256": "20db68ae7e6e4745c908af04ae5096009dbaee1324744141fbdfdfddb69d66b4"
     },
     {
       "path": "docs/README.md",
@@ -2911,8 +2925,8 @@
       "path": "firebase.json",
       "area": "firebase.json",
       "status": "NEEDS_REVIEW",
-      "bytes": 3151,
-      "sha256": "b3f383c999fa3f2c482288924d2c49357a71e82cd926dfe342a85abd27e9080a"
+      "bytes": 3332,
+      "sha256": "0f956b9e4e3b89f8e9d77232ce29fb2ffbbfe42563f84ec518a6563d1fc22c3f"
     },
     {
       "path": "firestore.indexes.json",
@@ -2995,8 +3009,8 @@
       "path": "functions/domain/manifest.json",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 2360,
-      "sha256": "6989fc6e3ac0869bbf126a2c8b146436ee2d8452d8ca905435930f548bada11b"
+      "bytes": 2469,
+      "sha256": "1eaff458e7c3db6f25bfab867c2e522eea963cb216a82bd16d93c574dff17670"
     },
     {
       "path": "functions/domain/services/admin-api.js",
@@ -3027,6 +3041,13 @@
       "sha256": "b849ea9b4ddbaedde173a6033e2e2229acdbb16c1c5c7326cdcb3e3dbb506a8d"
     },
     {
+      "path": "functions/domain/services/catalog-question-bank.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 16221,
+      "sha256": "b1b8388fe23aae07c70b5fc6c2953788a9f3929918725d756d88cae3f566effe"
+    },
+    {
       "path": "functions/domain/services/customer-api.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
@@ -3044,8 +3065,8 @@
       "path": "functions/domain/services/local-catalog.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 51276,
-      "sha256": "480af36d4453b19360d872fdd84dc6ba673bb99b9763d4c5e9d397bb07df044b"
+      "bytes": 54320,
+      "sha256": "62a4536301c2b3b1c1927f5a14ac81a4ae01ae3848a3fba22016aee1b830b39c"
     },
     {
       "path": "functions/domain/services/local-market-store.js",
@@ -3107,8 +3128,8 @@
       "path": "functions/index.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 12333,
-      "sha256": "c6ca2109015a24730c075d2e12fa87f4f4d9184986576ea53b7a83fdfd72eedd"
+      "bytes": 13158,
+      "sha256": "31d798e2743beef0def4018263a83944c7dfc506fc48c63df62fce7f660e885c"
     },
     {
       "path": "functions/package-lock.json",
@@ -3165,6 +3186,13 @@
       "status": "NEEDS_REVIEW",
       "bytes": 10933,
       "sha256": "ddce9806994867fd0e21bc721b25e5250d80866ae1d789d250fe289623a77115"
+    },
+    {
+      "path": "functions/src/catalog-admin.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 10518,
+      "sha256": "95d8fd46835036049f135df8cd93f4d46dee92d7caa94c83e2ff3bc38e075f4e"
     },
     {
       "path": "functions/src/chat-llm.js",
@@ -3247,8 +3275,8 @@
       "path": "functions/src/runtime.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 5150,
-      "sha256": "3ca6acd634d5d5bace6e8255ad033f1152ba17e8c2bead6446bc13098a8b5754"
+      "bytes": 5187,
+      "sha256": "a8fa77e1c29787544f780b48b482562deaa17533852c0b497b8ff48517577c3f"
     },
     {
       "path": "functions/src/scope.js",
@@ -3261,8 +3289,8 @@
       "path": "functions/src/service.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 52169,
-      "sha256": "81d41fb5b261d1fa023cc11455d69191a1d4e3a4565852a742f5c8d0e10fcf64"
+      "bytes": 52760,
+      "sha256": "b1f6886d234f8edfed2221e5884b5cf6ef41ed19e73e8e44d6c21888b3d069a7"
     },
     {
       "path": "functions/src/store.js",
@@ -3443,8 +3471,8 @@
       "path": "scripts/sync-functions-domain.cjs",
       "area": "scripts",
       "status": "NEEDS_REVIEW",
-      "bytes": 2333,
-      "sha256": "0400f9e4ca4dc28de77fc9e2113f757dbafda8fe2d3d8600eddeca3c4a4c905f"
+      "bytes": 2370,
+      "sha256": "5196f5e60024abb0b28e93c363e0ae8f45eb6c3459734240b70c0765668ddb61"
     },
     {
       "path": "scripts/verify-project-inventory.mjs",
@@ -3457,15 +3485,15 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 12071,
-      "sha256": "114c76c72191b819d5fec30792bddd14543536527cbf2f66e3f8c4f3ce781155"
+      "bytes": 12184,
+      "sha256": "44564492927c5606343c087ac73cc06c00c7a882230317703e53f3a0e998f1c4"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 196,
-      "sha256": "b0b0001b5326022f92a7a93093219fb166a398c237ff365f8c09c6dba43a5d22"
+      "sha256": "77ab4d471a3747a81abac900a613adf173b69d2e6a37f0cd38e698b28caf4915"
     },
     {
       "path": "services/admin-api.js",
@@ -3494,6 +3522,20 @@
       "status": "IMPLEMENTED (MOCK ADAPTER)",
       "bytes": 4536,
       "sha256": "b849ea9b4ddbaedde173a6033e2e2229acdbb16c1c5c7326cdcb3e3dbb506a8d"
+    },
+    {
+      "path": "services/catalog-question-bank.js",
+      "area": "services",
+      "status": "NEEDS_REVIEW",
+      "bytes": 16221,
+      "sha256": "b1b8388fe23aae07c70b5fc6c2953788a9f3929918725d756d88cae3f566effe"
+    },
+    {
+      "path": "services/catalog-remote.js",
+      "area": "services",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2578,
+      "sha256": "bc8e9f00edee15a57935a63c96245bec5637812f2ef6bf921d0c97d5445290ce"
     },
     {
       "path": "services/customer-api.js",
@@ -3534,8 +3576,8 @@
       "path": "services/local-catalog.js",
       "area": "services",
       "status": "IMPLEMENTED",
-      "bytes": 51276,
-      "sha256": "480af36d4453b19360d872fdd84dc6ba673bb99b9763d4c5e9d397bb07df044b"
+      "bytes": 54320,
+      "sha256": "62a4536301c2b3b1c1927f5a14ac81a4ae01ae3848a3fba22016aee1b830b39c"
     },
     {
       "path": "services/local-market-store.js",
@@ -4217,11 +4259,25 @@
       "sha256": "ed2df04d2546cab3101c0eacf5014a0a8da74c45f5862202e860bb5a868dbbf9"
     },
     {
+      "path": "tests/unit/catalog-publish.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 7190,
+      "sha256": "98531c805451306c2718030c5cc37ead57c6feb856e52efac0fa136095de16eb"
+    },
+    {
+      "path": "tests/unit/catalog-question-bank.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 3516,
+      "sha256": "8ae40827e101e37b3e32547aa1b73797c9e5e73316908789556f62c716897832"
+    },
+    {
       "path": "tests/unit/catalog-wizard.test.js",
       "area": "tests",
       "status": "IMPLEMENTED",
-      "bytes": 12623,
-      "sha256": "533d50edcf7ab6f85f83bc2e8776b5ef11491794aea94ec99bb8df195a19ef67"
+      "bytes": 12659,
+      "sha256": "6c61043d0b019b08e31256c5f836fb8ea0320a6afa4799391db8fd9c88b5cfaa"
     },
     {
       "path": "tests/unit/categories-management.test.js",
