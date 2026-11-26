@@ -37,7 +37,7 @@ async function start() {
     auth.settings.appVerificationDisabledForTesting = true;   // emulator only: no real reCAPTCHA
   }
   const callApi = F.httpsCallable(fns, 'api');
-  const callSession = F.httpsCallable(fns, 'session');
+  const callSession = F.httpsCallable(fns, 'session', { timeout: 125000 });   /* the server allows 120 s (AI chat) */
   const C = globalThis.HSApiClient;
   const APP = appName();
   let actor = null, last = null, syncing = null, offSignal = null, lastServerTime = 0, syncTimer = null;
