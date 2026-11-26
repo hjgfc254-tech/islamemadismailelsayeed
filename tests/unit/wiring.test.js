@@ -26,7 +26,7 @@ const sig = (r) => r.method + ' ' + r.path;
 
 /* ───────── 1. API routes → server data plan ───────── */
 const PLAN_SEG0 = ['requests', 'providers', 'customers', 'notifications', 'complaints'];     // plan.js `seg[0] === …`
-const PLAN_ADMIN_SEG1 = ['requests', 'providers', 'customers', 'reviews', 'transactions'];   // plan.js admin `seg[1] === …`
+const PLAN_ADMIN_SEG1 = ['requests', 'providers', 'customers', 'reviews', 'transactions', 'payments'];   // plan.js admin `seg[1] === …`
 /* routes whose handler reads only system/settings (loaded by plan.loadSystem) */
 const SETTINGS_ONLY = ['GET /pricing', 'GET /admin/commission', 'POST /admin/commission', 'GET /admin/pricing', 'POST /admin/pricing',
   'GET /admin/controls', 'POST /admin/controls', 'GET /admin/support-contacts', 'PATCH /admin/support-contacts',

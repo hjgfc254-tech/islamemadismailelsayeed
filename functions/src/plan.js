@@ -109,6 +109,17 @@ async function plan(ld, { method, path, query, body, actor }) {
     if (seg[1] === 'reviews' && seg[2]) { await ld.doc('reviews', seg[2]); return; }
     if (seg[1] === 'transactions' && seg.length === 2) { await ld.where('transactions', query.collection ? [['collection', '==', String(query.collection)]] : [], pageOpts(query, 'transactions', ['at', 'desc'])); return; }
     if (seg[1] === 'transactions') { await ld.doc('transactions', seg[2]); return; }
+    if (seg[1] === 'payments') {             // online payments: held money, pending refunds, payouts due (single-field queries)
+      if (seg[2] && seg[2] !== 'settings' && seg[2] !== 'payouts') { await requestBundle(ld, seg[2]); return; }
+      const [held, refunds, due] = await Promise.all([
+        ld.where('serviceRequests', [['payment.status', 'in', ['pending', 'topup', 'held']]], { limit: 200 }),
+        ld.where('serviceRequests', [['payment.refund.status', '==', 'pending']], { limit: 200 }),
+        ld.where('transactions', [['payout.status', '==', 'due']], { limit: 500 })
+      ]);
+      await requestsLite(ld, held.concat(refunds));
+      await ld.docsIn('providers', due.map(t => t.providerId));
+      return;
+    }
     return;                                   // commission → settings (already loaded); summary → aggregation (service)
   }
 

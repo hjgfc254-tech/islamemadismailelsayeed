@@ -541,6 +541,7 @@ hansalhlak/
 │   │   ├── mailer.js
 │   │   ├── owner-alerts.js
 │   │   ├── partial.js
+│   │   ├── payments.js
 │   │   ├── plan.js
 │   │   ├── provider-stats.js
 │   │   ├── retention.js
@@ -754,6 +755,7 @@ hansalhlak/
 │       ├── offers-undo-timer.test.js
 │       ├── order-lifecycle.test.js
 │       ├── orders-management.test.js
+│       ├── payments.test.js
 │       ├── policies.test.js
 │       ├── provider-app-a11y.test.js
 │       ├── provider-app-actions.test.js

@@ -122,6 +122,8 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /requests/:id/rate-customer` | provider | orders-api.js | Provider rates the customer once after the job {stars 1–5, comment}. |
 | `POST /requests/:id/widen` | customer | orders-api.js | No offers after the window: invite providers from other areas (once). |
 | `POST /requests/:id/cash` | customer, provider | orders-api.js | Cash after completion: did the money change hands {paid}. A mismatch opens a complaint. |
+| `POST /requests/:id/pay` | customer | orders-api.js | Choose how to pay the agreed price {method: cash or online}; online returns the amount due and, on the server, a Paymob checkoutUrl (money held until the customer confirms). |
+| `POST /requests/:id/pay/demo` | customer | orders-api.js | Local demo only: simulate the gateway confirming the online payment (refused on the server). |
 | `POST /admin/providers/:id/warn` | admin | admin-api.js | Warn a provider (e.g. off-platform deals) {reason}; the second warning suspends. |
 | `POST /requests/:id/bid` | provider | orders-api.js | Send or update an offer {kind: quote or inspection, labor + parts or fee, note, eta}. |
 | `POST /requests/:id/choose` | customer | orders-api.js | Choose one of the offers {providerId}. |
@@ -195,6 +197,11 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /admin/data-policy` | admin | admin-api.js | Owner only: {minimal: boolean} — mask customer data for support / moderator ranks. |
 | `GET /admin/marketing` | admin | admin-api.js | Promo codes, invite reward and packages. |
 | `PATCH /admin/marketing` | admin | admin-api.js | Replace promo codes / invite reward / packages {promos?, referral?, packages?}. |
+| `GET /admin/payments` | admin | admin-api.js | Online payments held, pending refunds, provider payouts due, payment settings (finance.view). |
+| `PATCH /admin/payments/settings` | admin | admin-api.js | Payment settings {online, warrantyDays, autoReleaseHours, gatewayRate} (finance.edit). |
+| `POST /admin/payments/payouts` | admin | admin-api.js | Mark a provider payout as transferred {providerId, ids[], ref}. |
+| `POST /admin/payments/:id/release` | admin | admin-api.js | Release a held online payment to the provider (dispute decided for the provider). |
+| `POST /admin/payments/:id/refund` | admin | admin-api.js | Refund a held online payment {amount?}; a partial refund releases the rest to the provider. |
 | `GET /admin/digest/config` | admin (owner) | functions/src/digest-admin.js | E-mail digest settings `{daily:{on,hour}, weekly:{on,weekday,hour}, extraRecipients:[{email,team}]}` (default all OFF), last run state, transport status (missing env names, never secret values), recipients with masked e-mails. |
 | `POST /admin/digest/config` | admin (owner) | functions/src/digest-admin.js | Save `{daily?, weekly?, extraRecipients?}`; field errors on invalid hour / weekday / e-mail / team. Audited. |
 | `GET /admin/digest/preview` | admin | functions/src/digest-admin.js | `?type=daily\|weekly&team=owner\|ops\|finance\|content\|tech` → `{type, team, label, subject, html, text}`. Owner may pick any team; other roles get their own team only. Counts and aggregates only, no personal data. |

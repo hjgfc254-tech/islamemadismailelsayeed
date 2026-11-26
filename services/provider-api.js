@@ -22,7 +22,7 @@
   /* Same rules as the Provider app form (apps/provider/app.js registrationFrom). */
   const PHONE_RE = /^[0-9+ ]{8,15}$/;
   const TYPES = ['individual', 'company'];
-  const EDITABLE = ['name', 'phone', 'type', 'cats', 'govs', 'areas', 'years', 'bio', 'docs'];
+  const EDITABLE = ['name', 'phone', 'type', 'cats', 'govs', 'areas', 'years', 'bio', 'docs', 'payoutWallet'];   // payoutWallet: where weekly online earnings are sent
   /* SERVICE_TYPES is a global lexical binding (shared/config/legacy-data.js). */
   const knownCats = () => { try { return typeof SERVICE_TYPES !== 'undefined' ? Object.keys(SERVICE_TYPES) : null; } catch { return null; } };
 
@@ -42,7 +42,10 @@
     if (!govs.length || (govs0 && !govs.every(g => govs0.includes(g)))) errors.govs = 'اختر محافظة واحدة على الأقل من القائمة';
     if (!Number.isInteger(years) || years < 0 || years > 60) errors.years = 'سنوات الخبرة رقم صحيح من 0 إلى 60';
     if (String(b.bio || '').trim().length > 300) errors.bio = 'النبذة حتى 300 حرف';
-    return { value: { name, phone, type: b.type || 'individual', cats, govs, areas, years, bio: String(b.bio || '').trim(), docs: String(b.docs || '').trim().slice(0, 200) }, errors };
+    /* payout: an Egyptian mobile wallet number, or an InstaPay address / IBAN (free text up to 60) */
+    const wallet = String(b.payoutWallet || '').trim().slice(0, 60);
+    if (wallet && !/^(?:01[0125]\d{8}|[\w.\-]+@[\w.\-]+|EG\d{27})$/i.test(wallet.replace(/\s+/g, ''))) errors.payoutWallet = 'رقم محفظة (01xxxxxxxxx) أو عنوان إنستاباي (name@bank) أو IBAN';
+    return { value: { name, phone, type: b.type || 'individual', cats, govs, areas, years, bio: String(b.bio || '').trim(), docs: String(b.docs || '').trim().slice(0, 200), payoutWallet: String(b.payoutWallet || '').replace(/\s+/g, '').slice(0, 60) }, errors };
   }
   const own = (store, p) => ({ ...p, rating: store.rating(p.id), acceptRate: store.acceptRate(p.id) });
 

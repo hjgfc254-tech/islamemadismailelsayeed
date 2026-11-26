@@ -36,7 +36,7 @@ function seedStates(MP) {
   st.priceRefused = mk(); choose(st.priceRefused, { kind: 'quote', labor: 300 }); go(st.priceRefused, ['scheduled', 'enroute', 'arrived', 'started']);
   MP.createQuote(st.priceRefused, { labor: 600 }); MP.rejectQuote(st.priceRefused, 'غالي');
   st.quotePending = mk(); choose(st.quotePending, { kind: 'quote', labor: 300 }); go(st.quotePending, ['scheduled', 'enroute', 'arrived', 'started']); MP.createQuote(st.quotePending, { labor: 500 });
-  st.completed = mk(); choose(st.completed, { kind: 'quote', labor: 300 }); go(st.completed, ['scheduled', 'enroute', 'arrived', 'started']); assert.ok(MP.complete(st.completed));
+  st.completed = mk(); choose(st.completed, { kind: 'quote', labor: 300 }); go(st.completed, ['scheduled', 'enroute', 'arrived', 'started']); MP.choosePay(st.completed,'online'); MP.markPaid(st.completed,{amount:MP.payDue(MP.get('serviceRequests',st.completed)),ref:'t_'+st.completed}); assert.ok(MP.complete(st.completed));   /* online → «ضمان هنصلحلك» voucher (claim below) */
   st.cancelledLate = mk(); choose(st.cancelledLate, { kind: 'quote', labor: 300 }); go(st.cancelledLate, ['scheduled', 'enroute']); MP.cancel(st.cancelledLate, 'x');
   st.warrantyClaim = MP.warrantyClaim(st.completed, 'رجعت').request.id;
   return st;

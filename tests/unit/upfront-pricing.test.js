@@ -73,13 +73,14 @@ test('a price adjustment after inspection keeps the same markup and needs the cu
   await toStarted(t, id);
   assert.equal((await t.call('provider', 'POST', `/requests/${id}/quotes`, { labor: 300, parts: 100, note: 'تغيير القاطع الرئيسي' })).ok, true);
   const q = JSON.parse(t.run(`JSON.stringify(MP.currentQuote('${id}'))`));
-  assert.equal(q.providerAmount, 400); assert.equal(q.customerTotal, 440); assert.equal(q.platformFee, 40);
+  /* platform share on the labour only (owner rule 2026-11-26): 300 × 1.1 + 100 parts at cost */
+  assert.equal(q.providerAmount, 400); assert.equal(q.customerTotal, 430); assert.equal(q.platformFee, 30);
   assert.equal((await t.call('provider', 'POST', `/requests/${id}/complete`, {})).ok, false, 'no completion while the adjustment awaits the customer');
   assert.equal((await t.call('customer', 'POST', `/requests/${id}/quote/approve`)).ok, true);
-  assert.equal(t.run(`MP.get('serviceRequests','${id}').pricing.customerPrice`), 440);
+  assert.equal(t.run(`MP.get('serviceRequests','${id}').pricing.customerPrice`), 430);
   assert.equal((await t.call('provider', 'POST', `/requests/${id}/complete`, {})).ok, true);
   const tx = JSON.parse(t.run(`JSON.stringify(MP.db().transactions.find(x => x.reqId === '${id}'))`));
-  assert.deepEqual([tx.value, tx.net, tx.commission], [440, 400, 40]);
+  assert.deepEqual([tx.value, tx.net, tx.commission], [430, 400, 30]);
 });
 
 test('without a configured price the previous flow is unchanged (value at completion, commission rate)', async () => {

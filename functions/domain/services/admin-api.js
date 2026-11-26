@@ -266,6 +266,64 @@
     return marketingView(store.db().settings);
   });
 
+  /* ── round 12: payments — online money held per request, refunds, weekly provider payouts, settings ── */
+  const payView = (store) => {
+    const db = store.db(), cfg = store.payConfig();
+    const reqs = db.serviceRequests.filter(r => r.payment && r.payment.method === 'online');
+    const row = r => ({ id: r.id, no: r.no, status: r.status, amount: +r.payment.paid || 0, due: store.payDue(r), payStatus: r.payment.status, heldAt: r.payment.heldAt || null, completedAt: r.completedAt || null, refund: r.payment.refund || null, customerId: r.customerId, provider: (store.providerOf(r.id) || {}).name || '' });
+    return {
+      config: cfg,
+      held: reqs.filter(r => ['held', 'topup', 'pending'].includes(r.payment.status)).map(row),
+      refunds: reqs.filter(r => r.payment.refund && r.payment.refund.status === 'pending').map(row),
+      payouts: store.payoutsDue(),
+      totals: { held: Math.round(reqs.filter(r => r.payment.status === 'held').reduce((s, r) => s + (+r.payment.paid || 0), 0)), payouts: Math.round(store.payoutsDue().reduce((s, g) => s + g.total, 0)) }
+    };
+  };
+  client.define('GET', '/admin/payments', { roles: A, summary: 'Online payments held, pending refunds, provider payouts due, payment settings.' }, ({ actor, store }) =>
+    guard(actor, 'finance', 'view') || payView(store));
+  client.define('PATCH', '/admin/payments/settings', { roles: A, summary: 'Payment settings {online, warrantyDays, autoReleaseHours, gatewayRate}.' }, ({ body, actor, store }) => {
+    { const rk = risk(actor, 'finance.pricing'); if (rk) return rk; }
+    const denied = guard(actor, 'finance', 'edit'); if (denied) return denied;
+    const b = body || {}, cur = (store.db().settings || {}).payments || {}, errors = {}, out = { ...cur };
+    const num = (k, lo, hi) => { if (b[k] === undefined) return; const v = +b[k]; if (!Number.isFinite(v) || v < lo || v > hi) errors[k] = `رقم من ${lo} لـ ${hi}`; else out[k] = v; };
+    if (b.online !== undefined) out.online = b.online === true;
+    num('warrantyDays', 0, 365); num('autoReleaseHours', 1, 720); num('gatewayRate', 0, 10);
+    if (Object.keys(errors).length) return fail('VALIDATION', 'راجع البيانات', errors);
+    store.setSetting('payments', out);
+    return payView(store);
+  });
+  client.define('POST', '/admin/payments/payouts', { roles: A, summary: 'Mark a provider payout as transferred {providerId, ids[], ref}.' }, ({ body, actor, store }) => {
+    { const rk = risk(actor, 'finance.pricing'); if (rk) return rk; }
+    const denied = guard(actor, 'finance', 'edit'); if (denied) return denied;
+    const ids = Array.isArray(body && body.ids) ? body.ids.map(String).slice(0, 500) : [];
+    if (!body || !body.providerId || !ids.length) return fail('VALIDATION', 'اختار الفني والطلبات', { ids: 'مطلوب' });
+    const res = store.markPayoutPaid(String(body.providerId), ids, String(body.ref || ''));
+    return res.ok ? { ...payView(store), done: res } : fail('CONFLICT', res.msg);
+  });
+  client.define('POST', '/admin/payments/:id/release', { roles: A, summary: 'Release a held online payment to the provider (dispute resolved for the provider).' }, ({ params, actor, store }) => {
+    const denied = guard(actor, 'finance', 'edit'); if (denied) return denied;
+    const r = store.get('serviceRequests', params.id); if (!r) return fail('NOT_FOUND');
+    if (r.status !== 'completed' && r.status !== 'closed') return fail('CONFLICT', 'الشغل لسه ما خلصش');
+    if (r.status === 'completed') store.close(r.id); else store.releasePay(r.id, 'admin');
+    return payView(store);
+  });
+  client.define('POST', '/admin/payments/:id/refund', { roles: A, summary: 'Refund a held online payment to the customer {amount?} (dispute resolved for the customer).' }, ({ params, body, actor, store }) => {
+    { const rk = risk(actor, 'finance.pricing'); if (rk) return rk; }
+    const denied = guard(actor, 'finance', 'edit'); if (denied) return denied;
+    const r = store.get('serviceRequests', params.id); if (!r || !r.payment || r.payment.method !== 'online') return fail('NOT_FOUND');
+    if (r.payment.status !== 'held') return fail('CONFLICT', 'المبلغ مش محجوز دلوقتي');
+    const paid = +r.payment.paid || 0, amt = body && body.amount != null ? Math.round(+body.amount * 100) / 100 : paid;
+    if (!(amt > 0) || amt > paid) return fail('VALIDATION', 'المبلغ لازم يكون بين 1 و' + paid, { amount: 'range' });
+    if (amt < paid && !['completed', 'closed'].includes(r.status)) return fail('CONFLICT', 'قبل ما الشغل يخلص الاسترجاع بيكون كامل بس (أو ألغِ الطلب)');
+    const t = store.db().transactions.find(x => x.reqId === r.id && !x.kind);
+    if (amt < paid) store.releasePay(r.id, 'admin');   /* the rest goes to the provider… */
+    if (amt >= paid) { r.payment.status = 'refunded'; if (t) { t.payout = { status: 'cancelled', amount: 0 }; t.collection = 'refunded'; } }
+    else if (t && t.payout) t.payout.amount = Math.max(0, Math.round((+t.payout.amount - amt) * 100) / 100);   /* …minus the refund */
+    r.payment.refund = { amount: amt, status: 'pending', at: new Date().toISOString(), why: 'قرار الإدارة' };
+    store.save();
+    return payView(store);
+  });
+
   const id = v => encodeURIComponent(v);
   return {
     summary: () => client.get('/admin/summary'),

@@ -285,7 +285,7 @@ test('round 8: arrival code (when enabled), warranty set by the admin, warranty 
   t.as('customer', SARA); assert.equal((await t.O.chatSeen(id)).ok, true);
   assert.ok(t.run(`MP.get('serviceRequests', ${JSON.stringify(id)}).chatSeen.customer`));
   /* completion → warranty end + «بيتي» device for an item with periodic maintenance */
-  t.as('provider', 'p_demo1'); await t.O.complete(id, 500);
+  t.as('provider', 'p_demo1'); t.run(`(id => { MP.get('serviceRequests', id).agreedValue = 500; MP.choosePay(id,'online'); MP.markPaid(id,{amount:MP.payDue(MP.get('serviceRequests',id)),ref:'t_'+id}); })(${JSON.stringify(id)})`); await t.O.complete(id, 500);   /* online → voucher */
   const r = t.run(`MP.get('serviceRequests', ${JSON.stringify(id)})`);
   const days = Math.round((Date.parse(r.warrantyUntil) - Date.now()) / 864e5); assert.ok(days >= 29 && days <= 30, 'electric → 30 days');
   /* tip, once */
@@ -366,11 +366,12 @@ test('offers round: up to 3 providers, caps, customer chooses; inspection fee de
   if (pB) assert.equal(t.run(`MP.db().assignments.find(a => a.reqId === ${JSON.stringify(r.id)} && a.providerId === ${JSON.stringify(pB)}).status`), 'withdrawn');
   t.as('provider', pA);
   await t.O.schedule(r.id); for (const to of ['enroute', 'arrived', 'started']) assert.equal((await t.O.advance(r.id, to)).ok, true, to);
+  t.run(`(id => { MP.choosePay(id,'online'); MP.markPaid(id,{amount:MP.payDue(MP.get('serviceRequests',id)),ref:'t_'+id}); })(${JSON.stringify(r.id)})`);   /* online → voucher */
   assert.equal((await t.O.complete(r.id)).ok, true);
   const tx = t.run(`MP.db().transactions.find(x => x.reqId === ${JSON.stringify(r.id)})`);
   assert.equal(tx.value, mine.offer.total); assert.equal(tx.net, 400, 'the provider gets exactly their offer');
   const wDays = Math.round((Date.parse(t.run(`MP.get('serviceRequests', ${JSON.stringify(r.id)}).warrantyUntil`)) - Date.now()) / 864e5);
-  assert.ok(wDays >= 29 && wDays <= 30, 'a month of warranty by default');
+  assert.ok(wDays >= 19 && wDays <= 20, 'paid online: «ضمان هنصلحلك» 20 days by default');
   /* ── inspection mode (the customer doesn't know the problem) ── */
   const s2 = (await create(t, SARA)).data;
   assert.equal(s2.bidding.mode, 'inspection');
@@ -448,6 +449,7 @@ test('owner rules: wider search, revised price flag + visit fee, travel fee on l
   t.as('provider', pG); await t.O.bid(g.id, { kind: 'quote', labor: 250, parts: 50 });
   t.as('customer', SARA); await t.O.choose(g.id, pG);
   t.as('provider', pG); await t.O.schedule(g.id); for (const to of ['enroute', 'arrived', 'started']) await t.O.advance(g.id, to);
+  t.run(`(id => { MP.choosePay(id,'online'); MP.markPaid(id,{amount:MP.payDue(MP.get('serviceRequests',id)),ref:'t_'+id}); })(${JSON.stringify(g.id)})`);   /* online → voucher */
   await t.O.complete(g.id);
   t.as('customer', SARA);
   const claim = await t.O.warranty(g.id, 'رجعت تاني');

@@ -709,11 +709,11 @@ test('round 8 on the server: arrival code never reaches the provider, wrong code
   assert.equal(JSON.stringify(sync.db).includes('AAAAAAAAAA'), false, 'photos are never part of a sync');
   await call(b, KARIM, 'provider', 'POST', `/requests/${id}/advance`, { to: 'started' });
   assert.equal((await call(b, KARIM, 'provider', 'POST', `/requests/${id}/complete`, { value: 400 })).ok, true);
-  const days = Math.round((Date.parse(b.col('requests').find(r => r.id === id).warrantyUntil) - Date.now()) / 864e5);
-  assert.ok(days >= 29 && days <= 30, 'electric category → 30 days from the admin setting');
+  /* paid cash: no platform warranty voucher (owner rule 2026-11-26; online + voucher: tests/unit/payments.test.js) */
+  assert.equal(b.col('requests').find(r => r.id === id).warrantyUntil, undefined, 'cash job → no voucher');
   await call(b, SARA, 'customer', 'POST', `/requests/${id}/close`);
   const claim = await call(b, SARA, 'customer', 'POST', `/requests/${id}/warranty`, { desc: 'رجعت تفصل' });
-  assert.equal(claim.status, 201, JSON.stringify(claim.error)); assert.equal(claim.data.warrantyOf, id);
+  assert.equal(claim.status, 409, 'no voucher → no warranty claim');
 });
 test('AI routing: keys stay on the server, providers fail over in order, answers are validated against the catalogue, daily limits', async () => {
   const b = await setup();

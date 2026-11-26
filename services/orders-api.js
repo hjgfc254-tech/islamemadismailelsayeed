@@ -189,10 +189,24 @@
 
   client.define('POST', '/requests/:id/complete', { roles: ['provider'], summary: 'Complete a paid job: {value>0, deductions} or the approved quote.' }, ({ params, body, actor, store }) => {
     const r = load(store, actor, params.id); if (!r) return notFound();
+    if (store.payBlocked && store.payBlocked(r)) return fail('CONFLICT', 'العميل اختار الدفع أونلاين ولسه ما دفعش — استنى الدفع قبل ما تسجّل الإكمال');
     if (body.value !== undefined && body.value !== '' && !(+body.value > 0)) return fail('VALIDATION', 'القيمة النهائية يجب أن تكون أكبر من صفر — للخدمة بلا مقابل استخدم مسار الخدمة المجانية', { value: 'أكبر من صفر' });
     return store.complete(r.id, body.value, body.deductions) ? view(store, r, actor) : fail('CONFLICT', 'لا يمكن إكمال الطلب الآن (حالة غير مناسبة، أو خدمة مجانية قيد التنفيذ، أو لا يوجد عرض سعر معتمد)');
   });
 
+  /* ── round 12: payments — cash after the job, or online up front (held until the customer confirms) ── */
+  client.define('POST', '/requests/:id/pay', { roles: ['customer'], summary: 'Choose how to pay the agreed price {method: cash | online}; online returns the amount due (checkout runs on the server).' }, ({ params, body, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    const res = store.choosePay(r.id, String((body && body.method) || ''));
+    return res.ok ? { ...view(store, r, actor), due: res.due, gateway: res.gateway || null } : fail('CONFLICT', res.msg);
+  });
+  client.define('POST', '/requests/:id/pay/demo', { roles: ['customer'], summary: 'Local demo only: simulate the gateway confirming the online payment.' }, ({ params, actor, store }) => {
+    const r = load(store, actor, params.id); if (!r) return notFound();
+    if (store.payConfig().gateway !== 'demo') return fail('FORBIDDEN', 'الدفع التجريبي مش متاح هنا');
+    if (!r.payment || r.payment.method !== 'online' || !(store.payDue(r) > 0)) return fail('CONFLICT', 'مفيش مبلغ مطلوب دفعه');
+    const res = store.markPaid(r.id, { amount: store.payDue(r), ref: 'demo_' + Date.now().toString(36), gateway: 'demo' });
+    return res.ok ? view(store, r, actor) : fail('CONFLICT', res.msg);
+  });
   client.define('POST', '/requests/:id/close', { roles: ['customer'], summary: 'Customer confirms completion.' }, ({ params, actor, store }) => {
     const r = load(store, actor, params.id); if (!r) return notFound();
     return store.close(r.id) ? view(store, r, actor) : fail('CONFLICT', 'الطلب لم يكتمل بعد');

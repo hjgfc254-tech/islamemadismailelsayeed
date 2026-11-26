@@ -222,6 +222,12 @@ const MP = (() => {
      markupRate defaults to the existing defaultRate. No price configured → the previous flow (value at completion). */
   const markupRate = () => { const m = db.settings.markupRate; return (m!=null && m!=='') ? +m : +db.settings.defaultRate; };
   const quoteFor = (base, rate) => { const b = Math.round(+base*100)/100, c = Math.round(b*(1+rate/100)); return { base:b, rate, customerPrice:c, providerAmount:b, platformFee:Math.round((c-b)*100)/100 }; };
+  /* the platform share is taken on the LABOUR only: parts / tools the provider buys for the job pass through at cost
+     (owner rule 2026-11-26). Same shape as quoteFor, plus {labor, parts}. */
+  const quoteParts = (labor, parts, rate) => {
+    const p = Math.max(0, Math.round(+parts || 0)), q = quoteFor(Math.max(0, +labor || 0), rate);
+    return { ...q, base: Math.round((q.base + p) * 100) / 100, customerPrice: q.customerPrice + p, providerAmount: Math.round((q.providerAmount + p) * 100) / 100, labor: q.base, parts: p };
+  };
   const priceFor = (key) => { const prices = db.settings.prices || {}; const b = key && prices[key]; return (b!=null && +b>0) ? quoteFor(+b, markupRate()) : null; };
   const calc = (value, rate, deductions=0) => {
     const v = Math.max(0, +value||0), c = Math.round(v*rate)/100, d = Math.max(0, +deductions||0);
@@ -271,8 +277,10 @@ const MP = (() => {
   const MAINTENANCE_DAYS = { 'appliances/ac': 120, 'appliances/heater-electric': 365, 'appliances/heater-gas': 365, 'appliances/washer-auto': 365, 'appliances/fridge': 365, 'appliances/dishwasher': 365, 'cars/oil-change': 90, 'plumbing/water-tanks': 180 };
   /* after a completed job: warranty end date (admin-set days) and the customer's «بيتي» device / next maintenance date */
   const afterCompletion = r => {
-    const wd = api.warrantyDays(r);
-    if (wd > 0 && !r.warrantyOf) r.warrantyUntil = new Date(Date.now() + wd * 864e5).toISOString();
+    /* «ضمان هنصلحلك» voucher: only when the job was paid online through the platform (money held until the customer is
+       satisfied) — owner rule 2026-11-26; a cash job carries no platform voucher */
+    const wd = api.paidOnline(r) ? api.warrantyDays(r) : 0;
+    if (wd > 0 && !r.warrantyOf) { r.warrantyUntil = new Date(Date.now() + wd * 864e5).toISOString(); r.warrantyVoucher = { code: 'HS-W-' + r.no, days: wd, until: r.warrantyUntil }; }
     const days = MAINTENANCE_DAYS[r.itemId]; if (!days) return;
     const c = get('customers', r.customerId); if (!c) return;
     c.devices = Array.isArray(c.devices) ? c.devices : [];
@@ -470,7 +478,7 @@ const MP = (() => {
         labor:+q.labor||0, parts:+q.parts||0, visitFee:+q.visitFee||0, discount:+q.discount||0,
         total, note:q.note||'', status:'pending', at:now()
       };
-      if (r.pricing || r.inspection) { const nq = quoteFor(total, r.pricing ? r.pricing.rate : r.inspection.rate); quote.providerAmount = nq.providerAmount; quote.customerTotal = nq.customerPrice; quote.platformFee = nq.platformFee; }
+      if (r.pricing || r.inspection) { const nq = quoteParts(Math.max(0, total - quote.parts), Math.min(quote.parts, total), r.pricing ? r.pricing.rate : r.inspection.rate); quote.providerAmount = nq.providerAmount; quote.customerTotal = nq.customerPrice; quote.platformFee = nq.platformFee; }
       if (r.pricing && total > r.pricing.providerAmount * 1.5) { quote.flagged = true; notify('admin', 'سعر جديد أعلى من المتفق عليه بأكتر من 50% على الطلب ' + r.no + ' (' + r.pricing.providerAmount + ' ← ' + total + ')', r.id); }
       if (prev && prev.status === 'pending') prev.status = 'superseded';
       db.quotes.unshift(quote);
@@ -490,7 +498,7 @@ const MP = (() => {
       const p = api.providerOf(reqId); if (!p) return false;
       q.status = 'approved'; q.approvedAt = now();
       r.agreedValue = q.total;
-      if (r.pricing || r.inspection) { r.pricing = quoteFor(q.total, r.pricing ? r.pricing.rate : r.inspection.rate); r.agreedValue = r.pricing.customerPrice; if (r.inspection) r.inspection.waived = true; }   /* inspection fee deducted (not charged on top) */   /* adjusted upfront price */
+      if (r.pricing || r.inspection) { r.pricing = quoteParts(Math.max(0, q.total - (+q.parts || 0)), Math.min(+q.parts || 0, q.total), r.pricing ? r.pricing.rate : r.inspection.rate); r.agreedValue = r.pricing.customerPrice; if (r.inspection) r.inspection.waived = true; }   /* inspection fee deducted (not charged on top) */   /* adjusted upfront price */
       log(r,'started','العميل وافق على السعر ('+q.total+' ج.م) — جارٍ التنفيذ');
       notify('provider:'+p.id,'العميل وافق على السعر — نفّذ الخدمة ثم سجّل الإكمال (الطلب '+r.no+')',r.id);
       save(); return true;
@@ -559,6 +567,8 @@ const MP = (() => {
       if (![ 'started','arrived','enroute','scheduled','accepted' ].includes(r.status)) return false;   /* 'quote' = بانتظار موافقة العميل: لا إكمال */
       const q = api.currentQuote(reqId);
       if (q && q.status === 'pending') return false;
+      if (api.payBlocked(r)) return false;   /* online chosen: the money must be held before the job is recorded */
+      r.completedAt = now();
       let v = +value;
       if (r.pricing) {
         if (value !== undefined && value !== null && value !== '' && v !== +r.pricing.customerPrice) return false;   /* the booked price is final */
@@ -569,7 +579,7 @@ const MP = (() => {
         api.learnPrice(r.problemId || r.itemId, pr.providerAmount);
         log(r,'completed','السعر المحدد مسبقًا '+x.value);
         if (!db.transactions.some(t => t.reqId===reqId)) db.transactions.push({id:uid('t'),reqId,providerId:p.id,customerId:r.customerId,cat:r.cat,...x,model:db.settings.collectionModel,collection:'pending',demo:true,at:now()});
-        afterCompletion(r);
+        api.payOnComplete(r); afterCompletion(r);
         notify('customer:'+r.customerId,'اكتملت الخدمة — أكّد الإتمام وقيّم الفني (الطلب '+r.no+')',r.id);
         save(); return true;
       }
@@ -579,6 +589,9 @@ const MP = (() => {
         v = +q.total;
       } else if (!Number.isFinite(v) || v <= 0) return false;
       const rate = rateFor(r.cat, p.id), x = calc(v, rate, deductions);
+      /* commission on the labour only: the approved quote's parts are not commissioned */
+      const partsAmt = q && q.status === 'approved' ? Math.min(+q.parts || 0, v) : 0;
+      if (partsAmt > 0) { x.commission = Math.round((v - partsAmt) * rate) / 100; x.net = Math.round((v - x.commission - x.deductions) * 100) / 100; x.parts = partsAmt; }
       if (!db.transactions.some(t => t.reqId===reqId)) applyDiscount(r, x);
       r.finalValue = x.value;
       api.learnPrice(r.problemId || r.itemId, x.value - (+x.commission || 0));
@@ -586,7 +599,7 @@ const MP = (() => {
       if (!db.transactions.some(t => t.reqId===reqId)) {
         db.transactions.push({id:uid('t'),reqId,providerId:p.id,customerId:r.customerId,cat:r.cat,...x,model:db.settings.collectionModel,collection:'pending',demo:true,at:now()});
       }
-      afterCompletion(r);
+      api.payOnComplete(r); afterCompletion(r);
       notify('customer:'+r.customerId,'اكتملت الخدمة — أكّد الإتمام وقيّم الفني (الطلب '+r.no+')',r.id);
       save(); return true;
     },
@@ -594,7 +607,7 @@ const MP = (() => {
     close(reqId){
       const r = get('serviceRequests',reqId);
       if(!r || r.status!=='completed') return false;
-      log(r,'closed','أكّد العميل الإتمام'); save(); return true;
+      log(r,'closed','أكّد العميل الإتمام'); api.releasePay(reqId, 'customer'); save(); return true;
     },
 
     cancel(reqId, reason, byAdmin){
@@ -607,6 +620,7 @@ const MP = (() => {
       db.assignments.filter(x => x.reqId === reqId && x !== a && x.status === 'offered').forEach(x => { x.status = 'withdrawn'; });   /* other open offers */
       if(a){ a.status='withdrawn'; notify('provider:'+a.providerId,'ألغى العميل الطلب '+r.no+(fee?' — ليك رسوم انتقال '+fee+' ج.م':''),r.id); }
       if (fee) { r.cancelFee = fee; db.transactions.push({id:uid('t'),reqId,providerId:a.providerId,customerId:r.customerId,cat:r.cat,value:fee,rate:0,commission:0,deductions:0,net:fee,kind:'cancel-fee',model:db.settings.collectionModel,collection:'pending',demo:true,at:now()}); }
+      api.refundOnCancel(r, fee);
       log(r,'cancelled',reason||''); save(); return true;
     },
 
@@ -614,6 +628,7 @@ const MP = (() => {
     fail(reqId, reason){
       const r = get('serviceRequests',reqId);
       if(!r || FINAL_STATUSES.has(r.status)) return false;
+      api.refundOnCancel(r, 0);
       log(r,'failed', reason || 'تعذر التنفيذ');
       notify('customer:'+r.customerId,'تعذر تنفيذ الخدمة — الطلب '+r.no,r.id);
       save(); return true;
@@ -715,12 +730,13 @@ const MP = (() => {
         const cap = api.priceCap(r);
         if (cap && base > cap) return { ok: false, msg: 'السعر أعلى من الحد المسموح للمشكلة دي (' + cap + ' ج.م) — لو محتاج تشوف الأول اختار «محتاج معاينة»' };
       }
-      const q = api.customerTotalFor(base, providerId, kind), k = q.customerPrice / base;
+      /* platform share on the labour only — parts pass through at cost */
+      const q = kind === 'quote' ? quoteParts(labor, parts, api.customerTotalFor(labor, providerId, kind).rate) : api.customerTotalFor(base, providerId, kind);
       const note = String((b && b.note) || '').trim().slice(0, 300), eta = String((b && b.eta) || '').trim().slice(0, 40);
       const first = !a.bid;
       a.bid = { kind, labor, parts, fee, base, rate: q.rate, note, eta, at: now() };
       /* what the customer sees: totals with the platform share included, never the provider's base */
-      a.offer = { kind, total: q.customerPrice, labor: kind === 'quote' ? Math.round(labor * k) : 0, parts: kind === 'quote' ? q.customerPrice - Math.round(labor * k) : 0, note, eta, at: a.bid.at };
+      a.offer = { kind, total: q.customerPrice, labor: kind === 'quote' ? q.customerPrice - parts : 0, parts: kind === 'quote' ? parts : 0, note, eta, at: a.bid.at };
       if (first) notify('customer:' + r.customerId, 'وصلك عرض جديد على طلبك ' + r.no + ' — قارن واختار', r.id);
       save(); return { ok: true, offer: a.offer };
     },
@@ -731,7 +747,7 @@ const MP = (() => {
       db.assignments.filter(x => x.reqId === reqId && x !== a && x.status === 'offered').forEach(x => { x.status = 'withdrawn'; notify('provider:' + x.providerId, 'العميل اختار عرض تاني على الطلب ' + r.no, r.id); });
       a.status = 'accepted';
       r.pin = String(1000 + Math.floor(Math.random() * 9000));
-      const q = quoteFor(a.bid.base, a.bid.rate);
+      const q = a.bid.kind === 'quote' ? quoteParts(a.bid.labor != null ? a.bid.labor : a.bid.base, a.bid.labor != null ? a.bid.parts : 0, a.bid.rate) : quoteFor(a.bid.base, a.bid.rate);
       if (a.bid.kind === 'quote') { r.pricing = q; r.agreedValue = q.customerPrice; }
       else { r.inspection = { fee: a.bid.base, customerFee: q.customerPrice, rate: a.bid.rate }; r.agreedValue = q.customerPrice; }
       r.bidding.chosen = a.providerId; r.bidding.kind = a.bid.kind;
@@ -917,6 +933,138 @@ const MP = (() => {
       if (changed.length) save();
       return changed;
     },
+    /* ═════════ round 12: payments (owner model 2026-11-26) ═════════
+       Once a price is agreed the customer picks how to pay:
+       • cash — paid to the provider after the job (the platform share is collected from the provider, as before);
+       • online (card / mobile wallet through the gateway) — paid UP FRONT and HELD by the platform until the customer
+         confirms the job (or automatically after autoReleaseHours), then the provider's net joins the weekly payout.
+         An online payment carries the «ضمان هنصلحلك» voucher (warrantyDays, default 20).
+       r.payment = { method:'cash'|'online', status:'cash'|'pending'|'topup'|'held'|'released'|'refunded',
+                     paid, refs[], heldAt, releasedAt, refund:{amount,status:'pending'|'done',at,ref} }
+       Gateway calls live on the server (functions/src/payments.js): markPaid / markRefunded are server-only (no route). */
+    payConfig(){
+      const p = (db.settings && db.settings.payments) || {};
+      const G = typeof globalThis !== 'undefined' ? globalThis : {};
+      /* gateway: the server says whether Paymob keys exist (HS_PAY_GATEWAY / settings.payments.gatewayReady); the local
+         demo uses a simulated gateway */
+      const gateway = G.HS_PAY_GATEWAY !== undefined ? G.HS_PAY_GATEWAY : (p.gatewayReady ? 'paymob' : (G.HSFirebaseConfig && G.HSFirebaseConfig.mode === 'firebase' ? null : 'demo'));
+      const num = (v, d, lo, hi) => (v != null && v !== '' && Number.isFinite(+v) ? Math.max(lo, Math.min(hi, +v)) : d);
+      return { online: p.online !== false, gateway, warrantyDays: Math.round(num(p.warrantyDays, 20, 0, 365)), autoReleaseHours: num(p.autoReleaseHours, 48, 1, 720), gatewayRate: num(p.gatewayRate, 2.75, 0, 10), payoutDay: p.payoutDay || 'sunday' };
+    },
+    payDue(r){ return Math.max(0, Math.round(((+r.agreedValue || 0) - (r.payment ? +r.payment.paid || 0 : 0)) * 100) / 100); },
+    /** online and not fully paid → the provider cannot record completion yet */
+    payBlocked(r){ return !!(r && r.payment && r.payment.method === 'online' && api.payDue(r) > 0); },
+    paidOnline(r){ return !!(r && r.payment && r.payment.method === 'online' && ['held', 'released'].includes(r.payment.status)); },
+    choosePay(reqId, method){
+      const r = get('serviceRequests', reqId);
+      if (!r || FINAL_STATUSES.has(r.status) || ['completed', 'closed'].includes(r.status)) return { ok: false, msg: 'الطلب مش في حالة تسمح بالدفع' };
+      if (!(+r.agreedValue > 0)) return { ok: false, msg: 'لسه مفيش سعر متفق عليه' };
+      const cur = r.payment || null, paid = cur ? +cur.paid || 0 : 0;
+      if (method === 'cash') {
+        if (paid > 0) return { ok: false, msg: 'إنت دفعت جزء أونلاين — كمّل أونلاين' };
+        r.payment = { method: 'cash', status: 'cash', paid: 0, refs: [], at: now() };
+        const p = api.providerOf(reqId); if (p) notify('provider:' + p.id, 'العميل هيدفع كاش بعد الشغل — الطلب ' + r.no, r.id);
+        save(); return { ok: true, payment: r.payment, due: 0 };
+      }
+      if (method !== 'online') return { ok: false, msg: 'اختار طريقة الدفع' };
+      const cfg = api.payConfig();
+      if (!cfg.online || !cfg.gateway) return { ok: false, msg: 'الدفع الأونلاين مش متاح دلوقتي — تقدر تدفع كاش' };
+      const due = api.payDue({ agreedValue: r.agreedValue, payment: cur && cur.method === 'online' ? cur : null });
+      if (!(due > 0)) return { ok: false, msg: 'الطلب مدفوع بالفعل' };
+      r.payment = { ...(cur && cur.method === 'online' ? cur : { paid: 0, refs: [] }), method: 'online', status: paid > 0 ? 'topup' : 'pending', due, at: now() };
+      save(); return { ok: true, payment: r.payment, due, gateway: cfg.gateway };
+    },
+    /** server only (gateway webhook) / local demo: money received for the request — idempotent per gateway reference */
+    markPaid(reqId, pay){
+      const r = get('serviceRequests', reqId), amount = Math.round((+(pay && pay.amount) || 0) * 100) / 100, ref = String((pay && pay.ref) || '');
+      if (!r || !r.payment || r.payment.method !== 'online' || !(amount > 0) || !ref) return { ok: false, msg: 'دفع غير صالح' };
+      r.payment.refs = Array.isArray(r.payment.refs) ? r.payment.refs : [];
+      if (r.payment.refs.includes(ref)) return { ok: true, dup: true };
+      r.payment.refs.push(ref);
+      r.payment.paid = Math.round(((+r.payment.paid || 0) + amount) * 100) / 100;
+      r.payment.gateway = String((pay && pay.gateway) || r.payment.gateway || '');
+      const due = api.payDue(r);
+      if (FINAL_STATUSES.has(r.status)) {   /* paid after a cancellation: give it all back */
+        r.payment.status = 'refunded'; r.payment.refund = { amount: (r.payment.refund ? +r.payment.refund.amount || 0 : 0) + amount, status: 'pending', at: now() };
+        save(); return { ok: true, refund: true };
+      }
+      r.payment.status = due > 0 ? 'topup' : 'held'; r.payment.due = due; if (!due) r.payment.heldAt = now();
+      log(r, r.status, 'العميل دفع ' + amount + ' ج.م أونلاين' + (due ? ' — فاضل ' + due : ' — الفلوس محجوزة عند المنصة لحد ما الشغل يخلص'));
+      const p = api.providerOf(reqId);
+      if (p && !due) notify('provider:' + p.id, 'العميل دفع أونلاين (' + r.agreedValue + ' ج.م) للطلب ' + r.no + ' — الفلوس محجوزة عندنا وهتنزلك بعد ما يأكد إن الشغل تمام', r.id);
+      notify('customer:' + r.customerId, due ? 'وصلنا ' + amount + ' ج.م — فاضل ' + due + ' ج.م على الطلب ' + r.no : 'تم الدفع ✓ فلوسك محجوزة عندنا لحد ما تأكد إن الشغل تمام، ومعاك ضمان هنصلحلك ' + api.payConfig().warrantyDays + ' يوم (الطلب ' + r.no + ')', r.id);
+      save(); return { ok: true, held: !due };
+    },
+    /** after complete(): the platform already holds the money → its share is deducted, the net waits for release */
+    payOnComplete(r){
+      if (!api.paidOnline(r)) return;
+      const t = db.transactions.find(x => x.reqId === r.id && !x.kind); if (!t) return;
+      const cfg = api.payConfig();
+      t.online = true; t.collection = 'held';
+      t.gatewayFee = Math.round((+r.payment.paid || 0) * cfg.gatewayRate) / 100;   /* absorbed by the platform (out of its share) */
+      t.payout = { status: 'hold', amount: t.net };
+    },
+    /** the customer confirmed (or the hold time ran out): release the provider's net to the weekly payout; refund any surplus */
+    releasePay(reqId, by){
+      const r = get('serviceRequests', reqId);
+      if (!r || !r.payment || r.payment.method !== 'online' || r.payment.status !== 'held') return false;
+      const finalV = +(r.finalValue != null ? r.finalValue : r.agreedValue) || 0, surplus = Math.round(((+r.payment.paid || 0) - finalV) * 100) / 100;
+      r.payment.status = 'released'; r.payment.releasedAt = now(); r.payment.releasedBy = by || 'customer';
+      if (surplus > 0) r.payment.refund = { amount: surplus, status: 'pending', at: now(), why: 'الفرق بين المدفوع والسعر النهائي' };
+      const t = db.transactions.find(x => x.reqId === r.id && !x.kind);
+      if (t) { t.collection = 'deducted'; t.payout = { status: 'due', amount: t.net, at: now() }; }
+      const p = api.providerOf(reqId);
+      if (p && t) notify('provider:' + p.id, 'فلوس الطلب ' + r.no + ' نزلت في رصيدك (' + t.net + ' ج.م) — هتتحوّلك في التحويل الأسبوعي', r.id);
+      save(); return true;
+    },
+    /** cancelled / failed after paying online: the travel fee (if any) goes to the provider, the rest back to the customer */
+    refundOnCancel(r, fee){
+      if (!r.payment || r.payment.method !== 'online' || !(+r.payment.paid > 0) || r.payment.status === 'refunded') return;
+      const paid = +r.payment.paid || 0, keep = Math.min(paid, Math.max(0, +fee || 0));
+      r.payment.status = 'refunded';
+      r.payment.refund = { amount: Math.round((paid - keep) * 100) / 100, status: paid - keep > 0 ? 'pending' : 'done', at: now() };
+      if (keep > 0) { const t = db.transactions.find(x => x.reqId === r.id && x.kind === 'cancel-fee'); if (t) { t.online = true; t.collection = 'deducted'; t.payout = { status: 'due', amount: t.net, at: now() }; } }
+      if (paid - keep > 0) notify('customer:' + r.customerId, 'هنرجّعلك ' + Math.round(paid - keep) + ' ج.م على نفس طريقة الدفع (الطلب ' + r.no + ') — بتوصل خلال أيام حسب البنك أو المحفظة', r.id);
+    },
+    /** server only: the gateway confirmed the refund */
+    markRefunded(reqId, ref){
+      const r = get('serviceRequests', reqId);
+      if (!r || !r.payment || !r.payment.refund || r.payment.refund.status !== 'pending') return false;
+      r.payment.refund.status = 'done'; r.payment.refund.doneAt = now(); r.payment.refund.ref = String(ref || '');
+      save(); return true;
+    },
+    /** clock: held payments of completed jobs are released after autoReleaseHours, unless a complaint is open */
+    autoRelease(nowMs){
+      const t0 = +nowMs || Date.now(), h = api.payConfig().autoReleaseHours, out = [];
+      for (const r of db.serviceRequests) {
+        if (r.status !== 'completed' || !r.payment || r.payment.status !== 'held') continue;
+        const at = Date.parse(r.completedAt || ''); if (!Number.isFinite(at) || t0 - at < h * 36e5) continue;
+        if ((db.complaints || []).some(c => c.reqId === r.id && !['resolved', 'closed', 'rejected'].includes(c.status))) continue;
+        log(r, 'closed', 'اتأكد تلقائي بعد ' + h + ' ساعة من غير اعتراض');
+        api.releasePay(r.id, 'auto'); out.push(r.id);
+      }
+      if (out.length) save();
+      return out;
+    },
+    /** admin: provider nets waiting for the weekly transfer, grouped by provider */
+    payoutsDue(){
+      const by = {};
+      for (const t of db.transactions) {
+        if (!t.payout || t.payout.status !== 'due') continue;
+        const p = get('providers', t.providerId) || {};
+        const g = by[t.providerId] || (by[t.providerId] = { providerId: t.providerId, name: p.name || '', phone: p.phone || '', wallet: p.payoutWallet || '', total: 0, items: [] });
+        g.total = Math.round((g.total + (+t.payout.amount || 0)) * 100) / 100; g.items.push({ id: t.id, reqId: t.reqId, amount: +t.payout.amount || 0, at: t.payout.at || t.at });
+      }
+      return Object.values(by).sort((a, b) => b.total - a.total);
+    },
+    markPayoutPaid(providerId, ids, ref){
+      const set = new Set((ids || []).map(String)), done = [];
+      for (const t of db.transactions) if (t.providerId === providerId && set.has(t.id) && t.payout && t.payout.status === 'due') { t.payout.status = 'paid'; t.payout.paidAt = now(); t.payout.ref = String(ref || '').slice(0, 80); done.push(t); }
+      if (!done.length) return { ok: false, msg: 'مفيش مستحقات بالأرقام دي' };
+      const sum = Math.round(done.reduce((s, t) => s + (+t.payout.amount || 0), 0) * 100) / 100;
+      notify('provider:' + providerId, 'اتحوّلك ' + sum + ' ج.م (مستحقات ' + done.length + ' طلب)' + (ref ? ' — رقم التحويل ' + String(ref).slice(0, 40) : ''), '');
+      save(); return { ok: true, count: done.length, total: sum };
+    },
     /** cash after completion: each side says whether the money changed hands; a mismatch opens a complaint for the admin */
     cashConfirm(reqId, side, paid){
       const r = get('serviceRequests', reqId);
@@ -960,7 +1108,8 @@ const MP = (() => {
     warrantyDays(r){
       const w = (db.settings && db.settings.warranty) || {};
       if ((r.inspection && r.inspection.only) || r.visitOnly) return 0;                /* a visit without the repair carries no warranty */
-      if (!db.settings || !db.settings.warranty) return 30;                /* default: a month (the admin can change it) */
+      /* the days a voucher lasts; WHO gets one is decided in afterCompletion (online payments only — owner rule 2026-11-26) */
+      if (!db.settings || !db.settings.warranty) return api.payConfig().warrantyDays;   /* default 20 days (admin: payments settings) */
       const pick = [w.items && w.items[r.itemId], w.cats && w.cats[r.cat], w.default].find(x => x != null && x !== '');
       return Math.max(0, Math.min(365, Math.round(+pick || 0)));
     },
@@ -1061,7 +1210,7 @@ const MP = (() => {
     updateProvider(id, patch){ const p = get('providers',id); if(p){ Object.assign(p,patch); save(); } },
     setSetting(k,v){ db.settings[k]=v; save(); },
     setPrice(key,base){ db.settings.prices = db.settings.prices || {}; if(base===''||base==null) delete db.settings.prices[key]; else db.settings.prices[key]=+base; save(); },
-    priceFor, markupRate, quoteFor,
+    priceFor, markupRate, quoteFor, quoteParts,
     setCatRate(cat,v){ if(v===''||v==null) delete db.settings.rates[cat]; else db.settings.rates[cat]=+v; save(); },
 
     /* ═════════ الإشعارات ═════════ */

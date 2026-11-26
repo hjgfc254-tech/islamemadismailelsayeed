@@ -63,6 +63,9 @@ function createContext(db, roster, rbac) {
     location: { pathname: '/server' }
   };
   ctx.globalThis = ctx;
+  /* online payments on the server: Paymob when its keys are configured (functions/.env), otherwise none — the simulated
+     «demo» gateway exists only in the local browser demo, never here */
+  ctx.HS_PAY_GATEWAY = process.env.PAYMOB_SECRET_KEY && process.env.PAYMOB_PUBLIC_KEY ? 'paymob' : null;
   ctx.HS_ALERT_OUTBOX = [];            /* MP.raiseAlert events of this call: functions/src/alerts.js persists and delivers them */
   vm.createContext(ctx);
   for (const s of scripts()) s.runInContext(ctx);

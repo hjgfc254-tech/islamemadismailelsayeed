@@ -107,6 +107,8 @@ Global options: `region: 'me-central1'`, `maxInstances: 10`. Callables use `{ en
 | `healthClock` | Cloud Scheduler | me-central1 | `every 10 minutes` | 120 s | `K_REVISION` (set by the platform) | `tech-status.healthTick` |
 | `digestClock` | Cloud Scheduler | me-central1 | `5 * * * *` (timeZone Africa/Cairo) | 300 s | `RESEND_API_KEY` or `SMTP_*`, `MAIL_FROM` | `digest-admin.tick` |
 | `alertsClock` | Cloud Scheduler | me-central1 | `every 5 minutes` | 120 s | — | `alerts.tick` + `service.scanOps` (MP.opsScan) |
+| `paymentsClock` | Cloud Scheduler | me-central1 | `every 30 minutes` | 120 s | `PAYMOB_*` | `payments.tick`: pending refunds → Paymob, held payments released after the hold time |
+| `paymobWebhook` | HTTPS (`onRequest`, public POST, HMAC) | me-central1 | `maxInstances: 5` | 30 s | `PAYMOB_HMAC_SECRET` | `payments.webhook` → `MP.markPaid` / `MP.markRefunded` |
 | `agentApi` | HTTPS (`onRequest`, `cors: false`) | me-central1 | `maxInstances: 5`; per key `AGENT_RATE_PER_MIN` (default 120); bad auth 20/min per IP | 30 s | `AGENT_API_KEYS`, `AGENT_RATE_PER_MIN` | `service.agentHttp` → `agent-gateway.http` |
 | `catalogFeed` | HTTPS (`onRequest`, public GET) via the Hosting rewrite `/catalog-feed` | me-central1 | `maxInstances: 3`; CDN `s-maxage=300` (about one Firestore read per edge every 5 minutes) | 15 s | — | `catalog-admin.feed` (published `system/catalogPub`) |
 | `callLogsClock` | Cloud Scheduler | me-central1 | `every 24 hours` | 120 s | — | `agent-gateway.retentionTick` + `support-chat.retentionTick` |
@@ -139,6 +141,7 @@ Unexpected errors inside `api` / `session` are logged, reported into «أخطا�
 | `ai.js` | AI routing «اكتب مشكلتك / صوّر المشكلة», provider config `system/ai` | service, support-chat |
 | `support-chat.js` / `chat-llm.js` | AI chat «موظف خدمة العملاء» with 12 tools, provider-neutral LLM calls | service |
 | `agent-gateway.js` | call-centre routes `/agent/*` for humans (api) and AI agents (agentApi) | service, index, support-chat |
+| `payments.js` | Paymob: checkout (intention), HMAC webhook, refunds, auto release (owner model: cash after the job, or online held until the customer confirms + «ضمان هنصلحلك» voucher) | service, index |
 | `catalog-admin.js` | service catalogue draft / publish (`/admin/catalog`, owner / admin) and the public CDN feed; the apps load it with `services/catalog-remote.js`, and the default questions come from `services/catalog-question-bank.js` | service, index |
 | `digest.js` / `digest-admin.js` / `mailer.js` | e-mail digests (render, schedule, send via Resend / SMTP) | service, index |
 
@@ -229,6 +232,8 @@ only covered through adapter helpers such as `HSOrdersApi.*`, the domain tests o
 | POST | `/requests/:id/inspection-only` | provider | orders-api.js | requestBundle(:id) | — |
 | POST | `/requests/:id/widen` | customer | orders-api.js | requestBundle(:id) | — |
 | POST | `/requests/:id/cash` | customer, provider | orders-api.js | requestBundle(:id) | — |
+| POST | `/requests/:id/pay` | customer | orders-api.js | requestBundle(:id) | payments.test.js |
+| POST | `/requests/:id/pay/demo` | customer | orders-api.js | requestBundle(:id) | payments.test.js |
 | POST | `/requests/:id/warranty` | customer | orders-api.js | requestBundle(:id) | firebase-backend |
 | POST | `/requests/:id/tip` | customer | orders-api.js | requestBundle(:id) | — |
 | POST | `/requests/:id/chat-seen` | customer, provider | orders-api.js | requestBundle(:id) | — |
@@ -297,6 +302,11 @@ only covered through adapter helpers such as `HSOrdersApi.*`, the domain tests o
 | POST | `/admin/data-policy` | admin | admin-api.js | settings only | support-contacts-policy |
 | GET | `/admin/marketing` | admin | admin-api.js | settings only | firebase-backend |
 | PATCH | `/admin/marketing` | admin | admin-api.js | settings only | firebase-backend |
+| GET | `/admin/payments` | admin (finance.view) | admin-api.js | plan admin `payments`: online requests (payment.status), pending refunds, payouts due | payments.test.js |
+| PATCH | `/admin/payments/settings` | admin (finance.edit) | admin-api.js | plan admin `payments` | payments.test.js |
+| POST | `/admin/payments/payouts` | admin (finance.edit) | admin-api.js | plan admin `payments` | payments.test.js |
+| POST | `/admin/payments/:id/release` | admin (finance.edit) | admin-api.js | requestBundle(:id) | payments.test.js |
+| POST | `/admin/payments/:id/refund` | admin (finance.edit) | admin-api.js | requestBundle(:id) | payments.test.js |
 | GET | `/admin/alerts` | admin | ops-api.js | alerts.js (ops-routes) | callcenter-agent, teams-alerts |
 | POST | `/admin/alerts/seen` | admin | ops-api.js | alerts.js (ops-routes) | teams-alerts |
 | POST | `/admin/alerts/:id/claim` | admin | ops-api.js | alerts.js (ops-routes) | teams-alerts |
@@ -417,6 +427,7 @@ Server enforcement: `permission-guard.apiDenied` (runs in the domain on the serv
 | `healthClock` | `every 10 minutes` | health probes, deployed revision, thresholds → tech alerts; critical ones (+ offers clock not running) also by e-mail | `system/health`, `system/deploy`, `system/alertMail` |
 | `digestClock` | `5 * * * *` Africa/Cairo | daily / weekly digests once per Cairo day at the configured hour | `system/digestState`, `digests` |
 | `alertsClock` | `every 5 minutes` | time-based alerts (`MP.opsScan`: requests without a provider > 30 min, pending providers > 1 day hourly, uncollected commission > 7 days hourly) + escalation of unclaimed critical alerts | `opsAlerts` |
+| `paymentsClock` | `every 30 minutes` | pending refunds sent to Paymob; held online payments of completed jobs released after `payments.autoReleaseHours` (default 48) unless a complaint is open | `serviceRequests` (payment), `transactions` (payout) |
 | `callLogsClock` | `every 24 hours` | clear call transcripts after 30 days; delete AI chats 30 days after last use | `callLogs`, `supportChats` |
 
 ### 2.6 Environment variables and secrets (names only — never commit values)
@@ -429,6 +440,11 @@ or as Firebase secrets bound to the function; they take effect on the next funct
 | `ADMIN_BOOTSTRAP_EMAILS` | `index.js` → `session.claimOwner`, `alert-mail.js` | comma-separated verified e-mails allowed to become the first owner; also the fallback recipients of critical alert e-mails |
 | `ENFORCE_APP_CHECK` | `index.js`, `tech-status.js` | `true` enforces App Check on `api` / `session` (needs the site key in `firebase-config.js`) |
 | `AGENT_API_KEYS` | `agent-gateway.js` | `id:secret:scopes` list for AI voice agents (secret ≥ 24 chars; scopes `lookup catalog requests.create requests.read requests.cancel complaints handoff calls calls.read` or `*`) |
+| `PAYMOB_SECRET_KEY` | `payments.js`, `runtime.js`, `scope.js` | Paymob secret key (Authorization: Token …); without it and the public key online payment is off and customers pay cash |
+| `PAYMOB_PUBLIC_KEY` | `payments.js`, `runtime.js`, `scope.js` | Paymob public key (hosted checkout URL) |
+| `PAYMOB_HMAC_SECRET` | `payments.js` | verifies the «transaction processed» callback |
+| `PAYMOB_INTEGRATION_IDS` | `payments.js` | comma list of Paymob integration ids (card, mobile wallet …) |
+| `PAYMOB_RETURN_URL` | `payments.js` | optional: where the customer returns after paying (default the customer app) |
 | `AGENT_RATE_PER_MIN` | `agent-gateway.js` | requests per minute per key / employee (default 120, minimum 10) |
 | `CHAT_KIND`, `CHAT_API_KEY`, `CHAT_BASE_URL`, `CHAT_MODEL` | `support-chat.js`, `ai.js` | optional server fallback provider for the AI chat |
 | `ANTHROPIC_API_KEY` | `support-chat.js`, `ai.js` | optional Claude fallback key for the chat |

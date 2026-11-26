@@ -49,7 +49,7 @@ test('after choosing: «السعر ثابت» seal; a new price shows its differ
   const q = t.run(`MP.currentQuote(${JSON.stringify(id)}).customerTotal`);
   assert.match(t.html(), /quote-diff is-up/); assert.match(t.html(), /أعلى من المتفق عليه/);
   assert.ok(t.html().includes('+' + (q - agreed).toLocaleString('ar-EG-u-nu-latn')), 'difference shown');
-  t.run(`MP.approveQuote(${JSON.stringify(id)}); MP.complete(${JSON.stringify(id)})`);
+  t.run(`(id => { MP.approveQuote(id); MP.choosePay(id,'online'); MP.markPaid(id,{amount:MP.payDue(MP.get('serviceRequests',id)),ref:'t_'+id}); MP.complete(id); })(${JSON.stringify(id)})`);   /* the certificate comes with an online payment */
   t.run(`show('tracking', ${JSON.stringify(id)})`);
   assert.match(t.html(), /class="w-cert"/); assert.match(t.html(), /شهادة ضمان/); assert.match(t.html(), /data-act="printCert"/);
 });

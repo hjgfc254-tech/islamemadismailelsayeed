@@ -93,11 +93,14 @@ function adminView(db, actor) {
   if (rank !== 'finance') full.transactions = [];
   return full;
 }
+/* the apps show «ادفع أونلاين» only when the server has Paymob keys (functions/src/payments.js) */
+const payReady = () => !!(process.env.PAYMOB_SECRET_KEY && process.env.PAYMOB_PUBLIC_KEY);
 function scopeFor(db, actor) {
   if (!db) return null;
-  if (actor && actor.role === 'admin') return adminView(db, actor);
+  if (actor && actor.role === 'admin') { const v = adminView(db, actor); if (v && v.settings) v.settings = { ...v.settings, payments: { ...(v.settings.payments || {}), gatewayReady: payReady() } }; return v; }
   const out = base(db);
   out.settings = { defaultRate: 0, rates: {}, ...out.settings };
+  out.settings.payments = { ...((db.settings && db.settings.payments) || {}), gatewayReady: payReady() };
   const approved = (db.providers || []).filter(p => p.status === 'approved').map(publicProvider);
   if (!actor) { out.providers = approved; return out; }
   const tag = actor.role + ':' + actor.id;

@@ -53,6 +53,7 @@ const viaCode = async (p) => { try { return await p; } catch (e) { if (e && e.is
 const content = require('./content');
 const ai = require('./ai');
 const catalogAdmin = require('./catalog-admin');
+const payments = require('./payments');
 const supportChat = require('./support-chat');
 const { invalidateShared } = require('./partial');
 const agentGateway = require('./agent-gateway');
@@ -420,6 +421,13 @@ async function api(backend, { auth, data, ip }) {
     try { await backend.deleteDoc(`users/${token.uid}`); } catch (e) {}
     try { if (backend.deleteAuthUser) await backend.deleteAuthUser(token.uid); } catch (e) { if (backend.log) backend.log('auth delete failed', e && e.message); }
   }
+  /* online payment chosen: open the Paymob checkout for the amount due (payments.js) — after the commit, outside the
+     transaction; a failure leaves the choice saved and the customer can retry or switch to cash */
+  if (!isRead && out.envelope.ok && !out.replay && /^\/requests\/[^/]+\/pay$/.test(req.path) && req.body && req.body.method === 'online' && out.envelope.data && out.envelope.data.gateway === 'paymob') {
+    const co = await payments.checkout(out.envelope.data);
+    out.envelope.data.checkoutUrl = co.ok ? co.checkoutUrl : null;
+    if (!co.ok) out.envelope.data.checkoutError = co.error;
+  }
   return out.envelope;
 }
 
@@ -729,6 +737,9 @@ async function domainOp(backend, { load, run }) {
 }
 const AGENT_DEPS = Object.freeze({ domain: domainOp });
 /** https `agentApi` (functions/index.js): AI agents with an AGENT_API_KEYS key. */
+/** Paymob webhook / payments clock (index.js): domain transactions through the same plan + domainOp */
+const paymentsWebhook = (backend, req) => payments.webhook(backend, req, { domainOp, plan });
+const paymentsTick = (backend) => payments.tick(backend, { domainOp, plan, PartialDb });
 const agentHttp = async (backend, req, opts) => { await runtime.refreshCatalog(backend); return agentGateway.http(backend, req, { ...(opts || {}), deps: AGENT_DEPS }); };
 
-module.exports = { aiIpAllow, AI_IP_DAILY, tickOffers, scanOps, api, session, importLocal, validateApi, affectedTags, ServiceError, WRITE_LIMIT_PER_MIN, agentHttp, domainOp, _adminOnly: adminOnly };
+module.exports = { aiIpAllow, AI_IP_DAILY, tickOffers, scanOps, api, session, importLocal, validateApi, affectedTags, ServiceError, WRITE_LIMIT_PER_MIN, agentHttp, domainOp, paymentsWebhook, paymentsTick, _adminOnly: adminOnly };

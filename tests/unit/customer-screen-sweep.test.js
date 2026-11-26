@@ -70,7 +70,7 @@ test('order tracking renders in every marketplace state', () => {
   chosen(states.inspectionAccepted, { kind: 'inspection', fee: 120 });
   states.started = mk(); chosen(states.started, { kind: 'quote', labor: 300 }); advance(states.started, ['scheduled', 'enroute', 'arrived', 'started']);
   states.quotePending = mk(); chosen(states.quotePending, { kind: 'quote', labor: 300 }); advance(states.quotePending, ['scheduled', 'enroute', 'arrived', 'started']); t.run(`MP.createQuote(${JSON.stringify(states.quotePending)}, { labor: 600 })`);
-  states.completed = mk(); chosen(states.completed, { kind: 'quote', labor: 300 }); advance(states.completed, ['scheduled', 'enroute', 'arrived', 'started']); t.run(`MP.complete(${JSON.stringify(states.completed)})`);
+  states.completed = mk(); chosen(states.completed, { kind: 'quote', labor: 300 }); advance(states.completed, ['scheduled', 'enroute', 'arrived', 'started']); t.run(`(id => { MP.choosePay(id,'online'); MP.markPaid(id,{amount:MP.payDue(MP.get('serviceRequests',id)),ref:'t_'+id}); MP.complete(id); })(${JSON.stringify(states.completed)})`);   /* paid online → warranty voucher */
   states.cashDisputed = mk(); chosen(states.cashDisputed, { kind: 'quote', labor: 300 }); advance(states.cashDisputed, ['scheduled', 'enroute', 'arrived', 'started']);
   t.run(`MP.complete(${JSON.stringify(states.cashDisputed)}); MP.cashConfirm(${JSON.stringify(states.cashDisputed)}, 'customer', true); MP.cashConfirm(${JSON.stringify(states.cashDisputed)}, 'provider', false)`);
   states.cancelledWithFee = mk(); chosen(states.cancelledWithFee, { kind: 'quote', labor: 300 }); advance(states.cancelledWithFee, ['scheduled', 'enroute']); t.run(`MP.cancel(${JSON.stringify(states.cancelledWithFee)}, 'x')`);

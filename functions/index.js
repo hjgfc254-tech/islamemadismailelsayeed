@@ -180,6 +180,26 @@ exports.catalogFeed = onRequest({ region: 'me-central1', cors: true, maxInstance
   }
 });
 
+/* Paymob «transaction processed» callback (set this URL as the callback in the Paymob dashboard): HMAC-verified in
+   src/payments.js; records an online payment (money held) or a refund on the request. Public, POST only. */
+exports.paymobWebhook = onRequest({ region: 'me-central1', cors: false, maxInstances: 5, timeoutSeconds: 30 }, async (req, res) => {
+  try {
+    if (req.method !== 'POST') { res.status(405).send(''); return; }
+    const out = await service.paymentsWebhook(backend, req);
+    res.status(out.status).json(out.body);
+  } catch (e) {
+    logger.error('paymobWebhook failed', { error: e && e.message });
+    res.status(500).json({ ok: false });   // Paymob retries the callback
+  }
+});
+
+/* payments clock: every 30 minutes — pending refunds sent to Paymob, held payments released after the hold time
+   (src/payments.js tick) */
+exports.paymentsClock = onSchedule({ schedule: 'every 30 minutes', region: 'me-central1', timeoutSeconds: 120 }, async () => {
+  try { const r = await service.paymentsTick(backend); if (r.refunded || r.released || r.failed) logger.info('paymentsClock', r); }
+  catch (e) { logger.error('paymentsClock failed', { error: e && e.message }); }
+});
+
 /* call transcripts are kept 30 days, then removed (the call summary stays) — docs/AI_CALLCENTER.md «Retention» */
 exports.callLogsClock = onSchedule({ schedule: 'every 24 hours', region: 'me-central1', timeoutSeconds: 120 }, async () => {
   try { const r = await agentGateway.retentionTick(backend); if (r.deleted) logger.info('callLogsClock', r); }
