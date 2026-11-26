@@ -1,3 +1,5 @@
+> **Historical — frontend-only phase (2026-11-13/19).** This document describes the platform before it went live on Firebase. The real backend, payments, catalogue, call centre and security model are in `docs/MAINTENANCE_GUIDE.md`, and the current state is in `docs/AI_CONTEXT/START_HERE.md`. Source code wins over this file.
+
 # Future Backend / Database Boundary
 
 `backend/` and `database/` are intentionally preserved as future scaffolding. They are not part of the active Frontend implementation phase.

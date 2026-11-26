@@ -1,3 +1,5 @@
+> **Historical — frontend-only phase (2026-11-13/19).** This document describes the platform before it went live on Firebase. The real backend, payments, catalogue, call centre and security model are in `docs/MAINTENANCE_GUIDE.md`, and the current state is in `docs/AI_CONTEXT/START_HERE.md`. Source code wins over this file.
+
 # Admin Modules
 
 The former legacy Admin console (`portal-compat.js`) was removed on 2026-11-14; its live operations are `apps/admin/pages/marketplace.page.js`. Admin Center pages and `modules/*` are implemented as local demos (see `docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md`). Planned domains include workforce, access control, departments, catalog/services, providers, customers, orders, quotes, complaints, reviews, finance, reports, notifications, audit, security and system settings. No workforce or permission workflow is implemented.

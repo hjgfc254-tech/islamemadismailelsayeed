@@ -1,76 +1,74 @@
-# HANSALEHLAK V8 — START HERE
+# HANSALEHLAK (هنصلحلك) — START HERE
 
-**Current phase:** FRONTEND ONLY (no backend, database, real auth, payments or network APIs).  
-**Latest verified baseline (2026-11-21, deep audit at 31a68b3 — production = this commit):**
-- `npm test` 505/505 · emulators 3/3 · emulator E2E 59/59 · browser runners: customer 160, guest 165, provider 286, admin 124, admin-controls 21, offers-cycle 51, offer-alerts 12, client-errors 8, a11y 112, responsive sweep 280 (5 widths), interaction QA 0 inert.
-- Production (Firebase Hosting + GitHub Pages) serves SW cache firebase-60; functions api / session / offersClock match the repo; prod deps 0 vulnerabilities; CI green.
-- Known open: perf budget on the Fast-3G profile (customer LCP ~5–6 s; bundling work unfinished in a worktree). Owner decisions pending: adminDataPolicy 'minimal' (ready, off), support contact numbers, auto-pick when offers are not chosen, App Check key, payment provider.
-- New runners: `perf.cdp.js`, `client-errors.cdp.js`, `offer-alerts.cdp.js`, `admin-controls.cdp.js`. Deploy steps: `docs/DEPLOY_CHECKLIST.md` (standing approval: push + deploy after each change).
-- Inventory reproduces from a clean clone (0/0/0).
-- **2026-11-24 — 2026 identity, round 4 (`npm test` 573/573, hosting deployed):** navy #0B1F3A + red #E1251B across Customer, Provider, Admin tokens (`shared/design-system/brand-2026-tokens.css`, `apps/*/styles/brand-2026.css`). Customer "answers back": `apps/customer/experience.js` (sticky compact header, scroll-driven logo gear, reveal-on-scroll, «مساعد هنصلحلك» guide hints once per session), live sentence in the wizard (`wzSay`), branded empty states / inner-page navy band / request-sent card, generated brand backgrounds `assets/brand/bg-navy|bg-red|bg-light.svg`. Browser runners were not re-run this round (headless screenshots only).
-- **2026-11-24 later — smart help + location + QA (`npm test` 583/583):** `apps/customer/pages/smart-help.js` (طوارئ, شخّص مشكلتك, smart Home card, «بيتي», maintenance reminders on the device), map picker in `shared/components/hs-map.js` (governorate start, Egypt bounds, auto permission ask, Nominatim search + reverse street, iPhone/Android help), wizard voice description (Web Speech), WhatsApp share, rating confetti, Admin finishing layer `apps/admin/styles/brand-2026.css` (tokens only). **Real-browser runners all green** (customer-orders, guest, client-errors, interaction, provider-standalone, admin-app, admin-controls, a11y, responsive-sweep, offers-cycle, offer-alerts). **Open:** `perf.cdp.js` over budget — customer/landing LCP ~5.3–5.9 s (was 10 s; boot screen now paints the hero), provider LCP 5.3 s, admin LCP 7.9 s, customer ~1.7 MB transferred; next step is fewer/bundled scripts. Nominatim is fair-use only (needs a paid geocoder at scale); reminders are device-local (no push).
+**Phase: LIVE on Firebase (production).** The three apps run against the real backend (Cloud Functions `me-central1`,
+Firestore, RTDB signals, Firebase Auth). `?backend=local` / `hs_backend=local` is the offline demo used by tests and
+browser runners. Real money: cash today; online payment (Paymob) is built on the server and off until the owner adds keys.
 
-- **2026-11-25 — call centre for human + AI agents (`npm test` green, not deployed):** vendor-neutral gateway `functions/src/agent-gateway.js` (`/agent/*`: lookup, catalog, create / status / cancel with fee confirmation, complaint, hand-off → ops ticket + alert, call logs with 30-day transcript retention), https function `agentApi` (Bearer keys from `AGENT_API_KEYS`, scopes, rate limit, audit), role `callcenter` (no sync data, API allow-list), Admin page `#/callcenter`. Design + AI tool schemas + voice prompt: `docs/AI_CALLCENTER.md`. Owner must set `AGENT_API_KEYS` before any vendor is connected.
+**Baseline (2026-11-27, main `45e90b2`, deployed: functions + hosting + Firestore indexes):**
+- `npm test` 681/681; browser runners green at the last full run (customer-orders, guest, provider-standalone,
+  admin-app, admin-controls, a11y, responsive-sweep, interaction, client-errors).
+- Service-worker cache `hansalhlak-v11-firebase-122` (`npm run sw:bump` after any served-file change; a test fails otherwise).
+- Functions: `api`, `session`, `agentApi`, `catalogFeed`, `paymobWebhook`, clocks `offersClock`, `healthClock`,
+  `digestClock`, `alertsClock`, `paymentsClock`, `callLogsClock`.
 
-- **2026-11-25 later — AI chat «موظف خدمة العملاء» (human hand-off off until the owner has a team):** Customer Support centre chat (`apps/customer/pages/support-chat.js`) → session op `chat` (`functions/src/support-chat.js` + provider-neutral `chat-llm.js`: DeepSeek / OpenAI-compatible / Gemini / Claude, fail-over in priority order) with 12 strict tools — most customer self-service actions, never phone / e-mail / delete / money — through `agent-gateway.handle()` as the signed-in customer; writes only after the customer's confirm button; masking, quotas, busy lock, audit, 30-day retention. Off until the owner adds a provider with the «شات» role (Admin › التوجيه الذكي). Details: `docs/AI_CALLCENTER.md` § Chat.
+## Read next (in this order)
+1. **`docs/MAINTENANCE_GUIDE.md`**: the single source for the system map, every route, session op, Admin page, role,
+   clock and env var, the feature dossiers, the runbooks, troubleshooting and the known gaps (§7). It is pinned to the
+   code by `tests/unit/wiring.test.js`.
+2. `docs/HANDOFF_NEXT_AI.md`: what changed most recently (newest on top).
+3. `docs/API_CONTRACTS.md`: every API route (pinned by `api-adapters.test.js`).
+4. The source and the tests you touch. **Source code wins over every document.**
 
-- **2026-11-25 — architecture tidy + maintenance guide (no behaviour change, not deployed):** `docs/MAINTENANCE_GUIDE.md` (single entry point); `tests/unit/wiring.test.js` pins routes → `plan.js`, functions exports, session ops, env vars, Admin pages → permission, Firestore queries → indexes; `functions/src/service.js` dispatch table + de-duplicated helpers. Proposed refactors not done: guide §7.
+Older documents written for the frontend-only phase (2026-11-13/14) carry a «Historical» banner. Use them only for
+background.
 
-**Maintenance guide (system map, every route / session op / Admin page / RBAC role / clock / env var, runbooks, troubleshooting):** `docs/MAINTENANCE_GUIDE.md` — pinned by `tests/unit/wiring.test.js`.
-
-**Resume state:** `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md` · **Handoff:** `docs/HANDOFF_NEXT_AI.md` (newest entry on top)  
-**Agent protocol:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md` · **Project skills:** `.claude/skills/` (`finish-gate`, `vm-script-test`, `browser-qa`)
-
-## Mandatory first steps
-1. Read `CLAUDE.md`, this file and `docs/AI_CONTEXT/WORKFLOW.md`.
-2. Read only the relevant `docs/AI_CONTEXT/DOMAIN_MAPS/<domain>.md`; locate files with `docs/AI_CONTEXT/FILE_INDEX.json`.
-3. Inspect source, script order, callers and tests. **Source code wins over docs.**
-4. Run `npm test` before editing to establish the baseline.
-
-## Project reality: one marketplace, three apps, one shared local store
+## What exists (one marketplace, three apps, one shared domain)
 | Entry | What it is |
 |---|---|
-| `index.html` (root) | Redirect to the Customer app |
-| `apps/customer/index.html` | Customer app; **Guest** is its restricted mode (`apps/guest/guest-policy.js`, `guest-entry.js`) |
-| `apps/provider/index.html` (+ `login.html` hand-off) | Standalone Provider app (the only Provider UI) |
-| `apps/admin/index.html` (+ `login.html` hand-off) | Isolated Admin Center (demo account picker → shell → RBAC-filtered nav) |
+| `apps/customer/index.html` | Customer app (Guest is its restricted mode) |
+| `apps/provider/index.html` | Provider app (`#/join` onboarding) |
+| `apps/admin/index.html` | Admin Center (RBAC, 8-digit code, optional TOTP 2FA) |
+| `services/*.js` | Shared domain + route table (`MP`, `CAT`, `HSApiClient`), copied to `functions/domain` by `npm run functions:sync` |
+| `functions/src/*.js` | Server: `service.js` (gates + transactions), `plan.js` (what to load), `scope.js` (what each actor sees), feature modules |
 
-- **Data:** `services/local-market-store.js` (`MP`, localStorage `hs_mp_db`) is shared by all apps.
-  - **Writes** go through the mock API adapters `services/api-client.js` + `*-api.js`: one envelope, role and
-    ownership checks, no network. The contract is `docs/API_CONTRACTS.md`.
-  - **Reads** use `MP` as the local read model; `realtime-client.js` refreshes it across tabs.
-- **Isolation:** Customer and Provider contain no Admin links, role switching or Admin code (enforced by
-  `legacy-migration.test.js` and `guest.cdp.js`). Customer → Provider only via «عايز تقدم خدماتك؟ انضم كمقدم خدمة» →
-  `apps/provider/index.html#/join`; a registration stays `pending` (no provider role) until Admin approves it.
-- **Legacy:** `apps/provider/legacy/portal-compat.js` and `apps/provider/provider-workspace.js` were **removed**
-  (2026-11-14) after capability migration. Do not restore them.
-- **Order lifecycle:** quote → customer approves (agreed price, still in progress) → provider completes →
-  customer confirms. Zero-value quotes are forbidden. Free service is a separate flow (value 0, no commission).
-  Full state diagram: `docs/API_CONTRACTS.md`.
-- `backend/` and `database/` are future scaffolding and OUT OF SCOPE.
+**Main features live:**
+- Orders: offers / bidding, labour-only commission, fixed price, cancel fee.
+- Warranty voucher, arrival code and before/after photos.
+- Admin-managed catalogue with a question bank and served governorates, published as a CDN file.
+- Shortened 4-screen request wizard.
+- AI chat «موظف خدمة العملاء» (off until a provider key is set) and call-centre gateway for human / AI agents.
+- Alerts / tickets, e-mail digests and critical-alert e-mails.
+- Tech Center, client-error telemetry, Firestore TTL retention, 2FA, and staging wiring (the staging project is not created yet).
 
-## Next task
-**Firebase backend (2026-11-15): DEPLOYED and ACTIVATED** — all three apps default to the production backend (`?backend=local` = offline demo for dev/tests); Functions `api`/`session` in `me-central1`; PITR + delete protection on. Super Admin verified and owner claimed (employees/e9001). Production data is clean (inventory: `docs/archive/FIREBASE_DATA_INVENTORY.md`). Admin: all 24 pages run on real backend data in Firebase mode (15 mapped via `apps/admin/modules/admin-live.js`, 9 server panels via `apps/admin/modules/admin-live-panels.js`; see `docs/archive/ADMIN_BACKEND_STATUS.md`). Uber-style upfront pricing deployed: admin base prices on categories, markup (default 15%) in settings; customer price fixed at booking. Provider "موقع العميل" (2026-11-15): on accepted jobs the provider sees the address, call/WhatsApp/map links and the straight-line distance in km, recomputed per press. The customer sees status only. There is no live tracking and no paid Maps API. Server-side pin validation needs a functions deploy (pending approval). UI V10 (2026-11-15): owner logo, intro, and photo icons for categories and items (`assets/icons/svc`, `icImg` in the icon registry); "Workshop" palette tokens. Customer sign-in offers quick (anonymous), email or SMS (`docs/FIREBASE_BACKEND.md`); this needs a Functions deploy and the Anonymous provider enabled (pending approval). Docs: `docs/FIREBASE_BACKEND.md`, `docs/archive/FIREBASE_MIGRATION_PLAN.md` (migration NOT executed). Browser runners are pinned to local mode and block production hosts. After editing a domain file run `npm run functions:sync` and redeploy functions.
+## Open work (details in the guide §7)
+- **Payments UI unfinished.** The customer payment choice, the provider payment status / payouts, and the Admin «المدفوعات» page are in worktrees `.claude/worktrees/agent-a9037922572203278` and `agent-a42110a30883e0f98` (stopped mid-way, unreviewed). Briefs: `docs/agent-briefs/payments-ui-*.md`. Until merged, every job is cash and gets no voucher.
+- **Owner actions:**
+  - Paymob keys + webhook URL;
+  - `RESEND_API_KEY` / `MAIL_FROM`;
+  - create the `hansalahlak-staging` project;
+  - App Check key;
+  - support numbers;
+  - legal review;
+  - retention for `opsAlerts` / `opsTickets` / `aiUsage`.
+- **Performance:** customer LCP ~5 s on Fast-3G; bundling needs esbuild (ask before installing).
+- **Photos:** stored on the device only; the owner plans Supabase Storage.
+- **About 17 old agent worktrees** to review and remove.
 
-The approved visual identity (boards in `design-reference/approved/`) is implemented and uncommitted; see
-`docs/DESIGN_SYSTEM_V9.md` (tokens sampled from the boards, brand assets in `assets/brand/`, known gaps). Open items:
-- category photography, the Account board's desktop sidebar layout, and screen-by-screen rebuilds of the wizard/search/discovery;
-- `audit:refresh` / `audit:inventory` before committing (exclude the owner's untracked folders);
-- three minor a11y notes (brand/breadcrumb links to the current page lack `aria-current`);
-- screen readers, WebKit/Firefox and real devices not verified.
-
-## Required finish gate
-Targeted tests → `npm test` → relevant CDP runners (`python -m http.server 8099 --bind 127.0.0.1`, then
-`node tests/e2e/<runner>.cdp.js http://127.0.0.1:8099`) → `npm run audit:refresh` → `npm run audit:inventory`.
-Bump `CACHE` in `service-worker.js` whenever a precached asset changes (now `hansalhlak-v11-firebase-1`; four tests
-pin the literal). The inventory is the git file set (tracked + untracked-unignored); untracked files that should not be
-committed will show as "untracked".
-
-## Absolute constraints
-Frontend only. Label every local demo action as such. Never put Admin into Customer or Provider. Do not delete code or
-change routes, globals, DOM hooks, storage keys, script order or product rules without tracing callers and adding
-regression tests.
+## Working rules
+- Owner language: simple Egyptian Arabic in chat. Code, commits and docs in English.
+- Standing approval: push + `firebase deploy` after each finished change. Destructive data operations need the owner.
+- After editing `services/`: `npm run functions:sync`. After served files: `npm run sw:bump`.
+- Finish gate:
+  1. targeted tests;
+  2. `npm test`;
+  3. relevant runners (`python -m http.server 8099 --bind 127.0.0.1`, then `node tests/e2e/<r>.cdp.js http://127.0.0.1:8099`);
+  4. `npm run audit:refresh`;
+  5. `npm run audit:inventory`.
+- Never put Admin code into Customer / Provider. Never delete code without proving it unused (script tags, globals, tests, docs).
+- Graph: `graphify query "<question>"` before broad searches (`graphify-out/`, local only).
+- Agent briefs for parallel work live in `docs/agent-briefs/`. Give agents narrow tasks.
 
 ## Project map & UI editing
-- `docs/README.md` — folder map + which document answers what (historical reports live in `docs/archive/`).
-- `docs/UI_EDIT_GUIDE_AR.md` — per page: which JS renders it and which CSS styles it; owner overrides go in each app's `styles/overrides.css` (loaded last).
+- `docs/README.md`: which document answers what.
+- `docs/UI_EDIT_GUIDE_AR.md`: which JS renders and which CSS styles each page.
+- `docs/DEPLOY_CHECKLIST.md`: deploy steps; `docs/MAINTENANCE_GUIDE.md` §4 runbooks.

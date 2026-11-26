@@ -1,16 +1,19 @@
-# HANSALEHLAK V8 — Claude Code Project Rules
+# HANSALEHLAK (هنصلحلك) — Claude Code Project Rules
 
 ## Session start (token-efficient)
 1. Read `docs/AI_CONTEXT/START_HERE.md`.
-2. Read `docs/HANDOFF_NEXT_AI.md` only when resuming implementation or when the next task is unclear.
-3. Read `docs/AI_CONTEXT/DOMAIN_MAPS/<relevant-domain>.md` for the target area.
+2. For server, route, clock or env work, read the relevant part of `docs/MAINTENANCE_GUIDE.md` (the system map, pinned to the code by `tests/unit/wiring.test.js`).
+3. Read `docs/HANDOFF_NEXT_AI.md` only when resuming implementation or when the next task is unclear.
 4. Use `docs/AI_CONTEXT/FILE_INDEX.json` to locate files and statuses. Do **not** load the full `docs/AI_PROJECT_MAP.json`, `AI_PROJECT_MAP.csv`, `AI_PROJECT_MAP.md`, `FRONTEND_FILE_CATALOG.md`, or `PROJECT_TREE.md` unless the task requires full detail.
-5. Read the exact source files and tests that the task touches. Source code outranks stale documentation.
+5. Read the exact source files and tests that the task touches. Source code outranks stale documentation. Documents marked «Historical» describe the old frontend-only phase.
 
 ## Current phase
-Frontend Only. Use local fixtures/mock data. No production backend, database, API, authentication, authorization enforcement, payments, or real money movement.
+**Live in production on Firebase** (Cloud Functions `me-central1`, Firestore, RTDB signals, Firebase Auth). The apps default to the real backend; `?backend=local` is the offline demo used by tests and browser runners. Browser runners pin local mode and block production hosts — never point tests at production data.
 
-`backend/` and `database/` are preserved future scaffolding. Do not implement them during the frontend phase and do not delete them as “unused”.
+- Shared business rules live in `services/*.js` and are copied to `functions/domain` with `npm run functions:sync` after every change there.
+- Payments: cash today. Online payment (Paymob) is built on the server and stays off until the owner sets `PAYMOB_*`. The server never enables the simulated «demo» gateway.
+- Standing approval: push to GitHub and `firebase deploy` after each finished change. Destructive data operations, installing tools and anything costing money need the owner first. Never commit secrets.
+- `backend/` and `database/` are old scaffolding (unused). Do not delete them without the owner.
 
 ## Change discipline
 - Before creating a file/component, search for an existing implementation.
@@ -18,6 +21,7 @@ Frontend Only. Use local fixtures/mock data. No production backend, database, AP
 - Do not rewrite legacy modules or remove compatibility bridges without proven parity and regression tests.
 - Preserve existing visual identity, RTL, responsive behavior, and accessibility.
 - Never claim a mock/local action is a production action.
+- After editing served files run `npm run sw:bump` (a test fails otherwise). New routes, functions exports, env vars or Admin pages must be added to `docs/MAINTENANCE_GUIDE.md` / `docs/API_CONTRACTS.md` (tests fail otherwise).
 - Do not delete files based only on name, age, size, or lack of static references. Prove they are unused across HTML script loading, imports, dynamic loading, routes, runtime globals, tests, and documentation first.
 
 ## Required checks

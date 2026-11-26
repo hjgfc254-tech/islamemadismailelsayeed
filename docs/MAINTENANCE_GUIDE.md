@@ -1,7 +1,7 @@
 # HANSALEHLAK — Maintenance Guide (دليل الصيانة)
 
-The single entry point for anyone who maintains the platform. Built from the source on 2026-11-25 (branch
-`worktree-agent-a1258fe39eb6b067a`). **Source code wins** over this file; `tests/unit/wiring.test.js` fails when the
+The single entry point for anyone who maintains the platform. Built from the source on 2026-11-25, last reviewed
+against the source on 2026-11-27 (main `45e90b2`). **Source code wins** over this file; `tests/unit/wiring.test.js` fails when the
 routes, functions exports, session ops, env vars, Admin pages, RBAC presets or Firestore indexes drift from it.
 
 ## نظرة عامة سريعة للمالك (بالعربي)
@@ -10,12 +10,19 @@ routes, functions exports, session ops, env vars, Admin pages, RBAC presets or F
   `services/` (الطلبات، الأسعار، العروض، الشكاوى…). نفس الملفات دي بتتنسخ للخادم في `functions/domain` بأمر
   `npm run functions:sync`، فالقاعدة بتتكتب مرة واحدة وتشتغل في الاتنين.
 - **الخادم** = Firebase Cloud Functions في منطقة `me-central1`: دالة `api` لكل طلب من التطبيقات، ودالة `session`
-  للمزامنة وتسجيل الدخول والشات والذكاء الاصطناعي، و`agentApi` للكول سنتر الآلي، و5 ساعات مجدولة (العروض، الصحة،
-  الملخصات، التنبيهات، حذف التسجيلات القديمة).
+  للمزامنة وتسجيل الدخول والشات والذكاء الاصطناعي، و`agentApi` للكول سنتر الآلي، و`catalogFeed` (ملف الكتالوج
+  المنشور للعملاء عبر الـ CDN)، و`paymobWebhook` (تأكيد الدفع من Paymob)، و6 ساعات مجدولة (العروض، الصحة، الملخصات،
+  التنبيهات، المدفوعات، حذف التسجيلات القديمة).
 - **البيانات** في Firestore، ومحدش من المتصفح يقدر يقراها أو يكتبها مباشرة — كل حاجة بتعدّي على الخادم اللي بيتأكد
   مين اللي بيطلب وإيه المسموح له. الإشارات السريعة (فيه تحديث) بتعدّي على Realtime Database.
 - **الإدارة** فيها أدوار جاهزة (المالك، مدير، عمليات ودعم، المالية، المحتوى والأسعار، التقنية، الكول سنتر…) وكل صفحة
-  ليها صلاحية. كل موظف إدارة لازم يدخل بإيميل + باسورد + **كود من 8 أرقام**.
+  ليها صلاحية. كل موظف إدارة لازم يدخل بإيميل + باسورد + **كود من 8 أرقام**، ويقدر يشغّل **تحقق بخطوتين** بتطبيق
+  Google Authenticator.
+- **الكتالوج** (الأقسام، الخدمات، الأسئلة، المحافظات المتاحة) بيتعدّل وينشر من الإدارة › الخدمات، والعملاء بيحمّلوه
+  ملف واحد ثابت (القسم 4.6b).
+- **الدفع:** بعد الاتفاق على السعر العميل بيختار كاش للفني بعد الشغل، أو أونلاين (Paymob) — فلوس الأونلاين بتتحجز
+  لحد ما العميل يأكد، ومعاها قسيمة ضمان 20 يوم، ونسبة المنصة على المصنعية بس (القسم 3.14). الأونلاين مقفول لحد ما
+  مفاتيح `PAYMOB_*` تتحط.
 - **أهم أوامر:** `npm test` (لازم يبقى كله أخضر) · `npm run functions:sync` بعد أي تعديل في `services/` ·
   `npm run sw:bump` بعد أي تعديل في ملفات الموقع · النشر بـ `firebase deploy` (القسم 4).
 - **لو حاجة باظت:** القسم 5 (الأعراض → السبب → الحل). أهمها: العميل شايف شريط «نسخة تجريبية» = المتصفح ده متسجل عليه
@@ -499,9 +506,39 @@ then `npm run functions:sync`); server-only behaviour in `functions/src`.
   provider amount or platform fee); Admin `#/categories`, `#/commissions`, `#/settlements`, `#/marketplace`.
 - **Flow:** admin sets base prices (`POST /admin/pricing`) → customer price = base + markup, fixed at booking →
   completion creates the transaction (commission, collection `pending`) → finance marks it collected.
+- **Labour-only share (2026-11-26):** offers / quotes carry `labor` + `parts`; `MP.quoteParts(labor, parts, rate)` puts
+  the markup on the labour only, parts pass through at cost (bid, chooseBid, createQuote, approveQuote, complete).
 - **Typical change:** a new fee → domain money code + `finance-api.js`; if it must stay hidden from customers, extend
   `scope.js` redaction; add a test in `upfront-pricing` / `commissions`.
 - **Tests:** `upfront-pricing`, `commissions`, `settlements`, `settlements-edge-cases`, `provider-bonus`, `finance-dashboard`.
+
+### 3.14 Payments (cash, or online held until the customer confirms)
+- **Where:** domain `services/local-market-store.js` «round 12: payments» (`payConfig`, `choosePay`, `markPaid`,
+  `payOnComplete`, `releasePay`, `refundOnCancel`, `markRefunded`, `autoRelease`, `payoutsDue`, `markPayoutPaid`);
+  routes `POST /requests/:id/pay`, `/pay/demo` (local only), `/admin/payments*` (`services/admin-api.js`); server
+  `functions/src/payments.js` (Paymob intention checkout, HMAC webhook, refunds, tick), exports `paymobWebhook`,
+  `paymentsClock`; `runtime.js` sets `HS_PAY_GATEWAY` (`paymob` only with keys, never `demo` on the server);
+  `scope.js` publishes `settings.payments.gatewayReady` to the apps.
+- **Flow:** price agreed → customer picks `cash` or `online` → online: Paymob checkout → webhook `markPaid` (status
+  `held`, idempotent per transaction) → provider may complete (blocked while unpaid) → transaction `collection: held`,
+  payout `hold` → customer confirms (`close`) or 48 h pass without a complaint (`paymentsClock` → `autoRelease`) →
+  payout `due` → admin records the weekly transfer (`POST /admin/payments/payouts`). Cancel / fail after paying →
+  `refundOnCancel` (travel fee kept for the provider) → `paymentsClock` sends the refund to Paymob.
+- **Warranty voucher:** `afterCompletion` sets `warrantyUntil` + `warrantyVoucher` only when `paidOnline(r)` (owner rule:
+  the «ضمان هنصلحلك» voucher comes with online payment; days = admin warranty settings, default 20).
+- **Not finished (2026-11-27):** the customer payment-choice card, provider payment status / payouts / `payoutWallet`
+  field, and the Admin «المدفوعات» page — work in progress in worktrees `agent-a9037922572203278` and
+  `agent-a42110a30883e0f98` (briefs `docs/agent-briefs/payments-ui-*.md`). Until they land, customers cannot pick
+  online and every job is cash (no voucher).
+- **Tests:** `payments.test.js` (domain + the full server path with Paymob faked), `upfront-pricing`, `round5-features`.
+
+### 3.15 Service catalogue (admin-managed, CDN feed)
+- **Where:** `services/catalog-question-bank.js` (default bank), `services/local-catalog.js` (CAT, v3 shape with `bank`,
+  `qs` refs, `govs`), `services/catalog-remote.js` (apps fetch `/catalog-feed`), `functions/src/catalog-admin.js`
+  (`/admin/catalog` draft / publish / unpublish, `feed`), `apps/admin/modules/catalog-editor.js`; `runtime.js` loads the
+  published catalogue into every server context (5-minute cache) so the AI, call centre and governorate check match.
+- **Typical change:** a new default question → the bank file + its test; anything per-service → the admin editor.
+- **Tests:** `catalog-publish`, `catalog-question-bank`, `catalog-wizard`, `launch-hardening`.
 
 ### 3.4 Provider onboarding
 - **Where:** `POST /providers/register` (`provider-api.js`), Provider `#/join` (`apps/provider/app.js`,
@@ -819,12 +856,8 @@ Not done in this pass (no behaviour change allowed, or a deploy / owner decision
    or nav item uses it. *Risk:* none at runtime; the file is a synced domain file. *Steps:* remove the key,
    `npm run functions:sync`, `npm test`, functions deploy with the next server change.
 3. **`services/README.md` is outdated** («no app entry loads them yet»). Fixed in this pass (doc only).
-4. **AI routing has no dedicated `ai.classify` unit test** (provider config is covered by `support-chat.test.js`).
-   *Steps:* add `tests/unit/ai-routing.test.js` with a fake `fetch` (`chat-llm.setFetch` pattern) covering fail-over,
-   catalogue validation and quotas.
-5. **About 30 domain routes are not named by any unit test path literal** (§2.1 `—`), e.g. `/requests/:id/tip`,
-   `/requests/:id/chat-seen`, `/customers/me/devices*`, `/admin/tickets/:id`. Most are covered through MP / adapter
-   helpers or runners. *Steps:* extend `api-adapters.test.js` with one envelope test per route.
+4. ~~**AI routing has no dedicated `ai.classify` unit test.**~~ Done 2026-11-26: `tests/unit/ai-classify.test.js`.
+5. ~~**About 30 domain routes are not named by any unit test path literal.**~~ Done 2026-11-26: `tests/unit/routes-coverage.test.js` (fails when a new route has no test).
 6. **`service.api` gates are a chain of `if` blocks.** Now documented as a numbered dispatch table in the header and
    de-duplicated helpers (`adminDocOf`, `isUnlockedAdmin`, `adminOnly`, `remember`). *Proposed:* a declarative
    `SERVER_HANDLERS = [{re, gate, inTransaction, handler}]` table. *Risk:* medium (order, rate-limit position and
@@ -838,5 +871,11 @@ Not done in this pass (no behaviour change allowed, or a deploy / owner decision
    pins completeness.
 9. **Performance budget open** (customer LCP ~5–6 s on Fast-3G): bundling / fewer scripts is unfinished — see
    `docs/AI_CONTEXT/START_HERE.md`. Any bundling must keep the classic-script globals and order.
-10. **Owner decisions pending** (from START_HERE): App Check site key + `ENFORCE_APP_CHECK`, `adminDataPolicy` minimal,
-    support contact numbers, auto-pick when offers are not chosen, payment provider, a paid geocoder at scale.
+10. **Owner decisions / actions pending (2026-11-27):** Paymob account + `PAYMOB_*` keys and the webhook URL;
+    `RESEND_API_KEY` + `MAIL_FROM` (alert e-mails); the `hansalahlak-staging` Firebase project (§4.11); App Check
+    site key + `ENFORCE_APP_CHECK`; support contact numbers; legal review of terms / refund / voucher wording; retention
+    for `opsAlerts`, `opsTickets`, `aiUsage`; a paid geocoder at scale.
+11. **Payments UI unfinished** (§3.14): merge the two payments worktrees after review, then deploy hosting.
+12. **Old agent worktrees** under `.claude/worktrees/` (about 17): most are merged or abandoned. Review the two payments
+    ones, then remove the rest with `git worktree remove` (never delete branches with unmerged work unreviewed).
+13. **Storage for photos** is not used (photos stay on the customer's device); the owner plans Supabase Storage.

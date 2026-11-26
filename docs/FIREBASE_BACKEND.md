@@ -1,5 +1,12 @@
 # HANSALEHLAK — Firebase backend (implementation status 2026-11-15)
 
+> **Status update (2026-11-27):** this file describes the backend as built on 2026-11-15 and is kept as the detailed record of
+> that design (sign-in, costs, console steps). Since then the following were added. The complete current map is
+> `docs/MAINTENANCE_GUIDE.md` §1–§2.
+> - **Functions:** `agentApi`, `catalogFeed`, `paymobWebhook`, and the clocks `healthClock`, `digestClock`, `alertsClock`, `paymentsClock`, `callLogsClock`.
+> - **Modules:** `catalog-admin`, `payments`, `alert-mail`, `retention`, admin TOTP 2FA in `admin-code`, and the published catalogue loaded into every domain context (`runtime.refreshCatalog`).
+> - **Firestore:** TTL on `audit` (365 d) and `digests` (90 d); new server-only documents `system/catalogDraft`, `system/catalogPub`, `system/alertMail`.
+
 **Project:** `hansalahlak` (`.firebaserc`).
 
 **Production status (2026-11-15): DEPLOYED.**

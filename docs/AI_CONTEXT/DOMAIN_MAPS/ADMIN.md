@@ -1,3 +1,5 @@
+> **Historical — frontend-only phase (2026-11-13/19).** This document describes the platform before it went live on Firebase. The real backend, payments, catalogue, call centre and security model are in `docs/MAINTENANCE_GUIDE.md`, and the current state is in `docs/AI_CONTEXT/START_HERE.md`. Source code wins over this file.
+
 # Admin Domain Map
 
 - Entry: `apps/admin/index.html`. Script order: icon registry → status badge → data grid → dialogs → accessible tabs → tree → money →

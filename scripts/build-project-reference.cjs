@@ -22,8 +22,12 @@ An Arabic (RTL, Egyptian dialect) home-services marketplace. A **customer** desc
 carpentry, painting, cars, cleaning, appliances…), the platform matches an approved **provider** (technician), the
 provider accepts, schedules, travels, works, sends a quote if needed and records completion; the customer confirms and
 rates. The **admin center** approves providers, assigns requests, manages catalogue, prices, commissions, complaints,
-site content, promo codes and employees (RBAC). Payment is **cash to the provider**; the platform's share is collected
-from the provider (no payment gateway).
+site content, promo codes and employees (RBAC). After a price is agreed the customer pays **cash to the provider** after the
+job (the platform's share is collected from the provider) or **online through Paymob** up front: the platform holds the
+money until the customer confirms, then pays the provider's net in a weekly transfer; online jobs carry the «ضمان
+هنصلحلك» voucher. The platform share is taken on the labour only. Online payment stays off until the Paymob keys are set.
+The service catalogue (questions, served governorates) is edited and published from the Admin Center as one CDN file.
+System map and runbooks: \docs/MAINTENANCE_GUIDE.md\.
 
 Live project: Firebase project \`hansalahlak\`, Cloud Functions region \`me-central1\` (Node 24, 2nd gen).
 

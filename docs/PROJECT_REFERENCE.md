@@ -8,8 +8,12 @@ An Arabic (RTL, Egyptian dialect) home-services marketplace. A **customer** desc
 carpentry, painting, cars, cleaning, appliances…), the platform matches an approved **provider** (technician), the
 provider accepts, schedules, travels, works, sends a quote if needed and records completion; the customer confirms and
 rates. The **admin center** approves providers, assigns requests, manages catalogue, prices, commissions, complaints,
-site content, promo codes and employees (RBAC). Payment is **cash to the provider**; the platform's share is collected
-from the provider (no payment gateway).
+site content, promo codes and employees (RBAC). After a price is agreed the customer pays **cash to the provider** after the
+job (the platform's share is collected from the provider) or **online through Paymob** up front: the platform holds the
+money until the customer confirms, then pays the provider's net in a weekly transfer; online jobs carry the «ضمان
+هنصلحلك» voucher. The platform share is taken on the labour only. Online payment stays off until the Paymob keys are set.
+The service catalogue (questions, served governorates) is edited and published from the Admin Center as one CDN file.
+System map and runbooks: \docs/MAINTENANCE_GUIDE.md\.
 
 Live project: Firebase project `hansalahlak`, Cloud Functions region `me-central1` (Node 24, 2nd gen).
 
@@ -330,6 +334,7 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /requests/:id/provider` | customer | orders-api.js | Customer picks a provider for an own unassigned request {providerId}. |
 | `POST /requests/:id/respond` | provider | orders-api.js | Accept or decline an offered assignment. |
 | `POST /requests/:id/schedule` | provider, customer | orders-api.js | Provider proposes {at}; either side confirms. |
+| `POST /requests/:id/location` | provider | orders-api.js | Live tracking: latest position {lat, lng, acc?} while enroute / arrived (assigned provider only). |
 | `POST /requests/:id/advance` | provider | orders-api.js | Move to the next FLOW status {to}. |
 | `POST /requests/:id/complete` | provider | orders-api.js | Complete a paid job: {value>0, deductions} or the approved quote. |
 | `POST /requests/:id/close` | customer | orders-api.js | Customer confirms completion. |
@@ -338,6 +343,14 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /requests/:id/review` | customer | orders-api.js | Rate the provider once {stars 1–5, comment}. |
 | `POST /requests/:id/messages` | customer, provider | orders-api.js | Message the other side of an accepted job {text ≤ 500}. |
 | `POST /requests/:id/rate-customer` | provider | orders-api.js | Provider rates the customer once after the job {stars 1–5, comment}. |
+| `POST /requests/:id/widen` | customer | orders-api.js | No offers after the window: invite providers from other areas (once). |
+| `POST /requests/:id/cash` | customer, provider | orders-api.js | Cash after completion: did the money change hands {paid}. A mismatch opens a complaint. |
+| `POST /requests/:id/pay` | customer | orders-api.js | Choose how to pay the agreed price {method: cash or online}; online returns the amount due and, on the server, a Paymob checkoutUrl (money held until the customer confirms). |
+| `POST /requests/:id/pay/demo` | customer | orders-api.js | Local demo only: simulate the gateway confirming the online payment (refused on the server). |
+| `POST /admin/providers/:id/warn` | admin | admin-api.js | Warn a provider (e.g. off-platform deals) {reason}; the second warning suspends. |
+| `POST /requests/:id/bid` | provider | orders-api.js | Send or update an offer {kind: quote or inspection, labor + parts or fee, note, eta}. |
+| `POST /requests/:id/choose` | customer | orders-api.js | Choose one of the offers {providerId}. |
+| `POST /requests/:id/inspection-only` | provider | orders-api.js | Close an inspection the customer did not continue: the visit fee is the job. |
 | `POST /requests/:id/warranty` | customer | orders-api.js | «المشكلة رجعت» within the warranty: a linked request to the same provider {desc}. |
 | `POST /requests/:id/tip` | customer | orders-api.js | Tip for the provider, paid in cash with the bill {amount 5–1000}. |
 | `POST /requests/:id/chat-seen` | customer, provider | orders-api.js | Read receipt: the caller saw the conversation. |
@@ -362,6 +375,7 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /providers/register` | public | provider-api.js | Onboarding: create a pending provider registration. |
 | `GET /providers/me` | provider | provider-api.js | Own full profile. |
 | `PATCH /providers/me` | provider | provider-api.js | Edit allow-listed own profile fields. |
+| `DELETE /providers/me` | provider | provider-api.js | Delete own account (anonymise; refused with open jobs). |
 | `PATCH /providers/me/availability` | provider | provider-api.js | Toggle availability for new requests. |
 | `GET /customers/me` | customer | customer-api.js | Own customer profile. |
 | `PATCH /customers/me` | customer | customer-api.js | Edit own profile {name, phone, email, prefs}. On the Firebase backend the phone must stay the verified one. |
@@ -394,8 +408,90 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `POST /admin/requests/:id/assign` | admin | admin-api.js | Assign manually {providerId} or auto-match. |
 | `POST /admin/customers/:id/status` | admin | admin-api.js | Suspend / reactivate a customer. |
 | `POST /admin/reviews/:id/visibility` | admin | admin-api.js | Hide or re-publish a review {hidden, reason}. |
+| `GET /admin/tech/status` | admin (owner, tech) | functions/src/tech-status.js | Tech Center: health (Firestore / RTDB / Auth latency), clocks, deploy info, grouped errors (top 20), usage + cost vs budget, p50/p95 per route group, limits. System information only — never personal data (server-only route, not in the shared domain). |
+| `POST /admin/tech/check` | admin (owner, tech) | tech-status.js | Run the health probe now (10 s cooldown). |
+| `POST /admin/tech/errors/:id` | admin (owner, tech) | tech-status.js | {status: open\|resolved\|ignored} for one error group; audited. |
+| `POST /admin/tech/config` | admin (owner) | tech-status.js | {budgetEGP, usdToEgp} monthly budget for the cost estimate; audited. |
+| `GET /admin/controls` | admin | admin-api.js | Emergency switches (maintenance, pause new requests, pause provider sign-ups). |
+| `POST /admin/controls` | admin | admin-api.js | Owner only: turn a switch on/off {key, on, message?}. Customers / providers get 503 on blocked mutations. |
+| `GET /admin/support-contacts` | admin | admin-api.js | Support phone / WhatsApp / email / hours shown to customers and providers. |
+| `PATCH /admin/support-contacts` | admin | admin-api.js | Owner or manager: set support contacts {phone?, whatsapp?, email?, hours?} (empty clears). |
+| `GET /admin/data-policy` | admin | admin-api.js | Admin data minimisation policy {minimal}. |
+| `POST /admin/data-policy` | admin | admin-api.js | Owner only: {minimal: boolean} — mask customer data for support / moderator ranks. |
 | `GET /admin/marketing` | admin | admin-api.js | Promo codes, invite reward and packages. |
 | `PATCH /admin/marketing` | admin | admin-api.js | Replace promo codes / invite reward / packages {promos?, referral?, packages?}. |
+| `GET /admin/payments` | admin | admin-api.js | Online payments held, pending refunds, provider payouts due, payment settings (finance.view). |
+| `PATCH /admin/payments/settings` | admin | admin-api.js | Payment settings {online, warrantyDays, autoReleaseHours, gatewayRate} (finance.edit). |
+| `POST /admin/payments/payouts` | admin | admin-api.js | Mark a provider payout as transferred {providerId, ids[], ref}. |
+| `POST /admin/payments/:id/release` | admin | admin-api.js | Release a held online payment to the provider (dispute decided for the provider). |
+| `POST /admin/payments/:id/refund` | admin | admin-api.js | Refund a held online payment {amount?}; a partial refund releases the rest to the provider. |
+| `GET /admin/digest/config` | admin (owner) | functions/src/digest-admin.js | E-mail digest settings `{daily:{on,hour}, weekly:{on,weekday,hour}, extraRecipients:[{email,team}]}` (default all OFF), last run state, transport status (missing env names, never secret values), recipients with masked e-mails. |
+| `POST /admin/digest/config` | admin (owner) | functions/src/digest-admin.js | Save `{daily?, weekly?, extraRecipients?}`; field errors on invalid hour / weekday / e-mail / team. Audited. |
+| `GET /admin/digest/preview` | admin | functions/src/digest-admin.js | `?type=daily\|weekly&team=owner\|ops\|finance\|content\|tech` → `{type, team, label, subject, html, text}`. Owner may pick any team; other roles get their own team only. Counts and aggregates only, no personal data. |
+| `POST /admin/digest/test` | admin | functions/src/digest-admin.js | Send that digest to the caller's own e-mail (once per minute). No transport configured → explained in the response, not sent. |
+| `GET /admin/digest/me` · `POST /admin/digest/me` | admin | functions/src/digest-admin.js | Any admin: read / set `{off: boolean}` to stop or resume their own digest (`digestPrefs/{uid}`). |
+
+Scheduled: `digestClock` (functions/index.js) runs hourly at :05 Africa/Cairo and sends each enabled digest once per
+Cairo day / week when its hour is reached; `system/digestState` makes it idempotent across instances (claim + max 3
+retries). Rendered digests are stored in `digests/{type}_{key}` (30 days) even when nothing could be sent.
+
+### Teams: alerts and tickets (2026-11-23)
+Rules: `apps/admin/modules/ops-core.js` + `ops-routes.js` (shared domain). Server: `functions/src/alerts.js` (Firestore
+`opsAlerts`, `opsTickets`, `alertSeen`; code-unlocked admins only). Local demo: `services/ops-api.js`. Each route needs the
+`alerts` / `tickets` module of the admin's role; an admin only sees the alerts / tickets of their own teams (owner: all).
+
+| Route | Who | Notes |
+|---|---|---|
+| `GET /admin/alerts` | admin | `{items, unread, open, mine, teams}`; `?status=open\|claimed\|resolved&team=&mine=1&all=1` (resolved shown 1 day unless `all`). |
+| `POST /admin/alerts/seen` | admin | Bell read → `unread: 0`. |
+| `POST /admin/alerts/:id/claim` | admin | «أنا هاخده»; 409 when a colleague already has it. Audited. |
+| `POST /admin/alerts/:id/resolve` | admin | «تم». Audited. |
+| `POST /admin/alerts/:id/ticket` | admin | Ticket from the alert (critical → urgent); claims the alert. Audited. |
+| `GET /admin/tickets` | admin | `?team=&status=new\|doing\|done&mine=1&open=1`. |
+| `POST /admin/tickets` | admin | `{title, description?, team?, priority?: low\|normal\|high\|urgent, link?}`; only for own teams. Audited. |
+| `PATCH /admin/tickets/:id` | admin | `{title?, description?, priority?, team?, status?, owner?}`; new → doing → done (done → doing reopens). Audited. |
+| `POST /admin/tickets/:id/notes` | admin | `{text}` (max 50 notes). Audited. |
+
+Alert sources: new complaint / cash dispute, empty offers round (domain `MP.raiseAlert`); requests without a provider
+> 30 min (critical ≥ 2 h), providers pending > 1 day, commissions uncollected > 7 days (`alertsClock`, every 5 min,
+`MP.opsScan`); repeated errors and health problems → team `tech`; emergency switches and admin lockouts → owner.
+Delivery: in-app bell + push to the team (critical also to the owner); `CHANNELS.whatsapp` is a reserved slot.
+An unclaimed critical alert escalates to the owner once after `system/settings.opsAlerts.escalateMin` (default 15) minutes.
+
+### Call centre: human employees and AI voice agents (2026-11-25)
+Server only: `functions/src/agent-gateway.js` (no local-demo routes). Two ways in, same routes, rules, rate limit
+(in memory, `AGENT_RATE_PER_MIN`, default 120/min per key or employee) and audit (`audit` rows `app: 'agent'`,
+`actor: {role:'agent', id: <key id | uid>, channel}`, request / ticket id as `subject`, never a phone number):
+- **Employee** (Admin app, callable `api`, code-unlocked): needs `callcenter.view` (lookup, catalog, status, lists),
+  `callcenter.create` (request, complaint, hand-off, call log) or `callcenter.edit` (cancel). Owner, `admin` and the
+  `callcenter` role have them.
+- **AI agent** (https function `agentApi`, `Authorization: Bearer <secret>`): key from `AGENT_API_KEYS`
+  (`id:secret:scope|scope`, `*` = all); missing / wrong key → 401, scope missing → 403, over the limit → 429.
+  URL shape: `<agentApi URL>/agent/<route>` (the `/agent` prefix is optional).
+
+Requests, cancellations and complaints run the customer's own routes AS the caller (same validation, owner
+switches, travel fee, alerts). A request id is answered only for the phone that owns it (else 404).
+
+| Route | Scope | Notes |
+|---|---|---|
+| `POST /agent/lookup` | lookup | `{phone}` → `{found, customer?: {id, name, phone (masked for AI), status}, requests: [{id, no, status, statusLabel, serviceName, gov, area, when, open, source}]}` (last 10, no address). |
+| `GET /agent/catalog` | catalog | `{categories: [{id, name, safety, items: [{id, name, price (customer price or null), problems: [{id, name, warn}]}]}], fees: {cancelFee, visitFee}, govs}`. |
+| `POST /agent/requests` | requests.create | `{phone, name, cat, item, problem?, desc?, gov, area?, addr, when? (YYYY-MM-DD), period? (morning\|noon\|evening), callId?}` → 201 request summary + `price`. Creates the customer by phone if new. `source: 'callcenter'`, `createdBy {channel, id}`. Max 10 open requests per caller. |
+| `GET /agent/requests/:id` | requests.read | `?phone=` → summary + `provider` (first name), `eta {at, minutes}`, `nextStep`, `canCancel`, `cancelFee`. |
+| `POST /agent/requests/:id/cancel` | requests.cancel | `{phone, reason, confirmFee?}`; a travel fee (provider on the way / arrived) → 409 `FEE_CONFIRMATION_REQUIRED` `{details: {fee}}` until `confirmFee: true`. |
+| `POST /agent/complaints` | complaints | `{phone, requestId?, kind, text 5–1000}` → 201 `{id, status}`. |
+| `POST /agent/handoff` | handoff | `{callId, phone?, requestId?, summary, reason}` → 201 `{ticketId}`; `opsTickets` (team ops, high, `source: 'callcenter'`) + alert «محتاج موظف» to ops. |
+| `POST /agent/calls` | calls | `{callId, from, startedAt, endedAt?, channel: ai\|human, summary, outcome, transcript?, requestId?}` → `callLogs/{id}` (idempotent per agent + callId); transcript deleted after 30 days (`callLogsClock`). |
+| `GET /agent/calls` · `GET /agent/handoffs` | calls.read | Last 50 call logs (no transcript, masked numbers) · last 30 hand-off tickets. |
+
+Full design, tool schemas for the AI agent and the voice-agent prompt: `docs/AI_CALLCENTER.md`.
+
+### Data separation by role (always on)
+`functions/src/scope.js`: `tech` and `callcenter` get no customers / providers / requests / transactions / complaints / reviews /
+addresses / chats in the sync, and the API gate (`permission-guard.js apiDenied`) answers only their allow-lists
+(the call centre reaches one caller at a time through `/agent/lookup`);
+`content` gets no personal data (public provider profiles, anonymous request facts); `finance` keeps money rows with
+masked phones and no addresses / locations / chats. Every API answer for these roles also passes `scrubForRole`.
 
 Route matching prefers the most specific pattern, so `GET /providers/me` wins over `GET /providers/:id`.
 
@@ -415,7 +511,7 @@ mutating routes, pagination for list routes, rate limits, versioning, and the mi
 
 
 ## Appendix C — Settings keys referenced by the code
-`autoAssign`, `collectionModel`, `defaultRate`, `markupRate`, `prices`, `rates`, `trend`, `warranty`
+`adminDataPolicy`, `autoAssign`, `autoPickMin`, `bidWindowMin`, `bidding`, `bonus`, `cancelFee`, `collectionModel`, `controls`, `defaultRate`, `inspection`, `inspectionCap`, `inspectionRate`, `markupRate`, `payments`, `priceCaps`, `priceLib`, `prices`, `rates`, `support`, `trend`, `visitFee`, `warranty`
 
 ## Appendix D — Security rules and Firebase config
 ### firestore.rules
@@ -455,7 +551,10 @@ service cloud.firestore {
         ".read": "auth != null",
         "$uid": {
           ".write": "auth != null && auth.uid === $uid",
-          ".validate": "newData.hasChildren(['r', 'at']) && (newData.child('r').val() === 'customer' || newData.child('r').val() === 'provider') && newData.child('at').isNumber()"
+          ".validate": "newData.hasChildren(['r', 'at']) && (newData.child('r').val() === 'customer' || newData.child('r').val() === 'provider') && newData.child('at').isNumber()",
+          "r": { ".validate": "newData.isString()" },
+          "at": { ".validate": "newData.isNumber()" },
+          "$other": { ".validate": false }
         }
       }
     },
@@ -471,234 +570,312 @@ service cloud.firestore {
 ### firestore.indexes.json
 ```json
 {
-    "indexes":  [
-                    {
-                        "collectionGroup":  "requests",
-                        "queryScope":  "COLLECTION",
-                        "fields":  [
-                                       {
-                                           "fieldPath":  "customerId",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "createdAt",
-                                           "order":  "DESCENDING"
-                                       }
-                                   ]
-                    },
-                    {
-                        "collectionGroup":  "requests",
-                        "queryScope":  "COLLECTION",
-                        "fields":  [
-                                       {
-                                           "fieldPath":  "status",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "createdAt",
-                                           "order":  "DESCENDING"
-                                       }
-                                   ]
-                    },
-                    {
-                        "collectionGroup":  "assignments",
-                        "queryScope":  "COLLECTION",
-                        "fields":  [
-                                       {
-                                           "fieldPath":  "providerId",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "at",
-                                           "order":  "DESCENDING"
-                                       }
-                                   ]
-                    },
-                    {
-                        "collectionGroup":  "notifications",
-                        "queryScope":  "COLLECTION",
-                        "fields":  [
-                                       {
-                                           "fieldPath":  "to",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "at",
-                                           "order":  "DESCENDING"
-                                       }
-                                   ]
-                    },
-                    {
-                        "collectionGroup":  "complaints",
-                        "queryScope":  "COLLECTION",
-                        "fields":  [
-                                       {
-                                           "fieldPath":  "by",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "at",
-                                           "order":  "DESCENDING"
-                                       }
-                                   ]
-                    },
-                    {
-                        "collectionGroup":  "complaints",
-                        "queryScope":  "COLLECTION",
-                        "fields":  [
-                                       {
-                                           "fieldPath":  "status",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "at",
-                                           "order":  "DESCENDING"
-                                       }
-                                   ]
-                    },
-                    {
-                        "collectionGroup":  "complaints",
-                        "queryScope":  "COLLECTION",
-                        "fields":  [
-                                       {
-                                           "fieldPath":  "by",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "status",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "at",
-                                           "order":  "DESCENDING"
-                                       }
-                                   ]
-                    },
-                    {
-                        "collectionGroup":  "transactions",
-                        "queryScope":  "COLLECTION",
-                        "fields":  [
-                                       {
-                                           "fieldPath":  "providerId",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "at",
-                                           "order":  "DESCENDING"
-                                       }
-                                   ]
-                    },
-                    {
-                        "collectionGroup":  "transactions",
-                        "queryScope":  "COLLECTION",
-                        "fields":  [
-                                       {
-                                           "fieldPath":  "customerId",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "at",
-                                           "order":  "DESCENDING"
-                                       }
-                                   ]
-                    },
-                    {
-                        "collectionGroup":  "transactions",
-                        "queryScope":  "COLLECTION",
-                        "fields":  [
-                                       {
-                                           "fieldPath":  "collection",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "at",
-                                           "order":  "DESCENDING"
-                                       }
-                                   ]
-                    },
-                    {
-                        "collectionGroup":  "providers",
-                        "queryScope":  "COLLECTION",
-                        "fields":  [
-                                       {
-                                           "fieldPath":  "status",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "createdAt",
-                                           "order":  "DESCENDING"
-                                       }
-                                   ]
-                    },
-                    {
-                        "collectionGroup":  "providers",
-                        "queryScope":  "COLLECTION",
-                        "fields":  [
-                                       {
-                                           "fieldPath":  "status",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "cats",
-                                           "arrayConfig":  "CONTAINS"
-                                       }
-                                   ]
-                    },
-                    {
-                        "collectionGroup":  "reviews",
-                        "queryScope":  "COLLECTION",
-                        "fields":  [
-                                       {
-                                           "fieldPath":  "providerId",
-                                           "order":  "ASCENDING"
-                                       },
-                                       {
-                                           "fieldPath":  "at",
-                                           "order":  "DESCENDING"
-                                       }
-                                   ]
-                    }
-                ],
-    "fieldOverrides":  [
-                           {
-                               "collectionGroup":  "idempotency",
-                               "fieldPath":  "expiresAt",
-                               "ttl":  true,
-                               "indexes":  [
-                                               {
-                                                   "order":  "ASCENDING",
-                                                   "queryScope":  "COLLECTION"
-                                               },
-                                               {
-                                                   "order":  "DESCENDING",
-                                                   "queryScope":  "COLLECTION"
-                                               },
-                                               {
-                                                   "arrayConfig":  "CONTAINS",
-                                                   "queryScope":  "COLLECTION"
-                                               }
-                                           ]
-                           },
-                           {
-                               "collectionGroup":  "rateLimits",
-                               "fieldPath":  "expiresAt",
-                               "ttl":  true,
-                               "indexes":  [
-                                               {
-                                                   "order":  "ASCENDING",
-                                                   "queryScope":  "COLLECTION"
-                                               },
-                                               {
-                                                   "order":  "DESCENDING",
-                                                   "queryScope":  "COLLECTION"
-                                               },
-                                               {
-                                                   "arrayConfig":  "CONTAINS",
-                                                   "queryScope":  "COLLECTION"
-                                               }
-                                           ]
-                           }
-                       ]
+  "indexes": [
+    {
+      "collectionGroup": "opsTickets",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "source",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "notifications",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "to",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "_u",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "requests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "customerId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "requests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "assignments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "providerId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "at",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "notifications",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "to",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "at",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "complaints",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "by",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "at",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "complaints",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "at",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "complaints",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "by",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "at",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "transactions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "providerId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "at",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "transactions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "customerId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "at",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "transactions",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "collection",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "at",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "providers",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "providers",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "cats",
+          "arrayConfig": "CONTAINS"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "reviews",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "providerId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "at",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "idempotency",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "arrayConfig": "CONTAINS",
+          "queryScope": "COLLECTION"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "rateLimits",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "arrayConfig": "CONTAINS",
+          "queryScope": "COLLECTION"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "clientErrors",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "arrayConfig": "CONTAINS",
+          "queryScope": "COLLECTION"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "usage",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": [
+        {
+          "order": "ASCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "order": "DESCENDING",
+          "queryScope": "COLLECTION"
+        },
+        {
+          "arrayConfig": "CONTAINS",
+          "queryScope": "COLLECTION"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "audit",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "digests",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    }
+  ]
 }
 ```
 ### firebase.json
@@ -774,7 +951,22 @@ service cloud.firestore {
       "local-only/**",
       "tools-lab/**",
       ".serena/**",
-      ".claude/**"
+      ".claude/**",
+      "install-tools.ps1",
+      "**/*.ps1",
+      "coverage-map.txt",
+      "service-worker.lock.json",
+      ".github/**",
+      "tools/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/catalog-feed",
+        "function": {
+          "functionId": "catalogFeed",
+          "region": "me-central1"
+        }
+      }
     ],
     "redirects": [
       {
@@ -836,6 +1028,14 @@ service cloud.firestore {
           {
             "key": "Referrer-Policy",
             "value": "strict-origin-when-cross-origin"
+          },
+          {
+            "key": "X-Frame-Options",
+            "value": "DENY"
+          },
+          {
+            "key": "Content-Security-Policy",
+            "value": "frame-ancestors 'none'"
           }
         ]
       }
@@ -851,10 +1051,17 @@ service cloud.firestore {
 | `npm run test` | `node --test tests/unit/*.test.js` |
 | `npm run test:unit` | `node --test tests/unit/*.test.js` |
 | `npm run test:coverage` | `node --experimental-test-coverage --test tests/unit/*.test.js` |
+| `npm run coverage:map` | `node scripts/coverage-run.cjs` |
 | `npm run audit:inventory` | `node scripts/verify-project-inventory.mjs` |
 | `npm run audit:refresh` | `node scripts/refresh-project-inventory.mjs` |
 | `npm run functions:sync` | `node scripts/sync-functions-domain.cjs` |
 | `npm run functions:check` | `node scripts/sync-functions-domain.cjs --check` |
+| `npm run sw:check` | `node scripts/sw-cache.cjs --check` |
+| `npm run sw:bump` | `node scripts/sw-cache.cjs --bump` |
+| `npm run deploy:record` | `node scripts/record-deploy.cjs` |
+| `npm run deploy:staging` | `firebase deploy -P staging --only functions,hosting,firestore` |
+| `npm run deploy:prod` | `node scripts/deploy-prod.cjs` |
+| `npm run bench:cost` | `node scripts/bench-firestore-cost.cjs` |
 | `npm run test:emulators` | `firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak "node --test tests/emulator/"` |
 | `npm run test:emulators:e2e` | `firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak "node tests/e2e/firebase-emulator.cdp.js"` |
 
@@ -871,13 +1078,26 @@ service cloud.firestore {
 
 | File | Status | Bytes |
 |---|---|---|
-| `.firebaserc` | NEEDS_REVIEW | 93 |
+| `.firebaserc` | NEEDS_REVIEW | 190 |
 
 ### .gitattributes (1)
 
 | File | Status | Bytes |
 |---|---|---|
 | `.gitattributes` | IMPLEMENTED | 525 |
+
+### .githooks (2)
+
+| File | Status | Bytes |
+|---|---|---|
+| `.githooks/pre-commit` | NEEDS_REVIEW | 55 |
+| `.githooks/pre-push` | NEEDS_REVIEW | 53 |
+
+### .github (1)
+
+| File | Status | Bytes |
+|---|---|---|
+| `.github/workflows/ci.yml` | NEEDS_REVIEW | 568 |
 
 ### .graphifyignore (1)
 
@@ -891,93 +1111,122 @@ service cloud.firestore {
 |---|---|---|
 | `.repomixignore` | NEEDS_REVIEW | 714 |
 
+### 2026-11-20-231345-this-session-is-being-continued-from-a-previous-c.txt (1)
+
+| File | Status | Bytes |
+|---|---|---|
+| `2026-11-20-231345-this-session-is-being-continued-from-a-previous-c.txt` | NEEDS_REVIEW |  |
+
 ### admin (1)
 
 | File | Status | Bytes |
 |---|---|---|
-| `apps/admin/rbac-store.js` | IMPLEMENTED (DEMO) | 15489 |
+| `apps/admin/rbac-store.js` | IMPLEMENTED (DEMO) | 22436 |
 
-### apps/admin (52)
+### apps/admin (66)
 
 | File | Status | Bytes |
 |---|---|---|
 | `apps/admin/admin-auth.js` | IMPLEMENTED (FRONTEND DEMO) | 1434 |
 | `apps/admin/admin-router.js` | IMPLEMENTED (FRONTEND DEMO) | 1998 |
 | `apps/admin/admin-session.js` | IMPLEMENTED (FRONTEND DEMO) | 1857 |
-| `apps/admin/admin-shell.js` | IMPLEMENTED (SHELL, DEMO) | 25478 |
-| `apps/admin/app.js` | IMPLEMENTED (FRONTEND DEMO) | 5163 |
-| `apps/admin/index.html` | IMPLEMENTED (SHELL HOST) | 4981 |
+| `apps/admin/admin-shell.js` | IMPLEMENTED (SHELL, DEMO) | 26560 |
+| `apps/admin/app.js` | IMPLEMENTED (FRONTEND DEMO) | 6355 |
+| `apps/admin/index.html` | IMPLEMENTED (SHELL HOST) | 6905 |
 | `apps/admin/login.html` | IMPLEMENTED (FRONTEND DEMO) | 812 |
 | `apps/admin/modules/access-control/permission-matrix.js` | IMPLEMENTED (FRONTEND DEMO) | 2356 |
 | `apps/admin/modules/access-control/permission-presets.js` | IMPLEMENTED (FRONTEND DEMO) | 2066 |
 | `apps/admin/modules/access-control/role-editor.js` | IMPLEMENTED (FRONTEND DEMO) | 7597 |
-| `apps/admin/modules/admin-live-panels.js` | NEEDS_REVIEW | 15368 |
-| `apps/admin/modules/admin-live.js` | NEEDS_REVIEW | 20217 |
+| `apps/admin/modules/admin-live-panels.js` | NEEDS_REVIEW | 22660 |
+| `apps/admin/modules/admin-live.js` | NEEDS_REVIEW | 20715 |
+| `apps/admin/modules/ai-settings.js` | NEEDS_REVIEW | 11272 |
 | `apps/admin/modules/audit/audit-details.js` | IMPLEMENTED (FRONTEND DEMO) | 2422 |
 | `apps/admin/modules/audit/audit-filters.js` | IMPLEMENTED (FRONTEND DEMO) | 1382 |
+| `apps/admin/modules/catalog-editor.js` | NEEDS_REVIEW | 15949 |
+| `apps/admin/modules/client-errors.js` | NEEDS_REVIEW | 4863 |
 | `apps/admin/modules/command-palette.js` | NEEDS_REVIEW | 5202 |
-| `apps/admin/modules/marketing-editor.js` | NEEDS_REVIEW | 11351 |
-| `apps/admin/modules/mini-charts.js` | NEEDS_REVIEW | 3590 |
+| `apps/admin/modules/digest-settings.js` | NEEDS_REVIEW | 11460 |
+| `apps/admin/modules/marketing-editor.js` | NEEDS_REVIEW | 22045 |
+| `apps/admin/modules/mini-charts.js` | NEEDS_REVIEW | 3610 |
+| `apps/admin/modules/ops-center.js` | NEEDS_REVIEW | 16642 |
+| `apps/admin/modules/ops-core.js` | NEEDS_REVIEW | 12316 |
+| `apps/admin/modules/ops-routes.js` | NEEDS_REVIEW | 8750 |
 | `apps/admin/modules/site-content-editor.js` | NEEDS_REVIEW | 15530 |
-| `apps/admin/modules/workforce/employee-form.js` | IMPLEMENTED (FRONTEND DEMO) | 4303 |
+| `apps/admin/modules/support-settings.js` | NEEDS_REVIEW | 6483 |
+| `apps/admin/modules/workforce/employee-form.js` | IMPLEMENTED (FRONTEND DEMO) | 4496 |
 | `apps/admin/modules/workforce/employee-invitation.js` | IMPLEMENTED (FRONTEND DEMO) | 1386 |
 | `apps/admin/modules/workforce/employee-status.js` | IMPLEMENTED (FRONTEND DEMO) | 2235 |
 | `apps/admin/navigation-builder.js` | IMPLEMENTED (FRONTEND DEMO) | 1519 |
-| `apps/admin/pages/admin-dashboard.page.js` | IMPLEMENTED (DEMO) | 13309 |
-| `apps/admin/pages/audit-log.page.js` | IMPLEMENTED (DEMO) | 11798 |
-| `apps/admin/pages/categories-management.page.js` | IMPLEMENTED (DEMO) | 20977 |
-| `apps/admin/pages/commissions.page.js` | IMPLEMENTED | 22282 |
-| `apps/admin/pages/complaints-management.page.js` | IMPLEMENTED (DEMO) | 16697 |
-| `apps/admin/pages/customers-management.page.js` | IMPLEMENTED (DEMO) | 12826 |
-| `apps/admin/pages/departments.page.js` | IMPLEMENTED (DEMO) | 19510 |
-| `apps/admin/pages/employee-details.page.js` | IMPLEMENTED (DEMO) | 9060 |
+| `apps/admin/pages/admin-dashboard.page.js` | IMPLEMENTED (DEMO) | 16489 |
+| `apps/admin/pages/alerts.page.js` | NEEDS_REVIEW | 911 |
+| `apps/admin/pages/audit-log.page.js` | IMPLEMENTED (DEMO) | 12027 |
+| `apps/admin/pages/callcenter.page.js` | NEEDS_REVIEW | 14258 |
+| `apps/admin/pages/categories-management.page.js` | IMPLEMENTED (DEMO) | 22144 |
+| `apps/admin/pages/commissions.page.js` | IMPLEMENTED | 22287 |
+| `apps/admin/pages/complaints-management.page.js` | IMPLEMENTED (DEMO) | 16717 |
+| `apps/admin/pages/controls.page.js` | NEEDS_REVIEW | 7366 |
+| `apps/admin/pages/customers-management.page.js` | IMPLEMENTED (DEMO) | 12846 |
+| `apps/admin/pages/departments.page.js` | IMPLEMENTED (DEMO) | 19520 |
+| `apps/admin/pages/employee-details.page.js` | IMPLEMENTED (DEMO) | 9080 |
 | `apps/admin/pages/finance-dashboard.page.js` | IMPLEMENTED | 14682 |
-| `apps/admin/pages/marketplace.page.js` | IMPLEMENTED (DEMO) | 23220 |
-| `apps/admin/pages/notifications-management.page.js` | IMPLEMENTED (DEMO) — PARTIAL (templates + read-only delivery log) | 21350 |
-| `apps/admin/pages/orders-management.page.js` | IMPLEMENTED (DEMO) | 15050 |
-| `apps/admin/pages/permissions.page.js` | IMPLEMENTED (DEMO) | 10412 |
-| `apps/admin/pages/providers-management.page.js` | IMPLEMENTED (DEMO) | 12733 |
-| `apps/admin/pages/quotes-management.page.js` | IMPLEMENTED (DEMO) | 17905 |
-| `apps/admin/pages/reports.page.js` | IMPLEMENTED (DEMO) | 26229 |
-| `apps/admin/pages/reviews-management.page.js` | IMPLEMENTED (DEMO) | 14991 |
-| `apps/admin/pages/roles.page.js` | IMPLEMENTED (DEMO) | 10696 |
-| `apps/admin/pages/security.page.js` | IMPLEMENTED (DEMO) | 28800 |
-| `apps/admin/pages/services-management.page.js` | IMPLEMENTED (DEMO) | 15608 |
-| `apps/admin/pages/settlements.page.js` | IMPLEMENTED (DEMO) | 29607 |
-| `apps/admin/pages/super-dashboard.page.js` | IMPLEMENTED (DEMO) | 14568 |
-| `apps/admin/pages/system-settings.page.js` | IMPLEMENTED (DEMO) | 14615 |
-| `apps/admin/pages/workforce.page.js` | IMPLEMENTED (DEMO) | 16342 |
-| `apps/admin/permission-guard.js` | IMPLEMENTED (FRONTEND DEMO) | 2507 |
+| `apps/admin/pages/insights.page.js` | NEEDS_REVIEW | 11407 |
+| `apps/admin/pages/marketplace.page.js` | IMPLEMENTED (DEMO) | 23230 |
+| `apps/admin/pages/notifications-management.page.js` | IMPLEMENTED (DEMO) — PARTIAL (templates + read-only delivery log) | 21352 |
+| `apps/admin/pages/orders-management.page.js` | IMPLEMENTED (DEMO) | 15070 |
+| `apps/admin/pages/permissions.page.js` | IMPLEMENTED (DEMO) | 10432 |
+| `apps/admin/pages/providers-management.page.js` | IMPLEMENTED (DEMO) | 13325 |
+| `apps/admin/pages/quotes-management.page.js` | IMPLEMENTED (DEMO) | 17915 |
+| `apps/admin/pages/reports.page.js` | IMPLEMENTED (DEMO) | 26239 |
+| `apps/admin/pages/reviews-management.page.js` | IMPLEMENTED (DEMO) | 15011 |
+| `apps/admin/pages/roles.page.js` | IMPLEMENTED (DEMO) | 10716 |
+| `apps/admin/pages/security.page.js` | IMPLEMENTED (DEMO) | 28818 |
+| `apps/admin/pages/services-management.page.js` | IMPLEMENTED (DEMO) | 15618 |
+| `apps/admin/pages/settlements.page.js` | IMPLEMENTED (DEMO) | 29615 |
+| `apps/admin/pages/super-dashboard.page.js` | IMPLEMENTED (DEMO) | 14576 |
+| `apps/admin/pages/system-settings.page.js` | IMPLEMENTED (DEMO) | 14838 |
+| `apps/admin/pages/tech-center.page.js` | NEEDS_REVIEW | 18088 |
+| `apps/admin/pages/workforce.page.js` | IMPLEMENTED (DEMO) | 16932 |
+| `apps/admin/permission-guard.js` | IMPLEMENTED (FRONTEND DEMO) | 6513 |
 | `apps/admin/README.md` | DOCUMENTATION | 1444 |
-| `apps/admin/styles/admin-components.css` | IMPLEMENTED (SHELL PARTS) | 34240 |
-| `apps/admin/styles/admin-responsive.css` | IMPLEMENTED (SHELL) | 1708 |
-| `apps/admin/styles/admin.css` | IMPLEMENTED (SHELL) | 5444 |
+| `apps/admin/styles/admin-components.css` | IMPLEMENTED (SHELL PARTS) | 50870 |
+| `apps/admin/styles/admin-responsive.css` | IMPLEMENTED (SHELL) | 1790 |
+| `apps/admin/styles/admin.css` | IMPLEMENTED (SHELL) | 5575 |
+| `apps/admin/styles/brand-2026.css` | NEEDS_REVIEW | 1967 |
 | `apps/admin/styles/overrides.css` | NEEDS_REVIEW | 1187 |
 
-### apps/customer (21)
+### apps/customer (30)
 
 | File | Status | Bytes |
 |---|---|---|
-| `apps/customer/app.js` | PARTIALLY IMPLEMENTED | 101052 |
+| `apps/customer/app.js` | PARTIALLY IMPLEMENTED | 104935 |
+| `apps/customer/brand-icons.js` | NEEDS_REVIEW | 4862 |
 | `apps/customer/customer-router.js` | IMPLEMENTED (FRONTEND DEMO) | 3508 |
 | `apps/customer/customer-session.js` | IMPLEMENTED (FRONTEND DEMO) | 4646 |
-| `apps/customer/index.html` | IMPLEMENTED | 7158 |
-| `apps/customer/pages/account.page.js` | IMPLEMENTED | 27375 |
-| `apps/customer/pages/addresses.page.js` | IMPLEMENTED | 10307 |
+| `apps/customer/experience.js` | NEEDS_REVIEW | 8582 |
+| `apps/customer/index.html` | IMPLEMENTED | 10611 |
+| `apps/customer/pages/account.page.js` | IMPLEMENTED | 31305 |
+| `apps/customer/pages/addresses.page.js` | IMPLEMENTED | 10365 |
+| `apps/customer/pages/ai-assist.js` | NEEDS_REVIEW | 5809 |
 | `apps/customer/pages/discover.page.js` | IMPLEMENTED | 15067 |
-| `apps/customer/pages/home.page.js` | IMPLEMENTED (DEMO) | 9017 |
-| `apps/customer/pages/market-ui.page.js` | IMPLEMENTED | 33026 |
-| `apps/customer/pages/onboarding.js` | NEEDS_REVIEW | 5565 |
-| `apps/customer/pages/order-details.page.js` | IMPLEMENTED (DEMO) | 18430 |
-| `apps/customer/pages/orders.page.js` | IMPLEMENTED (DEMO) | 3051 |
-| `apps/customer/pages/providers.page.js` | IMPLEMENTED | 11099 |
+| `apps/customer/pages/home.page.js` | IMPLEMENTED (DEMO) | 11276 |
+| `apps/customer/pages/live-map.js` | NEEDS_REVIEW | 3900 |
+| `apps/customer/pages/market-ui.page.js` | IMPLEMENTED | 33238 |
+| `apps/customer/pages/offer-alerts.js` | NEEDS_REVIEW | 6589 |
+| `apps/customer/pages/offers.js` | NEEDS_REVIEW | 13088 |
+| `apps/customer/pages/onboarding.js` | NEEDS_REVIEW | 5842 |
+| `apps/customer/pages/order-details.page.js` | IMPLEMENTED (DEMO) | 20022 |
+| `apps/customer/pages/orders.page.js` | IMPLEMENTED (DEMO) | 3062 |
+| `apps/customer/pages/providers.page.js` | IMPLEMENTED | 11096 |
 | `apps/customer/pages/request-create.page.js` | IMPLEMENTED (FRONTEND DEMO) | 2370 |
-| `apps/customer/pages/request-wizard.page.js` | IMPLEMENTED | 67896 |
-| `apps/customer/pages/search.page.js` | IMPLEMENTED | 35413 |
-| `apps/customer/pages/support.page.js` | IMPLEMENTED | 21736 |
-| `apps/customer/pages/trust-features.js` | NEEDS_REVIEW | 18859 |
+| `apps/customer/pages/request-wizard.page.js` | IMPLEMENTED | 79414 |
+| `apps/customer/pages/search.page.js` | IMPLEMENTED | 35380 |
+| `apps/customer/pages/smart-help.js` | NEEDS_REVIEW | 16827 |
+| `apps/customer/pages/support-chat.js` | NEEDS_REVIEW | 12629 |
+| `apps/customer/pages/support.page.js` | IMPLEMENTED | 22669 |
+| `apps/customer/pages/trust-features.js` | NEEDS_REVIEW | 21012 |
 | `apps/customer/README.md` | CONFIGURATION | 323 |
-| `apps/customer/styles/customer.css` | IMPLEMENTED | 123069 |
+| `apps/customer/styles/brand-2026.css` | NEEDS_REVIEW | 79114 |
+| `apps/customer/styles/customer.css` | IMPLEMENTED | 157282 |
 | `apps/customer/styles/overrides.css` | NEEDS_REVIEW | 2036 |
 
 ### apps/guest (3)
@@ -988,43 +1237,54 @@ service cloud.firestore {
 | `apps/guest/guest-policy.js` | IMPLEMENTED (FRONTEND DEMO) | 1752 |
 | `apps/guest/README.md` | DOCUMENTATION | 947 |
 
-### apps/provider (25)
+### apps/provider (26)
 
 | File | Status | Bytes |
 |---|---|---|
-| `apps/provider/app.js` | IMPLEMENTED (FRONTEND DEMO) | 57875 |
-| `apps/provider/index.html` | IMPLEMENTED (FRONTEND DEMO) | 2993 |
+| `apps/provider/app.js` | IMPLEMENTED (FRONTEND DEMO) | 78758 |
+| `apps/provider/index.html` | IMPLEMENTED (FRONTEND DEMO) | 3855 |
 | `apps/provider/login.html` | IMPLEMENTED (FRONTEND DEMO) | 822 |
 | `apps/provider/pages/active-jobs.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 174 |
-| `apps/provider/pages/dashboard.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 1482 |
+| `apps/provider/pages/dashboard.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 1694 |
 | `apps/provider/pages/earnings.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 842 |
 | `apps/provider/pages/incoming-requests.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 181 |
-| `apps/provider/pages/notifications.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 813 |
-| `apps/provider/pages/profile.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 1382 |
+| `apps/provider/pages/notifications.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 897 |
+| `apps/provider/pages/profile.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 2163 |
 | `apps/provider/pages/quotes.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 162 |
 | `apps/provider/pages/request-details.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 1094 |
-| `apps/provider/pages/reviews.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 631 |
-| `apps/provider/pages/schedule.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 689 |
+| `apps/provider/pages/reviews.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 703 |
+| `apps/provider/pages/schedule.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 764 |
 | `apps/provider/pages/services.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 1384 |
-| `apps/provider/pages/transactions.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 985 |
+| `apps/provider/pages/transactions.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 1180 |
 | `apps/provider/provider-auth.js` | IMPLEMENTED (FRONTEND DEMO) | 413 |
 | `apps/provider/provider-domain.js` | IMPLEMENTED (FRONTEND DEMO) | 1755 |
-| `apps/provider/provider-location.js` | NEEDS_REVIEW | 5810 |
+| `apps/provider/provider-location.js` | NEEDS_REVIEW | 5820 |
 | `apps/provider/provider-request-domain.js` | IMPLEMENTED (FRONTEND DEMO) | 17063 |
 | `apps/provider/provider-router.js` | IMPLEMENTED (FRONTEND ROUTER) | 821 |
 | `apps/provider/provider-session.js` | IMPLEMENTED (FRONTEND DEMO) | 516 |
-| `apps/provider/provider-shell.js` | IMPLEMENTED (FRONTEND SHELL) | 1162 |
+| `apps/provider/provider-shell.js` | IMPLEMENTED (FRONTEND SHELL) | 1303 |
 | `apps/provider/README.md` | CONFIGURATION | 2123 |
+| `apps/provider/styles/brand-2026.css` | NEEDS_REVIEW | 5629 |
 | `apps/provider/styles/overrides.css` | NEEDS_REVIEW | 1123 |
-| `apps/provider/styles/provider.css` | IMPLEMENTED (RESPONSIVE FRONTEND) | 29538 |
+| `apps/provider/styles/provider.css` | IMPLEMENTED (RESPONSIVE FRONTEND) | 40561 |
 
-### assets (101)
+### assets (115)
 
 | File | Status | Bytes |
 |---|---|---|
-| `assets/app-icon-192.png` | NEEDS_REVIEW | 14352 |
-| `assets/app-icon-512.png` | NEEDS_REVIEW | 52706 |
+| `assets/app-icon-192.png` | NEEDS_REVIEW | 10221 |
+| `assets/app-icon-512.png` | NEEDS_REVIEW | 17849 |
+| `assets/brand/bg-light.svg` | NEEDS_REVIEW | 2357 |
+| `assets/brand/bg-navy.svg` | NEEDS_REVIEW | 2355 |
+| `assets/brand/bg-red.svg` | NEEDS_REVIEW | 2356 |
 | `assets/brand/hero-tech-v2.webp` | NEEDS_REVIEW | 60916 |
+| `assets/brand/hero-tech-v3.jpg` | NEEDS_REVIEW | 85632 |
+| `assets/brand/hsl-lockup-light.png` | NEEDS_REVIEW | 10120 |
+| `assets/brand/hsl-lockup.png` | NEEDS_REVIEW | 10556 |
+| `assets/brand/hsl-mark.svg` | NEEDS_REVIEW | 1348 |
+| `assets/brand/hsl-word.png` | NEEDS_REVIEW | 4767 |
+| `assets/brand/loader/nut.webp` | NEEDS_REVIEW | 4168 |
+| `assets/brand/loader/wrench.webp` | NEEDS_REVIEW | 10844 |
 | `assets/brand/logo-v10-lockup-light.webp` | NEEDS_REVIEW | 21732 |
 | `assets/brand/logo-v10-lockup.webp` | NEEDS_REVIEW | 32586 |
 | `assets/brand/logo-v10-mark.webp` | NEEDS_REVIEW | 29120 |
@@ -1122,6 +1382,10 @@ service cloud.firestore {
 | `assets/vendor/leaflet/1.9.4/leaflet.js` | NEEDS_REVIEW | 147552 |
 | `assets/vendor/leaflet/1.9.4/LICENSE` | NEEDS_REVIEW | 1395 |
 | `assets/vendor/lucide.LICENSE.txt` | NEEDS_REVIEW | 880 |
+| `assets/vendor/maplibre/4.7.1/LICENSE.txt` | NEEDS_REVIEW | 5984 |
+| `assets/vendor/maplibre/4.7.1/mapbox-gl-rtl-text.min.js` | NEEDS_REVIEW | 206897 |
+| `assets/vendor/maplibre/4.7.1/maplibre-gl.css` | NEEDS_REVIEW | 65534 |
+| `assets/vendor/maplibre/4.7.1/maplibre-gl.js` | NEEDS_REVIEW | 803086 |
 | `assets/vendor/README.md` | NEEDS_REVIEW | 873 |
 
 ### backend (42)
@@ -1199,14 +1463,31 @@ service cloud.firestore {
 
 | File | Status | Bytes |
 |---|---|---|
-| `database.rules.json` | NEEDS_REVIEW | 630 |
+| `database.rules.json` | NEEDS_REVIEW | 783 |
 
-### docs (81)
+### docs (103)
 
 | File | Status | Bytes |
 |---|---|---|
 | `docs/ADMIN_MODULES.md` | CONFIGURATION | 1309 |
+| `docs/agent-briefs/admin-2fa.md` | NEEDS_REVIEW | 3423 |
+| `docs/agent-briefs/architecture-maintenance.md` | NEEDS_REVIEW | 6021 |
+| `docs/agent-briefs/callcenter-ai.md` | NEEDS_REVIEW | 4945 |
+| `docs/agent-briefs/catalog-question-bank.md` | NEEDS_REVIEW | 4561 |
+| `docs/agent-briefs/design-micro-audit-2.md` | NEEDS_REVIEW | 1805 |
+| `docs/agent-briefs/design-micro-audit.md` | NEEDS_REVIEW | 4150 |
+| `docs/agent-briefs/digest.md` | NEEDS_REVIEW | 1786 |
+| `docs/agent-briefs/ops-alerts-ttl-staging.md` | NEEDS_REVIEW | 3564 |
+| `docs/agent-briefs/payments-ui-admin.md` | NEEDS_REVIEW | 4876 |
+| `docs/agent-briefs/payments-ui-customer-provider.md` | NEEDS_REVIEW | 6393 |
+| `docs/agent-briefs/README.md` | NEEDS_REVIEW | 787 |
+| `docs/agent-briefs/security-audit.md` | NEEDS_REVIEW | 3707 |
+| `docs/agent-briefs/teams-alerts.md` | NEEDS_REVIEW | 3922 |
+| `docs/agent-briefs/tech-center.md` | NEEDS_REVIEW | 1667 |
+| `docs/agent-briefs/tech-micro-audit.md` | NEEDS_REVIEW | 3676 |
+| `docs/agent-briefs/test-gaps.md` | NEEDS_REVIEW | 2180 |
 | `docs/AI_AGENT_CONTINUATION_PROTOCOL.md` | DOCUMENTATION | 12918 |
+| `docs/AI_CALLCENTER.md` | NEEDS_REVIEW | 19345 |
 | `docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md` | DOCUMENTATION | 4382 |
 | `docs/AI_CONTEXT/DOMAIN_MAPS/CUSTOMER.md` | DOCUMENTATION | 7442 |
 | `docs/AI_CONTEXT/DOMAIN_MAPS/FRONTEND_RUNTIME.md` | DOCUMENTATION | 3744 |
@@ -1217,13 +1498,13 @@ service cloud.firestore {
 | `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md` | DOCUMENTATION | 7594 |
 | `docs/AI_CONTEXT/FILE_INDEX.json` | DOCUMENTATION |  |
 | `docs/AI_CONTEXT/README.md` | DOCUMENTATION | 1248 |
-| `docs/AI_CONTEXT/START_HERE.md` | DOCUMENTATION | 6325 |
+| `docs/AI_CONTEXT/START_HERE.md` | DOCUMENTATION | 10647 |
 | `docs/AI_CONTEXT/WORKFLOW.md` | DOCUMENTATION | 1652 |
 | `docs/AI_NEXT_IMPLEMENTATION_ORDER.md` | CONFIGURATION | 14399 |
-| `docs/AI_PROJECT_MAP.csv` | CONFIGURATION | 272991 |
+| `docs/AI_PROJECT_MAP.csv` | CONFIGURATION | 310671 |
 | `docs/AI_PROJECT_MAP.json` | CONFIGURATION |  |
-| `docs/AI_PROJECT_MAP.md` | CONFIGURATION | 144959 |
-| `docs/API_CONTRACTS.md` | CONFIGURATION | 18321 |
+| `docs/AI_PROJECT_MAP.md` | CONFIGURATION | 178868 |
+| `docs/API_CONTRACTS.md` | CONFIGURATION | 29323 |
 | `docs/ARCHITECTURE.md` | CONFIGURATION | 1980 |
 | `docs/archive/ADMIN_BACKEND_STATUS.md` | NEEDS_REVIEW | 5123 |
 | `docs/archive/ARCHITECTURE_BLUEPRINT_V1.md` | NEEDS_REVIEW | 54657 |
@@ -1263,10 +1544,12 @@ service cloud.firestore {
 | `docs/DECISIONS/2026-11-09-settlements-demo-assumptions.md` | DECISION | 3082 |
 | `docs/DECISIONS/2026-11-09-system-settings-demo-assumptions.md` | DECISION | 2370 |
 | `docs/DECISIONS/2026-11-10-super-dashboard-demo-assumptions.md` | DECISION | 4656 |
+| `docs/DEEPSEEK_HANDOFF.md` | NEEDS_REVIEW | 3416 |
+| `docs/DEPLOY_CHECKLIST.md` | NEEDS_REVIEW | 6233 |
 | `docs/DESIGN_MAP.md` | NEEDS_REVIEW | 6301 |
 | `docs/DESIGN_SYSTEM_V9.md` | NEEDS_REVIEW | 6806 |
 | `docs/FIREBASE_BACKEND.md` | NEEDS_REVIEW | 17914 |
-| `docs/FIREBASE_SCHEMA.md` | NEEDS_REVIEW | 7927 |
+| `docs/FIREBASE_SCHEMA.md` | NEEDS_REVIEW | 8356 |
 | `docs/FRONTEND_ARCHITECTURE.md` | DOCUMENTATION | 4873 |
 | `docs/FRONTEND_COMPONENT_CATALOG.md` | DOCUMENTATION | 5262 |
 | `docs/FRONTEND_DESIGN_SYSTEM.md` | DOCUMENTATION | 4953 |
@@ -1275,29 +1558,32 @@ service cloud.firestore {
 | `docs/FRONTEND_PAGE_CATALOG.md` | DOCUMENTATION | 14612 |
 | `docs/FRONTEND_QA_ACCEPTANCE.md` | DOCUMENTATION | 3456 |
 | `docs/FRONTEND_TEAM_AI_PROTOCOL.md` | DOCUMENTATION | 4790 |
-| `docs/HANDOFF_NEXT_AI.md` | DOCUMENTATION | 86121 |
+| `docs/HANDOFF_NEXT_AI.md` | DOCUMENTATION | 99593 |
 | `docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md` | DOCUMENTATION | 21527 |
+| `docs/MAINTENANCE_GUIDE.md` | NEEDS_REVIEW | 76573 |
 | `docs/MIGRATION_PLAN.md` | CONFIGURATION | 1820 |
+| `docs/NEXT_SESSION.md` | NEEDS_REVIEW | 5529 |
 | `docs/PERMISSIONS.md` | CONFIGURATION | 824 |
 | `docs/PLAYBOOKS.md` | NEEDS_REVIEW | 13769 |
-| `docs/PROJECT_REFERENCE.md` | NEEDS_REVIEW | 92172 |
-| `docs/PROJECT_TREE.md` | CONFIGURATION | 27184 |
-| `docs/README.md` | NEEDS_REVIEW | 3408 |
+| `docs/PROJECT_REFERENCE.md` | NEEDS_REVIEW | 92834 |
+| `docs/PROJECT_TREE.md` | CONFIGURATION | 33801 |
+| `docs/README.md` | NEEDS_REVIEW | 3633 |
+| `docs/SECURITY_AUDIT_2026-11-23.md` | NEEDS_REVIEW | 9258 |
 | `docs/SECURITY_MODEL.md` | CONFIGURATION | 1054 |
 | `docs/TESTING_STRATEGY.md` | DOCUMENTATION | 7746 |
-| `docs/UI_EDIT_GUIDE_AR.md` | NEEDS_REVIEW | 6982 |
+| `docs/UI_EDIT_GUIDE_AR.md` | NEEDS_REVIEW | 7259 |
 
 ### firebase.json (1)
 
 | File | Status | Bytes |
 |---|---|---|
-| `firebase.json` | NEEDS_REVIEW | 2800 |
+| `firebase.json` | NEEDS_REVIEW | 3332 |
 
 ### firestore.indexes.json (1)
 
 | File | Status | Bytes |
 |---|---|---|
-| `firestore.indexes.json` | NEEDS_REVIEW | 11257 |
+| `firestore.indexes.json` | NEEDS_REVIEW | 6204 |
 
 ### firestore.rules (1)
 
@@ -1305,52 +1591,84 @@ service cloud.firestore {
 |---|---|---|
 | `firestore.rules` | NEEDS_REVIEW | 931 |
 
-### functions (36)
+### functions (59)
 
 | File | Status | Bytes |
 |---|---|---|
-| `functions/.env.example` | NEEDS_REVIEW | 249 |
+| `functions/.env.example` | NEEDS_REVIEW | 1688 |
 | `functions/.gitignore` | NEEDS_REVIEW | 21 |
-| `functions/domain/apps/admin/modules/workforce/employee-form.js` | NEEDS_REVIEW | 4303 |
+| `functions/domain/apps/admin/modules/ops-core.js` | NEEDS_REVIEW | 12316 |
+| `functions/domain/apps/admin/modules/ops-routes.js` | NEEDS_REVIEW | 8750 |
+| `functions/domain/apps/admin/modules/workforce/employee-form.js` | NEEDS_REVIEW | 4496 |
 | `functions/domain/apps/admin/modules/workforce/employee-invitation.js` | NEEDS_REVIEW | 1386 |
 | `functions/domain/apps/admin/modules/workforce/employee-status.js` | NEEDS_REVIEW | 2235 |
-| `functions/domain/apps/admin/permission-guard.js` | NEEDS_REVIEW | 2507 |
-| `functions/domain/apps/admin/rbac-store.js` | NEEDS_REVIEW | 15489 |
-| `functions/domain/manifest.json` | NEEDS_REVIEW | 2051 |
-| `functions/domain/services/admin-api.js` | NEEDS_REVIEW | 13517 |
-| `functions/domain/services/api-client.js` | NEEDS_REVIEW | 9021 |
+| `functions/domain/apps/admin/permission-guard.js` | NEEDS_REVIEW | 6513 |
+| `functions/domain/apps/admin/rbac-store.js` | NEEDS_REVIEW | 22436 |
+| `functions/domain/manifest.json` | NEEDS_REVIEW | 2469 |
+| `functions/domain/services/admin-api.js` | NEEDS_REVIEW | 31012 |
+| `functions/domain/services/api-client.js` | NEEDS_REVIEW | 10859 |
 | `functions/domain/services/auth-api.js` | NEEDS_REVIEW | 4274 |
 | `functions/domain/services/catalog-api.js` | NEEDS_REVIEW | 4536 |
+| `functions/domain/services/catalog-question-bank.js` | NEEDS_REVIEW | 16221 |
 | `functions/domain/services/customer-api.js` | NEEDS_REVIEW | 8882 |
-| `functions/domain/services/finance-api.js` | NEEDS_REVIEW | 7175 |
-| `functions/domain/services/local-catalog.js` | NEEDS_REVIEW | 51241 |
-| `functions/domain/services/local-market-store.js` | NEEDS_REVIEW | 58828 |
+| `functions/domain/services/finance-api.js` | NEEDS_REVIEW | 8102 |
+| `functions/domain/services/local-catalog.js` | NEEDS_REVIEW | 54320 |
+| `functions/domain/services/local-market-store.js` | NEEDS_REVIEW | 103121 |
 | `functions/domain/services/notifications-api.js` | NEEDS_REVIEW | 1769 |
-| `functions/domain/services/orders-api.js` | NEEDS_REVIEW | 23216 |
-| `functions/domain/services/provider-api.js` | NEEDS_REVIEW | 5961 |
+| `functions/domain/services/ops-api.js` | NEEDS_REVIEW | 5184 |
+| `functions/domain/services/orders-api.js` | NEEDS_REVIEW | 30862 |
+| `functions/domain/services/provider-api.js` | NEEDS_REVIEW | 7873 |
 | `functions/domain/services/quotes-api.js` | NEEDS_REVIEW | 7074 |
-| `functions/domain/services/support-api.js` | NEEDS_REVIEW | 4297 |
+| `functions/domain/services/support-api.js` | NEEDS_REVIEW | 4714 |
 | `functions/domain/shared/config/legacy-data.js` | NEEDS_REVIEW | 38016 |
-| `functions/index.js` | NEEDS_REVIEW | 4318 |
-| `functions/package-lock.json` | NEEDS_REVIEW | 317684 |
-| `functions/package.json` | NEEDS_REVIEW | 835 |
-| `functions/src/admin-extra.js` | NEEDS_REVIEW | 10189 |
-| `functions/src/content.js` | NEEDS_REVIEW | 9646 |
-| `functions/src/identity.js` | NEEDS_REVIEW | 2012 |
-| `functions/src/limits.js` | NEEDS_REVIEW | 2572 |
-| `functions/src/partial.js` | NEEDS_REVIEW | 12796 |
-| `functions/src/plan.js` | NEEDS_REVIEW | 11531 |
-| `functions/src/runtime.js` | NEEDS_REVIEW | 4332 |
-| `functions/src/scope.js` | NEEDS_REVIEW | 5569 |
-| `functions/src/service.js` | NEEDS_REVIEW | 29788 |
-| `functions/src/store.js` | NEEDS_REVIEW | 5362 |
-| `functions/src/workforce.js` | NEEDS_REVIEW | 9869 |
+| `functions/index.js` | NEEDS_REVIEW | 14644 |
+| `functions/package-lock.json` | NEEDS_REVIEW | 111337 |
+| `functions/package.json` | NEEDS_REVIEW | 606 |
+| `functions/src/admin-code.js` | NEEDS_REVIEW | 16477 |
+| `functions/src/admin-extra.js` | NEEDS_REVIEW | 12672 |
+| `functions/src/agent-gateway.js` | NEEDS_REVIEW | 29710 |
+| `functions/src/ai.js` | NEEDS_REVIEW | 16787 |
+| `functions/src/alert-mail.js` | NEEDS_REVIEW | 5724 |
+| `functions/src/alerts-adapter.js` | NEEDS_REVIEW | 1283 |
+| `functions/src/alerts.js` | NEEDS_REVIEW | 10966 |
+| `functions/src/catalog-admin.js` | NEEDS_REVIEW | 10518 |
+| `functions/src/chat-llm.js` | NEEDS_REVIEW | 10886 |
+| `functions/src/content.js` | NEEDS_REVIEW | 9835 |
+| `functions/src/digest-admin.js` | NEEDS_REVIEW | 13292 |
+| `functions/src/digest.js` | NEEDS_REVIEW | 26007 |
+| `functions/src/identity.js` | NEEDS_REVIEW | 712 |
+| `functions/src/limits.js` | NEEDS_REVIEW | 3525 |
+| `functions/src/mailer.js` | NEEDS_REVIEW | 3843 |
+| `functions/src/owner-alerts.js` | NEEDS_REVIEW | 1991 |
+| `functions/src/partial.js` | NEEDS_REVIEW | 13607 |
+| `functions/src/payments.js` | NEEDS_REVIEW | 10105 |
+| `functions/src/plan.js` | NEEDS_REVIEW | 17411 |
+| `functions/src/provider-stats.js` | NEEDS_REVIEW | 4221 |
+| `functions/src/retention.js` | NEEDS_REVIEW | 1615 |
+| `functions/src/runtime.js` | NEEDS_REVIEW | 6582 |
+| `functions/src/scope.js` | NEEDS_REVIEW | 11119 |
+| `functions/src/service.js` | NEEDS_REVIEW | 54929 |
+| `functions/src/store.js` | NEEDS_REVIEW | 1838 |
+| `functions/src/support-chat.js` | NEEDS_REVIEW | 51620 |
+| `functions/src/tech-status.js` | NEEDS_REVIEW | 17503 |
+| `functions/src/telemetry.js` | NEEDS_REVIEW | 6064 |
+| `functions/src/usage.js` | NEEDS_REVIEW | 8164 |
+| `functions/src/workforce.js` | NEEDS_REVIEW | 13117 |
 
-### legal (1)
+### install-tools.ps1 (1)
 
 | File | Status | Bytes |
 |---|---|---|
-| `legal/privacy.html` | NEEDS_REVIEW | 8459 |
+| `install-tools.ps1` | NEEDS_REVIEW | 2899 |
+
+### legal (4)
+
+| File | Status | Bytes |
+|---|---|---|
+| `legal/cancellation.html` | NEEDS_REVIEW | 7551 |
+| `legal/legal.css` | NEEDS_REVIEW | 2201 |
+| `legal/privacy.html` | NEEDS_REVIEW | 19436 |
+| `legal/terms.html` | NEEDS_REVIEW | 14400 |
 
 ### root (10)
 
@@ -1358,176 +1676,244 @@ service cloud.firestore {
 |---|---|---|
 | `_redirects` | CONFIGURATION | 244 |
 | `.editorconfig` | CONFIGURATION | 232 |
-| `.gitignore` | CONFIGURATION | 965 |
+| `.gitignore` | CONFIGURATION | 1048 |
 | `AGENTS.md` | DOCUMENTATION | 289 |
 | `CLAUDE.md` | DOCUMENTATION | 4030 |
 | `index.html` | CONFIGURATION | 423 |
 | `manifest.json` | CONFIGURATION | 629 |
-| `package.json` | CONFIGURATION | 1200 |
+| `package.json` | CONFIGURATION | 1712 |
 | `README.md` | CONFIGURATION | 4086 |
-| `service-worker.js` | CONFIGURATION | 10790 |
+| `service-worker.js` | CONFIGURATION | 12184 |
 
-### scripts (6)
+### scripts (13)
 
 | File | Status | Bytes |
 |---|---|---|
+| `scripts/agent-guard.cjs` | NEEDS_REVIEW | 2883 |
+| `scripts/bench-firestore-cost.cjs` | NEEDS_REVIEW | 10386 |
 | `scripts/build-lucide-icons.cjs` | NEEDS_REVIEW | 7133 |
-| `scripts/build-project-reference.cjs` | NEEDS_REVIEW | 14715 |
-| `scripts/inventory-files.mjs` | IMPLEMENTED | 1990 |
-| `scripts/refresh-project-inventory.mjs` | CONFIGURATION | 5760 |
-| `scripts/sync-functions-domain.cjs` | NEEDS_REVIEW | 2238 |
-| `scripts/verify-project-inventory.mjs` | CONFIGURATION | 1646 |
+| `scripts/build-project-reference.cjs` | NEEDS_REVIEW | 14954 |
+| `scripts/coverage-map.cjs` | NEEDS_REVIEW | 3617 |
+| `scripts/coverage-run.cjs` | NEEDS_REVIEW | 923 |
+| `scripts/deploy-prod.cjs` | NEEDS_REVIEW | 1594 |
+| `scripts/inventory-files.mjs` | IMPLEMENTED | 2528 |
+| `scripts/record-deploy.cjs` | NEEDS_REVIEW | 2717 |
+| `scripts/refresh-project-inventory.mjs` | CONFIGURATION | 5795 |
+| `scripts/sw-cache.cjs` | NEEDS_REVIEW | 4741 |
+| `scripts/sync-functions-domain.cjs` | NEEDS_REVIEW | 2370 |
+| `scripts/verify-project-inventory.mjs` | CONFIGURATION | 1655 |
 
-### services (19)
+### service-worker.lock.json (1)
 
 | File | Status | Bytes |
 |---|---|---|
-| `services/admin-api.js` | IMPLEMENTED (MOCK ADAPTER) | 13517 |
-| `services/api-client.js` | IMPLEMENTED (MOCK ADAPTER) | 9021 |
+| `service-worker.lock.json` | NEEDS_REVIEW | 196 |
+
+### services (22)
+
+| File | Status | Bytes |
+|---|---|---|
+| `services/admin-api.js` | IMPLEMENTED (MOCK ADAPTER) | 31012 |
+| `services/api-client.js` | IMPLEMENTED (MOCK ADAPTER) | 10859 |
 | `services/auth-api.js` | IMPLEMENTED (MOCK ADAPTER) | 4274 |
 | `services/catalog-api.js` | IMPLEMENTED (MOCK ADAPTER) | 4536 |
+| `services/catalog-question-bank.js` | NEEDS_REVIEW | 16221 |
+| `services/catalog-remote.js` | NEEDS_REVIEW | 2578 |
 | `services/customer-api.js` | IMPLEMENTED (MOCK ADAPTER) | 8882 |
-| `services/finance-api.js` | IMPLEMENTED (MOCK ADAPTER) | 7175 |
-| `services/firebase-backend.js` | NEEDS_REVIEW | 29523 |
-| `services/firebase-config.js` | NEEDS_REVIEW | 2507 |
+| `services/finance-api.js` | IMPLEMENTED (MOCK ADAPTER) | 8102 |
+| `services/firebase-backend.js` | NEEDS_REVIEW | 43338 |
+| `services/firebase-config.js` | NEEDS_REVIEW | 4400 |
 | `services/local-attachments.js` | IMPLEMENTED | 14813 |
-| `services/local-catalog.js` | IMPLEMENTED | 51241 |
-| `services/local-market-store.js` | IMPLEMENTED | 58828 |
+| `services/local-catalog.js` | IMPLEMENTED | 54320 |
+| `services/local-market-store.js` | IMPLEMENTED | 103121 |
 | `services/notifications-api.js` | IMPLEMENTED (MOCK ADAPTER) | 1769 |
-| `services/orders-api.js` | IMPLEMENTED (MOCK ADAPTER) | 23216 |
-| `services/provider-api.js` | IMPLEMENTED (MOCK ADAPTER) | 5961 |
+| `services/ops-api.js` | NEEDS_REVIEW | 5184 |
+| `services/orders-api.js` | IMPLEMENTED (MOCK ADAPTER) | 30862 |
+| `services/provider-api.js` | IMPLEMENTED (MOCK ADAPTER) | 7873 |
 | `services/quotes-api.js` | IMPLEMENTED (MOCK ADAPTER) | 7074 |
-| `services/README.md` | CONFIGURATION | 940 |
+| `services/README.md` | CONFIGURATION | 1226 |
 | `services/realtime-client.js` | IMPLEMENTED (MOCK ADAPTER) | 3369 |
-| `services/support-api.js` | IMPLEMENTED (MOCK ADAPTER) | 4297 |
+| `services/support-api.js` | IMPLEMENTED (MOCK ADAPTER) | 4714 |
 | `services/uploads-api.js` | IMPLEMENTED (MOCK ADAPTER) | 3215 |
 
-### shared (32)
+### shared (39)
 
 | File | Status | Bytes |
 |---|---|---|
 | `shared/components/accessible-tabs.js` | IMPLEMENTED | 3123 |
 | `shared/components/buttons.js` | IMPLEMENTED | 1372 |
-| `shared/components/data-grid.js` | IMPLEMENTED (DEMO) | 17052 |
+| `shared/components/data-grid.js` | IMPLEMENTED (DEMO) | 17072 |
 | `shared/components/dialogs.js` | IMPLEMENTED (DEMO) | 4077 |
 | `shared/components/forms.js` | IMPLEMENTED | 1801 |
+| `shared/components/hs-dialog.js` | NEEDS_REVIEW | 6503 |
+| `shared/components/hs-map.js` | NEEDS_REVIEW | 17978 |
+| `shared/components/live-clean.js` | NEEDS_REVIEW | 4287 |
 | `shared/components/notification-center.js` | IMPLEMENTED | 1929 |
+| `shared/components/platform-status.js` | NEEDS_REVIEW | 4791 |
 | `shared/components/status-badge.js` | IMPLEMENTED (DEMO) | 6929 |
+| `shared/components/support-contacts.js` | NEEDS_REVIEW | 2942 |
 | `shared/components/tables.js` | IMPLEMENTED | 1358 |
 | `shared/components/ui-kit.js` | IMPLEMENTED | 5001 |
-| `shared/config/app-config.js` | IMPLEMENTED | 1016 |
+| `shared/config/app-config.js` | IMPLEMENTED | 1036 |
 | `shared/config/feature-flags.js` | IMPLEMENTED | 1057 |
 | `shared/config/legacy-data.js` | IMPLEMENTED | 38016 |
 | `shared/config/routes.js` | IMPLEMENTED | 1455 |
 | `shared/content/site-content.js` | NEEDS_REVIEW | 5827 |
+| `shared/design-system/brand-2026-tokens.css` | NEEDS_REVIEW | 3153 |
 | `shared/design-system/components.css` | PLACEHOLDER | 236 |
-| `shared/design-system/design-system.css` | IMPLEMENTED | 46626 |
+| `shared/design-system/design-system.css` | IMPLEMENTED | 57133 |
 | `shared/design-system/layout.css` | PLACEHOLDER | 197 |
 | `shared/design-system/tokens.css` | PLACEHOLDER | 222 |
 | `shared/design-system/typography.css` | PLACEHOLDER | 230 |
-| `shared/icons/icon-registry.js` | IMPLEMENTED | 93732 |
+| `shared/icons/icon-registry.js` | IMPLEMENTED | 96238 |
 | `shared/README.md` | CONFIGURATION | 227 |
 | `shared/types/account.types.js` | IMPLEMENTED | 1024 |
 | `shared/types/order.types.js` | IMPLEMENTED | 1175 |
 | `shared/types/permission.types.js` | IMPLEMENTED | 994 |
 | `shared/types/provider.types.js` | IMPLEMENTED | 1022 |
-| `shared/utils/dates.js` | IMPLEMENTED | 1848 |
+| `shared/utils/dates.js` | IMPLEMENTED | 1868 |
+| `shared/utils/error-reporter.js` | NEEDS_REVIEW | 5412 |
 | `shared/utils/errors.js` | IMPLEMENTED | 1586 |
-| `shared/utils/formatting.js` | IMPLEMENTED | 1602 |
-| `shared/utils/money.js` | IMPLEMENTED | 1703 |
+| `shared/utils/formatting.js` | IMPLEMENTED | 1642 |
+| `shared/utils/money.js` | IMPLEMENTED | 1706 |
 | `shared/utils/sanitization.js` | IMPLEMENTED | 966 |
 | `shared/utils/tree.js` | IMPLEMENTED (DEMO) | 2977 |
 | `shared/utils/validation.js` | IMPLEMENTED | 2042 |
 
-### tests (103)
+### start-deepseek.ps1 (1)
 
 | File | Status | Bytes |
 |---|---|---|
-| `tests/e2e/a11y.cdp.js` | TEST | 10308 |
+| `start-deepseek.ps1` | NEEDS_REVIEW | 3830 |
+
+### tests (151)
+
+| File | Status | Bytes |
+|---|---|---|
+| `tests/e2e/a11y.cdp.js` | TEST | 10350 |
 | `tests/e2e/admin-app.cdp.js` | TEST | 9388 |
+| `tests/e2e/admin-controls.cdp.js` | NEEDS_REVIEW | 6495 |
 | `tests/e2e/audit-log.browser.js` | TEST | 2352 |
+| `tests/e2e/client-errors.cdp.js` | NEEDS_REVIEW | 3094 |
 | `tests/e2e/customer-orders.cdp.js` | TEST | 15528 |
 | `tests/e2e/customer-request-wizard-accessibility.browser.py` | TEST | 7204 |
 | `tests/e2e/customer-search-keyboard.browser.py` | TEST | 7155 |
 | `tests/e2e/customer-sheet-focus.browser.py` | TEST | 8930 |
-| `tests/e2e/firebase-emulator.cdp.js` | NEEDS_REVIEW | 22149 |
-| `tests/e2e/guest.cdp.js` | TEST | 9786 |
-| `tests/e2e/interaction.cdp.js` | NEEDS_REVIEW | 12934 |
+| `tests/e2e/firebase-emulator.cdp.js` | NEEDS_REVIEW | 22711 |
+| `tests/e2e/guest.cdp.js` | TEST | 10718 |
+| `tests/e2e/interaction.cdp.js` | NEEDS_REVIEW | 13756 |
 | `tests/e2e/lib/a11y-audit.js` | TEST | 4900 |
 | `tests/e2e/lib/cdp.js` | TEST | 6507 |
-| `tests/e2e/provider-standalone.cdp.js` | TEST | 18068 |
+| `tests/e2e/offer-alerts.cdp.js` | NEEDS_REVIEW | 4785 |
+| `tests/e2e/offers-cycle.cdp.js` | NEEDS_REVIEW | 16342 |
+| `tests/e2e/perf.cdp.js` | NEEDS_REVIEW | 6878 |
+| `tests/e2e/provider-standalone.cdp.js` | TEST | 18215 |
 | `tests/e2e/quotes-management.browser.js` | TEST | 4011 |
 | `tests/e2e/README.md` | PLACEHOLDER | 8434 |
 | `tests/e2e/reports.browser.js` | TEST | 5136 |
-| `tests/e2e/responsive-sweep.cdp.js` | TEST | 12661 |
+| `tests/e2e/responsive-sweep.cdp.js` | TEST | 12703 |
 | `tests/e2e/security.browser.js` | TEST | 4739 |
-| `tests/e2e/super-dashboard.browser.js` | TEST | 4894 |
+| `tests/e2e/super-dashboard.browser.js` | TEST | 4904 |
 | `tests/e2e/system-settings.browser.js` | TEST | 4580 |
-| `tests/emulator/firebase-emulator.test.js` | NEEDS_REVIEW | 11529 |
+| `tests/emulator/firebase-emulator.test.js` | NEEDS_REVIEW | 12264 |
 | `tests/fixtures/README.md` | CONFIGURATION | 140 |
-| `tests/helpers/customer-app-harness.js` | TEST | 8169 |
+| `tests/helpers/customer-app-harness.js` | TEST | 8254 |
 | `tests/helpers/design-token-audit.js` | TEST | 4005 |
-| `tests/helpers/provider-app-harness.js` | TEST | 11034 |
+| `tests/helpers/domain-harness.js` | NEEDS_REVIEW | 2340 |
+| `tests/helpers/memory-backend.js` | NEEDS_REVIEW | 2367 |
+| `tests/helpers/provider-app-harness.js` | TEST | 11059 |
 | `tests/integration/README.md` | PLACEHOLDER | 115 |
 | `tests/security/README.md` | PLACEHOLDER | 154 |
 | `tests/unit/a11y-markup.test.js` | TEST | 3839 |
-| `tests/unit/accessible-tabs-contract.test.js` | TEST | 1368 |
+| `tests/unit/accessible-tabs-contract.test.js` | TEST | 1363 |
 | `tests/unit/accessible-tabs.test.js` | TEST | 3788 |
-| `tests/unit/admin-dashboard.test.js` | TEST | 1708 |
+| `tests/unit/admin-dashboard.test.js` | TEST | 1885 |
+| `tests/unit/admin-live-editors.test.js` | NEEDS_REVIEW | 10896 |
 | `tests/unit/admin-modules.test.js` | TEST | 9308 |
-| `tests/unit/admin-runtime.test.js` | TEST | 7605 |
-| `tests/unit/admin-shell.test.js` | TEST | 2973 |
+| `tests/unit/admin-platform-controls.test.js` | NEEDS_REVIEW | 14851 |
+| `tests/unit/admin-runtime.test.js` | TEST | 7903 |
+| `tests/unit/admin-shell.test.js` | TEST | 3012 |
+| `tests/unit/admin-totp.test.js` | NEEDS_REVIEW | 10154 |
+| `tests/unit/ai-classify.test.js` | NEEDS_REVIEW | 9241 |
+| `tests/unit/alert-mail.test.js` | NEEDS_REVIEW | 6285 |
 | `tests/unit/api-adapters.test.js` | TEST | 20167 |
+| `tests/unit/api-gaps.test.js` | NEEDS_REVIEW | 11280 |
 | `tests/unit/audit-log.test.js` | TEST | 3133 |
-| `tests/unit/catalog-wizard.test.js` | IMPLEMENTED | 11553 |
+| `tests/unit/callcenter-agent.test.js` | NEEDS_REVIEW | 18965 |
+| `tests/unit/catalog-publish.test.js` | NEEDS_REVIEW | 7190 |
+| `tests/unit/catalog-question-bank.test.js` | NEEDS_REVIEW | 3516 |
+| `tests/unit/catalog-wizard.test.js` | IMPLEMENTED | 13126 |
 | `tests/unit/categories-management.test.js` | TEST | 6128 |
+| `tests/unit/client-error-telemetry.test.js` | NEEDS_REVIEW | 10849 |
 | `tests/unit/commissions.test.js` | TEST | 7146 |
 | `tests/unit/complaints-management.test.js` | TEST | 5017 |
-| `tests/unit/customer-page-renderers.test.js` | TEST | 6229 |
-| `tests/unit/customer-polish.test.js` | NEEDS_REVIEW | 7449 |
+| `tests/unit/cost-reductions.test.js` | NEEDS_REVIEW | 6245 |
+| `tests/unit/customer-page-renderers.test.js` | TEST | 6387 |
+| `tests/unit/customer-polish.test.js` | NEEDS_REVIEW | 7783 |
 | `tests/unit/customer-providers-page.test.js` | TEST | 6740 |
 | `tests/unit/customer-request-create.test.js` | TEST | 4579 |
-| `tests/unit/customer-routing-session.test.js` | TEST | 14621 |
-| `tests/unit/customer-screen-focus.test.js` | TEST | 5079 |
+| `tests/unit/customer-routing-session.test.js` | TEST | 14667 |
+| `tests/unit/customer-screen-focus.test.js` | TEST | 5102 |
+| `tests/unit/customer-screen-sweep.test.js` | NEEDS_REVIEW | 9264 |
 | `tests/unit/customer-workflow.test.js` | IMPLEMENTED | 2137 |
 | `tests/unit/customers-management.test.js` | TEST | 2712 |
 | `tests/unit/data-grid.test.js` | TEST | 5285 |
 | `tests/unit/departments.test.js` | TEST | 7452 |
-| `tests/unit/design-system.test.js` | IMPLEMENTED | 2305 |
-| `tests/unit/design-token-audit.test.js` | TEST | 2526 |
+| `tests/unit/design-system.test.js` | IMPLEMENTED | 2311 |
+| `tests/unit/design-token-audit.test.js` | TEST | 3837 |
 | `tests/unit/dialogs.test.js` | TEST | 3204 |
+| `tests/unit/digest-admin.test.js` | NEEDS_REVIEW | 14050 |
+| `tests/unit/digest.test.js` | NEEDS_REVIEW | 12904 |
 | `tests/unit/discover.test.js` | IMPLEMENTED | 12452 |
-| `tests/unit/finance-dashboard.test.js` | TEST | 4333 |
-| `tests/unit/firebase-backend.test.js` | NEEDS_REVIEW | 58374 |
-| `tests/unit/firebase-integration-contract.test.js` | NEEDS_REVIEW | 8165 |
-| `tests/unit/firebase-mode-data.test.js` | NEEDS_REVIEW | 16151 |
-| `tests/unit/frontend-contracts.test.js` | TEST | 8944 |
-| `tests/unit/home.test.js` | IMPLEMENTED | 10278 |
+| `tests/unit/experience.test.js` | NEEDS_REVIEW | 2997 |
+| `tests/unit/finance-dashboard.test.js` | TEST | 4499 |
+| `tests/unit/firebase-backend.test.js` | NEEDS_REVIEW | 66774 |
+| `tests/unit/firebase-integration-contract.test.js` | NEEDS_REVIEW | 8695 |
+| `tests/unit/firebase-mode-data.test.js` | NEEDS_REVIEW | 16296 |
+| `tests/unit/frontend-contracts.test.js` | TEST | 8995 |
+| `tests/unit/home.test.js` | IMPLEMENTED | 10379 |
 | `tests/unit/icon-asset-audit.test.js` | TEST | 4660 |
 | `tests/unit/inventory-reproducibility.test.js` | TEST | 3440 |
+| `tests/unit/invite-expiry.test.js` | NEEDS_REVIEW | 2783 |
+| `tests/unit/launch-hardening.test.js` | NEEDS_REVIEW | 3778 |
 | `tests/unit/legacy-migration.test.js` | TEST | 7717 |
+| `tests/unit/live-tracking.test.js` | NEEDS_REVIEW | 9619 |
+| `tests/unit/local-attachments.test.js` | NEEDS_REVIEW | 5761 |
+| `tests/unit/mailer.test.js` | NEEDS_REVIEW | 4759 |
+| `tests/unit/map-location.test.js` | NEEDS_REVIEW | 3050 |
+| `tests/unit/marketplace-mechanisms.test.js` | NEEDS_REVIEW | 6330 |
 | `tests/unit/marketplace-rules.test.js` | TEST | 11104 |
 | `tests/unit/notifications-management.test.js` | TEST | 6237 |
+| `tests/unit/offers-clock.test.js` | NEEDS_REVIEW | 3884 |
+| `tests/unit/offers-undo-timer.test.js` | NEEDS_REVIEW | 2930 |
 | `tests/unit/order-lifecycle.test.js` | TEST | 7182 |
 | `tests/unit/orders-management.test.js` | TEST | 3201 |
+| `tests/unit/payments.test.js` | NEEDS_REVIEW | 14192 |
+| `tests/unit/policies.test.js` | NEEDS_REVIEW | 4335 |
 | `tests/unit/provider-app-a11y.test.js` | TEST | 7816 |
-| `tests/unit/provider-app-actions.test.js` | TEST | 21415 |
+| `tests/unit/provider-app-actions.test.js` | TEST | 21477 |
 | `tests/unit/provider-app-register.test.js` | TEST | 7450 |
-| `tests/unit/provider-app-routing.test.js` | TEST | 5579 |
+| `tests/unit/provider-app-routing.test.js` | TEST | 6205 |
+| `tests/unit/provider-bonus.test.js` | NEEDS_REVIEW | 6148 |
 | `tests/unit/provider-customer-location.test.js` | NEEDS_REVIEW | 7450 |
 | `tests/unit/provider-domain.test.js` | TEST | 8366 |
-| `tests/unit/provider-pages.test.js` | TEST | 7009 |
+| `tests/unit/provider-pages.test.js` | TEST | 6954 |
 | `tests/unit/provider-request-domain.test.js` | TEST | 18661 |
-| `tests/unit/providers-management.test.js` | TEST | 3336 |
+| `tests/unit/provider-screen-sweep.test.js` | NEEDS_REVIEW | 6785 |
+| `tests/unit/providers-management.test.js` | TEST | 3427 |
 | `tests/unit/quotes-management.test.js` | TEST | 6130 |
-| `tests/unit/rbac-pages.test.js` | TEST | 4346 |
-| `tests/unit/rbac-store.test.js` | TEST | 11731 |
+| `tests/unit/rbac-pages.test.js` | TEST | 4428 |
+| `tests/unit/rbac-store.test.js` | TEST | 11926 |
 | `tests/unit/README.md` | CONFIGURATION | 115 |
 | `tests/unit/reports.test.js` | TEST | 9283 |
 | `tests/unit/responsive-audit.test.js` | IMPLEMENTED | 4495 |
 | `tests/unit/responsive-sweep-regression.test.js` | TEST | 2480 |
 | `tests/unit/reviews-management.test.js` | TEST | 4794 |
-| `tests/unit/round5-features.test.js` | NEEDS_REVIEW | 24863 |
+| `tests/unit/round5-features.test.js` | NEEDS_REVIEW | 38173 |
+| `tests/unit/routes-coverage.test.js` | NEEDS_REVIEW | 19425 |
+| `tests/unit/security-audit-2026-11-23.test.js` | NEEDS_REVIEW | 4209 |
+| `tests/unit/security-fixes.test.js` | NEEDS_REVIEW | 5779 |
+| `tests/unit/security-round2.test.js` | NEEDS_REVIEW | 6954 |
 | `tests/unit/security.test.js` | TEST | 6317 |
 | `tests/unit/service-worker-precache.test.js` | TEST | 2791 |
 | `tests/unit/services-management.test.js` | TEST | 4892 |
@@ -1535,17 +1921,32 @@ service cloud.firestore {
 | `tests/unit/settlements.test.js` | TEST | 14636 |
 | `tests/unit/shared-components.test.js` | TEST | 1802 |
 | `tests/unit/shared-foundations.test.js` | TEST | 4567 |
-| `tests/unit/site-content.test.js` | NEEDS_REVIEW | 5609 |
-| `tests/unit/static-audit.test.js` | IMPLEMENTED | 2196 |
+| `tests/unit/site-content.test.js` | NEEDS_REVIEW | 5661 |
+| `tests/unit/smart-help.test.js` | NEEDS_REVIEW | 5134 |
+| `tests/unit/staging-config.test.js` | NEEDS_REVIEW | 2971 |
+| `tests/unit/static-audit.test.js` | IMPLEMENTED | 2202 |
 | `tests/unit/status-badge.test.js` | TEST | 4978 |
-| `tests/unit/super-dashboard.test.js` | TEST | 9818 |
+| `tests/unit/super-dashboard.test.js` | TEST | 10000 |
+| `tests/unit/support-chat.test.js` | NEEDS_REVIEW | 23172 |
+| `tests/unit/support-contacts-policy.test.js` | NEEDS_REVIEW | 6868 |
+| `tests/unit/sw-cache-guard.test.js` | NEEDS_REVIEW | 1410 |
 | `tests/unit/system-settings.test.js` | TEST | 5040 |
+| `tests/unit/teams-alerts.test.js` | NEEDS_REVIEW | 10700 |
+| `tests/unit/tech-center.test.js` | NEEDS_REVIEW | 17768 |
 | `tests/unit/tree.test.js` | TEST | 3224 |
+| `tests/unit/trust-ui.test.js` | NEEDS_REVIEW | 6392 |
 | `tests/unit/ui-adapter-integration.test.js` | TEST | 9665 |
 | `tests/unit/ui-kit.test.js` | IMPLEMENTED | 3133 |
-| `tests/unit/ui-round3.test.js` | NEEDS_REVIEW | 5565 |
-| `tests/unit/upfront-pricing.test.js` | NEEDS_REVIEW | 7330 |
+| `tests/unit/ui-round3.test.js` | NEEDS_REVIEW | 6370 |
+| `tests/unit/upfront-pricing.test.js` | NEEDS_REVIEW | 7428 |
+| `tests/unit/wiring.test.js` | NEEDS_REVIEW | 21244 |
 | `tests/unit/workforce.test.js` | TEST | 6422 |
+
+### tools (1)
+
+| File | Status | Bytes |
+|---|---|---|
+| `tools/security/self-test.js` | NEEDS_REVIEW | 17089 |
 
 ### tools-lab (1)
 

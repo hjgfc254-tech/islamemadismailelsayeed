@@ -4,7 +4,7 @@ This folder is the compact, token-efficient entry point for engineers and AI age
 
 ## Read order
 1. `START_HERE.md` — current project state and exact next task.
-2. One relevant file under `DOMAIN_MAPS/`.
+2. `docs/MAINTENANCE_GUIDE.md` — the current system map (`DOMAIN_MAPS/` are historical frontend-phase notes).
 3. `FILE_INDEX.json` — compact inventory (path, status, size, SHA-256).
 4. Exact source files, tests, and only the detailed specifications needed for the task.
 

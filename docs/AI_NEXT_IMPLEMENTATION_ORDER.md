@@ -1,3 +1,20 @@
+# CURRENT ORDER — 2026-11-27 (live on Firebase)
+
+1. **Payments UI:** merge or finish the customer payment choice + voucher, the provider payment status / payouts / `payoutWallet`, and the Admin «المدفوعات» page (`docs/agent-briefs/payments-ui-*.md`; worktrees `agent-a9037922572203278`, `agent-a42110a30883e0f98`).
+2. Clean up the old agent worktrees.
+3. **Owner-unblocked items:**
+   - Paymob go-live (keys + webhook);
+   - staging project + first `deploy:staging`;
+   - alert e-mail keys;
+   - App Check.
+4. Performance bundling (customer LCP ~5 s on Fast-3G; esbuild needs the owner's OK).
+5. Photo storage (Supabase planned by the owner).
+6. Retention policy for `opsAlerts` / `opsTickets` / `aiUsage`.
+
+Details and risks: `docs/MAINTENANCE_GUIDE.md` §7. Everything below is the historical frontend-phase order (kept for reference; tests pin some of its lines).
+
+---
+
 # FRONTEND IMPLEMENTATION ORDER — HANSALEHLAK V8
 
 ## بوابة بيئة العمل (تم تجهيزها)

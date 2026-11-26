@@ -12,3 +12,4 @@
   attachments on the device; `realtime-client.js` refreshes `MP` across tabs.
 - Contract: `docs/API_CONTRACTS.md`; full wiring (routes → server plan, tests): `docs/MAINTENANCE_GUIDE.md` §2.1;
   tests: `tests/unit/api-adapters.test.js`, `tests/unit/wiring.test.js`.
+- **Catalogue:** `catalog-question-bank.js` (the default one-tap questions, loaded before `local-catalog.js`) and `catalog-remote.js` (the apps adopt the catalogue published from the Admin Center, `/catalog-feed`). Payments rules live in `local-market-store.js` («round 12: payments»); the Paymob calls are server-only (`functions/src/payments.js`). Guide §3.14–§3.15.

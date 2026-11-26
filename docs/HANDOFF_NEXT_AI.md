@@ -1,7 +1,40 @@
-# CURRENT HANDOFF — 2026-11-14 — Final frontend engineering completion (Claude Code)
+# CURRENT HANDOFF — 2026-11-27 — Live on Firebase; payments built on the server, payments UI unfinished
 
 > The newest entry is at the top; everything below this section is a dated history log. Source code wins over any older statement below
-> (in particular, entries that say the legacy bridge "must be kept" or that profile editing is "disabled" are superseded).
+> (in particular, entries that say the legacy bridge "must be kept", that profile editing is "disabled", or that the project is
+> "frontend only" are superseded). The system map is `docs/MAINTENANCE_GUIDE.md`.
+
+## 2026-11-27 — Documentation review (this entry)
+- Reviewed every project document against the source at `45e90b2`. Updated: `CLAUDE.md` (phase = live on Firebase),
+  `docs/AI_CONTEXT/START_HERE.md` (rewritten), this handoff, `docs/MAINTENANCE_GUIDE.md` (owner overview, §3.3 labour-only
+  share, new §3.14 Payments and §3.15 Catalogue, §7 gaps), `docs/README.md`, `docs/AI_NEXT_IMPLEMENTATION_ORDER.md`
+  (current order on top), `docs/DEPLOY_CHECKLIST.md`, `docs/FIREBASE_BACKEND.md`, `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md`.
+  Frontend-phase documents got a «Historical» banner (kept in place: other documents and tests link to them).
+
+## 2026-11-26 — What landed (all deployed: functions + hosting + Firestore indexes)
+- **Shorter request:** 4 screens; the problem / free text / «الفني يشخّص» on one screen; a problem with no required
+  question jumps to «المكان والموعد»; «أقرب وقت» preselected; optional questions folded; «كمّل طلبك» card.
+- **Admin-managed catalogue:** question bank (`services/catalog-question-bank.js`, 52 one-tap questions), editor in
+  Admin › الخدمات, publish → `/catalog-feed` (CDN, `catalogFeed`), served governorates enforced on the server too.
+- **Launch hardening:** escaped service names, chat quota per network counts signed-in sends only, exact cancel-fee
+  match, `session` timeout 120 s, server contexts use the published catalogue.
+- **Admin 2FA (TOTP)**, critical-alert e-mails (`alert-mail.js`), Firestore TTL (`audit` 365 d, `digests` 90 d), staging
+  wiring (`.firebaserc` aliases, `deploy:staging` / `deploy:prod`), tests for `ai.classify` and every route.
+- **One digit style:** Latin digits everywhere (`ar-EG-u-nu-latn`); input normalisers still accept Arabic-Indic digits.
+- **Payments (server side):** cash or online (Paymob); online money held until the customer confirms (or 48 h); weekly
+  provider payouts; refunds; «ضمان هنصلحلك» voucher only for online payments; platform share on the labour only.
+  `functions/src/payments.js`, exports `paymobWebhook`, `paymentsClock`; legal pages updated.
+
+## Exact next task
+1. Review and merge the two stopped payments worktrees (`.claude/worktrees/agent-a9037922572203278` customer + provider UI,
+   `agent-a42110a30883e0f98` admin «المدفوعات»), or finish them from the briefs `docs/agent-briefs/payments-ui-*.md`.
+   Until then customers cannot choose online and cash jobs get no voucher.
+2. Remove the other old worktrees after checking they hold nothing unmerged.
+3. Owner actions: Paymob keys + webhook URL, `RESEND_API_KEY` / `MAIL_FROM`, the staging project, App Check, support
+   numbers, legal review. Then performance bundling (esbuild — ask first).
+
+---
+## (previous header) 2026-11-14 — Final frontend engineering completion (Claude Code)
 
 ## 2026-11-25 — Architecture tidy + maintenance guide (branch `worktree-agent-a1258fe39eb6b067a`)
 - New `docs/MAINTENANCE_GUIDE.md` (system map, wiring tables, feature dossiers, runbooks, troubleshooting,

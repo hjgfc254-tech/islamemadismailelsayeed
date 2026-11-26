@@ -1,4 +1,29 @@
-# Deploy checklist — Cloud Functions / Firestore
+# Deploy checklist — Cloud Functions / Firestore / Hosting
+
+> **Current (2026-11-27):** production is `45e90b2`, deployed with `firebase deploy --only "functions,hosting,firestore:indexes"`.
+> Standing owner approval: push + deploy after each finished change.
+> Functions live: `api`, `session`, `agentApi`, `catalogFeed` (Hosting rewrite `/catalog-feed`), `paymobWebhook`, and the clocks
+> `offersClock`, `healthClock`, `digestClock`, `alertsClock`, `paymentsClock`, `callLogsClock`.
+>
+> **Daily flow:**
+> 1. `npm run functions:sync` (if `services/` changed);
+> 2. `npm run sw:bump` (if served files changed);
+> 3. `npm test`;
+> 4. runners;
+> 5. `npm run audit:refresh`;
+> 6. commit + push;
+> 7. `firebase deploy --only "functions,hosting"`. Add `firestore:indexes` / `firestore:rules` when those files changed.
+>
+> Once the staging project exists, run `npm run deploy:staging` first and `npm run deploy:prod` after (guide §4.11).
+>
+> **Owner switches / keys** (names only, values in `functions/.env`):
+> - `PAYMOB_SECRET_KEY`, `PAYMOB_PUBLIC_KEY`, `PAYMOB_HMAC_SECRET`, `PAYMOB_INTEGRATION_IDS`. Set the Paymob callback to `https://me-central1-hansalahlak.cloudfunctions.net/paymobWebhook`.
+> - `RESEND_API_KEY` + `MAIL_FROM` (digests and critical-alert e-mails).
+> - `AGENT_API_KEYS` (AI voice agents).
+> - `ENFORCE_APP_CHECK` + the site key.
+>
+> After the TTL deploy, confirm in Console › Firestore › TTL that the `audit` and `digests` policies are «Serving».
+> The sections below are the history of earlier deploys, kept for reference.
 
 > **Deployed 2026-11-20 (`42f420a`, owner approval):** functions `api`, `session`, `offersClock` (new, every 5 min), Firestore rules + indexes (incl. the `clientErrors` TTL), RTDB rules and Firebase Hosting. Daily Firestore backups were already scheduled (98-day retention). Smoke test: anonymous sync OK, admin route without sign-in → 401. Still manual: App Check site key (Console › App Check), the Arabic «reset password» email template (Console › Authentication › Templates) used for staff invitations.
 

@@ -1,4 +1,6 @@
-﻿# Execution Checkpoint
+> **Current state (2026-11-27):** see `docs/AI_CONTEXT/START_HERE.md` and the newest entry of `docs/HANDOFF_NEXT_AI.md`. The batches below are the historical log of the frontend phase (2026-11-13/14).
+
+# Execution Checkpoint
 
 Compact resume state for autonomous sessions. Update after every committed batch. Commit hashes: `git log --oneline`.
 

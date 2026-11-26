@@ -1,3 +1,5 @@
+> **Historical — frontend-only phase (2026-11-13/19).** This document describes the platform before it went live on Firebase. The real backend, payments, catalogue, call centre and security model are in `docs/MAINTENANCE_GUIDE.md`, and the current state is in `docs/AI_CONTEXT/START_HERE.md`. Source code wins over this file.
+
 # FRONTEND TEAM & AI COLLABORATION PROTOCOL
 
 > **المرجع التشغيلي الموحد لكل وكيل/محادثة:** `docs/AI_AGENT_CONTINUATION_PROTOCOL.md`. هذا الملف يكمل قواعد التعاون أدناه ولا يلغي `CLAUDE.md`.\n\n## 1. الهدف
