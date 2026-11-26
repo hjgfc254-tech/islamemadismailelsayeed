@@ -8,6 +8,7 @@
  *   PATCH /admin/departments/:id              {name?, parentId?, status?, headId?}              RBAC departments.edit
  *   GET  /admin/security/admins               admin accounts + last sign-in (Auth)              owner | admin role
  *   POST /admin/security/reset-code/:uid      clear an admin's 8-digit access code (set again at next sign-in)  owner only, never self
+ *   POST /admin/security/reset-totp/:uid      turn off an admin's two-step verification (lost phone)  owner only, never self
  *   POST /admin/security/revoke/:uid          revoke refresh tokens (sign out everywhere)       owner only, never self
  *   GET  /admin/notifications/broadcasts      in-app broadcast history                          RBAC notifications.view
  *   POST /admin/notifications/broadcast       {audience: customers|providers, text}             RBAC notifications.create
@@ -108,12 +109,17 @@ async function handle({ backend, tx, method, path, query, body, admin, token }) 
       const emps = (await workforce.loadState(a, tx)).employees.filter((e) => e.uid);
       const info = backend.authUsers ? await backend.authUsers(emps.map((e) => e.uid)) : {};
       const codes = {}; for (const e of emps) codes[e.uid] = (await a.get(tx, `admins/${e.uid}`)) || {};   // code status only, never the hash
-      return okEnv({ items: emps.map((e) => ({ employeeId: e.id, uid: e.uid, name: e.name, email: e.email, role: e.role, status: e.status, lastSignIn: (info[e.uid] || {}).lastSignIn || null, created: (info[e.uid] || {}).created || null, hasCode: !!(codes[e.uid] && codes[e.uid].codeHash), codeLocked: !!(codes[e.uid] && +codes[e.uid].codeLockUntil > Date.now()), lastUnlockAt: (codes[e.uid] || {}).lastUnlockAt || null })) });
+      return okEnv({ items: emps.map((e) => ({ employeeId: e.id, uid: e.uid, name: e.name, email: e.email, role: e.role, status: e.status, lastSignIn: (info[e.uid] || {}).lastSignIn || null, created: (info[e.uid] || {}).created || null, hasCode: !!(codes[e.uid] && codes[e.uid].codeHash), totpOn: !!(codes[e.uid] && codes[e.uid].totpOn), codeLocked: !!(codes[e.uid] && +codes[e.uid].codeLockUntil > Date.now()), lastUnlockAt: (codes[e.uid] || {}).lastUnlockAt || null })) });
     }
     if (seg[2] === 'reset-code' && seg[3] && method === 'POST') {   /* owner: the employee sets a new 8-digit code at next sign-in */
       if (!isRole(admin, 'owner')) return deny();
       try { await require('./admin-code').reset(backend, token.uid, admin, seg[3]); } catch (e) { if (e && e.isServiceError) return env(e.code === 'not-found' ? 404 : e.code === 'invalid-argument' ? 422 : 403, 'FORBIDDEN', e.message); throw e; }
       return okEnv({ uid: seg[3], codeReset: true });
+    }
+    if (seg[2] === 'reset-totp' && seg[3] && method === 'POST') {   /* owner: turn off an employee's two-step verification (lost phone) */
+      if (!isRole(admin, 'owner')) return deny();
+      try { await require('./admin-code').resetTotp(backend, token.uid, admin, seg[3]); } catch (e) { if (e && e.isServiceError) return env(e.code === 'not-found' ? 404 : e.code === 'invalid-argument' ? 422 : 403, 'FORBIDDEN', e.message); throw e; }
+      return okEnv({ uid: seg[3], totpReset: true });
     }
     if (seg[2] === 'revoke' && seg[3] && method === 'POST') {
       if (!isRole(admin, 'owner')) return deny();

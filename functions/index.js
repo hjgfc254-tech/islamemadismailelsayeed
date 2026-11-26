@@ -104,7 +104,7 @@ function wrap(name, fn) {
     }
     catch (e) {
       usage.record({ kind: name, path, ms: Date.now() - t0, status: 500, rateLimited: e instanceof service.ServiceError && e.code === 'resource-exhausted' });
-      if (e instanceof service.ServiceError) throw new HttpsError(e.code, e.message);
+      if (e instanceof service.ServiceError) throw new HttpsError(e.code, e.message, e.details);   /* details: e.g. { reason: 'TOTP_REQUIRED' } (admin-code.js) */
       logger.error(name + ' failed', { error: e && e.message, stack: e && e.stack });
       /* unexpected server errors join «أخطاء عند المستخدمين» as app «server» (scrubbed and grouped like client reports) */
       try { await require('./src/telemetry').report(backend, 'server', { reports: [{ msg: String((e && e.message) || 'internal error'), src: name + (request.data && request.data.path ? ' ' + request.data.path : ''), stack: e && e.stack }] }, null); } catch (x) { /* never mask the original error */ }

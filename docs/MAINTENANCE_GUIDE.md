@@ -333,7 +333,7 @@ The `callcenter` role is refused (403) on `/admin/ai`, `/admin/content|media`, a
 | `registerPush` | signed-in | stores the device FCM token (`pushTokens/{sha256}`) | `service.session` |
 | `unregisterPush` | signed-in | removes that token | `service.session` |
 | `claimOwner` | verified email listed in `ADMIN_BOOTSTRAP_EMAILS` | creates the first owner employee | `workforce.createOwner` |
-| `adminCode` | active admin | `{action: set | unlock | lock}` the 8-digit code | `admin-code.js` |
+| `adminCode` | active admin | `{action: set | unlock | lock}` the 8-digit code (+ `totp` when 2FA is on); `totpStatus | totpSetup | totpEnable | totpDisable` the authenticator app (unlocked admin) | `admin-code.js` |
 | `importLocal` | unlocked owner | additive import of a browser `hs_mp_db` (dry run first) | `service.importLocal` |
 
 ### 2.3 Admin pages
@@ -639,6 +639,17 @@ Any change under `apps/`, `shared/`, `services/`, `assets/`, `index.html` or `ma
   can also resend the invite. **Reset the 8-digit code:** owner → `#/security` → the reset-code action
   (`POST /admin/security/reset-code/:uid`, never self). **Sign someone out everywhere:** `POST /admin/security/revoke/:uid`.
 - **Disable:** `#/employee-details` → status disabled (`POST /admin/employees/:id/status`); takes effect on the next request.
+- **Two-step verification (authenticator app, `functions/src/admin-code.js`):**
+  - *Enable:* signed in and unlocked → header button «التحقق بخطوتين» → add the key in Google Authenticator /
+    Microsoft Authenticator (copy the `otpauth://` link or type the secret, time-based) → type the 6-digit code → «تشغيل».
+    From then on every unlock **and** every change of the 8-digit code asks for «كود التطبيق (٦ أرقام)». Wrong or
+    re-used app codes count toward the same 5-tries / 15-minute lock. The secret is shown only during setup (15 minutes).
+  - *Disable (phone still available):* «التحقق بخطوتين» → current app code → «اقفل التحقق بخطوتين».
+  - *Lost phone — employee:* owner → `#/security` → «إلغاء التحقق بخطوتين» (`POST /admin/security/reset-totp/:uid`,
+    never self); the employee unlocks with the 8-digit code and enrolls again.
+  - *Lost phone — owner:* Firebase console → Firestore → `admins/{ownerUid}` → set `totpOn` to `false` and delete
+    `totpSecret` and `totpLastStep` (the uid is in Authentication → Users). Then sign in with the 8-digit code and enroll a new phone
+    right away. Write down who did it and when (console edits are not in the admins' log).
 
 ### 4.6b Edit and publish the service catalogue (services, questions, governorates)
 

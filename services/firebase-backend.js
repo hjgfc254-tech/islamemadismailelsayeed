@@ -37,7 +37,7 @@ async function start() {
     auth.settings.appVerificationDisabledForTesting = true;   // emulator only: no real reCAPTCHA
   }
   const callApi = F.httpsCallable(fns, 'api');
-  const callSession = F.httpsCallable(fns, 'session', { timeout: 125000 });   /* the server allows 120 s (AI chat) */
+  const callSession = F.httpsCallable(fns, 'session');
   const C = globalThis.HSApiClient;
   const APP = appName();
   let actor = null, last = null, syncing = null, offSignal = null, lastServerTime = 0, syncTimer = null;
@@ -117,6 +117,9 @@ async function start() {
   /* Admin access code (third factor after email + password; functions/src/admin-code.js): set it the first time,
      enter it on every new sign-in. Wrong codes show the server message (remaining tries / 15-minute lock). */
   let codeFlow = null;
+  /* two-step verification: the server answers details.reason 'TOTP_REQUIRED' when the app code is missing */
+  const TOTP_FIELD = { name: 'totp', label: 'كود التطبيق (6 أرقام)', attrs: 'inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" dir="ltr"' };
+  const totpRequired = e => !!(e && ((e.details && e.details.reason === 'TOTP_REQUIRED') || /كود التطبيق \(6/.test(String(e.message || ''))));
   function adminCodeFlow(gate) {
     if (codeFlow) return codeFlow;
     codeFlow = (async () => {
@@ -125,13 +128,16 @@ async function start() {
           const first = !gate.hasCode;
           const num = 'inputmode="numeric" pattern="[0-9]{8}" maxlength="8" autocomplete="one-time-code" required';
           const v = await dialog(first ? 'اعمل كود دخول من 8 أرقام' : 'كود الدخول',
-            first ? [{ name: 'code', label: 'كود جديد (8 أرقام، مش متتالي ولا متكرر)', type: 'password', attrs: num }, { name: 'again', label: 'اكتبه تاني للتأكيد', type: 'password', attrs: num }]
-                  : [{ name: 'code', label: 'اكتب كود الدخول الخاص بيك (8 أرقام)', type: 'password', attrs: num }],
+            (first ? [{ name: 'code', label: 'كود جديد (8 أرقام، مش متتالي ولا متكرر)', type: 'password', attrs: num }, { name: 'again', label: 'اكتبه تاني للتأكيد', type: 'password', attrs: num }]
+                   : [{ name: 'code', label: 'اكتب كود الدخول الخاص بيك (8 أرقام)', type: 'password', attrs: num }]).concat(gate.totp ? [TOTP_FIELD] : []),
             first ? 'حفظ الكود والدخول' : 'دخول');
           if (!v) return false;
           if (first && v.code !== v.again) { await uiAlert('الكودين مش زي بعض — اكتبهم تاني.'); continue; }
-          try { await callSession({ op: 'adminCode', action: first ? 'set' : 'unlock', code: v.code }); location.reload(); return true; }
-          catch (e) { await uiAlert((e && e.message) || 'تعذّر التحقق من الكود'); if (/مقفول/.test(String(e && e.message))) return false; }
+          try { await callSession({ op: 'adminCode', action: first ? 'set' : 'unlock', code: v.code, ...(v.totp ? { totp: v.totp } : {}) }); location.reload(); return true; }
+          catch (e) {
+            if (totpRequired(e) && !gate.totp) { gate = { ...gate, totp: true }; continue; }   /* show the app-code field and ask again */
+            await uiAlert((e && e.message) || 'تعذّر التحقق من الكود'); if (/مقفول/.test(String(e && e.message))) return false;
+          }
         }
         return false;
       } finally { codeFlow = null; }
@@ -212,13 +218,21 @@ async function start() {
   /* ── sign-in dialog (RTL, design-system tokens) ── */
   /* in-app alert (shared/components/hs-dialog.js) instead of the browser's grey alert(); falls back when not loaded */
   const uiAlert = (m) => (globalThis.HSUiDialog ? globalThis.HSUiDialog.alert(String(m || '')) : (window.alert(m), Promise.resolve()));
+  const attrEsc = v => String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   function dialog(title, fields, submitLabel) {
     return new Promise(resolve => {
       const d = document.createElement('dialog');
       d.setAttribute('dir', 'rtl');
       d.style.cssText = 'border:0;border-radius:20px;padding:22px;max-width:min(92vw,380px);width:100%;font-family:var(--font-body,inherit);color:var(--text-primary,#1F1B17);box-shadow:0 22px 50px rgba(31,27,23,.18)';
-      d.innerHTML = `<form method="dialog" style="display:grid;gap:12px"><h2 style="margin:0;font-size:19px">${title}</h2>${fields.map(f => `<label style="display:grid;gap:6px;font-weight:600">${f.label}<input name="${f.name}" type="${f.type || 'text'}" ${f.attrs || ''} required style="min-height:46px;border:1.5px solid var(--border-default,#D2D8E3);border-radius:12px;padding:0 12px;font:inherit"></label>`).join('')}<p data-err role="alert" style="margin:0;color:var(--danger,#B4413C);min-height:1em"></p><div style="display:flex;gap:8px"><button value="ok" style="flex:1;min-height:46px;border:0;border-radius:12px;background:var(--brand-primary,#1F1B17);color:#fff;font:inherit;font-weight:700">${submitLabel}</button><button value="cancel" formnovalidate style="min-height:46px;padding:0 16px;border:1.5px solid var(--border-default,#D2D8E3);border-radius:12px;background:#fff;font:inherit">إلغاء</button></div></form>`;
+      d.innerHTML = `<form method="dialog" style="display:grid;gap:12px"><h2 style="margin:0;font-size:19px">${title}</h2>${fields.map(f => `<label style="display:grid;gap:6px;font-weight:600">${f.label}<input name="${f.name}" type="${f.type || 'text'}" ${f.attrs || ''}${f.value != null ? ` value="${attrEsc(f.value)}" readonly dir="ltr"` : ''} required style="min-height:46px;border:1.5px solid var(--border-default,#D2D8E3);border-radius:12px;padding:0 12px;font:inherit">${f.copy ? `<button type="button" data-copy="${f.name}" style="justify-self:start;min-height:40px;padding:0 14px;border:1.5px solid var(--border-default,#D2D8E3);border-radius:12px;background:#fff;font:inherit">انسخ</button>` : ''}</label>`).join('')}<p data-err role="alert" style="margin:0;color:var(--danger,#B4413C);min-height:1em"></p><div style="display:flex;gap:8px"><button value="ok" style="flex:1;min-height:46px;border:0;border-radius:12px;background:var(--brand-primary,#1F1B17);color:#fff;font:inherit;font-weight:700">${submitLabel}</button><button value="cancel" formnovalidate style="min-height:46px;padding:0 16px;border:1.5px solid var(--border-default,#D2D8E3);border-radius:12px;background:#fff;font:inherit">إلغاء</button></div></form>`;
       document.body.appendChild(d);
+      /* «انسخ» next to a read-only value (e.g. the authenticator setup link) */
+      d.querySelectorAll('[data-copy]').forEach(b => b.addEventListener('click', async (ev) => {
+        ev.preventDefault();
+        const input = d.querySelector(`[name="${b.dataset.copy}"]`); if (!input) return;
+        try { await navigator.clipboard.writeText(input.value); } catch { input.select(); try { document.execCommand('copy'); } catch {} }
+        b.textContent = 'اتنسخ ✓';
+      }));
       d.addEventListener('close', () => { const v = d.returnValue === 'ok' ? Object.fromEntries(new FormData(d.querySelector('form'))) : null; d.remove(); resolve(v); }, { once: true });
       d.showModal();
     });
@@ -403,8 +417,45 @@ async function start() {
       const v = await dialog('تغيير كود الدخول', [{ name: 'current', label: 'الكود الحالي', type: 'password', attrs: num }, { name: 'code', label: 'الكود الجديد (8 أرقام)', type: 'password', attrs: num }, { name: 'again', label: 'الكود الجديد تاني', type: 'password', attrs: num }], 'تغيير');
       if (!v) return false;
       if (v.code !== v.again) { await uiAlert('الكودين الجداد مش زي بعض.'); return false; }
-      try { await callSession({ op: 'adminCode', action: 'set', code: v.code, current: v.current }); await uiAlert('اتغيّر كود الدخول.'); return true; }
-      catch (e) { await uiAlert((e && e.message) || 'تعذّر تغيير الكود'); return false; }
+      const send = totp => callSession({ op: 'adminCode', action: 'set', code: v.code, current: v.current, ...(totp ? { totp } : {}) });
+      try {
+        try { await send(); }
+        catch (e) {
+          if (!totpRequired(e)) throw e;
+          const t = await dialog('كود التطبيق', [TOTP_FIELD], 'تأكيد');
+          if (!t) return false;
+          await send(t.totp);
+        }
+        await uiAlert('اتغيّر كود الدخول.'); return true;
+      } catch (e) { await uiAlert((e && e.message) || 'تعذّر تغيير الكود'); return false; }
+    },
+    /** Admin: two-step verification with an authenticator app (functions/src/admin-code.js): set up, turn on, turn off. */
+    async twoStep() {
+      const six = 'inputmode="numeric" pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" dir="ltr"';
+      try {
+        const st = (await callSession({ op: 'adminCode', action: 'totpStatus' })).data;
+        if (st.on) {
+          const v = await dialog('التحقق بخطوتين شغّال', [{ name: 'code', label: 'عشان تقفله اكتب كود التطبيق اللي ظاهر دلوقتي (6 أرقام)', attrs: six }], 'اقفل التحقق بخطوتين');
+          if (!v) return false;
+          await callSession({ op: 'adminCode', action: 'totpDisable', code: v.code });
+          await uiAlert('اتقفل التحقق بخطوتين. الدخول دلوقتي بكلمة المرور وكود الـ8 أرقام بس — ننصحك تشغّله تاني.');
+          return true;
+        }
+        const s = (await callSession({ op: 'adminCode', action: 'totpSetup' })).data;
+        for (let tries = 0; tries < 3; tries++) {
+          const v = await dialog('تشغيل التحقق بخطوتين', [
+            { name: 'uri', label: '1) افتح Google Authenticator أو Microsoft Authenticator، اضغط «+» واختار «إدخال مفتاح» — أو انسخ الرابط ده', value: s.otpauth, copy: true },
+            { name: 'secret', label: 'المفتاح (لو التطبيق طلبه، النوع: حسب الوقت)', value: s.secret, copy: true },
+            { name: 'code', label: '2) اكتب الكود اللي ظهر في التطبيق (6 أرقام)', attrs: six }], 'تشغيل');
+          if (!v) return false;
+          try {
+            await callSession({ op: 'adminCode', action: 'totpEnable', code: v.code });
+            await uiAlert('اتشغّل التحقق بخطوتين. من دلوقتي كل دخول هيطلب كود التطبيق كمان.');
+            return true;
+          } catch (e) { await uiAlert((e && e.message) || 'تعذّر تشغيل التحقق بخطوتين'); }
+        }
+        return false;
+      } catch (e) { await uiAlert((e && e.message) || 'تعذّر الوصول للتحقق بخطوتين'); return false; }
     },
     /** Admin: end the code unlock on this account (also part of signing out). */
     lockAdmin: () => callSession({ op: 'adminCode', action: 'lock' }).catch(() => {}),
