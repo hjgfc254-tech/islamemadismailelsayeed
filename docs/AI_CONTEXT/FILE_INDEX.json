@@ -713,8 +713,8 @@
       "path": "apps/customer/pages/request-wizard.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 73537,
-      "sha256": "880bc5d5588ddc1ab1b933099293911d88769cecf2367851210a469c08568059"
+      "bytes": 77948,
+      "sha256": "a257d059c4ad4f85a92bf91f5afeba7c49abaedf5b5178f066c0a6675a43a93a"
     },
     {
       "path": "apps/customer/pages/search.page.js",
@@ -762,8 +762,8 @@
       "path": "apps/customer/styles/brand-2026.css",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 77432,
-      "sha256": "329c107607788c39bd85c1ac61bf78aa2fa3f1b47e495ffde180ddbce319b61c"
+      "bytes": 79114,
+      "sha256": "3be0949793ab0cbca2c6e61992006d609cdc2b0d8c4da850e4b1e7a6fd1cfc94"
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -2996,7 +2996,7 @@
       "area": "functions",
       "status": "NEEDS_REVIEW",
       "bytes": 2360,
-      "sha256": "f0d7adf8d91010927308f166ee8d3d55359d32667168c7a78225c77839858e8f"
+      "sha256": "6989fc6e3ac0869bbf126a2c8b146436ee2d8452d8ca905435930f548bada11b"
     },
     {
       "path": "functions/domain/services/admin-api.js",
@@ -3044,8 +3044,8 @@
       "path": "functions/domain/services/local-catalog.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 51241,
-      "sha256": "de3fcd80ef8de84667bada846d511897d05e285048cad59b10d9d6fdb69e8151"
+      "bytes": 51276,
+      "sha256": "480af36d4453b19360d872fdd84dc6ba673bb99b9763d4c5e9d397bb07df044b"
     },
     {
       "path": "functions/domain/services/local-market-store.js",
@@ -3458,14 +3458,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 12071,
-      "sha256": "aa3fac974d6c5b256caf309b3d737e5c073ad7dc5af13b44695252ac8c1663d1"
+      "sha256": "114c76c72191b819d5fec30792bddd14543536527cbf2f66e3f8c4f3ce781155"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 196,
-      "sha256": "c29107db619a59464dadcb170261a0a1f16f74999a9fc61713cc4b9f67c64a82"
+      "sha256": "b0b0001b5326022f92a7a93093219fb166a398c237ff365f8c09c6dba43a5d22"
     },
     {
       "path": "services/admin-api.js",
@@ -3534,8 +3534,8 @@
       "path": "services/local-catalog.js",
       "area": "services",
       "status": "IMPLEMENTED",
-      "bytes": 51241,
-      "sha256": "de3fcd80ef8de84667bada846d511897d05e285048cad59b10d9d6fdb69e8151"
+      "bytes": 51276,
+      "sha256": "480af36d4453b19360d872fdd84dc6ba673bb99b9763d4c5e9d397bb07df044b"
     },
     {
       "path": "services/local-market-store.js",
@@ -4220,8 +4220,8 @@
       "path": "tests/unit/catalog-wizard.test.js",
       "area": "tests",
       "status": "IMPLEMENTED",
-      "bytes": 11553,
-      "sha256": "ad5d216659e1ba9b5bc24afa61234327ca88e71511711c39eae55e49ef7ae25e"
+      "bytes": 12623,
+      "sha256": "533d50edcf7ab6f85f83bc2e8776b5ef11491794aea94ec99bb8df195a19ef67"
     },
     {
       "path": "tests/unit/categories-management.test.js",
@@ -4675,8 +4675,8 @@
       "path": "tests/unit/round5-features.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 37492,
-      "sha256": "c7a9b679e03954f05fb7c57d71190109808c2fbe0d8787270837070f27858ec6"
+      "bytes": 37556,
+      "sha256": "818784933c66f83340e00f7b778e05cf0b2a8a676116697bbc2a365a50328113"
     },
     {
       "path": "tests/unit/security-audit-2026-11-23.test.js",

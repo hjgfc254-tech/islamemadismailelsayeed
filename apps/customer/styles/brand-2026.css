@@ -804,3 +804,19 @@ html.hc-open{overflow:hidden}
 .hc-who small{line-height:1.4}
 /* desktop: with the narrower sheet the floating help button stayed visible (but unusable) beside it — hide it while a sheet is open */
 body:has(#app.open) .help-fab{visibility:hidden}
+
+/* ── round 11 — shorter request (4 screens): the picked problem / saved address fold into one row, «أو» divider, folded extras ── */
+#view .wz-picked{display:flex;align-items:center;gap:12px;min-height:58px;padding:10px 14px;margin:0 0 12px;border-radius:var(--hs-r-md);background:var(--surface-primary);border:1px solid var(--hs-line);box-shadow:var(--hs-shadow-sm)}
+#view .wz-picked .tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+#view .wz-picked .tx small{color:var(--text-secondary);font-size:var(--fs-sm)}
+#view .wz-picked .tx b{overflow-wrap:anywhere}
+#view .wz-picked .chip{flex:none;min-height:44px;margin:0}
+#view .wz-or{display:flex;align-items:center;gap:10px;margin:16px 0 6px;color:var(--text-secondary);font-size:var(--fs-sm)}
+#view .wz-or::before,#view .wz-or::after{content:"";flex:1;height:1px;background:var(--hs-line)}
+#view .wz-more{margin:10px 0;border:1px solid var(--hs-line);border-radius:var(--hs-r-sm);padding:0 12px;background:var(--surface-primary)}
+#view .wz-more>summary{display:flex;align-items:center;gap:8px;min-height:44px;cursor:pointer;font-weight:600;list-style:none}
+#view .wz-more>summary::-webkit-details-marker{display:none}
+#view .wz-more>summary::after{content:"";margin-inline-start:auto;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .15s}
+#view .wz-more[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
+#view .wz-more[open]{padding-bottom:12px}
+#view .wz-more>summary:focus-visible{outline:3px solid var(--focus-ring,#1d4ed8);outline-offset:2px;border-radius:var(--hs-r-sm)}

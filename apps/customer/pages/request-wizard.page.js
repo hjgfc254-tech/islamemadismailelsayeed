@@ -42,26 +42,34 @@ const WZ_STEPS11 = [
   'المراجعة',
   'التأكيد'
 ];
-/* 5 screens over the 10 internal steps (each step keeps its own validation in wzCheckStep):
-   1 «إيه المشكلة؟» = 0 القسم → 1 الجهاز → 2 المشكلة (one tap each, same screen title)
-   2 «التفاصيل» = 3 أسئلة (if any) + 4 الوصف + 5 الصور      3 «المكان» = 6
-   4 «الموعد والتواصل» = 7 الموعد + 8 التواصل (shown only when missing/invalid)   5 «المراجعة والتأكيد» = 9 */
-const WZ_STAGES = [[0, 1, 2], [3, 4, 5], [6], [7, 8], [9]];
-const WZ_STAGE_NAMES = ['إيه المشكلة؟', 'التفاصيل', 'المكان', 'الموعد والتواصل', 'المراجعة والتأكيد'];
-const WZ_PART_TITLES = { 3: 'أسئلة سريعة', 4: 'وصف المشكلة', 5: 'صور أو فيديو (اختياري)', 7: 'الموعد', 8: 'بيانات التواصل' };
-const wzStageOf = step => step >= 10 ? 5 : Math.max(0, WZ_STAGES.findIndex(g => g.includes(step)));
+/* 4 screens over the 10 internal steps (each step keeps its own validation in wzCheckStep):
+   1 «محتاج إيه؟» = 0 القسم → 1 الجهاز / نوع الشغل (one tap each)
+   2 «المطلوب» = 2 the three ways in one place — tap a common problem, OR write / say it (4), OR «الفني يشخّص» — then
+     3 quick questions (if any) + 5 photos. The description is optional once a listed problem is chosen (a door install
+     needs nothing more); written with no problem picked, it becomes the item's «مشكلة أخرى».
+   3 «المكان والموعد» = 6 العنوان + 7 الموعد («أقرب وقت» preselected) + 8 التواصل (only when missing/invalid)
+   4 «المراجعة والتأكيد» = 9 */
+const WZ_STAGES = [[0, 1], [2, 3, 4, 5], [6, 7, 8], [9]];
+const WZ_STAGE_NAMES = ['محتاج إيه؟', 'المطلوب', 'المكان والموعد', 'المراجعة والتأكيد'];
+const WZ_PART_TITLES = { 3: 'أسئلة سريعة', 4: 'تفاصيل زيادة (اختياري)', 5: 'صور أو فيديو (اختياري)', 6: 'المكان', 7: 'الموعد', 8: 'بيانات التواصل' };
+const WZ_LAST = WZ_STAGES.length - 1;
+const wzStageOf = step => step >= 10 ? WZ_STAGES.length : Math.max(0, WZ_STAGES.findIndex(g => g.includes(step)));
+/* the chosen problem is a listed one (not «مشكلة أخرى») → nothing more has to be typed */
+const wzListedProblem = w => { const p = w && !w.unknown && w.problem && CAT.problem(w.problem); return !!(p && !p.isOther); };
 /* steps drawn on the current screen: stage 1 advances by taps (one step at a time); other stages show all their steps,
    minus questions when the problem has none and contact details when the saved ones are valid (unless asked to edit) */
 function wzShownSteps(step){
   if (step >= 10) return [10];
   const st = wzStageOf(step);
   if (st === 0) return [step];
-  return WZ_STAGES[st].filter(n => !((n === 3 && !CAT.questionsFor(WZ.item, WZ.unknown ? '' : WZ.problem).length) || (n === 8 && !WZ.showContact && !wzCheckStep(8))));
+  /* questions appear once a problem (or «الفني يشخّص») is chosen */
+  const picked = WZ.problem || WZ.unknown;
+  return WZ_STAGES[st].filter(n => !((n === 3 && (!picked || !CAT.questionsFor(WZ.item, WZ.unknown ? '' : WZ.problem).length)) || (n === 8 && !WZ.showContact && !wzCheckStep(8))));
 }
 /* where «التالي» goes: inside stage 1 one step at a time, otherwise the first step of the next stage */
 function wzNextStep(step){
   const st = wzStageOf(step);
-  if (st === 0 && step < 2) return step + 1;
+  if (st === 0 && step < 1) return step + 1;
   return st + 1 < WZ_STAGES.length ? WZ_STAGES[st + 1][0] : 9;
 }
 /* Steps with nothing to ask are skipped forward (Back still returns through the history): the specialist questions
@@ -131,7 +139,7 @@ function wzNew(cat, itemId, desc){
     attachmentMeta: [], /* [{id,kind,name,size,thumb}] للعرض السريع */
     video: '',          /* اسم الفيديو (توافق خلفي) — الفيديو الفعلي مرفق في attachmentMeta */
     address: { id:'', label:'', gov:'', area:'', addr:'', detail:'', type:'home', save:true, default:false, geo:null },
-    schedule: { date:'', period:'', slot:'', flexible:false, whenNote:'' },
+    schedule: { date:'', period:'', slot:'', flexible:true, whenNote:'' },   /* «أقرب وقت» until another time is tapped */
     contact: { name: u.name || '', phone: u.phone || '', method: 'call', note: '' },
     done: null,
     __reviewView: 'grid'
@@ -254,7 +262,7 @@ function wzCheckStep(step){
   const w = WZ;
   if (step === 0) { if (!w.cat) return 'اختر القسم'; return ''; }
   if (step === 1) { if (!w.item) return 'اختر الجهاز أو نوع العمل'; return ''; }
-  if (step === 2) { if (!w.problem && !w.unknown) return 'اختر المشكلة أو اطلب من الفني تشخيصها'; return ''; }
+  if (step === 2) { if (!w.problem && !w.unknown && (w.desc || '').trim().length < 5) return 'اختار المشكلة، أو اكتبها بنفسك، أو خلّي الفني يشخّصها'; return ''; }
   if (step === 3) {
     const qs = CAT.questionsFor(w.item, w.unknown ? '' : w.problem);
     const missing = qs.find(q => q.required && !String(w.answers[q.id] || '').trim());
@@ -262,8 +270,7 @@ function wzCheckStep(step){
     return '';
   }
   if (step === 4) {
-    if (!w.unknown && (w.desc || '').trim().length < 5) return 'اكتب وصفًا للمشكلة (5 حروف على الأقل)';
-    const p = w.problem && CAT.problem(w.problem);
+    if (!w.unknown && !wzListedProblem(w) && (w.desc || '').trim().length < 5) return 'اكتب وصفًا للمشكلة (5 حروف على الأقل)';
     return '';
   }
   if (step === 5) {
@@ -306,12 +313,12 @@ function wzValidationTarget(step){
   if (!w) return null;
   if (step === 0) return document.querySelector('[data-wz-cat]');
   if (step === 1) return document.querySelector('[data-wz-item]');
-  if (step === 2) return document.querySelector('[data-wz-prob], [data-wz-unknown]');
+  if (step === 2) return document.querySelector('[data-wz-prob], [data-wz-unknown], #wz-desc');
   if (step === 3) {
     const missing = CAT.questionsFor(w.item, w.unknown ? '' : w.problem).find(q => q.required && !String(w.answers[q.id] || '').trim());
     return missing ? document.getElementById('q-' + missing.id) : null;
   }
-  if (step === 4) return !w.unknown && (w.desc || '').trim().length < 5 ? document.getElementById('wz-desc') : null;
+  if (step === 4) return !w.unknown && !wzListedProblem(w) && (w.desc || '').trim().length < 5 ? document.getElementById('wz-desc') : null;
   if (step === 5) return (w.attachmentMeta || []).some(a => a.kind === 'image') ? null : document.querySelector('[data-act="wzAddPhoto"]');
   if (step === 6) return !w.address.gov ? document.getElementById('wz-gov') : !w.address.area.trim() ? document.getElementById('wz-area') : document.getElementById('wz-addr');
   if (step === 7) return !w.schedule.flexible ? (!w.schedule.date ? document.getElementById('wz-date-input') : !w.schedule.period ? document.querySelector('[data-wz-period]') : null) : null;
@@ -366,9 +373,9 @@ function qField(q, v){
 
 /* ═════════ شريط التقدم ═════════ */
 function wzProgressBar(step){
-  const st = Math.min(wzStageOf(step), 4);
-  return `<div class="wz-bar wz-bar5" role="progressbar" aria-valuemin="1" aria-valuemax="5" aria-valuenow="${st + 1}" aria-valuetext="${WZ_STAGE_NAMES[st]}">${WZ_STAGE_NAMES.map((n, i) => `<i class="${i < st ? 'done' : i === st ? 'on' : ''}" title="${n}"></i>`).join('')}</div>
-    <div class="wz-cap">${step < 10 ? `<b>${WZ_STAGE_NAMES[st]}</b><span>الخطوة ${st + 1} من 5 — ${wzLeft(4 - st)}</span>` : 'تم إرسال الطلب'}</div>`;
+  const st = Math.min(wzStageOf(step), WZ_LAST), total = WZ_STAGES.length;
+  return `<div class="wz-bar wz-bar5" role="progressbar" aria-valuemin="1" aria-valuemax="${total}" aria-valuenow="${st + 1}" aria-valuetext="${WZ_STAGE_NAMES[st]}">${WZ_STAGE_NAMES.map((n, i) => `<i class="${i < st ? 'done' : i === st ? 'on' : ''}" title="${n}"></i>`).join('')}</div>
+    <div class="wz-cap">${step < 10 ? `<b>${WZ_STAGE_NAMES[st]}</b><span>الخطوة ${st + 1} من ${total} — ${wzLeft(WZ_LAST - st)}</span>` : 'تم إرسال الطلب'}</div>`;
 }
 
 /* «احكي المشكلة بصوتك»: the browser's speech recognition (Egyptian Arabic) writes into the description; shown only
@@ -542,35 +549,47 @@ Object.assign(screens, {
 
     /* 2 — المشكلة */
     if (cur === 2) {
-      const ps = CAT.problems(w.item);
-      body = crumbHtml(w) + `<h2 class="sec-title">${safeIc('wrench')}إيه المشكلة في ${_esc(it.name)}؟</h2>
+      /* chosen → one compact row with «غيّر» (the list folds away); otherwise the list + «الفني يشخّص», and the free
+         text box below (step 4) is the third way */
+      if (w.problem || w.unknown) {
+        const name = w.unknown ? 'الفني هيعاين ويشخّص المشكلة' : (pr ? pr.name : '');
+        body = crumbHtml(w) + `<div class="wz-picked glass" role="status">${w.unknown ? safeIcp('p-diagnose', 'pr') : safeIcp(safeIcProb(pr, it, c.id), 'pr')}<div class="tx"><small>${w.unknown ? 'تشخيص' : 'المطلوب'}</small><b>${_esc(name)}</b></div><button type="button" class="chip" data-act="wzProbChange">غيّر</button></div>`;
+      } else {
+        const ps = CAT.problems(w.item).filter(p => !p.isOther);
+        body = crumbHtml(w) + `<h2 class="sec-title">${safeIc('wrench')}${it.kind === 'fault' || !it.kind ? `إيه المشكلة في ${_esc(it.name)}؟` : `محتاج إيه في ${_esc(it.name)}؟`}</h2>
         <div class="plist" role="group" aria-label="اختيار المشكلة">${ps.map(p => `
-          <button type="button" class="prow glass neon ${p.id===w.problem && !w.unknown ? 'sel' : ''}" data-wz-prob="${p.id}" aria-pressed="${p.id===w.problem && !w.unknown}">
+          <button type="button" class="prow glass neon" data-wz-prob="${p.id}" aria-pressed="false">
             ${safeIcp(safeIcProb(p, it, c.id), 'pr')}<span class="tx">${_esc(p.name)}</span>${safeIc('chev','chev')}
           </button>`).join('')}</div>
-        <button type="button" class="cta ghost unk-btn ${w.unknown?'sel':''}" data-wz-unknown aria-pressed="${w.unknown}">${safeIc('p-diagnose')} ${UNKNOWN_TXT}</button>`;
+        <button type="button" class="cta ghost unk-btn" data-wz-unknown aria-pressed="false">${safeIc('p-diagnose')} ${UNKNOWN_TXT}</button>`;
+      }
     }
 
     /* 3 — الأسئلة التخصصية */
     if (cur === 3) {
       const qs = CAT.questionsFor(w.item, w.unknown ? '' : w.problem);
       const sf = CAT.safetyFor(w.item, w.unknown ? '' : w.problem);
-      body = crumbHtml(w) +
-        (sf.length ? `<div class="need warn">${safeIc('warn')}<span>${sf.map(_esc).join('<br>')}</span></div>` : '') +
-        `<div class="form">${qs.length ? qs.map(q => qField(q, w.answers[q.id])).join('') : `<div class="need">${safeIc('info')}<span>لا توجد أسئلة إضافية — يمكنك الانتقال للخطوة التالية.</span></div>`}</div>`;
+      body = (sf.length ? `<div class="need warn">${safeIc('warn')}<span>${sf.map(_esc).join('<br>')}</span></div>` : '') +
+        /* only required questions stay in view; the optional ones fold under one line (open once any is answered) */
+        (() => {
+          const req = qs.filter(q => q.required), opt = qs.filter(q => !q.required);
+          const anyOpt = opt.some(q => String(w.answers[q.id] || '').trim());
+          return `<div class="form">${req.map(q => qField(q, w.answers[q.id])).join('')}${opt.length ? `<details class="wz-more" ${anyOpt ? 'open' : ''}><summary>${safeIc('info')} أسئلة تساعد الفني (اختياري)</summary>${opt.map(q => qField(q, w.answers[q.id])).join('')}</details>` : ''}</div>`;
+        })();
     }
 
     /* 4 — وصف المشكلة */
     if (cur === 4) {
-      const sugg = w.unknown ? `${it ? it.name : ''}: مش عارف سبب المشكلة بالظبط` : (pr ? `${it ? it.name : ''} — ${pr.name}` : '');
-      body = crumbHtml(w) + `<div class="form">
+      /* one box (the old separate «ملاحظات» box is gone; a restored note still shows on the review). Required only when
+         nothing is picked from the list (then it IS the problem) or the pick is «مشكلة أخرى». */
+      const free = !w.problem && !w.unknown, must = !w.unknown && !wzListedProblem(w);
+      const label = free ? 'اكتب المشكلة بكلامك أو قولها بصوتك' : 'عايز تقول للفني حاجة زيادة؟';
+      body = `${free ? '<div class="wz-or" aria-hidden="true"><span>أو</span></div>' : ''}<div class="form">
         <div>
-          <label for="wz-desc">وصف المشكلة${w.unknown ? ' (اختياري)' : ' *'}</label>
-          <textarea id="wz-desc" placeholder="اكتب بإيجاز اللي بيحصل، إمتى بدأ، وأي تفاصيل تساعد الفني…">${_esc(w.desc)}</textarea>
-          ${sugg && !w.desc ? `<button type="button" class="chip" data-wz-sugg="${_esc(sugg)}">استخدم وصفًا مقترحًا</button>` : ''}
-          ${wzVoiceOk() ? `<button type="button" class="chip wz-voice" data-wz-voice aria-pressed="false">${safeIc('chat')} احكي المشكلة بصوتك</button>` : ''}
+          <label for="wz-desc">${label}${must && !free ? ' *' : ''}</label>
+          <textarea id="wz-desc" rows="${free ? 3 : 2}" placeholder="${free ? 'مثلاً: عايز أركّب باب خشب للأوضة، أو الحنفية بتنقّط من امبارح…' : 'اختياري — مقاس، ماركة، إمتى بدأت المشكلة…'}">${_esc(w.desc)}</textarea>
+          ${wzVoiceOk() ? `<button type="button" class="chip wz-voice" data-wz-voice aria-pressed="false">${safeIc('chat')} قولها بصوتك</button>` : ''}
         </div>
-        <div><label for="wz-note">ملاحظات إضافية</label><textarea id="wz-note" placeholder="أي تفاصيل تساعد الفني">${_esc(w.note)}</textarea></div>
       </div>`;
     }
 
@@ -604,17 +623,25 @@ Object.assign(screens, {
           <div class="geo-card-h">${safeIc('pin')}<div><b>${w.address.geo ? 'تم تحديد مكانك' : 'فين مكان الخدمة؟'}</b><small>${w.address.geo ? _esc(w.address.geoLabel || 'العلامة متحطة على الخريطة — تقدر تعدّلها') : 'حدده بضغطة، وهنملا العنوان عنك'}</small></div></div>
           <div class="geo-card-a"><button type="button" class="cta" data-act="wzGeo">${safeIc('pin')} ${w.address.geo ? 'حدّث موقعي' : 'استخدم موقعي الحالي'}</button>
           <button type="button" class="cta ghost" data-act="wzMap">${safeIc('search')} ${w.address.geo ? 'عدّل على الخريطة' : 'اختار على الخريطة'}</button></div></div>`;
-      body = crumbHtml(w) + `<div class="form">
+      /* a saved / complete address folds into one line with «تعديل»; the fields open only when something is missing */
+      const addrOk = !wzCheckStep(6);
+      const addrText = [w.address.gov, w.address.area, w.address.addr, w.address.detail].filter(Boolean).join(' — ');
+      if (addrOk && w.address.id && !w.editAddr) {
+        body = `<div class="wz-picked glass">${safeIcp('pin', 'pr')}<div class="tx"><small>${_esc(w.address.label || 'العنوان')}</small><b>${_esc(addrText)}</b></div><button type="button" class="chip" data-act="wzEditAddr">تعديل</button></div>${addrChips}`;
+      } else
+      body = `<div class="form">
         ${geoCard}
         ${addrChips}
         <div><label for="wz-gov">المحافظة *</label><select id="wz-gov" required aria-required="true"><option value="">اختر المحافظة</option>${(MP ? MP.GOVS : []).map(g=>`<option ${g===w.address.gov?'selected':''}>${_esc(g)}</option>`).join('')}</select></div>
         <div><label for="wz-area">المنطقة *</label><input id="wz-area" required aria-required="true" list="areas" value="${_esc(w.address.area)}" placeholder="المنطقة / الحي"><datalist id="areas">${((MP && MP.AREA_HINTS[w.address.gov]) || []).map(a=>`<option value="${_esc(a)}">`).join('')}</datalist></div>
         <div><label for="wz-addr">الشارع ورقم العقار *</label><input id="wz-addr" required aria-required="true" value="${_esc(w.address.addr)}" placeholder="الشارع، رقم العمارة"></div>
         <div><label for="wz-detail">الدور / الشقة / تفاصيل</label><input id="wz-detail" value="${_esc(w.address.detail)}" placeholder="الدور، الشقة، علامة مميزة"></div>
+        <details class="wz-more"><summary>خيارات العنوان (اختياري)</summary>
         <div><label for="wz-addr-type">نوع العنوان</label><select id="wz-addr-type"><option value="home" ${w.address.type==='home'?'selected':''}>منزل</option><option value="work" ${w.address.type==='work'?'selected':''}>عمل</option><option value="other" ${w.address.type==='other'?'selected':''}>أخرى</option></select></div>
         <div><label for="wz-label">اسم مختصر (اختياري)</label><input id="wz-label" value="${_esc(w.address.label)}" placeholder="مثل: البيت، المكتب"></div>
         <label class="hint" style="display:flex;gap:8px;align-items:center;margin:6px 0"><input type="checkbox" id="wz-save-addr" ${w.address.save?'checked':''} style="width:auto"> احفظ العنوان ده للمرات الجاية</label>
         <label class="hint" style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="wz-default-addr" ${w.address.default?'checked':''} style="width:auto"> خليه العنوان الأساسي</label>
+        </details>
       </div>`;
     }
 
@@ -622,11 +649,14 @@ Object.assign(screens, {
     if (cur === 7) {
       const s = w.schedule;
       const isoIn = n => { const d = new Date(); d.setDate(d.getDate() + n); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
-      const QUICK = [new Date().getHours() < 17 ? ['النهارده بالليل', isoIn(0) + '|evening'] : null, ['بكرة الصبح', isoIn(1) + '|morning'], ['بكرة الضهر', isoIn(1) + '|noon'], ['بكرة بالليل', isoIn(1) + '|evening'], ['أقرب وقت (مرن)', 'flex']].filter(Boolean);
+      const QUICK = [['أقرب وقت', 'flex'], new Date().getHours() < 17 ? ['النهارده بالليل', isoIn(0) + '|evening'] : null, ['بكرة الصبح', isoIn(1) + '|morning'], ['بكرة الضهر', isoIn(1) + '|noon'], ['بكرة بالليل', isoIn(1) + '|evening']].filter(Boolean);
       const qOn = v => v === 'flex' ? s.flexible : (!s.flexible && v === s.date + '|' + s.period);
       const quickHtml = `<div class="chips quick-when" role="group" aria-label="اختيار سريع للموعد">${QUICK.map(([l, v]) => `<button type="button" class="chip ${qOn(v) ? 'on' : ''}" data-wz-quick="${v}" aria-pressed="${qOn(v)}">${_esc(l)}</button>`).join('')}</div>`;
+      /* one tap is enough («أقرب وقت» is preselected); an exact day / period stays one click away */
+      const exact = !s.flexible && !QUICK.some(([, v]) => qOn(v));
       body = `<div class="form">
         ${quickHtml}
+        <details class="wz-more" ${exact ? 'open' : ''}><summary>${safeIc('calendar')} اختار يوم وفترة بالظبط</summary>
         <label class="hint" style="display:flex;gap:8px;align-items:center;margin-bottom:10px"><input type="checkbox" id="wz-flexible" ${s.flexible?'checked':''} style="width:auto"> موعد مرن (هتفق مع الفني)</label>
         <div id="wz-date-wrap" style="${s.flexible ? 'display:none' : ''}">
           <label for="wz-date-input">اليوم المفضل *</label>
@@ -642,7 +672,8 @@ Object.assign(screens, {
           </div>
         </div>
         <div><label for="wz-when-note">ملاحظات على الموعد</label><input id="wz-when-note" value="${_esc(s.whenNote)}" placeholder="مثل: بعد العصر، أو أي وقت بعد الظهر"></div>
-        <div class="need">${safeIc('info')}<span>الموعد تفضيل مبدئي — سيُؤكَّد مع مقدم الخدمة قبل التنفيذ.</span></div>
+        </details>
+        <small class="hint">الفني بيأكد معاك الموعد قبل ما ييجي.</small>
       </div>`;
     }
 
@@ -726,10 +757,12 @@ Object.assign(screens, {
     const shown = wzShownSteps(w.step);
     let body = shown.map(n => {
       const part = bodyFor(n);
-      return part && shown.length > 1 && WZ_PART_TITLES[n] ? `<section class="wz-part" aria-label="${WZ_PART_TITLES[n]}"><h2 class="wz-part-h">${WZ_PART_TITLES[n]}</h2>${part}</section>` : part;
+      /* the free-text box has its own «أو» divider + label while nothing is picked */
+      const title = (n === 4 && !w.problem && !w.unknown) || (n === 3 && !CAT.questionsFor(w.item, w.unknown ? '' : w.problem).some(q => q.required)) ? '' : WZ_PART_TITLES[n];
+      return part && shown.length > 1 && title ? `<section class="wz-part" aria-label="${title}"><h2 class="wz-part-h">${title}</h2>${part}</section>` : part;
     }).join('');
     /* contact details hidden because the saved ones are valid → one line with «تعديل» */
-    if (wzStageOf(w.step) === 3 && !shown.includes(8)) body += `<div class="wz-contact-mini">${safeIc('call')}<span>هنتواصل معاك على <b>${_esc(w.contact.name)} • ${_esc(w.contact.phone)}</b></span><button type="button" data-act="wzShowContact">تعديل</button></div>`;
+    if (wzStageOf(w.step) === 2 && !shown.includes(8)) body += `<div class="wz-contact-mini">${safeIc('call')}<span>هنتواصل معاك على <b>${_esc(w.contact.name)} • ${_esc(w.contact.phone)}</b></span><button type="button" data-act="wzShowContact">تعديل</button></div>`;
     /* the price of the chosen service stays visible on every screen until the review (which has the full card) */
     if (w.item && w.step > 1 && w.step < 9) body = wzPriceBar(w) + body;
 
@@ -948,7 +981,7 @@ document.addEventListener('click', e => {
     return;
   }
   if (!WZ && !['wzResume','wzDiscardDraft'].includes(d.act)) return;
-  if (!/^(wz|wzAdd|wzSubmit|wzPrev|wzNext|wzTrack|wzGeo|wzMap|wzMapOk|wzAddPhoto|wzAddVideo|wzResume|wzDiscardDraft)$/.test(d.act || '')) {
+  if (!/^(wz|wzAdd|wzSubmit|wzProbChange|wzEditAddr|wzShowContact|wzPrev|wzNext|wzTrack|wzGeo|wzMap|wzMapOk|wzAddPhoto|wzAddVideo|wzResume|wzDiscardDraft)$/.test(d.act || '')) {
     /* ليست من صلاحيتنا (قد تكون من market-ui أو غيره) */
     if (!t.matches('[data-wz-cat],[data-wz-item],[data-wz-prob],[data-wz-unknown],[data-wz-sugg],[data-wz-edit],[data-wz-go],[data-wz-date],[data-wz-period],[data-wz-quick],[data-wz-addr-pick],[data-wz-att-rm]')) return;
   }
@@ -970,10 +1003,12 @@ document.addEventListener('click', e => {
     }
     return wzGo(2);
   }
-  if (d.wzProb) { WZ.problem = d.wzProb; WZ.unknown = false; return wzGo(wzSkip(3)); }
-  if ('wzUnknown' in d) { WZ.unknown = true; WZ.problem = ''; return wzGo(wzSkip(3)); }
+  /* picking stays on the same screen («المطلوب»): the list folds into one row and the questions / details appear */
+  const wzPick = () => { if (WZ.step < 3) WZ.step = 3; wzSaveDraft(); if (hasUI()) show('wizard'); };
+  if (d.wzProb) { WZ.problem = d.wzProb; WZ.unknown = false; WZ.answers = {}; return wzPick(); }
+  if ('wzUnknown' in d) { WZ.unknown = true; WZ.problem = ''; WZ.answers = {}; return wzPick(); }
   if (d.wzSugg) { WZ.desc = d.wzSugg; return show('wizard'); }
-  if ('wzEdit' in d) return wzGo(+d.wzEdit);
+  if ('wzEdit' in d) { if (+d.wzEdit === 6) WZ.editAddr = true; return wzGo(+d.wzEdit); }
   if ('wzGo' in d) return wzGo(+d.wzGo);
   if ('wzRm' in d) { WZ.attachments.splice(+d.wzRm, 1); return show('wizard'); }
   if (d.wzDate) { WZ.schedule.date = d.wzDate; return show('wizard'); }
@@ -987,6 +1022,7 @@ document.addEventListener('click', e => {
           id: a.id, label: a.label, gov: a.gov, area: a.area, addr: a.addr,
           detail: a.detail, type: a.type, save: true, default: !!a.default, geo: a.geo || null
         };
+        WZ.editAddr = false;
         show('wizard');
       }
     } catch {}
@@ -1020,10 +1056,24 @@ document.addEventListener('click', e => {
       break;
     }
     case 'wzNext': {
+      /* written with nothing picked → the item's «مشكلة أخرى» carries the text */
+      if (wzStageOf(WZ.step) === 1 && !WZ.problem && !WZ.unknown && (WZ.desc || '').trim().length >= 5) {
+        const other = CAT.problems(WZ.item).find(p => p.isOther);
+        if (other) { WZ.problem = other.id; WZ.answers = {}; }
+        if (CAT.questionsFor(WZ.item, WZ.problem).some(q => q.required)) { WZ.step = 3; show('wizard'); return wzReportValidationError(wzCheckStep(3)); }
+      }
       for (const st of wzShownSteps(WZ.step)) { const m = wzCheckStep(st); if (m) return wzReportValidationError(m); }
-      if (wzStageOf(WZ.step) === 3) { const m = wzCheckStep(8); if (m) { WZ.showContact = true; show('wizard'); return wzReportValidationError(m); } }
+      if (wzStageOf(WZ.step) === 2) { const m = wzCheckStep(8); if (m) { WZ.showContact = true; show('wizard'); return wzReportValidationError(m); } }
       wzSaveDraft();
       wzGo(wzNextStep(WZ.step));
+      break;
+    }
+    case 'wzProbChange': {
+      WZ.problem = ''; WZ.unknown = false; WZ.answers = {}; WZ.step = 2; if (hasUI()) show('wizard');
+      break;
+    }
+    case 'wzEditAddr': {
+      WZ.editAddr = true; if (hasUI()) show('wizard');
       break;
     }
     case 'wzShowContact': {

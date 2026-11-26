@@ -366,7 +366,7 @@ const DEF = {
  carpentry:{ name:'النجارة', icon:'saw', art:'carpentry', kind:'fault', extra:'job', spec:'carpentry',
   safety:['أخلِ المكان من الأشياء الثمينة قبل حضور الفني.'],
   items:[
-   ['doors','أبواب','carpentry.doors','wont-close:الباب لا يُقفل;jammed:الباب محشور;sag:الباب مائل;lock:مشكلة في الكالون;replace:تغيير باب;paint-polish:تلميع وإعادة تشطيب'],
+   ['doors','أبواب','carpentry.doors','install:تركيب باب جديد;wont-close:الباب لا يُقفل;jammed:الباب محشور;sag:الباب مائل;lock:مشكلة في الكالون;replace:تغيير باب;paint-polish:تلميع وإعادة تشطيب'],
    ['windows','شبابيك','carpentry.windows','jammed:الشباك محشور;glass:زجاج مكسور;seal:تسريب هواء أو مياه;replace:تغيير شباك;screen:تركيب سلك / ناموسية'],
    ['wardrobes','دواليب','carpentry.furniture','door-off:باب الدولاب خارج مكانه;rail:سكة الأدراج;shelf:رف مكسور;repaint:إعادة تشطيب;custom:تفصيل دولاب جديد'],
    ['kitchens','مطابخ','carpentry.kitchen','cabinet-door:باب وحدة مكسور;countertop:سطح الرخام / الخشب;drawer:درج لا يعمل;install:تركيب مطبخ جديد;custom:تفصيل مطبخ'],

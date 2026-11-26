@@ -49,16 +49,17 @@ for(const [c,i,p] of journeys){
   click({wzProb:p}); ok(wz().step===3&&wz().problem===p,'problem '+p);
   const qs=run(`CAT.questionsFor('${i}','${p}')`);
   if(c==='cars') { click({act:'wzNext'}); ok(wz().step===3&&String(toasts.pop()).startsWith('أجب عن'),'car make required'); }
-  /* 5 screens: questions + description + photos are one screen («التفاصيل») */
-  ok(run('screens.wizard()').includes('الخطوة 2 من 5'),'details is screen 2 of 5 '+c);
-  setq(c==='cars'?{make:'تويوتا كورولا 2018'}:{}); setf({'wz-desc':''}); click({act:'wzNext'}); ok(wz().step===3&&String(toasts.pop()).startsWith('اكتب وصفًا'),'description still required on the merged screen '+c);
-  setf({'wz-desc':'وصف المشكلة بالتفصيل','wz-note':''}); click({act:'wzNext'}); ok(wz().step===6,'details → location '+c);
+  /* 4 screens: the problem, questions, description and photos are one screen («المطلوب») */
+  ok(run('screens.wizard()').includes('الخطوة 2 من 4'),'details is screen 2 of 4 '+c);
+  ok(run('screens.wizard()').includes('data-act="wzProbChange"'),'the picked problem folds into one row with «غيّر» '+c);
+  setq(c==='cars'?{make:'تويوتا كورولا 2018'}:{}); setf({'wz-desc':''}); click({act:'wzNext'}); ok(wz().step===6,'a listed problem needs no description → place and time '+c);
   run("WZ.address=Object.assign({},WZ.address,{id:'',gov:'',area:'',addr:''})");   /* the default saved address is pre-filled; clear it to exercise validation */
   click({act:'wzNext'}); ok(wz().step===6&&toasts.pop()==='اختر المحافظة','gov required');
-  setf({'wz-gov':'القاهرة','wz-area':'مدينة نصر','wz-addr':'شارع عباس العقاد 12'}); click({act:'wzNext'}); ok(wz().step===7,'to schedule + contact');
-  run("WZ.schedule.flexible=true;WZ.contact.name='';WZ.contact.phone=''"); setf({'wz-name':'','wz-phone':''}); click({act:'wzNext'}); ok(wz().step===7,'missing contact keeps screen 4');
+  ok(wz().schedule.flexible===true,'«أقرب وقت» is preselected');
+  run("WZ.contact.name='';WZ.contact.phone=''"); setf({'wz-name':'','wz-phone':''});
+  setf({'wz-gov':'القاهرة','wz-area':'مدينة نصر','wz-addr':'شارع عباس العقاد 12'}); click({act:'wzNext'}); ok(wz().step===6&&toasts.pop()==='اكتب اسمك'&&run('screens.wizard()').includes('id="wz-phone"'),'missing contact keeps the place-and-time screen');
   setf({'wz-name':'عميل تجريبي','wz-phone':'01012345678'}); run("WZ.contact.name='عميل تجريبي';WZ.contact.phone='01012345678'"); click({act:'wzNext'}); ok(wz().step===9,'to review');
-  ok(run('screens.wizard()').includes('الخطوة 5 من 5'),'review is screen 5 of 5');
+  ok(run('screens.wizard()').includes('الخطوة 4 من 4'),'review is screen 4 of 4');
   ok(run('screens.wizard()').includes('تأكيد وإرسال'),'review screen');
   click({act:'wzSubmit'}); await settle(); ok(wz().step===10&&wz().done,'submitted '+p);
   const r=run('MP.reqs()[0]'); ok(r&&r.itemId===i&&r.problemId===p&&r.cat===c&&r.catName&&r.itemName&&r.problemName,'request stores cat/item/problem '+p);
@@ -80,6 +81,12 @@ ok(wz().item==='electric/lighting'&&wz().problem==='electric/lighting/flicker','
 /* 4) غير معروف */
 run('startRequest("appliances","appliances/ac")'); ok(wz().step===2,'start at problems from item'); click({wzUnknown:''}); ok(wz().unknown&&wz().step===3,'unknown path');
 setf({'wz-desc':''}); click({act:'wzNext'}); ok(wz().step===6,'unknown does not need description (details screen → location)');
+/* 4b) the three ways on one screen: «غيّر» reopens the list; writing it with nothing picked becomes «مشكلة أخرى» */
+run('startRequest("carpentry","carpentry/doors")'); click({wzProb:run("CAT.problems('carpentry/doors')[0].id")}); ok(wz().step===3&&wz().problem,'door job picked on the same screen');
+click({act:'wzProbChange'}); ok(wz().step===2&&!wz().problem&&!wz().unknown,'«غيّر» clears the pick');
+ok(run('screens.wizard()').includes('data-wz-prob')&&run('screens.wizard()').includes('id="wz-desc"')&&run('screens.wizard()').includes('data-wz-unknown'),'list, free text and «الفني يشخّص» shown together');
+setf({'wz-desc':''}); click({act:'wzNext'}); ok(wz().step===2&&String(toasts.pop()).startsWith('اختار المشكلة'),'nothing picked or written → asked');
+setf({'wz-desc':'عايز أركب باب خشب جديد للأوضة'}); click({act:'wzNext'}); ok(wz().problem==='carpentry/doors/other'&&(wz().step===6||wz().step===3),'free text → the item «مشكلة أخرى»');
 /* 5) الأسئلة الديناميكية */
 const qA=run("CAT.questionsFor('cleaning/apartments','').map(q=>q.id)"), qW=run("CAT.questionsFor('appliances/washer-auto','').map(q=>q.id)");
 ok(qA.includes('area')&&!qA.includes('pattern'),'cleaning questions no fault questions'); ok(qW.includes('pattern')&&qW.includes('brand'),'washer fault+appliance questions');

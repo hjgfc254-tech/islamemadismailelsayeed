@@ -3598,7 +3598,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "880bc5d5588ddc1ab1b933099293911d88769cecf2367851210a469c08568059",
+      "sha256": "a257d059c4ad4f85a92bf91f5afeba7c49abaedf5b5178f066c0a6675a43a93a",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -3637,7 +3637,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 73537
+      "bytes": 77948
     },
     {
       "path": "apps/customer/pages/search.page.js",
@@ -3835,8 +3835,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "329c107607788c39bd85c1ac61bf78aa2fa3f1b47e495ffde180ddbce319b61c",
-      "bytes": 77432
+      "sha256": "3be0949793ab0cbca2c6e61992006d609cdc2b0d8c4da850e4b1e7a6fd1cfc94",
+      "bytes": 79114
     },
     {
       "path": "apps/customer/styles/customer.css",
@@ -11600,7 +11600,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "f0d7adf8d91010927308f166ee8d3d55359d32667168c7a78225c77839858e8f",
+      "sha256": "6989fc6e3ac0869bbf126a2c8b146436ee2d8452d8ca905435930f548bada11b",
       "bytes": 2360
     },
     {
@@ -11684,8 +11684,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "de3fcd80ef8de84667bada846d511897d05e285048cad59b10d9d6fdb69e8151",
-      "bytes": 51241
+      "sha256": "480af36d4453b19360d872fdd84dc6ba673bb99b9763d4c5e9d397bb07df044b",
+      "bytes": 51276
     },
     {
       "path": "functions/domain/services/local-market-store.js",
@@ -12558,7 +12558,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "aa3fac974d6c5b256caf309b3d737e5c073ad7dc5af13b44695252ac8c1663d1",
+      "sha256": "114c76c72191b819d5fec30792bddd14543536527cbf2f66e3f8c4f3ce781155",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12606,7 +12606,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "c29107db619a59464dadcb170261a0a1f16f74999a9fc61713cc4b9f67c64a82",
+      "sha256": "b0b0001b5326022f92a7a93093219fb166a398c237ff365f8c09c6dba43a5d22",
       "bytes": 196
     },
     {
@@ -12988,7 +12988,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "de3fcd80ef8de84667bada846d511897d05e285048cad59b10d9d6fdb69e8151",
+      "sha256": "480af36d4453b19360d872fdd84dc6ba673bb99b9763d4c5e9d397bb07df044b",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -13027,7 +13027,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 51241
+      "bytes": 51276
     },
     {
       "path": "services/local-market-store.js",
@@ -15913,7 +15913,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "Test source existence does not prove browser E2E coverage.",
-      "sha256": "ad5d216659e1ba9b5bc24afa61234327ca88e71511711c39eae55e49ef7ae25e",
+      "sha256": "533d50edcf7ab6f85f83bc2e8776b5ef11491794aea94ec99bb8df195a19ef67",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -15950,7 +15950,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 11553
+      "bytes": 12623
     },
     {
       "path": "tests/unit/categories-management.test.js",
@@ -17143,8 +17143,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "c7a9b679e03954f05fb7c57d71190109808c2fbe0d8787270837070f27858ec6",
-      "bytes": 37492
+      "sha256": "818784933c66f83340e00f7b778e05cf0b2a8a676116697bbc2a365a50328113",
+      "bytes": 37556
     },
     {
       "path": "tests/unit/security-audit-2026-11-23.test.js",
