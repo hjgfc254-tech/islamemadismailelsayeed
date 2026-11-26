@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 707,
+  "file_count": 712,
   "files": [
     {
       "path": "_redirects",
@@ -41,8 +41,8 @@
       "path": ".firebaserc",
       "area": ".firebaserc",
       "status": "NEEDS_REVIEW",
-      "bytes": 93,
-      "sha256": "6516aecc1115c4151be93f36819466be31e8d023aa1fcb77e2d88e62b6103bdc"
+      "bytes": 190,
+      "sha256": "4961caa0579b244179e9bb7a8ccd74c83c1e4118ec8d36e453822ba316836d0f"
     },
     {
       "path": ".gitattributes",
@@ -69,21 +69,21 @@
       "path": ".github/workflows/ci.yml",
       "area": ".github",
       "status": "NEEDS_REVIEW",
-      "bytes": 568,
+      "bytes": 541,
       "sha256": "f1e1cf479715fdbbd31e17fec7cb607b0f4009b6f05b597912023ba031debd1e"
     },
     {
       "path": ".gitignore",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 1048,
+      "bytes": 1045,
       "sha256": "ec7d7591397118e050f654ca4f4cf95429d8de59b4abe7c68e0481bf1663e795"
     },
     {
       "path": ".graphifyignore",
       "area": ".graphifyignore",
       "status": "NEEDS_REVIEW",
-      "bytes": 592,
+      "bytes": 591,
       "sha256": "820f61ddf2a14505b9a7c1a4dbe2936e27abbe27e462e2870421afd2465f4119"
     },
     {
@@ -279,7 +279,7 @@
       "path": "apps/admin/modules/site-content-editor.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 15530,
+      "bytes": 15347,
       "sha256": "453bd9291aad9ff66bfbb81fe330326b0f9c9fc9006ec3cd3900e6ea4669b27b"
     },
     {
@@ -615,7 +615,7 @@
       "path": "apps/customer/index.html",
       "area": "apps/customer",
       "status": "IMPLEMENTED",
-      "bytes": 10611,
+      "bytes": 10610,
       "sha256": "05324e32fbde52e2c2019c67d66feeee9d2154ca70b844d768d70036567393f4"
     },
     {
@@ -699,7 +699,7 @@
       "path": "apps/customer/pages/orders.page.js",
       "area": "apps/customer",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 3062,
+      "bytes": 3022,
       "sha256": "c3cf3d7ac3a848019d29e4d1716eb37b1f8c9dc1bd17cdeb3b4766f7a68908a2"
     },
     {
@@ -769,7 +769,7 @@
       "path": "apps/customer/styles/brand-2026.css",
       "area": "apps/customer",
       "status": "NEEDS_REVIEW",
-      "bytes": 79114,
+      "bytes": 79113,
       "sha256": "3be0949793ab0cbca2c6e61992006d609cdc2b0d8c4da850e4b1e7a6fd1cfc94"
     },
     {
@@ -1735,7 +1735,7 @@
       "path": "assets/vendor/leaflet/1.9.4/leaflet.css",
       "area": "assets",
       "status": "NEEDS_REVIEW",
-      "bytes": 14806,
+      "bytes": 14145,
       "sha256": "337bfca5cabd03b39815b2700febe2b3b7edf55921c59cd49f88ecb328212303"
     },
     {
@@ -1749,7 +1749,7 @@
       "path": "assets/vendor/leaflet/1.9.4/LICENSE",
       "area": "assets",
       "status": "NEEDS_REVIEW",
-      "bytes": 1395,
+      "bytes": 1369,
       "sha256": "bbc959aaef7488b38942e7f05cfd1244351f8bce54261951ea17dd7cf60f894b"
     },
     {
@@ -2386,7 +2386,7 @@
       "path": "docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 7594,
+      "bytes": 7593,
       "sha256": "db3fa3c3df428280534fa6d7336cd5bf926045c9292ef4a14911af3c2bb53bcf"
     },
     {
@@ -2428,8 +2428,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 306885,
-      "sha256": "59eb17215769d268176b9afbea23205858bc84873b5a1786b84e08ccb9d531b8"
+      "bytes": 308043,
+      "sha256": "38a8fd4b4025ee4a9f21d32137f1047c320d15ae9b2e0ef3251ff19acffb3381"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2442,8 +2442,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 175447,
-      "sha256": "838cb0ededd66152a79c1b5f544cf45fbca96a298bf0469da4cb1a359da7c66c"
+      "bytes": 176495,
+      "sha256": "9223797bd5c0c9ccbbe269c810acd2811f98c2a0bddcd9125ff5883913f9af09"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2841,8 +2841,8 @@
       "path": "docs/MAINTENANCE_GUIDE.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 68204,
-      "sha256": "847369d4a61b9d1d5079e084e7382b5af5a547ebd0dbce2072c5062400761809"
+      "bytes": 72845,
+      "sha256": "284dd8fc6a7778ea47d87275fb6c581d471b4a1e33c1e4dcd088c69d7d3a0642"
     },
     {
       "path": "docs/MIGRATION_PLAN.md",
@@ -2883,8 +2883,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 33161,
-      "sha256": "20db68ae7e6e4745c908af04ae5096009dbaee1324744141fbdfdfddb69d66b4"
+      "bytes": 33346,
+      "sha256": "0d24e0c9480defbb21652d4c46ebfba22f86dfee18f40fbceacc82b9392aa063"
     },
     {
       "path": "docs/README.md",
@@ -2932,8 +2932,8 @@
       "path": "firestore.indexes.json",
       "area": "firestore.indexes.json",
       "status": "NEEDS_REVIEW",
-      "bytes": 5966,
-      "sha256": "86ba292a2a4f64bcfa00c6805220e4f4f9248857e0dc6b51658f1a71f3c13e2b"
+      "bytes": 6204,
+      "sha256": "918214afa297493b9bf62ab954623c0cfa56bb9b908627c230a003e15301744c"
     },
     {
       "path": "firestore.rules",
@@ -2946,7 +2946,7 @@
       "path": "functions/.env.example",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 1240,
+      "bytes": 1239,
       "sha256": "8c5f78369c69ce74ce6b4b8adfb9f81efd3a1e32b22c78e6d9818e9c4a99c440"
     },
     {
@@ -3010,7 +3010,7 @@
       "area": "functions",
       "status": "NEEDS_REVIEW",
       "bytes": 2469,
-      "sha256": "1eaff458e7c3db6f25bfab867c2e522eea963cb216a82bd16d93c574dff17670"
+      "sha256": "abab4d2912f81abc65b43f7e3c652772ab65c66dd1188c38b5271ebb849e9b88"
     },
     {
       "path": "functions/domain/services/admin-api.js",
@@ -3121,7 +3121,7 @@
       "path": "functions/domain/shared/config/legacy-data.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 38016,
+      "bytes": 37771,
       "sha256": "a59798542eb0b64ac63bf4597b2e0c854e97077989fb2b2ac4b1d45e9660c545"
     },
     {
@@ -3149,22 +3149,22 @@
       "path": "functions/src/admin-code.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 7801,
-      "sha256": "e42fed9108163782d84f4e14ff6e409b6b2f1cfa88b0d1874eb22f6f6681d7c0"
+      "bytes": 7834,
+      "sha256": "37bd27a65b5c65967261b8c55db7f863f77fc26c420e16c7374482d707c9ee31"
     },
     {
       "path": "functions/src/admin-extra.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 11963,
-      "sha256": "7f9958b5f87c92698734b492af560a22a88c3d91fe3b2cfd3714f74834f6be82"
+      "bytes": 11998,
+      "sha256": "91d6f19d59a5af9e6cf2e0d9dd3b8ba3eca4df56226b8c071636a196e2dbc120"
     },
     {
       "path": "functions/src/agent-gateway.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 29371,
-      "sha256": "683af534f6e417f54cab769f03bf4f6cd9082ee346850252226bf8b22c7acaed"
+      "bytes": 29404,
+      "sha256": "af590fed4f74726a9da45055db888492ae1fc8b2e24074f6aefa1af833cab3ca"
     },
     {
       "path": "functions/src/ai.js",
@@ -3172,6 +3172,13 @@
       "status": "NEEDS_REVIEW",
       "bytes": 16787,
       "sha256": "b03ba26df8bd69a252574a287189c76bf56f1391972c2aeb61454cde7152bab8"
+    },
+    {
+      "path": "functions/src/alert-mail.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 5724,
+      "sha256": "47fd81f3f38b9eebba00a8a285deaa1d056eef239745df0583fac9d198b0c92d"
     },
     {
       "path": "functions/src/alerts-adapter.js",
@@ -3184,8 +3191,8 @@
       "path": "functions/src/alerts.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 10933,
-      "sha256": "ddce9806994867fd0e21bc721b25e5250d80866ae1d789d250fe289623a77115"
+      "bytes": 10966,
+      "sha256": "da732d0e00e3293b20da916546e77d02b93196075c60e01de9a380d25ac6f738"
     },
     {
       "path": "functions/src/catalog-admin.js",
@@ -3212,8 +3219,8 @@
       "path": "functions/src/digest-admin.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 13214,
-      "sha256": "dad6ebd64a6021230fcc5b4f567af17f2ae5a3c35e3e8ad12d2f1543f475f8c2"
+      "bytes": 13292,
+      "sha256": "010e74d5cae2114826f3a12439864f5e543a1c3c142e7dbe7ab7c66aa8ccc705"
     },
     {
       "path": "functions/src/digest.js",
@@ -3254,7 +3261,7 @@
       "path": "functions/src/partial.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 13607,
+      "bytes": 13384,
       "sha256": "7556009f6157cc3d4fc2115d9e63aa2c625f775bbdd47a1079e536c3fee6f242"
     },
     {
@@ -3270,6 +3277,13 @@
       "status": "NEEDS_REVIEW",
       "bytes": 4221,
       "sha256": "85cb192b29f83a86f61ecbefaecbb1eba39de9610efcc048fc0c19837fc0adc4"
+    },
+    {
+      "path": "functions/src/retention.js",
+      "area": "functions",
+      "status": "NEEDS_REVIEW",
+      "bytes": 1615,
+      "sha256": "ced38728095e97e4647a27cc0743fb865553d08a3fc0cda8765732a513c4eddf"
     },
     {
       "path": "functions/src/runtime.js",
@@ -3289,8 +3303,8 @@
       "path": "functions/src/service.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 52760,
-      "sha256": "b1f6886d234f8edfed2221e5884b5cf6ef41ed19e73e8e44d6c21888b3d069a7"
+      "bytes": 52862,
+      "sha256": "b273de74676042c191f0d2ecd3256e20d771236482136bacf4179a70cda7eccf"
     },
     {
       "path": "functions/src/store.js",
@@ -3303,15 +3317,15 @@
       "path": "functions/src/support-chat.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 50990,
-      "sha256": "0c4a97397a2a2beb9ce236a42fc45184acbf6c586d564387e722c899e6773e30"
+      "bytes": 51023,
+      "sha256": "b72fe09fb1666591523d553835dc224492b43fde03121f52e0cd81847ca10fbb"
     },
     {
       "path": "functions/src/tech-status.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 17050,
-      "sha256": "8c9ef346c2e3a3af1fb81aa97e16ba5b7f013c2b5d6893577ca5b7441c4823f0"
+      "bytes": 17508,
+      "sha256": "13e3c3e4a383da0dce998b6b0538d25632f8a30242ba0bdc0418b0741326ca5c"
     },
     {
       "path": "functions/src/telemetry.js",
@@ -3387,8 +3401,8 @@
       "path": "package.json",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 1540,
-      "sha256": "69829816c99d7db55d4f68c439f989253f923604a90b3e28c2bdb115b4dc5e4f"
+      "bytes": 1712,
+      "sha256": "cef4fcb3cdc84a4dfa4cf0d68782344519ee8d4d8f8e231b8610ad20a2ae5a14"
     },
     {
       "path": "README.md",
@@ -3440,6 +3454,13 @@
       "sha256": "9951b92fe7e9051698593dc6ad10163b153aa2fef5de2424b36b3a3ee2195b9c"
     },
     {
+      "path": "scripts/deploy-prod.cjs",
+      "area": "scripts",
+      "status": "NEEDS_REVIEW",
+      "bytes": 1594,
+      "sha256": "79a6df373c785c4a60d428096d71bf8b8c0a210dbdf20903c2bfb5c2f0a98cd6"
+    },
+    {
       "path": "scripts/inventory-files.mjs",
       "area": "scripts",
       "status": "IMPLEMENTED",
@@ -3486,14 +3507,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 12184,
-      "sha256": "44564492927c5606343c087ac73cc06c00c7a882230317703e53f3a0e998f1c4"
+      "sha256": "14ea5284f77ff6a5b13602eaadfbb307b65b1ef36c3c43b0e3376baca5b1c9ff"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 196,
-      "sha256": "77ab4d471a3747a81abac900a613adf173b69d2e6a37f0cd38e698b28caf4915"
+      "sha256": "d28a1e776d6519e2f4cbb5e70a328c0820f195e95fbbaf9f41e1a2b26ca54189"
     },
     {
       "path": "services/admin-api.js",
@@ -3562,8 +3583,8 @@
       "path": "services/firebase-config.js",
       "area": "services",
       "status": "NEEDS_REVIEW",
-      "bytes": 2756,
-      "sha256": "bd0756c690206da1e159bf991625f95537ee476ff8faae84cd45c2752ba459da"
+      "bytes": 4400,
+      "sha256": "ba902cf2f3b15b307ed12a8a7ed574e71d5074af696bc091fd07d566d4f494b8"
     },
     {
       "path": "services/local-attachments.js",
@@ -3765,7 +3786,7 @@
       "path": "shared/config/legacy-data.js",
       "area": "shared",
       "status": "IMPLEMENTED",
-      "bytes": 38016,
+      "bytes": 37771,
       "sha256": "a59798542eb0b64ac63bf4597b2e0c854e97077989fb2b2ac4b1d45e9660c545"
     },
     {
@@ -3779,7 +3800,7 @@
       "path": "shared/content/site-content.js",
       "area": "shared",
       "status": "NEEDS_REVIEW",
-      "bytes": 5827,
+      "bytes": 5727,
       "sha256": "6c017c43c77499963dd9d73db97b1e968a0c9247d635e783093cac02ce476396"
     },
     {
@@ -4052,7 +4073,7 @@
       "path": "tests/e2e/provider-standalone.cdp.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 18215,
+      "bytes": 18015,
       "sha256": "a8146bbb0487bd20b56c23b4ba945f2ed74a6452d186e89ef4c69672a9f66548"
     },
     {
@@ -4231,6 +4252,13 @@
       "sha256": "236f8f207fa1a89ebf3a0d88d19f1773d813573b5bbb85896ef6bc20a2176766"
     },
     {
+      "path": "tests/unit/alert-mail.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 6285,
+      "sha256": "808430dca8c5e99979d8582177ec5e21dcedeacea8056fbf6eab5418c7f41b60"
+    },
+    {
       "path": "tests/unit/api-adapters.test.js",
       "area": "tests",
       "status": "TEST",
@@ -4290,7 +4318,7 @@
       "path": "tests/unit/client-error-telemetry.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 10849,
+      "bytes": 10848,
       "sha256": "54e3f6758de8c0bd2113afc8ebc41ac6602c9138ebbad6a73f30f4202c4ce923"
     },
     {
@@ -4311,7 +4339,7 @@
       "path": "tests/unit/cost-reductions.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 6245,
+      "bytes": 6243,
       "sha256": "56f79c9d63fe3884b593fe592cc6d5403f00f5240f82392907a17e07d4750476"
     },
     {
@@ -4486,7 +4514,7 @@
       "path": "tests/unit/icon-asset-audit.test.js",
       "area": "tests",
       "status": "TEST",
-      "bytes": 4660,
+      "bytes": 4567,
       "sha256": "10660b03c616b989bbd797f647738045c664893296d3b0f006773e6865ac36ea"
     },
     {
@@ -4500,7 +4528,7 @@
       "path": "tests/unit/invite-expiry.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 2783,
+      "bytes": 2782,
       "sha256": "cda37c707eca8ba1e2afb6e3335c095cb66f9b46b98ae2a3f4aa6730d20dcf3f"
     },
     {
@@ -4535,7 +4563,7 @@
       "path": "tests/unit/map-location.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 3050,
+      "bytes": 3049,
       "sha256": "78c659f24b4b8dc1d7378287470ccbfcdbb4fc110271f159b634a35b8d7bc5bf"
     },
     {
@@ -4591,7 +4619,7 @@
       "path": "tests/unit/policies.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 4335,
+      "bytes": 4334,
       "sha256": "1452624ac47996dde4a8b5ed23ba63ef72daa9089e259d305dba8bc067b75b3d"
     },
     {
@@ -4815,8 +4843,15 @@
       "path": "tests/unit/smart-help.test.js",
       "area": "tests",
       "status": "NEEDS_REVIEW",
-      "bytes": 5124,
+      "bytes": 5122,
       "sha256": "ce3b42c2a5f6f6c83740eaa9bd5fd574002867c9d61a7bc4a97aa98d068f493c"
+    },
+    {
+      "path": "tests/unit/staging-config.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 2971,
+      "sha256": "ef93fd706611af19b959ae050f0b6f99832b0da4d49f342e70cbb4e43682d657"
     },
     {
       "path": "tests/unit/static-audit.test.js",
@@ -4941,7 +4976,7 @@
       "path": "tools-lab/.gitignore",
       "area": "tools-lab",
       "status": "NEEDS_REVIEW",
-      "bytes": 112,
+      "bytes": 111,
       "sha256": "fbc727c987970c9f6b8cf97ffd6e41a05b23d12095724975b8e747c3e33ab5ec"
     },
     {

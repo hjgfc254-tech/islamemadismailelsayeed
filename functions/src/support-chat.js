@@ -200,7 +200,7 @@ async function customerRoute(ctx, method, p, body) {
   return out.result;
 }
 async function audit(ctx, action, status, subject) {
-  try { await ctx.backend.addDoc('audit', { at: iso(Date.now()), uid: ctx.principal.uid, actor: { role: 'customer', id: ctx.customer.id, channel: 'chat' }, app: 'chat', action: 'chat.' + action, status, subject: subject || null }); }
+  try { await ctx.backend.addDoc('audit', require('./retention').auditRow({ at: iso(Date.now()), uid: ctx.principal.uid, actor: { role: 'customer', id: ctx.customer.id, channel: 'chat' }, app: 'chat', action: 'chat.' + action, status, subject: subject || null })); }
   catch (e) { if (ctx.backend.log) ctx.backend.log('chat audit failed', e && e.message); }
 }
 const errOf = (r) => ({ error: (r && r.error && r.error.message) || 'تعذّر التنفيذ', details: (r && r.error && r.error.details) || undefined });

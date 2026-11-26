@@ -34,7 +34,7 @@ function gateOf(admin, now = Date.now()) {
 }
 
 async function audit(backend, uid, action, status) {
-  try { await backend.addDoc('audit', { at: new Date().toISOString(), uid, app: 'admin', action, status }); } catch (e) { /* audit failure never blocks sign-in */ }
+  try { await backend.addDoc('audit', require('./retention').auditRow({ at: new Date().toISOString(), uid, app: 'admin', action, status })); } catch (e) { /* audit failure never blocks sign-in */ }
 }
 
 /** set: first code (no current needed) or change (current required). Unlocks on success. */

@@ -138,7 +138,7 @@ async function handle({ backend, method, path: p, query, body, admin, uid }) {
   };
   const out = method === 'GET' ? await run(null) : await backend.runTransaction(run);
   for (const a of out.envelope.ok ? out.audit : []) {
-    await backend.addDoc('audit', { at: new Date().toISOString(), uid, actor: { role: 'admin', id: uid, adminRole: admin.role || null }, app: 'admin', method, path: p, status: out.envelope.status, action: a.action, subject: a.subject });
+    await backend.addDoc('audit', require('./retention').auditRow({ at: new Date().toISOString(), uid, actor: { role: 'admin', id: uid, adminRole: admin.role || null }, app: 'admin', method, path: p, status: out.envelope.status, action: a.action, subject: a.subject }));
   }
   return out.envelope;
 }

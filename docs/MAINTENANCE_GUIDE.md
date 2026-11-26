@@ -133,6 +133,8 @@ Unexpected errors inside `api` / `session` are logged, reported into «أخطا�
 | `alerts.js` / `alerts-adapter.js` / `owner-alerts.js` | team alerts + tickets, delivery (bell + FCM), owner escalation | service, index, tech-status, telemetry, admin-code |
 | `telemetry.js` | client error reports (scrubbed, grouped, TTL) | service, index, tech-status |
 | `tech-status.js` / `usage.js` | Tech Center: health, deploy, clocks, usage & cost | service, index |
+| `alert-mail.js` | e-mail for critical health alerts (owner / tech digest recipients, else `ADMIN_BOOTSTRAP_EMAILS`; max one per key per hour in `system/alertMail`) | tech-status |
+| `retention.js` | retention periods + `auditRow` (adds the audit `expiresAt`), `withoutTtl` | every audit writer, digest-admin, admin-extra |
 | `content.js` | site hero / slides / icons + media docs | service |
 | `ai.js` | AI routing «اكتب مشكلتك / صوّر المشكلة», provider config `system/ai` | service, support-chat |
 | `support-chat.js` / `chat-llm.js` | AI chat «موظف خدمة العملاء» with 12 tools, provider-neutral LLM calls | service |
@@ -155,11 +157,12 @@ Admin SDK in functions reads/writes. Names are Firestore names (`store.js`: MP `
 | `system/content` | content.js | hero / slides / icons, version | kept |
 | `system/digest`, `system/digestState` | digest-admin | digest config / run state | kept |
 | `system/health`, `system/clocks`, `system/deploy`, `system/tech` | tech-status (`deploy:record` script writes `system/deploy.release`) | health, clock runs, deployed revision, budget | kept |
+| `system/alertMail` | alert-mail | last e-mail time per critical alert key | one doc; keys older than 1 day dropped |
 | `users/{uid}` | service | uid → actor tag link for signals | deleted with the account |
 | `admins/{uid}` | workforce, admin-code | authorisation record, code hash, unlock window | kept |
 | `employees` | workforce | Admin employees (+ invite log) | kept |
 | `departments`, `broadcasts` | admin-extra | departments tree; broadcast history | kept |
-| `audit` | service, admin-code, agent-gateway, support-chat, alerts, tech-status | one row per mutation (no live-tracking points) | kept |
+| `audit` | service, admin-code, agent-gateway, support-chat, alerts, tech-status | one row per mutation (no live-tracking points) | **TTL `expiresAt`, 365 days** (`retention.auditRow`; rows written before 2026-11-26 have no `expiresAt` and stay; the one-off `audit/claimOwner_<uid>` row is kept) |
 | `idempotency` | service | replayable envelopes | **TTL `expiresAt`, 24 h** |
 | `rateLimits` | service | per-minute write counters | **TTL `expiresAt`, 2 min** |
 | `clientErrors` | telemetry | grouped error reports | **TTL `expiresAt`, 30 days** |
@@ -169,15 +172,16 @@ Admin SDK in functions reads/writes. Names are Firestore names (`store.js`: MP `
 | `media` | content.js | one compressed image per doc | deleted from Admin (refused while referenced) |
 | `callLogs` | agent-gateway | call summaries + transcript | transcript cleared after 30 days (`callLogsClock`) |
 | `supportChats`, `aiUsage` | support-chat, ai.js | chat state; AI quotas per day | chats deleted 30 days after last use (`callLogsClock`) |
-| `digestPrefs`, `digests` | digest-admin | per-admin opt-out; rendered digests | `digests.expiresAt` = 30 days, **but no TTL policy is declared** (§7) |
+| `digestPrefs`, `digests` | digest-admin | per-admin opt-out; rendered digests | `digests`: **TTL `expiresAt`, 90 days**; `digestPrefs` kept |
 | `migrations` | service (`importLocal`) | import reports (`addedIds` rollback list) | kept |
 
 **Realtime Database** (`database.rules.json`): `signals/{uid}` (read by that uid only, server writes `{at, full?}`),
 `typing/{reqId}/{uid}` (chat typing indicator, the user writes its own `{r, at}`), `public/content` (read by
 anyone, server writes `{v, at}`). Everything else is closed.
 
-**Indexes** (`firestore.indexes.json`): 15 composite indexes + 4 TTL field overrides (`idempotency`, `rateLimits`,
-`clientErrors`, `usage`). `wiring.test.js` scans every query in `functions/src` and fails when a composite index is missing.
+**Indexes** (`firestore.indexes.json`): 15 composite indexes + 6 TTL field overrides (`idempotency`, `rateLimits`,
+`clientErrors`, `usage`, `audit`, `digests`; the last two with `indexes: []`). Retention periods live in
+`functions/src/retention.js` (§4.9). `wiring.test.js` scans every query in `functions/src` and fails when a composite index is missing.
 
 ### 1.6 Hosting and the service worker
 
@@ -410,7 +414,7 @@ Server enforcement: `permission-guard.apiDenied` (runs in the domain on the serv
 | Clock | Schedule | Does | State it records |
 |---|---|---|---|
 | `offersClock` | `every 5 minutes` | offers rounds: remind the customer, widen the search, close empty rounds (`MP.tickBidding`) | `system/clocks.offers` |
-| `healthClock` | `every 10 minutes` | health probes, deployed revision, thresholds → tech alerts | `system/health`, `system/deploy` |
+| `healthClock` | `every 10 minutes` | health probes, deployed revision, thresholds → tech alerts; critical ones (+ offers clock not running) also by e-mail | `system/health`, `system/deploy`, `system/alertMail` |
 | `digestClock` | `5 * * * *` Africa/Cairo | daily / weekly digests once per Cairo day at the configured hour | `system/digestState`, `digests` |
 | `alertsClock` | `every 5 minutes` | time-based alerts (`MP.opsScan`: requests without a provider > 30 min, pending providers > 1 day hourly, uncollected commission > 7 days hourly) + escalation of unclaimed critical alerts | `opsAlerts` |
 | `callLogsClock` | `every 24 hours` | clear call transcripts after 30 days; delete AI chats 30 days after last use | `callLogs`, `supportChats` |
@@ -422,13 +426,13 @@ or as Firebase secrets bound to the function; they take effect on the next funct
 
 | Name | Used by | Meaning |
 |---|---|---|
-| `ADMIN_BOOTSTRAP_EMAILS` | `index.js` → `session.claimOwner` | comma-separated verified e-mails allowed to become the first owner |
+| `ADMIN_BOOTSTRAP_EMAILS` | `index.js` → `session.claimOwner`, `alert-mail.js` | comma-separated verified e-mails allowed to become the first owner; also the fallback recipients of critical alert e-mails |
 | `ENFORCE_APP_CHECK` | `index.js`, `tech-status.js` | `true` enforces App Check on `api` / `session` (needs the site key in `firebase-config.js`) |
 | `AGENT_API_KEYS` | `agent-gateway.js` | `id:secret:scopes` list for AI voice agents (secret ≥ 24 chars; scopes `lookup catalog requests.create requests.read requests.cancel complaints handoff calls calls.read` or `*`) |
 | `AGENT_RATE_PER_MIN` | `agent-gateway.js` | requests per minute per key / employee (default 120, minimum 10) |
 | `CHAT_KIND`, `CHAT_API_KEY`, `CHAT_BASE_URL`, `CHAT_MODEL` | `support-chat.js`, `ai.js` | optional server fallback provider for the AI chat |
 | `ANTHROPIC_API_KEY` | `support-chat.js`, `ai.js` | optional Claude fallback key for the chat |
-| `RESEND_API_KEY`, `MAIL_FROM` | `mailer.js` | Resend transport for digests |
+| `RESEND_API_KEY`, `MAIL_FROM` | `mailer.js` | Resend transport for digests and critical alert e-mails (none set → alerts stay in the bell, one log line) |
 | `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` | `mailer.js` | SMTP transport (with `MAIL_FROM`) |
 | `K_REVISION` | `tech-status.js` | set by Cloud Run: the deployed revision (read only) |
 
@@ -596,6 +600,9 @@ All commands run from the repository root in PowerShell 5.1 (no `&&`; use `;` or
 
 ### 4.2 Deploy
 Standing approval exists for push + deploy after each change (owner memory), but never deploy from an unreviewed branch.
+Once the staging project exists (§4.11), deploy there first: `npm run deploy:staging`, check it, then
+`npm run deploy:prod` (asks you to type the project id; it refuses without an interactive terminal). The per-target
+commands below stay valid for a partial deploy.
 1. `npm run functions:check`; `npm test`; `cd functions; npm audit --omit=dev; cd ..`; note `git rev-parse --short HEAD`.
 2. Hosting (frontend): `npm run sw:bump` if a served file changed, commit, then `firebase deploy --only hosting --project hansalahlak`
    (GitHub Pages updates on push to `main`).
@@ -667,10 +674,25 @@ Any change under `apps/`, `shared/`, `services/`, `assets/`, `index.html` or `ma
    agent key. `npm run bench:cost` estimates reads per operation.
 
 ### 4.9 Data retention tasks
-- Automatic: TTL policies (`idempotency`, `rateLimits`, `clientErrors`, `usage`) — verify once in Console ›
-  Firestore › TTL that each policy is **Serving**; `callLogsClock` (transcripts, chats).
-- Manual (owner decision): `digests` (no TTL policy yet, §7), old `audit` rows, `migrations` reports. Use the
-  Console or an Admin SDK script; export first (`gcloud firestore export gs://<bucket>/backup-<date>`).
+Retention table (source: `functions/src/retention.js` and the writers; TTL needs a Firestore Timestamp — the code
+writes a JS `Date`, never a string):
+
+| Data | Kept | How |
+|---|---|---|
+| `audit` | 365 days | TTL on `expiresAt` (`retention.auditRow`, all writers) |
+| `digests` | 90 days | TTL on `expiresAt` (`digest-admin.js`) |
+| `clientErrors` (telemetry / client and server errors) | 30 days | TTL on `expiresAt` (`telemetry.js`) |
+| `usage` (Tech Center counters) | 45 days | TTL on `expiresAt` (`usage.js`; the month view needs the whole calendar month, so not 30) |
+| `idempotency` | 24 hours | TTL on `expiresAt` (the replay window; shorter than the 2-day ceiling) |
+| `rateLimits` | 2 minutes | TTL on `expiresAt` (one counter per key and minute; shorter than the 2-day ceiling) |
+| `callLogs` transcripts, `supportChats` | 30 days | `callLogsClock` (chat `expiresAt` is an ISO string queried by the clock, not a TTL field) |
+| `opsAlerts`, `opsTickets`, `aiUsage`, `alertSeen`, `migrations`, `digestPrefs` | kept | one doc per alert key / ticket / user; small. Owner decision before adding a TTL |
+
+- Automatic: the six TTL policies — after a `firestore:indexes` deploy, verify once in Console › Firestore › TTL that
+  each policy is **Serving** (TTL deletes usually within 24 h after `expiresAt`); `callLogsClock` (transcripts, chats).
+- Rows written before 2026-11-26 in `audit` have no `expiresAt` and are never deleted by TTL. Manual (owner decision):
+  those old `audit` rows and `migrations` reports. Use the Console or an Admin SDK script; export first
+  (`gcloud firestore export gs://<bucket>/backup-<date>`).
 
 ### 4.10 PITR restore (owner approval only)
 Point-in-time recovery and delete protection are on (7-day version window). Steps:
@@ -681,6 +703,34 @@ Point-in-time recovery and delete protection are on (7-day version window). Step
    (`firebase deploy --only firestore:rules,firestore:indexes`) and wait for indexes to be `READY`.
 5. Maintenance off; verify sign-in, sync, a request; record the incident in `docs/HANDOFF_NEXT_AI.md`.
 Daily scheduled backups (98-day retention) exist as a second line (`gcloud firestore backups schedules list`).
+
+### 4.11 Staging
+A separate Firebase project for testing before production. Code wiring: `.firebaserc` aliases `prod` (`hansalahlak`)
+and `staging` (`hansalahlak-staging`); `services/firebase-config.js` uses the staging web config on any
+`*-staging.web.app` / `*-staging.firebaseapp.com` host, or on `localhost` / `127.0.0.1` with `?env=staging`
+(remembered in `hs_env`, `?env=prod` clears it). Every other host uses production, unchanged.
+
+**One-time setup (owner):**
+1. Console › Add project › id `hansalahlak-staging` (if that id is taken, use another and replace it in `.firebaserc`
+   and in `stagingWeb` / `databaseURL` / `authDomain` of `services/firebase-config.js`).
+2. Upgrade it to the **Blaze** plan (Functions and Cloud Scheduler need it); set a low budget alert in Cloud Billing.
+3. Build › Authentication › enable Email/Password and Phone (same as production); add `localhost` and the
+   `hansalahlak-staging.web.app` host to the authorised domains.
+4. Build › Firestore › create the database in `me-central1` (production mode). Build › Realtime Database › create it in
+   `europe-west1`.
+5. Project settings › Your apps › add a Web app → copy `apiKey`, `appId`, `messagingSenderId` into `stagingWeb` in
+   `services/firebase-config.js` (replace the `PASTE_…` values; check `databaseURL`). Cloud Messaging › Web Push
+   certificates → generate a key pair → paste it as `STAGING_VAPID`.
+6. `npm run functions:sync`; `npm run sw:bump`; `npm test`; commit.
+7. Functions env for staging: `functions/.env.hansalahlak-staging` (git-ignored, overrides `functions/.env` for that
+   project) — at least `ADMIN_BOOTSTRAP_EMAILS`; use test mail / AI keys, never the production ones.
+8. `npm run deploy:staging`, then `firebase deploy -P staging --only database` (RTDB rules, once and after rule changes).
+9. Open `https://hansalahlak-staging.web.app/apps/admin/`, claim the owner with the bootstrap e-mail, create the code.
+   Optional: `$env:FIREBASE_PROJECT='hansalahlak-staging'; npm run deploy:record`.
+
+**Daily flow:** change → `npm test` → `npm run deploy:staging` → check the three apps on the staging host (sign in,
+create a request, Admin › مركز التقنية) → `npm run deploy:prod` (type `hansalahlak`) → `npm run deploy:record` → §4.2
+step 6. Staging data is test data only; never copy production personal data into it.
 
 ---
 
@@ -736,10 +786,8 @@ Daily scheduled backups (98-day retention) exist as a second line (`gcloud fires
 
 Not done in this pass (no behaviour change allowed, or a deploy / owner decision needed). Each with risk and steps.
 
-1. **`digests` never expire.** `digest-admin.js` writes `expiresAt` (+30 days) but `firestore.indexes.json` has no TTL
-   override for `digests`. *Risk:* low (small docs, slow growth). *Steps:* add `{collectionGroup: 'digests', fieldPath:
-   'expiresAt', ttl: true, indexes: []}` to `fieldOverrides` (same shape as `clientErrors`), deploy
-   `--only firestore:indexes`, confirm the TTL policy is Serving.
+1. ~~**`digests` never expire.**~~ Done 2026-11-26: TTL overrides for `digests` (90 days) and `audit` (365 days) in
+   `firestore.indexes.json`; deploy `--only firestore:indexes` and confirm both policies are Serving (§4.9).
 2. **Stale guard mapping `'content-studio': 'marketing'`** in `apps/admin/permission-guard.js` `ROUTE_MODULE`: no page
    or nav item uses it. *Risk:* none at runtime; the file is a synced domain file. *Steps:* remove the key,
    `npm run functions:sync`, `npm test`, functions deploy with the next server change.

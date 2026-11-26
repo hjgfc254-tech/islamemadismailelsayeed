@@ -375,8 +375,8 @@ async function handle({ backend, principal, method, path: p, query, body, deps, 
   const subject = out && out.ok ? out.subject || (out.data && out.data.subject) || null : null;
   if (out) { delete out.subject; if (out.data && typeof out.data === 'object') delete out.data.subject; }
   try {
-    await backend.addDoc('audit', { at: new Date().toISOString(), uid: principal.uid || null, actor: { role: 'agent', id: principal.id, channel: principal.channel, adminRole: principal.adminRole || null },
-      app: 'agent', method: m, path: p, status: out ? out.status : 500, action: 'agent.' + scope, subject });
+    await backend.addDoc('audit', require('./retention').auditRow({ at: new Date().toISOString(), uid: principal.uid || null, actor: { role: 'agent', id: principal.id, channel: principal.channel, adminRole: principal.adminRole || null },
+      app: 'agent', method: m, path: p, status: out ? out.status : 500, action: 'agent.' + scope, subject }));
   } catch (e) { if (backend.log) backend.log('agent audit failed', e && e.message); }
   return out;
 }

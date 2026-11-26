@@ -5,7 +5,7 @@
  *   system/digest            configuration { daily:{on,hour}, weekly:{on,weekday,hour}, extraRecipients:[…], timezone }
  *   system/digestState       per type { key, status, attempts, claimedAt, at, sent, failed, error, transport, recipients }
  *   digestPrefs/{uid}        { off, lastTestAt } — each admin switches their own digest off here
- *   digests/{type}_{key}     the rendered digests of one run (kept 30 days, also when nothing could be sent)
+ *   digests/{type}_{key}     the rendered digests of one run (kept 90 days via the Firestore TTL on expiresAt, also when nothing could be sent)
  *
  * Routes (admin app, code-unlocked admins only; service.js calls handle()):
  *   GET  /admin/digest/config           owner   configuration + last state + transport status + recipients (e-mails masked)
@@ -19,7 +19,7 @@ const digest = require('./digest');
 
 const PATH_RE = /^\/admin\/digest(\/(config|preview|test|me))?$/;
 const DEFAULT_CFG = Object.freeze({ daily: { on: false, hour: 8 }, weekly: { on: false, weekday: 6, hour: 9 }, extraRecipients: [], timezone: digest.TZ });
-const TTL_MS = 30 * 86400000, STALE_MS = 30 * 60000, MAX_ATTEMPTS = 3, MAX_EXTRA = 10, TEST_GAP_MS = 60000;
+const TTL_MS = require('./retention').RETENTION_DAYS.digests * 86400000, STALE_MS = 30 * 60000, MAX_ATTEMPTS = 3, MAX_EXTRA = 10, TEST_GAP_MS = 60000;
 
 const env = (status, code, message, details) => ({ ok: false, status, error: details ? { code, message, details } : { code, message } });
 const okEnv = (data, status = 200) => ({ ok: true, status, data });

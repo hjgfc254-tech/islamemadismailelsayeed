@@ -1,5 +1,7 @@
 {
     "projects":  {
-                     "default":  "hansalahlak"
+                     "default":  "hansalahlak",
+                     "prod":  "hansalahlak",
+                     "staging":  "hansalahlak-staging"
                  }
 }
