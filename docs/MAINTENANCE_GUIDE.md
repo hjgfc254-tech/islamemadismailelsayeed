@@ -925,5 +925,8 @@ Not done in this pass (no behaviour change allowed, or a deploy / owner decision
     per-provider rate, join approval) now also live in the full profiles; removing the page needs the owner's OK.
 15. **Work inbox limits:** two employees pressing «أنا هاخده» in the same second can open two tickets (the first
     shows); an item handed to a team whose role cannot view that module is only visible in «البلاغات».
+17. **Security hardening still open (audit 2026-11-27):** a full Content-Security-Policy with `script-src` (needs the
+    inline scripts moved to files first); App Check enforcement (owner key); photo storage in the cloud (request and
+    before/after photos stay on the device that took them).
 16. **Demo-only admin pages:** several pages keep a richer demo version next to the live panel (e.g. the categories
     editor and commission rules are read-only or simplified live). Long term each page should have one live version.

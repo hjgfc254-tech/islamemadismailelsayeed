@@ -56,7 +56,7 @@
     apiCall('pay:' + id, btn, () => HSOrdersApi.pay(id, method), async (res) => {
       const d = (res && res.data) || {};
       if (method === 'cash') { show('tracking', id); toast('تمام — هتدفع للفني كاش بعد الشغل'); return; }
-      if (d.checkoutUrl) { toast('بنفتح صفحة الدفع…'); root.location.href = d.checkoutUrl; return; }
+      if (d.checkoutUrl && /^https:\/\/accept\.paymob\.com\//.test(String(d.checkoutUrl))) { toast('بنفتح صفحة الدفع…'); root.location.href = d.checkoutUrl; return; }   /* only the Paymob checkout host */
       if (d.checkoutError) { show('tracking', id); toast('صفحة الدفع مش متاحة دلوقتي — جرّب تاني أو اختار كاش'); return; }
       if (d.gateway === 'demo') {
         const ok = root.HSUiDialog ? await root.HSUiDialog.confirm(`دفع تجريبي بمبلغ ${money(d.due)} — مفيش فلوس حقيقية في الوضع التجريبي.`, { title: 'دفع تجريبي', ok: 'ادفع' }) : true;

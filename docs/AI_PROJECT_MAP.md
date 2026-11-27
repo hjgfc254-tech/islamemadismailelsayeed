@@ -503,6 +503,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | manifest.json | CONFIGURATION | PWA metadata, launch path and icon declaration. | Update only when related implementation changes. |
 | package.json | CONFIGURATION | Configuration or metadata for package | Update only when related implementation changes. |
 | README.md | CONFIGURATION | Project documentation, test guide or module notes. | Update only when related implementation changes. |
+| robots.txt | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | scripts/agent-guard.cjs | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | scripts/bench-firestore-cost.cjs | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | scripts/build-lucide-icons.cjs | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
@@ -705,6 +706,7 @@ Generated from `AI_PROJECT_MAP.json`. AI agents should use `docs/AI_CONTEXT/FILE
 | tests/unit/reviews-management.test.js | TEST | Added to the current inventory; inspect the file before changing its responsibility. | Review in the relevant task; do not duplicate existing behavior. |
 | tests/unit/round5-features.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/routes-coverage.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
+| tests/unit/security-audit-1127.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/security-audit-2026-11-23.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/security-fixes.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |
 | tests/unit/security-round2.test.js | NEEDS_REVIEW | Newly discovered file; responsibility and implementation status have not yet been reviewed. | Inspect, classify and document before implementation or deletion. |

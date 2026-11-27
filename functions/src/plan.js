@@ -141,7 +141,10 @@ async function plan(ld, { method, path, query, body, actor }) {
 
   /* ── customer self-service ── */
   if (seg[0] === 'customers' && actor && actor.role === 'customer') {
-    if (seg.length === 2 && method === 'DELETE') { await Promise.all([ld.where('addresses', [['customerId', '==', actor.id]]), ld.where('favorites', [['customerId', '==', actor.id]])]); return; }
+    if (seg.length === 2 && method === 'DELETE') {   /* the customer's requests too: refuse with an open job, anonymise the past ones */
+      await Promise.all([ld.where('addresses', [['customerId', '==', actor.id]]), ld.where('favorites', [['customerId', '==', actor.id]]), ld.where('serviceRequests', [['customerId', '==', actor.id]], { limit: 300 })]);
+      return;
+    }
     if (seg.length === 2 && method === 'PATCH' && body.phone) await ld.where('customers', [['phone', '==', String(body.phone).trim()]], { limit: 2 });
     if (seg[2] === 'addresses') await ld.where('addresses', [['customerId', '==', actor.id]]);
     if (seg[2] === 'favorites') await ld.where('favorites', [['customerId', '==', actor.id]]);

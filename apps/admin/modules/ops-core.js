@@ -22,6 +22,9 @@
   const DEFAULT_ESCALATE_MIN = 15;
 
   const str = (v, max) => String(v == null ? '' : v).replace(/\s+/g, ' ').trim().slice(0, max);
+  /* security (2026-11-27): alert / ticket links are rendered as <a href>; only in-app hash routes are allowed, so a
+     staff member cannot store a `javascript:` (or external) link that runs when a colleague clicks it. */
+  const safeLink = (v) => { const s = str(v, LIMITS.link); return /^#\/[\w\-/?=&%.~:]*$/.test(s) ? s : ''; };
   const who = (w) => (w && w.id ? { id: String(w.id), name: str(w.name, 60) } : null);
   const iso = (ms) => new Date(ms).toISOString();
   const ms = (v) => { const t = Date.parse(v); return Number.isFinite(t) ? t : 0; };
@@ -57,7 +60,7 @@
     const team = TEAMS[ev.team] ? ev.team : 'ops';
     const severity = SEVERITY_RANK[ev.severity] != null ? ev.severity : 'normal';
     const kind = str(ev.kind || 'general', 40);
-    return { team, severity, kind, title, body: str(ev.body, LIMITS.body), link: str(ev.link, LIMITS.link), dedupeKey: str(ev.dedupeKey || kind, LIMITS.dedupe) };
+    return { team, severity, kind, title, body: str(ev.body, LIMITS.body), link: safeLink(ev.link), dedupeKey: str(ev.dedupeKey || kind, LIMITS.dedupe) };
   }
 
   /**
@@ -101,7 +104,7 @@
     if (title.length < 3) errors.title = 'اكتب عنوان البلاغ (3 حروف على الأقل)';
     const team = i.team == null || i.team === '' ? 'ops' : i.team; if (!TEAMS[team] || team === 'owner') errors.team = 'اختار فريق من القايمة';
     const priority = i.priority == null || i.priority === '' ? 'normal' : i.priority; if (!PRIORITIES.includes(priority)) errors.priority = 'أولوية غير معروفة';
-    return { ok: !Object.keys(errors).length, errors, value: { title, description, team, priority, link: str(i.link, LIMITS.link), alertId: str(i.alertId, 60) } };
+    return { ok: !Object.keys(errors).length, errors, value: { title, description, team, priority, link: safeLink(i.link), alertId: str(i.alertId, 60) } };
   }
   function createTicket(input, by, now, id) {
     const v = validateTicket(input); if (!v.ok) return { ok: false, code: 'VALIDATION', message: 'راجع بيانات البلاغ', errors: v.errors };
@@ -148,7 +151,7 @@
 
   const api = Object.freeze({ TEAMS, SEVERITY_LABEL, SEVERITY_RANK, PRIORITIES, PRIORITY_LABEL, TICKET_STATUS, LIMITS, DEFAULT_ESCALATE_MIN,
     teamsFor, visibleTo, alertId, normalizeEvent, upsertAlert, claim, resolve, escalationDue, unreadCount, sortAlerts,
-    validateTicket, createTicket, ticketFromAlert, patchTicket, addNote, filterTickets });
+    validateTicket, createTicket, ticketFromAlert, patchTicket, addNote, filterTickets, safeLink });
   root.HSOpsCore = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

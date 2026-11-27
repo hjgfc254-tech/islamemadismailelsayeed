@@ -285,7 +285,7 @@ const Account = (() => {
     const u = meUser(); if (!u) { toast('لا يوجد حساب'); return; }
     if (typeof sheet !== 'function') return;
     sheet(`<h4>${safeIc('warn')} حذف الحساب؟</h4>
-      <div class="demo-banner">${safeIc('info')}<span>حذف الحساب يمسح بياناتك المحلية فقط (الاسم، الهاتف، العناوين، المفضلة). لا يمكن التراجع.</span></div>
+      <div class="demo-banner">${safeIc('info')}<span>حذف الحساب بيمسح بياناتك (الاسم، الموبايل، العناوين، المفضلة)، وطلباتك القديمة بتفضل للفواتير والضمان من غير اسمك ولا رقمك ولا عنوانك. لو عندك طلب شغال لازم يخلص أو يتلغى الأول. لا يمكن التراجع.</span></div>
       <form class="form" id="accDeleteForm" data-id="${_esc(u.id)}">
         <div><label for="acc-del-confirm">للتأكيد اكتب كلمة "حذف"</label><input id="acc-del-confirm" name="confirm" required placeholder="حذف" autocomplete="off"></div>
         <button class="cta" style="background:#8b1a35;border-color:#8b1a35" type="submit">${safeIc('trash')} حذف نهائي</button>
@@ -424,7 +424,7 @@ const Account = (() => {
       /* profile/addresses/favorites are deleted through the API (local store or Firebase backend);
          drafts and search history are device-local and are cleared here */
       HSCustomerApi.deleteMe().then(res => {
-        if (!res.ok) return toast('تعذّر حذف الحساب');
+        if (!res.ok) return toast((res.error && res.error.message) || 'تعذّر حذف الحساب');
         try {
           const db = MP.db();
           db.drafts = db.drafts.filter(x => x.customerId !== u.id);

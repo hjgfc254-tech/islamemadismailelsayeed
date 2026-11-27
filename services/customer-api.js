@@ -61,9 +61,13 @@
     store.save();
     return { id: c.id, name: c.name, phone: c.phone, email: c.email || '', status: c.status, prefs: c.prefs || null };
   });
-  client.define('DELETE', '/customers/me', { roles: C, summary: 'Delete own account (profile, addresses, favorites; past requests are kept for the record).' }, ({ actor, store }) => {
+  client.define('DELETE', '/customers/me', { roles: C, summary: 'Delete own account (profile, addresses, favorites; refused with an open request; past requests are kept anonymised for invoices / warranty).' }, ({ actor, store }) => {
     const db = store.db();
     if (!store.get('customers', actor.id)) return fail('NOT_FOUND');
+    const mine = (db.serviceRequests || []).filter(r => r.customerId === actor.id);
+    if (mine.some(r => !['completed', 'closed', 'cancelled', 'failed'].includes(r.status))) return fail('CONFLICT', 'عندك طلب لسه شغال — استنى لما يخلص أو الغيه الأول، وبعدها احذف الحساب');
+    /* personal data out of the kept requests (law 151/2020): no name, phone, street address, map pin, notes or photos */
+    mine.forEach(r => Object.assign(r, { name: 'عميل محذوف', phone: '', addr: '', geo: null, liveGeo: null, note: '', notes: '', photos: [], customerDeleted: true }));
     db.customers = db.customers.filter(c => c.id !== actor.id);
     db.addresses = db.addresses.filter(a => a.customerId !== actor.id);
     db.favorites = db.favorites.filter(f => f.customerId !== actor.id);

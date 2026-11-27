@@ -4,6 +4,20 @@
 > (in particular, entries that say the legacy bridge "must be kept", that profile editing is "disabled", or that the project is
 > "frontend only" are superseded). The system map is `docs/MAINTENANCE_GUIDE.md`.
 
+## 2026-11-27 — Security audit (pre-launch)
+- Fixed:
+  1. Stored-link injection: alert / ticket links now accept `#/…` routes only (`HSOpsCore.safeLink`, shared with the
+     server), and ops-center / work-inbox render older records as plain text when the link is not an in-app route.
+  2. Customer account deletion: refused while a request is open; kept requests are anonymised (name, phone, address,
+     map pin, notes, photos). The server plan now loads the customer's requests for `DELETE /customers/me`.
+  3. Customer app follows only `https://accept.paymob.com/…` checkout URLs.
+  4. Hosting: CSP adds `base-uri 'self'; object-src 'none'; form-action 'self'`, plus a Permissions-Policy. `robots.txt`
+     keeps the admin out of search engines; `20*.txt` session files are never deployed.
+- Checked, no issue: Firestore / RTDB rules (no client access to data), Paymob webhook HMAC (constant time) and
+  idempotency, write rate limits (Firestore) and read limits (memory), admin actor only when the access code is
+  unlocked, `npm audit` on functions = 0 vulnerabilities, no secrets in git (the Firebase web API key is public by design).
+- Tests: `security-audit-1127`, `firebase-backend` (deletion path).
+
 ## 2026-11-27 — Admin visual refresh
 - Finishing layer at the end of `apps/admin/styles/brand-2026.css` (loaded last; not counted by the Admin hard-coded
   audit, still token-based): white header with a wide pill search (icon-only on phones), tighter sidebar with a red

@@ -20,6 +20,8 @@
     const m = Math.max(0, Math.round((Date.now() - t) / 60000));
     return m < 1 ? 'دلوقتي' : m < 60 ? 'من ' + m + ' دقيقة' : m < 1440 ? 'من ' + Math.round(m / 60) + ' ساعة' : 'من ' + Math.round(m / 1440) + ' يوم';
   };
+  /* only in-app hash routes become links (records stored before the ops-core check included) */
+  const safeHref = (l) => /^#\/[\w\-/?=&%.~:]*$/.test(String(l || ''));
   const teamName = (t) => (core() && core().TEAMS[t]) || t;
   const SEV = { critical: ['عاجل', 'is-critical'], normal: ['عادي', 'is-normal'], info: ['معلومة', 'is-info'] };
   const BELL = '<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>';
@@ -31,7 +33,7 @@
     const acts = a.status === 'resolved' ? '<span class="ops-done">اتقفل</span>'
       : `${a.status === 'open' ? `<button type="button" class="adm-btn adm-btn-p" data-al-claim="${esc(a.id)}">أنا هاخده</button>` : ''}<button type="button" class="adm-btn" data-al-resolve="${esc(a.id)}">تم</button>${compact ? '' : `<button type="button" class="adm-btn" data-al-ticket="${esc(a.id)}">حوّل لبلاغ</button>`}`;
     return `<li class="ops-al ${sevCls}" data-al="${esc(a.id)}"><div class="ops-al-main"><span class="ops-sev">${esc(sevLabel)}</span>
-      <strong>${a.link ? `<a href="${esc(a.link)}">${esc(a.title)}</a>` : esc(a.title)}</strong>${a.count > 1 ? ` <small class="ops-count">×${esc(a.count)}</small>` : ''}
+      <strong>${safeHref(a.link) ? `<a href="${esc(a.link)}">${esc(a.title)}</a>` : esc(a.title)}</strong>${a.count > 1 ? ` <small class="ops-count">×${esc(a.count)}</small>` : ''}
       ${a.body ? `<p>${esc(a.body)}</p>` : ''}<small class="ord-muted">${esc(teamName(a.team))} · ${esc(ago(a.lastAt))} · ${who}${a.escalated ? ' · اتصعّد للمالك' : ''}</small></div>
       <div class="ops-al-acts">${acts}</div></li>`;
   }
@@ -79,7 +81,7 @@
     const opt = (obj, cur, all) => (all ? `<option value="">${all}</option>` : '') + Object.entries(obj).filter(([k]) => k !== 'owner').map(([k, l]) => `<option value="${esc(k)}"${k === cur ? ' selected' : ''}>${esc(l)}</option>`).join('');
     const ticketHtml = (t) => `<li class="ops-tk is-${esc(t.priority)}" data-tk="${esc(t.id)}"><details><summary><strong>${esc(t.title)}</strong>
         <small class="ord-muted">${esc(teamName(t.team))} · ${esc(C.PRIORITY_LABEL[t.priority])} · ${esc(C.TICKET_STATUS[t.status])}${t.owner ? ' · مع ' + esc(t.owner.name || 'زميل') : ''} · ${esc(ago(t.updatedAt))}</small></summary>
-        ${t.description ? `<p>${esc(t.description)}</p>` : ''}${t.link ? `<p><a href="${esc(t.link)}">افتح المكان المرتبط</a></p>` : ''}
+        ${t.description ? `<p>${esc(t.description)}</p>` : ''}${safeHref(t.link) ? `<p><a href="${esc(t.link)}">افتح المكان المرتبط</a></p>` : ''}
         <ul class="ops-notes">${(t.notes || []).map((n) => `<li><b>${esc((n.by && n.by.name) || '')}</b> ${esc(n.text)} <small class="ord-muted">${esc(ago(n.at))}</small></li>`).join('')}</ul>
         <div class="ops-al-acts">${t.status !== 'doing' ? `<button type="button" class="adm-btn" data-tk-set="doing" data-id="${esc(t.id)}">ابدأ فيه</button>` : ''}${t.status !== 'done' ? `<button type="button" class="adm-btn adm-btn-p" data-tk-set="done" data-id="${esc(t.id)}">خلص</button>` : ''}</div>
         <form class="ops-note-f" data-tk-note="${esc(t.id)}" novalidate><label class="hs-grid-field"><span>ملاحظة</span><input name="text" maxlength="500" required></label><button type="submit" class="adm-btn">أضف</button></form>

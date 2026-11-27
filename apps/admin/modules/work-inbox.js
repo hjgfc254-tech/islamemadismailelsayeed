@@ -126,7 +126,7 @@
       if (!names.length) return '<p class="ord-muted">مفيش شغل مفتوح مع حد دلوقتي.</p>';
       return `<div class="hs-grid-scroll"><table class="hs-grid-table"><thead><tr><th scope="col">الموظف</th><th scope="col">مفتوح معاه</th><th scope="col">أقدم حاجة</th><th scope="col">الشغل</th></tr></thead><tbody>${names.map((n) => {
         const l = by[n], oldest = Math.min(...l.map((k) => t(k.createdAt) || Date.now()));
-        return `<tr><td>${esc(n)}</td><td>${esc(nf(l.length))}</td><td>${esc(ago(Date.now() - oldest))}</td><td>${l.slice(0, 4).map((k) => k.link ? `<a href="${esc(String(k.link).split('?')[0])}">${esc(k.title)}</a>` : esc(k.title)).join('، ')}${l.length > 4 ? ' …' : ''}</td></tr>`; }).join('')}</tbody></table></div>`;
+        return `<tr><td>${esc(n)}</td><td>${esc(nf(l.length))}</td><td>${esc(ago(Date.now() - oldest))}</td><td>${l.slice(0, 4).map((k) => k.link && /^#\/[\w\-/?=&%.~:]*$/.test(String(k.link)) ? `<a href="${esc(String(k.link).split('?')[0])}">${esc(k.title)}</a>` : esc(k.title)).join('، ')}${l.length > 4 ? ' …' : ''}</td></tr>`; }).join('')}</tbody></table></div>`;
     };
 
     function paint() {

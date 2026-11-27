@@ -532,11 +532,14 @@ test('customer self-service on the server: profile/prefs, verified-phone guard, 
   assert.equal((await call(b, OMAR, 'customer', 'POST', `/requests/${id}/repeat`, {})).status, 404, 'cannot repeat someone else’s request');
 
   await call(b, SARA, 'customer', 'POST', '/customers/me/addresses', { label: 'البيت', gov: 'القاهرة', area: 'مدينة نصر', addr: 'شارع 1' });
+  assert.equal((await call(b, SARA, 'customer', 'DELETE', '/customers/me')).status, 409, 'refused while a request is open (audit 2026-11-27)');
+  for (const r of b.col('requests')) await call(b, SARA, 'customer', 'POST', `/requests/${r.id}/cancel`, { reason: 'test' });
   const del = await call(b, SARA, 'customer', 'DELETE', '/customers/me');
-  assert.equal(del.ok, true);
+  assert.equal(del.ok, true, JSON.stringify(del.error));
   assert.equal(b.col('customers').filter(x => x.phone === '01011112222').length, 0, 'profile deleted');
   assert.equal(b.col('addresses').length, 0, 'addresses deleted');
   assert.equal(b.col('requests').length, 2, 'past requests are kept for the record');
+  assert.ok(b.col('requests').every(r => r.phone === '' && r.addr === '' && r.name === 'عميل محذوف'), 'kept requests lose the personal data');
 });
 test('read-path rate limiting: per uid, per infrastructure IP (not spoofable via X-Forwarded-For), per-instance anonymous ceiling, no DB writes', () => {
   const { createLimiter, clientIp, isReadCall } = require(path.join(FN, 'limits.js'));

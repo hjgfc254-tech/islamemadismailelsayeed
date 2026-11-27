@@ -790,6 +790,7 @@ hansalhlak/
 │       ├── reviews-management.test.js
 │       ├── round5-features.test.js
 │       ├── routes-coverage.test.js
+│       ├── security-audit-1127.test.js
 │       ├── security-audit-2026-11-23.test.js
 │       ├── security-fixes.test.js
 │       ├── security-round2.test.js
@@ -844,6 +845,7 @@ hansalhlak/
 ├── manifest.json
 ├── package.json
 ├── README.md
+├── robots.txt
 ├── service-worker.js
 ├── service-worker.lock.json
 └── start-deepseek.ps1
