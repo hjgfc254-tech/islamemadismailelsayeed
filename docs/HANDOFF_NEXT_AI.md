@@ -1,8 +1,21 @@
-# CURRENT HANDOFF — 2026-11-27 — Live on Firebase; payments built on the server, payments UI unfinished
+# CURRENT HANDOFF — 2026-11-27 — Live on Firebase; Admin Center rebuilt for a team; payments UI unfinished
 
 > The newest entry is at the top; everything below this section is a dated history log. Source code wins over any older statement below
 > (in particular, entries that say the legacy bridge "must be kept", that profile editing is "disabled", or that the project is
 > "frontend only" are superseded). The system map is `docs/MAINTENANCE_GUIDE.md`.
+
+## 2026-11-27 — Internal notes on records + documentation refresh (this entry)
+- `GET/POST /admin/notes` (subject `customer|provider|order:<id>`, needs that list's `.view`): demo route in
+  `services/admin-api.js` (`db.adminNotes`), server-native in `functions/src/admin-extra.js` (Firestore `adminNotes`,
+  equality query only — no index; 2–500 characters; at most 200 per record). The wiring test lists these as
+  `EXTRA_NATIVE` (served by admin-extra on purpose).
+- «ملاحظات داخلية» card on every full profile (`modules/profile-360.js`): list newest first + add form.
+- Tests: `admin-profile-360` (demo route + card), `firebase-backend` (server route), `wiring`. Browser: a note saved on
+  a provider profile stays after leaving and coming back; runners `admin-app`, `admin-controls` green.
+- Docs refreshed: `START_HERE.md`, `MAINTENANCE_GUIDE.md` (owner overview, §2.1 rows, §2.3 sections / inbox / profiles /
+  notes, §7 items 10–16), `API_CONTRACTS.md`, `AI_NEXT_IMPLEMENTATION_ORDER.md`, `EXECUTION_CHECKPOINT.md`, `UI_EDIT_GUIDE_AR.md`.
+- **Exact next task:** the payments UI from `docs/agent-briefs/payments-ui-admin.md` (as a tab of the «الفلوس»
+  section: add `'payments'` to `SECTIONS.commissions.pages` and a NAV item) and `payments-ui-customer-provider.md`.
 
 ## 2026-11-27 — Work inbox for a team of employees
 - New `apps/admin/modules/work-inbox.js` (HSWorkInbox: pure `items(db, now)` / `join(items, tickets, mineIds)` + `mount`),

@@ -596,6 +596,17 @@ test('admin extras on the server: audit read, operational settings, departments,
   assert.equal((await call(b, OWNER, 'admin', 'PATCH', `/admin/departments/${d1.data.id}`, { headId: emp, status: 'inactive' })).data.headId, emp);
   assert.equal((await call(b, OWNER, 'admin', 'GET', '/admin/departments')).data.items.length, 2);
 
+  /* internal notes on a record (admin-extra.js): stored server-side, newest first, validated, never for non-admins */
+  const n1 = await call(b, OWNER, 'admin', 'POST', '/admin/notes', { subject: 'customer:c_x', text: 'العميل طلب يتكلم مع مشرف' });
+  assert.equal(n1.status, 201); assert.equal(b.docs.get('adminNotes/' + n1.data.id).subject, 'customer:c_x');
+  assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/notes', { subject: 'customer:c_x', text: 'x' })).status, 422, 'too short');
+  assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/notes', { subject: 'wallet:1', text: 'نص كفاية' })).status, 422, 'unknown record kind');
+  const getNotes = (auth, subject) => service.api(b, { auth, data: { app: 'admin', method: 'GET', path: '/admin/notes', query: { subject } } });
+  const nl = await getNotes(OWNER, 'customer:c_x');
+  assert.equal(nl.ok, true, JSON.stringify(nl.error)); assert.deepEqual(nl.data.items.map(x => x.text), ['العميل طلب يتكلم مع مشرف']);
+  assert.equal((await getNotes(OWNER, 'provider:p_x')).data.items.length, 0, 'notes stay on their record');
+  assert.equal((await getNotes(SARA, 'customer:c_x')).status, 401, 'not for non-admins');
+
   const sec = await call(b, OWNER, 'admin', 'GET', '/admin/security/admins');
   assert.equal(sec.data.items[0].lastSignIn, '2026-11-15T10:00:00Z');
   assert.equal((await call(b, OWNER, 'admin', 'POST', '/admin/security/revoke/u_owner')).status, 409, 'nobody revokes their own sessions here');

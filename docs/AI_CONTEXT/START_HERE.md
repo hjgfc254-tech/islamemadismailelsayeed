@@ -4,10 +4,10 @@
 Firestore, RTDB signals, Firebase Auth). `?backend=local` / `hs_backend=local` is the offline demo used by tests and
 browser runners. Real money: cash today; online payment (Paymob) is built on the server and off until the owner adds keys.
 
-**Baseline (2026-11-27, main `45e90b2`, deployed: functions + hosting + Firestore indexes):**
-- `npm test` 681/681; browser runners green at the last full run (customer-orders, guest, provider-standalone,
-  admin-app, admin-controls, a11y, responsive-sweep, interaction, client-errors).
-- Service-worker cache `hansalhlak-v11-firebase-122` (`npm run sw:bump` after any served-file change; a test fails otherwise).
+**Baseline (2026-11-27, deployed: functions + hosting):**
+- `npm test` 694/694; browser runners `admin-app` and `admin-controls` green after the Admin work; the full set
+  (customer-orders, guest, provider-standalone, a11y, responsive-sweep, interaction, client-errors) was green at its last full run.
+- Service-worker cache: see `service-worker.js` (`npm run sw:bump` after any served-file change; a test fails otherwise).
 - Functions: `api`, `session`, `agentApi`, `catalogFeed`, `paymobWebhook`, clocks `offersClock`, `healthClock`,
   `digestClock`, `alertsClock`, `paymentsClock`, `callLogsClock`.
 
@@ -39,9 +39,14 @@ background.
 - AI chat «موظف خدمة العملاء» (off until a provider key is set) and call-centre gateway for human / AI agents.
 - Alerts / tickets, e-mail digests and critical-alert e-mails.
 - Tech Center, client-error telemetry, Firestore TTL retention, 2FA, and staging wiring (the staging project is not created yet).
+- Admin Center for a team (2026-11-27):
+  - menu **sections with tabs** (`SECTIONS` in `admin-shell.js`);
+  - **work inbox** on the home page (`modules/work-inbox.js`: items, «أنا هاخده», «حوّل لـ…», notes via `/admin/tickets`);
+  - **full profiles** `#/customer|provider|order/<id>` (`modules/profile-360.js`) with internal notes (`/admin/notes`);
+  - settings shown one section at a time; platform rates edited only in «نسب المنصة».
 
 ## Open work (details in the guide §7)
-- **Payments UI unfinished.** The customer payment choice, the provider payment status / payouts, and the Admin «المدفوعات» page are in worktrees `.claude/worktrees/agent-a9037922572203278` and `agent-a42110a30883e0f98` (stopped mid-way, unreviewed). Briefs: `docs/agent-briefs/payments-ui-*.md`. Until merged, every job is cash and gets no voucher.
+- **Payments UI unfinished.** The customer payment choice, the provider payment status / payouts, and the Admin «المدفوعات» page (a tab of the «الفلوس» section) must be built from the briefs `docs/agent-briefs/payments-ui-*.md`; the two stopped worktrees hold almost nothing. Until then every job is cash and gets no voucher.
 - **Owner actions:**
   - Paymob keys + webhook URL;
   - `RESEND_API_KEY` / `MAIL_FROM`;
@@ -49,7 +54,7 @@ background.
   - App Check key;
   - support numbers;
   - legal review;
-  - retention for `opsAlerts` / `opsTickets` / `aiUsage`.
+  - retention for `opsAlerts` / `opsTickets` / `aiUsage` / `adminNotes`.
 - **Performance:** customer LCP ~5 s on Fast-3G; bundling needs esbuild (ask before installing).
 - **Photos:** stored on the device only; the owner plans Supabase Storage.
 - **About 17 old agent worktrees** to review and remove.

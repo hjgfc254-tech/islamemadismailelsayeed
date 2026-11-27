@@ -1,7 +1,9 @@
 # CURRENT ORDER — 2026-11-27 (live on Firebase)
 
-1. **Payments UI:** merge or finish the customer payment choice + voucher, the provider payment status / payouts / `payoutWallet`, and the Admin «المدفوعات» page (`docs/agent-briefs/payments-ui-*.md`; worktrees `agent-a9037922572203278`, `agent-a42110a30883e0f98`).
+1. **Payments UI:** build the customer payment choice + voucher, the provider payment status / payouts / `payoutWallet`, and the Admin «المدفوعات» page as a tab of «الفلوس» (`docs/agent-briefs/payments-ui-*.md`; the stopped worktrees hold almost nothing).
 2. Clean up the old agent worktrees.
+   - Done 2026-11-27: Admin sections with tabs, work inbox, full profiles, internal notes (see the handoff).
+   - Still open in Admin: retire «تشغيل السوق» (needs the owner); one live version per Admin page (§7 item 16).
 3. **Owner-unblocked items:**
    - Paymob go-live (keys + webhook);
    - staging project + first `deploy:staging`;
@@ -9,7 +11,7 @@
    - App Check.
 4. Performance bundling (customer LCP ~5 s on Fast-3G; esbuild needs the owner's OK).
 5. Photo storage (Supabase planned by the owner).
-6. Retention policy for `opsAlerts` / `opsTickets` / `aiUsage`.
+6. Retention policy for `opsAlerts` / `opsTickets` / `aiUsage` / `adminNotes`.
 
 Details and risks: `docs/MAINTENANCE_GUIDE.md` §7. Everything below is the historical frontend-phase order (kept for reference; tests pin some of its lines).
 

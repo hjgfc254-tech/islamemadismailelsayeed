@@ -101,4 +101,26 @@ test('views escape record data', () => {
   ctx.location.hash = '#/order/missing';
   assert.match(ctx.HSAdminProfile.render('order', {}).innerHTML, /مش موجود/);
 });
+test('internal notes: demo route (permissions, validation, newest first) and the profile card', async () => {
+  const vm = require('node:vm');
+  const ctx = { console, Date, Math, JSON, Promise, URLSearchParams, encodeURIComponent, decodeURIComponent, setTimeout };
+  ctx.globalThis = ctx; vm.createContext(ctx);
+  for (const f of ['services/api-client.js', 'services/admin-api.js']) vm.runInContext(read2(f), ctx);
+  const db = { adminNotes: [], customers: [], providers: [], serviceRequests: [], complaints: [], transactions: [] };
+  ctx.HSApiClient.setStore({ db: () => db, save() {}, get: () => null });
+  ctx.HSApiClient.setActorResolver(() => ({ role: 'admin', id: 'e1', name: 'منى' }));
+  const A = ctx.HSAdminApi;
+  assert.equal((await A.addNote('customer:c1', 'كلمته وهيتصل بكرة')).ok, true);
+  await new Promise((r) => setTimeout(r, 5));
+  assert.equal((await A.addNote('customer:c1', 'تاني ملاحظة')).ok, true);
+  assert.equal((await A.addNote('customer:c1', 'x')).status, 422, 'too short');
+  assert.equal((await A.addNote('wallet:c1', 'نص')).status, 422, 'unknown record kind');
+  const l = await A.notes('customer:c1');
+  assert.deepEqual(l.data.items.map((n) => n.text), ['تاني ملاحظة', 'كلمته وهيتصل بكرة']);
+  assert.equal((await A.notes('provider:p1')).data.items.length, 0, 'notes stay on their record');
+  const src = read2('apps/admin/modules/profile-360.js');
+  assert.match(src, /A\.admin\.notes\(subject\)/);
+  assert.match(src, /A\.admin\.addNote\(subject, text\)/);
+  assert.match(src, /العميل والفني مش بيشوفوها/);
+});
 function read2(f) { return fs.readFileSync(path.join(ROOT, f), 'utf8'); }

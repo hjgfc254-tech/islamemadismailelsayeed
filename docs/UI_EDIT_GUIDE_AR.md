@@ -61,8 +61,11 @@
 
 | الجزء | المحتوى (JS) | الشكل (CSS) |
 |---|---|---|
-| الهيدر والقائمة الجانبية | `admin-shell.js` (`NAV` = عناصر القائمة) | `styles/admin.css`، `admin-components.css` |
+| الهيدر والقائمة الجانبية | `admin-shell.js` (`NAV` = عناصر القائمة، `SECTIONS` = الأقسام اللي صفحاتها تبويبات) | `styles/admin.css`، `admin-components.css` (`.adm-tabs`) |
 | لوحة الإدارة والرسوم | `pages/admin-dashboard.page.js` + `modules/mini-charts.js` | `.dash-*`، `.mc-*` |
+| صندوق الشغل (الرئيسية) | `modules/work-inbox.js` | `.wi-*` |
+| ملف العميل / الفني / الطلب + الملاحظات الداخلية | `modules/profile-360.js` (الصفحات بتتسجل في `pages/profiles.page.js`) | `.pf-*` |
+| الإعدادات (أقسام) ونسب المنصة | `modules/admin-live-panels.js` (`settings`، `commissions`) | `.ins-tabs` |
 | البحث السريع Ctrl+K | `modules/command-palette.js` | `.cp*` |
 | واجهة الموقع (هيرو، شرائح، صور، شريط إعلانات) | `modules/site-content-editor.js` | — |
 | الضمان، كود الوصول، الخصومات، الدعوة، الباقات | `modules/marketing-editor.js` | `.mk-*` |

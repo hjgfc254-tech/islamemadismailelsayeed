@@ -184,6 +184,8 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `GET /admin/requests/:id/candidates` | admin | admin-api.js | Providers matching a request. |
 | `POST /admin/requests/:id/assign` | admin | admin-api.js | Assign manually {providerId} or auto-match. |
 | `POST /admin/customers/:id/status` | admin | admin-api.js | Suspend / reactivate a customer. |
+| `GET /admin/notes` | admin | admin-api.js | Internal notes on a record (?subject=customer:<id>|provider:<id>|order:<id>), newest first. |
+| `POST /admin/notes` | admin | admin-api.js | Add an internal note to a record {subject, text} (employees only). |
 | `POST /admin/reviews/:id/visibility` | admin | admin-api.js | Hide or re-publish a review {hidden, reason}. |
 | `GET /admin/tech/status` | admin (owner, tech) | functions/src/tech-status.js | Tech Center: health (Firestore / RTDB / Auth latency), clocks, deploy info, grouped errors (top 20), usage + cost vs budget, p50/p95 per route group, limits. System information only — never personal data (server-only route, not in the shared domain). |
 | `POST /admin/tech/check` | admin (owner, tech) | tech-status.js | Run the health probe now (10 s cooldown). |

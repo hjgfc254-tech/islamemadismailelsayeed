@@ -1,7 +1,7 @@
 # HANSALEHLAK — Maintenance Guide (دليل الصيانة)
 
 The single entry point for anyone who maintains the platform. Built from the source on 2026-11-25, last reviewed
-against the source on 2026-11-27 (main `45e90b2`). **Source code wins** over this file; `tests/unit/wiring.test.js` fails when the
+against the source on 2026-11-27 (main `7f0b17e` + internal notes). **Source code wins** over this file; `tests/unit/wiring.test.js` fails when the
 routes, functions exports, session ops, env vars, Admin pages, RBAC presets or Firestore indexes drift from it.
 
 ## نظرة عامة سريعة للمالك (بالعربي)
@@ -18,6 +18,9 @@ routes, functions exports, session ops, env vars, Admin pages, RBAC presets or F
 - **الإدارة** فيها أدوار جاهزة (المالك، مدير، عمليات ودعم، المالية، المحتوى والأسعار، التقنية، الكول سنتر…) وكل صفحة
   ليها صلاحية. كل موظف إدارة لازم يدخل بإيميل + باسورد + **كود من 8 أرقام**، ويقدر يشغّل **تحقق بخطوتين** بتطبيق
   Google Authenticator.
+- **شغل فريق الإدارة:** القايمة متقسمة أقسام بتبويبات (§2.3)، والرئيسية فيها **صندوق الشغل** — كل حاجة محتاجة تصرّف
+  بالاسم، مع «أنا هاخده» و«حوّل لـ…» وملاحظات — وكل عميل / فني / طلب ليه **ملف كامل** برابط يتبعت لزميل وفيه
+  ملاحظات داخلية (العميل والفني مش بيشوفوها).
 - **الكتالوج** (الأقسام، الخدمات، الأسئلة، المحافظات المتاحة) بيتعدّل وينشر من الإدارة › الخدمات، والعملاء بيحمّلوه
   ملف واحد ثابت (القسم 4.6b).
 - **الدفع:** بعد الاتفاق على السعر العميل بيختار كاش للفني بعد الشغل، أو أونلاين (Paymob) — فلوس الأونلاين بتتحجز
@@ -300,6 +303,8 @@ only covered through adapter helpers such as `HSOrdersApi.*`, the domain tests o
 | GET | `/admin/requests/:id/candidates` | admin | admin-api.js | admin/requests | — |
 | POST | `/admin/requests/:id/assign` | admin | admin-api.js | admin/requests | firebase-backend, upfront-pricing |
 | POST | `/admin/customers/:id/status` | admin | admin-api.js | admin/customers | firebase-mode-data, teams-alerts |
+| GET | `/admin/notes` | admin | admin-api.js (demo) · `admin-extra.js` (server, `adminNotes`) | — (server-native) | admin-profile-360, firebase-backend |
+| POST | `/admin/notes` | admin | admin-api.js (demo) · `admin-extra.js` (server, `adminNotes`) | — (server-native) | admin-profile-360, firebase-backend |
 | POST | `/admin/reviews/:id/visibility` | admin | admin-api.js | admin/reviews | firebase-backend |
 | GET | `/admin/controls` | admin | admin-api.js | settings only | admin-platform-controls |
 | POST | `/admin/controls` | admin | admin-api.js | settings only | admin-platform-controls |
@@ -336,7 +341,7 @@ the header of `service.js`):
 | `/admin/alerts*`, `/admin/tickets*` (domain table above) | `alerts.js` + shared `ops-routes.js` | code-unlocked admin; team rules in `ops-core.js` |
 | `GET/PATCH /admin/ai`, `POST /admin/ai/test` | `ai.js` | owner / admin role |
 | `GET/PATCH /admin/content`, `POST /admin/media`, `DELETE /admin/media/:id` | `content.js` | owner / admin role |
-| `GET /admin/audit`, `GET/POST /admin/settings`, `GET/POST /admin/departments`, `PATCH /admin/departments/:id`, `GET /admin/security/admins`, `POST /admin/security/reset-code/:uid`, `POST /admin/security/revoke/:uid`, `GET /admin/notifications/broadcasts`, `POST /admin/notifications/broadcast` | `admin-extra.js` | see the file header (owner / admin role / RBAC module) |
+| `GET /admin/audit`, `GET/POST /admin/settings`, `GET/POST /admin/departments`, `PATCH /admin/departments/:id`, `GET /admin/security/admins`, `POST /admin/security/reset-code/:uid`, `POST /admin/security/revoke/:uid`, `GET /admin/notifications/broadcasts`, `POST /admin/notifications/broadcast`, `GET/POST /admin/notes` | `admin-extra.js` | see the file header (owner / admin role / RBAC module) |
 | `GET/POST/PATCH /admin/employees…`, `GET /admin/rbac`, `POST /admin/rbac/roles`, `POST /admin/rbac/overrides/:employeeId` | `workforce.js` | RBAC `workforce.*`, `roles.*`, `permissions.edit`; grant limits |
 
 The `callcenter` role is refused (403) on `/admin/ai`, `/admin/content|media`, admin-extra routes and
@@ -384,7 +389,10 @@ profile (`#/order/<id>`).
 
 **Full profiles (2026-11-27, `modules/profile-360.js`):** one page per record — `#/customer/<id>`, `#/provider/<id>`,
 `#/order/<id>` — with everything about it, links between them, the supported actions (same API adapters and permissions
-as the list pages), and «انسخ الرابط» so an employee can hand a record to a colleague. Opened from the Ctrl+K palette
+as the list pages), «انسخ الرابط» so an employee can hand a record to a colleague, and «ملاحظات داخلية» —
+internal notes kept per record (`GET/POST /admin/notes`, subject `customer|provider|order:<id>`, needs that list's
+`.view`; server: `admin-extra.js` → Firestore `adminNotes`, 2–500 characters, at most 200 per record; demo:
+`admin-api.js` → `db.adminNotes`). Customers and providers never see them. Opened from the Ctrl+K palette
 (records), the «تشغيل السوق» names and the live «الملف الكامل» row action on orders / customers / providers.
 
 | Page | Page file (+ modules) | Permission | Server routes / data |
@@ -899,8 +907,16 @@ Not done in this pass (no behaviour change allowed, or a deploy / owner decision
 10. **Owner decisions / actions pending (2026-11-27):** Paymob account + `PAYMOB_*` keys and the webhook URL;
     `RESEND_API_KEY` + `MAIL_FROM` (alert e-mails); the `hansalahlak-staging` Firebase project (§4.11); App Check
     site key + `ENFORCE_APP_CHECK`; support contact numbers; legal review of terms / refund / voucher wording; retention
-    for `opsAlerts`, `opsTickets`, `aiUsage`; a paid geocoder at scale.
-11. **Payments UI unfinished** (§3.14): merge the two payments worktrees after review, then deploy hosting.
-12. **Old agent worktrees** under `.claude/worktrees/` (about 17): most are merged or abandoned. Review the two payments
-    ones, then remove the rest with `git worktree remove` (never delete branches with unmerged work unreviewed).
+    for `opsAlerts`, `opsTickets`, `aiUsage`, `adminNotes`; a paid geocoder at scale.
+11. **Payments UI unfinished** (§3.14): build it from `docs/agent-briefs/payments-ui-*.md`. The two stopped worktrees
+    hold almost nothing (3 uncommitted lines in the customer one, nothing in the admin one); the admin page should be a
+    tab of the «الفلوس» section (`SECTIONS.commissions` in `admin-shell.js`).
+12. **Old agent worktrees** under `.claude/worktrees/` (about 17): most are merged or abandoned. Remove them with
+    `git worktree remove` after a look (never delete branches with unmerged work unreviewed).
 13. **Storage for photos** is not used (photos stay on the customer's device); the owner plans Supabase Storage.
+14. **«تشغيل السوق» overlaps** the orders / providers / customers / complaints pages. Its unique controls (assign,
+    per-provider rate, join approval) now also live in the full profiles; removing the page needs the owner's OK.
+15. **Work inbox limits:** two employees pressing «أنا هاخده» in the same second can open two tickets (the first
+    shows); an item handed to a team whose role cannot view that module is only visible in «البلاغات».
+16. **Demo-only admin pages:** several pages keep a richer demo version next to the live panel (e.g. the categories
+    editor and commission rules are read-only or simplified live). Long term each page should have one live version.

@@ -15,7 +15,7 @@
     "services/notifications-api.js": "3db9b04eb3396796eb1a84bc37e87e4d7ba417140251ff5b43024e1af79e41a9",
     "services/support-api.js": "8e52c5cb211d4e6096c07261aca9470f2914f5a1eac6347d2eb59d98b0d552cc",
     "services/finance-api.js": "a6b72cb665c2264be3fdd6f3c1792db747a5414534231ee4c5e9f01098f2f565",
-    "services/admin-api.js": "4301a47ef66ec881600a8ffad6329f7397ff5e0152e10197fb8a8d5f9da2d56d",
+    "services/admin-api.js": "847dda7634ceb83a3e8bdd9b21ad5600b56bdd8e330db45b46012b6042c49f99",
     "apps/admin/modules/ops-core.js": "23c09036929613f14f584ebba7bb3a28c5e29f0a0cad93b17726c91916667fe4",
     "apps/admin/modules/ops-routes.js": "cc2a03d01e151bcfcd56212b250ed1a267769844163f9773efe61e26037ca4d0",
     "services/ops-api.js": "58a1fbfe3e20714dae59b69e0c26826a47ee4327c189b65c8880d2ad83541464",

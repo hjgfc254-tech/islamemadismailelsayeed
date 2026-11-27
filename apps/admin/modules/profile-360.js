@@ -206,11 +206,22 @@
     const id = idFromHash(root.location && root.location.hash);
     const A = { admin: root.HSAdminApi, orders: root.HSOrdersApi, support: root.HSSupportApi };
     let busy = false, lastMsg = '';
+    /* internal notes (GET/POST /admin/notes): employees only, kept on the server per record */
+    const subject = kind + ':' + id;
+    let notes = null, notesErr = '';
+    const notesHtml = () => card('ملاحظات داخلية', `<p class="ord-muted">للفريق بس — العميل والفني مش بيشوفوها.</p>` +
+      (notesErr ? `<p class="ord-muted">${esc(notesErr)}</p>` : notes == null ? '<p class="ord-muted">جاري التحميل…</p>'
+        : notes.length ? `<ul class="pf-notes">${notes.map((n) => `<li><p>${esc(n.text)}</p><small class="ord-muted">${esc((n.by && n.by.name) || 'موظف')} · ${esc(dt(n.at))}</small></li>`).join('')}</ul>` : '<p class="ord-muted">مفيش ملاحظات لسه.</p>') +
+      (notesErr && !notes ? '' : `<form class="pf-rate" data-pf-note><label class="hs-grid-field"><span>ملاحظة جديدة</span><textarea name="text" rows="2" minlength="2" maxlength="500" required></textarea></label><button type="submit" class="adm-btn adm-btn-p">احفظ الملاحظة</button></form>`), ' data-pf-notes');
+    const loadNotes = async () => {
+      if (!A.admin || typeof A.admin.notes !== 'function' || !id) { notesErr = 'الملاحظات مش متاحة هنا.'; return; }
+      try { const r = await A.admin.notes(subject); if (r && r.ok) { notes = r.data.items || []; notesErr = ''; } else { notesErr = err(r); } } catch (e) { notesErr = 'تعذّر تحميل الملاحظات.'; }
+    };
     const paint = (focusSel) => {
       const m0 = M();
       const m = m0 && id ? K.model(m0.db(), id) : null;
       wrap.innerHTML = `<p class="pf-back"><button type="button" class="adm-btn" data-pf-act="back">رجوع</button></p>` +
-        (m ? K.view(m) : `<div class="adm-state is-empty"><h2>${esc(K.missing)}</h2><p>ممكن يكون اتمسح أو لسه ما وصلش. جرّب «رجوع» أو البحث السريع (Ctrl+K).</p></div>`) +
+        (m ? K.view(m) + notesHtml() : `<div class="adm-state is-empty"><h2>${esc(K.missing)}</h2><p>ممكن يكون اتمسح أو لسه ما وصلش. جرّب «رجوع» أو البحث السريع (Ctrl+K).</p></div>`) +
         `<p class="ord-muted" role="status" aria-live="polite" data-pf-live>${esc(lastMsg)}</p>`;
       const f = focusSel && wrap.querySelector(focusSel); if (f) f.focus();
     };
@@ -257,7 +268,15 @@
         const s = String(amt).trim(); if (s !== '' && !(+s > 0)) { say('اكتب مبلغ صحيح أو سيبه فاضي.'); return; }
         return run(() => call('POST', '/admin/payments/' + encodeURIComponent(id) + '/refund', s === '' ? {} : { amount: +s }), 'الاسترجاع اتسجّل وهيتبعت للعميل.'); }
     });
+    wrap.addEventListener('submit', async (e) => {
+      const f = e.target.closest('[data-pf-note]'); if (!f) return; e.preventDefault();
+      const text = String((f.text && f.text.value) || '').trim();
+      if (text.length < 2) { say('اكتب الملاحظة الأول.'); return; }
+      if (busy) return; busy = true;
+      try { const r = await A.admin.addNote(subject, text); if (r && r.ok) { await loadNotes(); say('الملاحظة اتحفظت.'); } else say(err(r)); } catch (x) { say('تعذّر حفظ الملاحظة.'); } finally { busy = false; }
+    });
     paint();
+    loadNotes().then(() => paint());
     /* the read model changed (server sync or another tab): repaint while this page is open */
     if (root.HSRealtimeClient && typeof root.HSRealtimeClient.subscribe === 'function') {
       const off = root.HSRealtimeClient.subscribe('market:changed', () => { if (!wrap.isConnected) { off(); return; } if (!busy) paint(); });

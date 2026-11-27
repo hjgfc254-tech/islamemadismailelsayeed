@@ -12,10 +12,13 @@
  *   POST /admin/security/revoke/:uid          revoke refresh tokens (sign out everywhere)       owner only, never self
  *   GET  /admin/notifications/broadcasts      in-app broadcast history                          RBAC notifications.view
  *   POST /admin/notifications/broadcast       {audience: customers|providers, text}             RBAC notifications.create
+ *   GET  /admin/notes?subject=kind:id         internal notes on a customer / provider / order   RBAC <list>.view
+ *   POST /admin/notes                         {subject, text}  (employees only, never shown to customers / providers)
  * Every mutation is audited by the caller (service.js) and runs inside its transaction.
  * Called by: service.js api (PATH_RE below, after the callcenter / tech role gates).
  * Collections: audit (read), system/settings, departments, admins (+ Firebase Auth via backend.authUsers /
- * revokeSessions), broadcasts, notifications (one per recipient of a broadcast), customers / providers (recipients).
+ * revokeSessions), broadcasts, notifications (one per recipient of a broadcast), customers / providers (recipients),
+ * adminNotes (internal notes, server-only — no client rules).
  */
 'use strict';
 const workforce = require('./workforce');
@@ -156,8 +159,28 @@ async function handle({ backend, tx, method, path, query, body, admin, token }) 
       return okEnv(rec, 201);
     }
   }
+  if (area === 'notes' && seg.length === 2) {   /* internal notes on a record (same rules as services/admin-api.js demo route) */
+    const s = noteSubject(method === 'GET' ? query.subject : body && body.subject);
+    if (!s) return env(422, 'VALIDATION', 'السجل غير معروف', { subject: 'customer|provider|order:<id>' });
+    if (!(await can(a, tx, admin, s.module, 'view'))) return deny();
+    const rows = (await a.query(tx, 'adminNotes', { where: [['subject', '==', s.key]], limit: NOTES_MAX })).map((r) => r.data);   /* equality only: no composite index */
+    if (method === 'GET') return okEnv({ items: rows.sort((x, y) => String(y.at).localeCompare(String(x.at))).slice(0, 100) });
+    if (method === 'POST') {
+      const text = String((body && body.text) || '').replace(/\s+/g, ' ').trim();
+      if (text.length < 2 || text.length > TEXT_MAX) return env(422, 'VALIDATION', 'الملاحظة من 2 لـ 500 حرف', { text: '2–500' });
+      if (rows.length >= NOTES_MAX) return env(409, 'CONFLICT', 'الملاحظات على السجل ده وصلت للحد الأقصى');
+      const id = 'an_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+      const note = { id, subject: s.key, text, by: { id: (token && token.uid) || admin.employeeId || '-', name: admin.name || 'موظف' }, at: new Date().toISOString() };
+      a.set(tx, `adminNotes/${id}`, note);
+      return okEnv(note, 201);
+    }
+  }
   return env(404, 'NOT_FOUND', 'مسار غير معروف');
 }
 
-const PATH_RE = /^\/admin\/(audit|settings|departments|security|notifications\/(broadcast|broadcasts))(\/|$)/;
+const NOTES_MAX = 200;
+const NOTE_MODULE = { customer: 'customers', provider: 'providers', order: 'orders' };
+const noteSubject = (v) => { const m = /^(customer|provider|order):([\w-]{1,80})$/.exec(String(v || '')); return m ? { key: m[0], module: NOTE_MODULE[m[1]] } : null; };
+
+const PATH_RE = /^\/admin\/(audit|settings|departments|security|notes|notifications\/(broadcast|broadcasts))(\/|$)/;
 module.exports = { handle, PATH_RE, BROADCAST_MAX };

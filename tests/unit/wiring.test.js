@@ -36,12 +36,15 @@ const STATIC = ['GET /auth/me', 'GET /categories', 'GET /services', 'GET /free-r
 /* answered before plan.js by server code */
 const SERVICE_NATIVE = { 'GET /admin/summary': 'service.js adminSummary (aggregation counts)' };
 const ALERTS_RE = require(path.join(ROOT, 'functions/src/alerts.js')).PATH_RE;   // /admin/alerts*, /admin/tickets* (shared ops-routes)
+/* demo routes the server answers in admin-extra.js on purpose (Firestore collection of their own; same rules) */
+const EXTRA_NATIVE = ['GET /admin/notes', 'POST /admin/notes'];
 
 function classify(r) {
   const s = sig(r), seg = r.path.split('/').filter(Boolean);
   if (STATIC.includes(s)) return 'static';
   if (SETTINGS_ONLY.includes(s)) return 'settings';
   if (SERVICE_NATIVE[s]) return 'service';
+  if (EXTRA_NATIVE.includes(s)) return 'adminExtra';
   if (ALERTS_RE.test(r.path.replace(/:\w+/g, 'x'))) return 'alerts';
   if (seg[0] === 'admin') return PLAN_ADMIN_SEG1.includes(seg[1]) ? 'plan' : null;
   return PLAN_SEG0.includes(seg[0]) ? 'plan' : null;
@@ -56,7 +59,7 @@ test('every API route has a server data plan or is listed as settings-only / sta
   const missing = ROUTES.filter((r) => !classify(r)).map(sig);
   assert.deepEqual(missing, [], 'classify these routes here and give them a plan.js branch if they read records');
   const all = new Set(ROUTES.map(sig));
-  for (const s of [...SETTINGS_ONLY, ...STATIC, ...Object.keys(SERVICE_NATIVE)]) assert.ok(all.has(s), 'stale wiring entry (route no longer exists): ' + s);
+  for (const s of [...SETTINGS_ONLY, ...STATIC, ...Object.keys(SERVICE_NATIVE), ...EXTRA_NATIVE]) assert.ok(all.has(s), 'stale wiring entry (route no longer exists): ' + s);
 });
 
 test('plan.js has a branch for every plan prefix, and service.js answers /admin/summary itself', () => {
@@ -108,7 +111,8 @@ test('no server-native handler shadows a domain route by accident (only alerts.j
   for (const r of ROUTES) {
     const p = r.path.replace(/:\w+/g, 'x');
     const hits = Object.entries(native).filter(([, re]) => re.test(p)).map(([k]) => k);
-    assert.deepEqual(hits, classify(r) === 'alerts' ? ['alerts'] : [], sig(r) + ' is shadowed by ' + hits.join(', '));
+    const k = classify(r);
+    assert.deepEqual(hits, k === 'alerts' || k === 'adminExtra' ? [k] : [], sig(r) + ' is shadowed by ' + hits.join(', '));
   }
 });
 

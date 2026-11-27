@@ -1,4 +1,4 @@
-> **Current state (2026-11-27):** see `docs/AI_CONTEXT/START_HERE.md` and the newest entry of `docs/HANDOFF_NEXT_AI.md`. The batches below are the historical log of the frontend phase (2026-11-13/14).
+> **Current state (2026-11-27):** see `docs/AI_CONTEXT/START_HERE.md` and the newest entry of `docs/HANDOFF_NEXT_AI.md`. Latest batches (all deployed): `3e07d07` Admin sections / settings / rates, `9b8cc9f` full profiles, `7f0b17e` work inbox, then internal notes + docs refresh. The batches below are the historical log of the frontend phase (2026-11-13/14).
 
 # Execution Checkpoint
 

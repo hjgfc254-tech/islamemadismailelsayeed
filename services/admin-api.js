@@ -11,6 +11,8 @@
  *   POST /admin/requests/:id/assign            {providerId?}  (omit = auto-match)         orders.decide
  *   GET  /admin/requests/:id/candidates        matching providers                         orders.view
  *   POST /admin/customers/:id/status           {status: active|suspended}                 customers.decide
+ *   GET  /admin/notes?subject=kind:id          internal notes on a customer / provider / order   <list>.view
+ *   POST /admin/notes                          {subject, text}                                   <list>.view
  * STATUS: IMPLEMENTED (MOCK ADAPTER — local store only; demo RBAC, NOT server authorization; no network)
  */
 'use strict';
@@ -324,8 +326,34 @@
     return payView(store);
   });
 
+  /* ───── internal notes on a record (2026-11-27) — employees only; customers and providers never see them.
+     subject = customer:<id> | provider:<id> | order:<id>; reading and writing need the view permission of that list.
+     The server stores them in Firestore `adminNotes` (functions/src/admin-extra.js, same rules); this is the demo. */
+  const NOTE_MODULE = { customer: 'customers', provider: 'providers', order: 'orders' };
+  const NOTE_MAX = 500;
+  const noteSubject = (s) => { const m = /^(customer|provider|order):([\w-]{1,80})$/.exec(String(s || '')); return m ? { key: m[0], kind: m[1], id: m[2], module: NOTE_MODULE[m[1]] } : null; };
+  client.define('GET', '/admin/notes', { roles: A, summary: 'Internal notes on a record (?subject=customer:<id>|provider:<id>|order:<id>), newest first.' }, ({ query, actor, store }) => {
+    const s = noteSubject(query && query.subject); if (!s) return fail('VALIDATION', 'السجل غير معروف', { subject: 'customer|provider|order:<id>' });
+    const denied = guard(actor, s.module, 'view'); if (denied) return denied;
+    return { items: (store.db().adminNotes || []).filter((n) => n.subject === s.key).sort((a, b) => String(b.at).localeCompare(String(a.at))).slice(0, 100) };
+  });
+  client.define('POST', '/admin/notes', { roles: A, summary: 'Add an internal note to a record {subject, text} (employees only).' }, ({ body, actor, store }) => {
+    const s = noteSubject(body && body.subject); if (!s) return fail('VALIDATION', 'السجل غير معروف', { subject: 'customer|provider|order:<id>' });
+    const denied = guard(actor, s.module, 'view'); if (denied) return denied;
+    const text = String((body && body.text) || '').replace(/\s+/g, ' ').trim();
+    if (text.length < 2 || text.length > NOTE_MAX) return fail('VALIDATION', 'الملاحظة من 2 لـ 500 حرف', { text: '2–500' });
+    const db = store.db(); db.adminNotes = db.adminNotes || [];
+    if (db.adminNotes.filter((n) => n.subject === s.key).length >= 200) return fail('CONFLICT', 'الملاحظات على السجل ده وصلت للحد الأقصى');
+    const who = ((((root.HSAdminRbac || {}).state || {}).roster || []).find((x) => x.id === actor.id) || {}).name || actor.name || 'موظف';
+    const note = { id: 'an_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6), subject: s.key, text, by: { id: actor.id, name: who }, at: new Date().toISOString() };
+    db.adminNotes.unshift(note); store.save();
+    return note;
+  });
+
   const id = v => encodeURIComponent(v);
   return {
+    notes: (subject) => client.get('/admin/notes?subject=' + id(subject)),
+    addNote: (subject, text) => client.post('/admin/notes', { subject, text }),
     summary: () => client.get('/admin/summary'),
     controls: () => client.get('/admin/controls'),
     setControl: (key, on, message) => client.post('/admin/controls', { key, on, message }),
