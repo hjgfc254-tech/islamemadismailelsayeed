@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 742,
+  "file_count": 666,
   "files": [
     {
       "path": "_redirects",
@@ -1851,305 +1851,11 @@
       "sha256": "d1945a217dc1e0f643184e79d4e243c381d48d62c5729d42ac31a70b0649f95c"
     },
     {
-      "path": "backend/README.md",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 238,
-      "sha256": "2292792bafd7b2ae5d405e7eac5b458f20cd926ecd7dd7e2d922a1232d8bb0c8"
-    },
-    {
-      "path": "backend/src/app.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 208,
-      "sha256": "0c563c303c82f21e529324f723c01dd8058917adb621692ddfbb58f5a7ca4f9e"
-    },
-    {
-      "path": "backend/src/config/database.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 207,
-      "sha256": "84b3a49d3c15cc667dc64b1de61afa3293e8a07b7cafb6eb5aa27fd179fc3b25"
-    },
-    {
-      "path": "backend/src/config/env.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 223,
-      "sha256": "58ad85633f0f6b2a2cae31da32d14ab35cae14993f096b69ec0b1f83235ec7f7"
-    },
-    {
-      "path": "backend/src/config/storage.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 190,
-      "sha256": "a4f1ba2f5c791949589032b8072c9a2bf8e3d7355d2646cc22504efbe48a2c55"
-    },
-    {
-      "path": "backend/src/jobs/notification-worker.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 218,
-      "sha256": "88f0ea8904843645be90e6b7f2586f89e9e07082d139ffa8df27138d7183cd2f"
-    },
-    {
-      "path": "backend/src/jobs/scheduled-tasks.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 192,
-      "sha256": "9a10fa6d423d639a9139057d1b80be6677f83927c51a7f93a4038a8d8b8907a9"
-    },
-    {
-      "path": "backend/src/middleware/authenticate.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 207,
-      "sha256": "770bd0168891bafa54b7e509be431c437ea9284e7cdfd8f135201b97e08cc9c5"
-    },
-    {
-      "path": "backend/src/middleware/error-handler.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 202,
-      "sha256": "cbde0dcde566449e77d7372e967f82e33e593082f1604fdd788b854cc64c9993"
-    },
-    {
-      "path": "backend/src/middleware/rate-limit.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 197,
-      "sha256": "4cf4b0f04c26ca1c6bd3e729e73b1e724fab19a0b4bd7df6faa32dea7466496f"
-    },
-    {
-      "path": "backend/src/middleware/require-account-status.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 214,
-      "sha256": "1bafdb2e5683524b7b53c83b12ab120dad640ed7d7464f5400cd0c40251dd3a7"
-    },
-    {
-      "path": "backend/src/middleware/require-permission.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 203,
-      "sha256": "1f093b267f8d8f415d49ae0198cdbfbb3bed735731eaa17411d1c9bd1c973b92"
-    },
-    {
-      "path": "backend/src/middleware/validate-request.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 204,
-      "sha256": "06b3baa3fe7f3ffe53831e85cf188175c0310b8e14e2087db51d51030f917bdf"
-    },
-    {
-      "path": "backend/src/modules/access-control/access.service.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 258,
-      "sha256": "a039cbe632e3a51d33cd875ecc32264147db072c39cd6bec301c7932725c1fb8"
-    },
-    {
-      "path": "backend/src/modules/access-control/permissions.routes.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 266,
-      "sha256": "beeab82a463fb086076b35f992d461f43d6d6b4fa2fb30b2bfda36006b2a9f37"
-    },
-    {
-      "path": "backend/src/modules/access-control/policy.repository.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 264,
-      "sha256": "953d2b389ce36aae55cabab00a9c27521d52252828ea7aa57336e65fae886184"
-    },
-    {
-      "path": "backend/src/modules/access-control/roles.routes.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 254,
-      "sha256": "2bd5e8c8490edad8678138f06b5e57c05633217a817724e9381002e9eedb3818"
-    },
-    {
-      "path": "backend/src/modules/audit/README.md",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 233,
-      "sha256": "0b0551c3dd1704b411e009df7cb4beb42f773f9c40c088aceb8cedb55b826ce4"
-    },
-    {
-      "path": "backend/src/modules/auth/auth.controller.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 250,
-      "sha256": "07b262c036d620a10121bed2d7e8b742a246f2e70cb111c033ad69761db729a2"
-    },
-    {
-      "path": "backend/src/modules/auth/auth.routes.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 242,
-      "sha256": "a9ceafc0bf432106961e38aa87eb3833471b8c09afe932d0195ef765b20627b2"
-    },
-    {
-      "path": "backend/src/modules/auth/auth.service.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 244,
-      "sha256": "3d648afb4af2650e12bab8ab5c5d4dbb70d9242a614c53e1c2bd14bfb32cf031"
-    },
-    {
-      "path": "backend/src/modules/auth/session.repository.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 256,
-      "sha256": "ef06c8732d4d703525a568f43cf37ebc6c23fa4d7103bd4f2e871ad13d67e7cc"
-    },
-    {
-      "path": "backend/src/modules/catalog/README.md",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 235,
-      "sha256": "b9125bb2d5fffd166a128850027df091b85d0536558a8243bd7ecdd04b98d3ac"
-    },
-    {
-      "path": "backend/src/modules/complaints/README.md",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 238,
-      "sha256": "73afcd29a87fa796aa275db66400a3e465feb1d31db40a50854bea3e48866b37"
-    },
-    {
-      "path": "backend/src/modules/customers/README.md",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 237,
-      "sha256": "757ca5d0e8c696a5c9526a1e8a299d2daab4b4e775ed4a2a3185c8888c3b4066"
-    },
-    {
-      "path": "backend/src/modules/finance/README.md",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 235,
-      "sha256": "b964b00190364ef71f2fb2e8b4db93af02a0b3777ecaeb2cfe3d657b6d9815c4"
-    },
-    {
-      "path": "backend/src/modules/notifications/README.md",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 241,
-      "sha256": "1cb9d511bafc1013a58a11fe5c7a5f7fb6ee282bc197fbe79ee3d14e6d14a867"
-    },
-    {
-      "path": "backend/src/modules/orders/README.md",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 234,
-      "sha256": "7c378baea48c3815a8248afb04eacdfa00427a5a6147c83b98179c64dcdb0fcd"
-    },
-    {
-      "path": "backend/src/modules/providers/README.md",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 237,
-      "sha256": "5afa5c42ab3539aa481226bc9284cb40ffc6836e25982af9b180631b72200155"
-    },
-    {
-      "path": "backend/src/modules/quotes/README.md",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 234,
-      "sha256": "021954e162a3df7bbbdfa343202f90c7e920090beb0cd637bf82d62c62b74f5c"
-    },
-    {
-      "path": "backend/src/modules/reports/README.md",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 235,
-      "sha256": "b1431f6aa0b0ead06172d77c89581a0eb19e49adde29534095a391cefa99fde5"
-    },
-    {
-      "path": "backend/src/modules/reviews/README.md",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 235,
-      "sha256": "620c1a4e8ddb967f645c99a740ed03515b5619fc54078f542376b3458e3b1a4e"
-    },
-    {
-      "path": "backend/src/modules/settings/README.md",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 236,
-      "sha256": "2404e75a0540fbf019273b88d3a1f099d9e46ddcf5fd90e4d965bdda956be4ca"
-    },
-    {
-      "path": "backend/src/modules/workforce/workforce.controller.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 265,
-      "sha256": "26f0d2bf3fc8565e01109d8957aab0fdf0abab81333563fdf39d81dcc3a3936b"
-    },
-    {
-      "path": "backend/src/modules/workforce/workforce.repository.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 265,
-      "sha256": "2e945e4d320172f741c2f4af9d75e280304a35fb5bb97afd8ac9c87b652a23d9"
-    },
-    {
-      "path": "backend/src/modules/workforce/workforce.routes.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 257,
-      "sha256": "34d7a963421caa599cac5cb68ccaaa7e3073b77f87704dd58ab1dcda3d1ce626"
-    },
-    {
-      "path": "backend/src/modules/workforce/workforce.service.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 259,
-      "sha256": "4724a3a0faf4715f43bcf9d07ba8bd6c0074e0f54835377cac2425f902c0f65b"
-    },
-    {
-      "path": "backend/src/server.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 206,
-      "sha256": "043a804ac9935b25ef37023c4406e564772b9f74cf9affa8ea391c5ca0e6a18a"
-    },
-    {
-      "path": "backend/tests/audit.test.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 71,
-      "sha256": "5b2c8e6dc76b877cef376c7b331e386703de274648270d66d3ee0aea20447a5e"
-    },
-    {
-      "path": "backend/tests/auth.test.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 71,
-      "sha256": "5b2c8e6dc76b877cef376c7b331e386703de274648270d66d3ee0aea20447a5e"
-    },
-    {
-      "path": "backend/tests/authorization.test.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 71,
-      "sha256": "5b2c8e6dc76b877cef376c7b331e386703de274648270d66d3ee0aea20447a5e"
-    },
-    {
-      "path": "backend/tests/workforce.test.js",
-      "area": "backend",
-      "status": "PLACEHOLDER",
-      "bytes": 71,
-      "sha256": "5b2c8e6dc76b877cef376c7b331e386703de274648270d66d3ee0aea20447a5e"
-    },
-    {
       "path": "CLAUDE.md",
       "area": "root",
       "status": "DOCUMENTATION",
-      "bytes": 5050,
-      "sha256": "1f8d39aa0e1bb04b11f3d909bb4554fca3681de4582d3fb36597aea319d768aa"
+      "bytes": 5398,
+      "sha256": "8db2f23f26956cd2f774321ca9714cee3ec49a74dcc8f6ccc0b51aa7e4d3e424"
     },
     {
       "path": "database.rules.json",
@@ -2159,139 +1865,6 @@
       "sha256": "4930db93e131c03f561e69e21e40c93f4b6875bda964242d020b255028441888"
     },
     {
-      "path": "database/migrations/README.md",
-      "area": "database",
-      "status": "CONFIGURATION",
-      "bytes": 181,
-      "sha256": "ff5cac5d699b65cf453dc142e56572ede32d911b775de0ce70698cb72643f368"
-    },
-    {
-      "path": "database/policies/access-matrix.md",
-      "area": "database",
-      "status": "CONFIGURATION",
-      "bytes": 166,
-      "sha256": "fa329e7b10550e482918d88d871e775ffdde32ed6a55b66c8a8f8472f31c4968"
-    },
-    {
-      "path": "database/policies/data-access-policy.md",
-      "area": "database",
-      "status": "CONFIGURATION",
-      "bytes": 129,
-      "sha256": "6aeaf65dcdd66f8aa53ff90cd7ec5cf548ebfcebbc07955e6c076f1b11e7345a"
-    },
-    {
-      "path": "database/README.md",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 226,
-      "sha256": "ebb4515c044433804b6538a686c61d0cc39cd1210cb20f1155c3221acf30d1bf"
-    },
-    {
-      "path": "database/schema/accounts.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 234,
-      "sha256": "42badf11074b4b21929465560e52865ca6539726673018c76b69b8d5e82ce998"
-    },
-    {
-      "path": "database/schema/audit-events.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 242,
-      "sha256": "b9901930e6f3beaa2d1bc46f5f22a0c8c764827ed4d481bd417db021600df435"
-    },
-    {
-      "path": "database/schema/complaints.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 238,
-      "sha256": "4322890727406d5b3e3bc2b7b280c82788d60938997555580ea3454463d78fc7"
-    },
-    {
-      "path": "database/schema/customers.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 236,
-      "sha256": "7c694c2846c6dca65befd9df4e7db239b7cf4e2780b920d75cfd9c91bcf99d63"
-    },
-    {
-      "path": "database/schema/departments.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 240,
-      "sha256": "60610dbc80422dea4742bb823e965663853e3d84d2b7b693d1865ff6359ba0d4"
-    },
-    {
-      "path": "database/schema/employees.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 236,
-      "sha256": "9f2f936a652c47744e1eea28fc67a550536c205b4a12905a33083177959f4246"
-    },
-    {
-      "path": "database/schema/notifications.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 244,
-      "sha256": "67a3450ff3d3c8abdf3b05cb08bcd04093e6de25052d357c4508a65ec1f6a8c2"
-    },
-    {
-      "path": "database/schema/orders.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 230,
-      "sha256": "68ac1de10d05a6eec6bf2ff7bcab4a2b7f63e96f6c06ea212bf87311956ca2a4"
-    },
-    {
-      "path": "database/schema/permissions.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 240,
-      "sha256": "ec04c66c5bf7eb71b0cb647ffad26ef4425a79250bd25b4be729c4b977ad6472"
-    },
-    {
-      "path": "database/schema/providers.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 236,
-      "sha256": "33ae31d7c460f78af8dad34cbcc200225a2c5a91164360e1c3155ba0552162a6"
-    },
-    {
-      "path": "database/schema/quotes.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 230,
-      "sha256": "fef4605aeaaef83425ff2b0b6565fe4a408b45daa32d778b900eedc639f81a50"
-    },
-    {
-      "path": "database/schema/roles.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 228,
-      "sha256": "7873e467a5a909ea1f906142415f87313c3a22504d9379e775bc1ea75a10c4a8"
-    },
-    {
-      "path": "database/schema/services.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 234,
-      "sha256": "a93647ead868e6ff9231193df2751d56f2db37f21f5c5448d13dd7fbb86da72d"
-    },
-    {
-      "path": "database/schema/transactions.schema.js",
-      "area": "database",
-      "status": "PLACEHOLDER",
-      "bytes": 242,
-      "sha256": "eac7bb4103a97720b74143b20c7bbc8bfdc686effc52bc1ccacffee5c4fa150e"
-    },
-    {
-      "path": "database/seeds/README.md",
-      "area": "database",
-      "status": "CONFIGURATION",
-      "bytes": 159,
-      "sha256": "cd02917ad2958a4be0bb215003361dd0287f5986ed23da8627867820db9277b9"
-    },
-    {
       "path": "docs/ADMIN_MODULES.md",
       "area": "docs",
       "status": "CONFIGURATION",
@@ -2299,116 +1872,11 @@
       "sha256": "53e9374c4a3b650319e2f1bbc6e48c3e8c999ad4cbace2cd9f1ca6984a998d92"
     },
     {
-      "path": "docs/agent-briefs/admin-2fa.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 3423,
-      "sha256": "acf9c6435f77c28dc57c03b99c359742468c964f65196f7afa7525dbcd21b383"
-    },
-    {
-      "path": "docs/agent-briefs/architecture-maintenance.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 6021,
-      "sha256": "e37cc5810acb7cb4d782be136d6844220f07691eb9fac26d4e9731f6a3f0f892"
-    },
-    {
-      "path": "docs/agent-briefs/callcenter-ai.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 4945,
-      "sha256": "7468fa29ca39a769493c6306d7b5e463608346d811894f3e705025c2414e6ee5"
-    },
-    {
-      "path": "docs/agent-briefs/catalog-question-bank.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 4561,
-      "sha256": "3415ac794b19195175baaff1e20d81f13f1a6c696a864f39df4cee7d82b7bacd"
-    },
-    {
-      "path": "docs/agent-briefs/design-micro-audit-2.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 1805,
-      "sha256": "46efc37880f6533c5543fd030a7886bdcfb393a0fce6882b98d7a7fe896cd41e"
-    },
-    {
-      "path": "docs/agent-briefs/design-micro-audit.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 4150,
-      "sha256": "4a6f01e7a999b511718363ad68741e2506c209b21e01f4aeded2378155b8dcbc"
-    },
-    {
-      "path": "docs/agent-briefs/digest.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 1786,
-      "sha256": "196bc8143fda43f1e557c776653e93ba57dbc9d9298f869f6dd84bbd7f4b8978"
-    },
-    {
-      "path": "docs/agent-briefs/ops-alerts-ttl-staging.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 3564,
-      "sha256": "bab94117b55af035004ce9d50155986e11360813b64902b87fab3db9ab9646c1"
-    },
-    {
-      "path": "docs/agent-briefs/payments-ui-admin.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 4876,
-      "sha256": "d77e50c7675c7946490ea345b019e74cc14a73b6c257d9da3f85531dccf77b7d"
-    },
-    {
-      "path": "docs/agent-briefs/payments-ui-customer-provider.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 6393,
-      "sha256": "02f964d2a9803e815c4f80fa08a412128882b53e804d2e34f51b75920771a271"
-    },
-    {
       "path": "docs/agent-briefs/README.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 787,
-      "sha256": "8b85ab972edca04fc0e5edccc5b4c1f817f9de008861ed4730022f1df88cb65c"
-    },
-    {
-      "path": "docs/agent-briefs/security-audit.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 3707,
-      "sha256": "086cd91cb14019cb07d3dc9fd5a2bd907b24a0db089661e68cd8069a6b55bd70"
-    },
-    {
-      "path": "docs/agent-briefs/teams-alerts.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 3922,
-      "sha256": "7b4bef41b41041f50b45e96272ee0f507874e2207363f495eec0eb57448e3450"
-    },
-    {
-      "path": "docs/agent-briefs/tech-center.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 1667,
-      "sha256": "de83ccc48265553ec78e058294a46b70f51fcfca9a30b0b065e3d9a618cefde9"
-    },
-    {
-      "path": "docs/agent-briefs/tech-micro-audit.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 3676,
-      "sha256": "315f3aab38ea22403f6de72d007d76246501a92ae9b4ff0eff474eaa22b2147a"
-    },
-    {
-      "path": "docs/agent-briefs/test-gaps.md",
-      "area": "docs",
-      "status": "NEEDS_REVIEW",
-      "bytes": 2180,
-      "sha256": "c42be9380f814bac30b8c011091e0064c5ddde76f579f7e42f9caf3473f6445d"
+      "bytes": 329,
+      "sha256": "6039b29804f41d7b20d098a1e8319948b9a73389ccd7a7b3257d0ea6eb7b0a2e"
     },
     {
       "path": "docs/AI_AGENT_CONTINUATION_PROTOCOL.md",
@@ -2498,8 +1966,8 @@
       "path": "docs/AI_CONTEXT/START_HERE.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 5258,
-      "sha256": "68533d8822a0b3030b5480f52005deba2c8fd6bec86483ac69fc37f0b971cc20"
+      "bytes": 5774,
+      "sha256": "7a7bef8f625c771a53bef8a4edec61ca6b5f62a2e72bbec3e028c0a642260a07"
     },
     {
       "path": "docs/AI_CONTEXT/WORKFLOW.md",
@@ -2519,8 +1987,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 315141,
-      "sha256": "aabcc9657029f605a4165762e75251cc276ad0acd899649adeb5f415d20fa922"
+      "bytes": 267204,
+      "sha256": "ea1497668fad621d332ca274259049c36984e80108830809df23e25e19bc6604"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2533,8 +2001,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 182880,
-      "sha256": "29013ce0ea893338b4e13ee8116fc0bd90f159aa3a7499ff82d9b4ee804574ed"
+      "bytes": 163110,
+      "sha256": "d2e55b574b18b6ac7f5f06558608f0db0bb567a9bd86bf51124a15ad8bf2e923"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2918,8 +2386,8 @@
       "path": "docs/HANDOFF_NEXT_AI.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 111620,
-      "sha256": "f7bd1d651e5d99a4b6dac3df59ce83be43ecfc440dd97b6f40be97b538cc4afd"
+      "bytes": 112811,
+      "sha256": "188bd04ecce4991023766a6bb858bd502af0fae18f773c6f3bed9f4ff99eb625"
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -2932,8 +2400,8 @@
       "path": "docs/MAINTENANCE_GUIDE.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 87542,
-      "sha256": "767a5730ca42592c53379e1e5906526ff3a36add7398dcf7a3e551ebe4b96397"
+      "bytes": 87439,
+      "sha256": "d5d145c11f10650e2066945836cf11489f54a081ce4f8b6fc8e8e0c1e753b8a7"
     },
     {
       "path": "docs/MIGRATION_PLAN.md",
@@ -2967,15 +2435,15 @@
       "path": "docs/PROJECT_REFERENCE.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 111023,
-      "sha256": "66cf6c705d6a52a41b26176725ed8992a25b87a0eb32b282d6cf5a97cfedf689"
+      "bytes": 113717,
+      "sha256": "7f134d7f016cd2977e84bfdc3c4fd85667d6dbb59d068208e825d86649b81fca"
     },
     {
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 34574,
-      "sha256": "a609ec65271854c6fd342d9831dcaca26b2e530ccc90c799245b82560dc51ba0"
+      "bytes": 30398,
+      "sha256": "536182b649677afdbbe26fa82207dc50616fb40523a892a3216cdaab37f93e55"
     },
     {
       "path": "docs/README.md",
@@ -3016,8 +2484,8 @@
       "path": "firebase.json",
       "area": "firebase.json",
       "status": "NEEDS_REVIEW",
-      "bytes": 4658,
-      "sha256": "434ac08f68d7dd7ea598474b78753bdade92173c95f0b2ab1c3e5d1f1dce06f6"
+      "bytes": 4617,
+      "sha256": "5afc6a7d75b13bc294649c508affda24219ca3706e637ceb43dcd7feeec9c993"
     },
     {
       "path": "firestore.indexes.json",
@@ -3548,8 +3016,8 @@
       "path": "scripts/build-project-reference.cjs",
       "area": "scripts",
       "status": "NEEDS_REVIEW",
-      "bytes": 15461,
-      "sha256": "d787b63e246ccc91a125877d0c18bc73d4f5430db29e633bfa2efdeafa5e28ff"
+      "bytes": 15374,
+      "sha256": "2b03c9f15aa18924bc095b12180d7963e70468c30bde6f514a4d6bb4544ddbaf"
     },
     {
       "path": "scripts/coverage-map.cjs",
