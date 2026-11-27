@@ -5,7 +5,7 @@
 <meta name="theme-color" content="#0B1F3A"><link rel="manifest" href="../../manifest.json"><link rel="icon" type="image/svg+xml" href="../../assets/brand/hsl-mark.svg"><title>مساحة مقدم الخدمة | هنصلحلك</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Font CSS loads without blocking the first paint (display=swap shows the system font until it arrives). -->
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet" media="print" data-async-font>
 <noscript><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="../../shared/design-system/design-system.css"><link rel="stylesheet" href="styles/provider.css">
 <link rel="stylesheet" href="styles/overrides.css">
@@ -30,8 +30,8 @@
 <script src="provider-request-domain.js"></script><script src="provider-domain.js"></script><script src="provider-location.js"></script>
 <script src="provider-auth.js"></script><script src="provider-session.js"></script><script src="provider-router.js"></script><script src="provider-shell.js"></script>
 <script src="pages/dashboard.page.js"></script><script src="pages/incoming-requests.page.js"></script><script src="pages/active-jobs.page.js"></script><script src="pages/quotes.page.js"></script><script src="pages/schedule.page.js"></script><script src="pages/reviews.page.js"></script><script src="pages/transactions.page.js"></script><script src="pages/earnings.page.js"></script><script src="pages/profile.page.js"></script><script src="pages/services.page.js"></script><script src="pages/notifications.page.js"></script><script src="pages/request-details.page.js"></script>
+<script src="../../shared/boot/sw-register.js"></script>
 <script src="app.js"></script>
-<script>if ('serviceWorker' in navigator) { navigator.serviceWorker.register('../../service-worker.js').catch(function () {}); }</script>
 <!-- Firebase backend (opt-in: ?backend=firebase). Local demo mode is unchanged when not selected. -->
 <script type="module" src="../../services/firebase-backend.js"></script>
 </body></html>

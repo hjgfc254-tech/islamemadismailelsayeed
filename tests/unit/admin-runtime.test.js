@@ -32,7 +32,8 @@ test('the six Admin runtime files are real code wired into apps/admin/index.html
   assert.ok(at('rbac-store.js') < at('permission-guard.js') && at('permission-guard.js') < at('admin-auth.js') && at('admin-auth.js') < at('admin-session.js'));
   assert.equal(list.at(-1), 'app.js', 'bootstrap loads last');
   assert.doesNotMatch(read('apps/admin/login.html'), /<input|<form|password/i, 'login route collects no credentials');
-  assert.match(read('apps/admin/login.html'), /location\.replace\('index\.html'\+location\.hash\)/);
+  assert.match(read('apps/admin/login.html'), /<script src="\.\.\/\.\.\/shared\/boot\/redirect\.js" data-to="index\.html"><\/script>/);   /* no inline code (CSP, 2026-11-27) */
+  assert.match(read('shared/boot/redirect.js'), /location\.replace\(to \+/);
 });
 
 test('router: parse/format/breadcrumbs, and the shell delegates to it (same results)', () => {

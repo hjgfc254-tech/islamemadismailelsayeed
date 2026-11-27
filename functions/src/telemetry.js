@@ -16,7 +16,7 @@ const crypto = require('crypto');
 
 const PATH_RE = /^\/(telemetry\/errors|admin\/client-errors(\/clear)?)$/;
 const MAX_REPORTS = 5, MAX_GROUPS_PER_DAY = 500, TTL_MS = 30 * 86400000;
-const KINDS = ['error', 'rejection', 'console'];
+const KINDS = ['error', 'rejection', 'console', 'csp'];
 const env = (status, code, message) => ({ ok: false, status, error: { code, message } });
 const okEnv = (data, status = 200) => ({ ok: true, status, data });
 
@@ -73,6 +73,29 @@ async function report(backend, app, body, uid) {
   return okEnv({ stored }, 201);
 }
 
+/**
+ * Content-Security-Policy violation reports (browser POST to /csp-report, function cspReport): both the legacy
+ * {"csp-report": {...}} body and the Reporting API array [{type:'csp-violation', body:{...}}]. Stored as client-error
+ * groups of kind 'csp' (same scrubbing, grouping, 30-day TTL) so the Tech Center shows what the policy would block.
+ */
+function cspToReports(body) {
+  const items = Array.isArray(body) ? body.filter((x) => x && x.type === 'csp-violation').map((x) => x.body || {}) : body && body['csp-report'] ? [body['csp-report']] : [];
+  return items.slice(0, MAX_REPORTS).map((v) => {
+    const directive = String(v.effectiveDirective || v['effective-directive'] || v.violatedDirective || v['violated-directive'] || '').split(' ')[0];
+    const blocked = String(v.blockedURL || v['blocked-uri'] || '');
+    const host = /^[a-z]+:\/\//i.test(blocked) ? blocked.replace(/^([a-z]+:\/\/[^/]+).*$/i, '$1') : blocked.slice(0, 40);   // origin only (no paths / tokens)
+    const page = String(v.documentURL || v['document-uri'] || '');
+    const app = /\/apps\/admin\//.test(page) ? 'admin' : /\/apps\/provider\//.test(page) ? 'provider' : 'customer';
+    return { app, r: { kind: 'csp', msg: `CSP: ${directive || 'unknown'} blocked ${host || 'inline'}`, src: String(v.sourceFile || v['source-file'] || page), route: '' } };
+  });
+}
+async function cspReport(backend, body) {
+  const list = cspToReports(body); if (!list.length) return env(422, 'VALIDATION', 'no csp reports');
+  let stored = 0;
+  for (const { app, r } of list) { const out = await report(backend, app, { reports: [r] }, null); if (out.ok) stored += out.data.stored; }
+  return okEnv({ stored }, 201);
+}
+
 async function handle({ backend, method, path, query, body, app, actor, token }) {
   if (path === '/telemetry/errors') {
     if (method !== 'POST') return env(405, 'METHOD_NOT_ALLOWED', 'POST only');
@@ -93,4 +116,4 @@ async function handle({ backend, method, path, query, body, app, actor, token })
   return env(404, 'NOT_FOUND', 'unknown route');
 }
 
-module.exports = { PATH_RE, handle, report, scrub, clean, groupId, MAX_REPORTS };
+module.exports = { PATH_RE, handle, report, scrub, clean, groupId, MAX_REPORTS, cspReport, cspToReports };

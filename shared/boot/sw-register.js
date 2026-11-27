@@ -1,0 +1,2 @@
+/* boot: sw-register — registers the service worker (offline + fast repeat visits); replaces an inline script (CSP). */
+(function () { try { if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) navigator.serviceWorker.register('../../service-worker.js').catch(function () {}); } catch (e) { /* no worker support */ } })();

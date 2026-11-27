@@ -118,6 +118,7 @@ Global options: `region: 'me-central1'`, `maxInstances: 10`. Callables use `{ en
 | `digestClock` | Cloud Scheduler | me-central1 | `5 * * * *` (timeZone Africa/Cairo) | 300 s | `RESEND_API_KEY` or `SMTP_*`, `MAIL_FROM` | `digest-admin.tick` |
 | `alertsClock` | Cloud Scheduler | me-central1 | `every 5 minutes` | 120 s | — | `alerts.tick` + `service.scanOps` (MP.opsScan) |
 | `paymentsClock` | Cloud Scheduler | me-central1 | `every 30 minutes` | 120 s | `PAYMOB_*` | `payments.tick`: pending refunds → Paymob, held payments released after the hold time |
+| `cspReport` | HTTPS (`onRequest`, public POST, hosting rewrite `/csp-report`) | me-central1 | `maxInstances: 2` | 15 s | — | `telemetry.cspReport` → `clientErrors` groups of kind `csp` (Tech Center) |
 | `paymobWebhook` | HTTPS (`onRequest`, public POST, HMAC) | me-central1 | `maxInstances: 5` | 30 s | `PAYMOB_HMAC_SECRET` | `payments.webhook` → `MP.markPaid` / `MP.markRefunded` |
 | `agentApi` | HTTPS (`onRequest`, `cors: false`) | me-central1 | `maxInstances: 5`; per key `AGENT_RATE_PER_MIN` (default 120); bad auth 20/min per IP | 30 s | `AGENT_API_KEYS`, `AGENT_RATE_PER_MIN` | `service.agentHttp` → `agent-gateway.http` |
 | `catalogFeed` | HTTPS (`onRequest`, public GET) via the Hosting rewrite `/catalog-feed` | me-central1 | `maxInstances: 3`; CDN `s-maxage=300` (about one Firestore read per edge every 5 minutes) | 15 s | — | `catalog-admin.feed` (published `system/catalogPub`) |
@@ -925,8 +926,8 @@ Not done in this pass (no behaviour change allowed, or a deploy / owner decision
     per-provider rate, join approval) now also live in the full profiles; removing the page needs the owner's OK.
 15. **Work inbox limits:** two employees pressing «أنا هاخده» in the same second can open two tickets (the first
     shows); an item handed to a team whose role cannot view that module is only visible in «البلاغات».
-17. **Security hardening still open (audit 2026-11-27):** a full Content-Security-Policy with `script-src` (needs the
-    inline scripts moved to files first); App Check enforcement (owner key); photo storage in the cloud (request and
-    before/after photos stay on the device that took them).
+17. **Security hardening still open (audit 2026-11-27):** the full CSP runs in report-only mode (pages have no inline
+    code; reports reach the Tech Center as kind «csp» via `cspReport`) — enforce it after a week of clean reports;
+    App Check enforcement (owner key); photo storage in the cloud (photos stay on the device that took them).
 16. **Demo-only admin pages:** several pages keep a richer demo version next to the live panel (e.g. the categories
     editor and commission rules are read-only or simplified live). Long term each page should have one live version.

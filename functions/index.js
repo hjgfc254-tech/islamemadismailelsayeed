@@ -193,6 +193,24 @@ exports.paymobWebhook = onRequest({ region: 'me-central1', cors: false, maxInsta
   }
 });
 
+/* Content-Security-Policy reports (hosting rewrite /csp-report; header Content-Security-Policy-Report-Only in
+   firebase.json): browsers POST what the policy would block; stored as Tech Center client errors of kind «csp»
+   (src/telemetry.js cspReport). Public, POST only, small bodies, the telemetry rate limit per IP. */
+exports.cspReport = onRequest({ region: 'me-central1', cors: false, maxInstances: 2, timeoutSeconds: 15, memory: '256MiB' }, async (req, res) => {
+  try {
+    if (req.method !== 'POST') { res.status(405).send(''); return; }
+    if (!telemetryLimiter.allow({ uid: null, ip: clientIp(req) })) { res.status(204).send(''); return; }
+    const raw = req.rawBody ? req.rawBody.toString('utf8') : '';
+    if (raw.length > 20000) { res.status(413).send(''); return; }
+    let body = req.body; if (!body || typeof body !== 'object') { try { body = JSON.parse(raw); } catch (e) { body = null; } }
+    await require('./src/telemetry').cspReport(backend, body || {});
+    res.status(204).send('');
+  } catch (e) {
+    logger.error('cspReport failed', { error: e && e.message });
+    res.status(204).send('');   // a report must never retry-storm
+  }
+});
+
 /* payments clock: every 30 minutes — pending refunds sent to Paymob, held payments released after the hold time
    (src/payments.js tick) */
 exports.paymentsClock = onSchedule({ schedule: 'every 30 minutes', region: 'me-central1', timeoutSeconds: 120 }, async () => {

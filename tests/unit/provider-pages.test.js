@@ -35,7 +35,8 @@ test('provider entry loads local data and dependencies before renderers and app'
   for(const item of ordered){const index=html.indexOf(item);assert.ok(index>last,`${item} must load in dependency order`);last=index;}
   assert.match(html,/<main id="provider-app">/);
   assert.match(html,/manifest\.json/);
-  assert.match(html,/serviceWorker\.register\('\.\.\/\.\.\/service-worker\.js'\)/);
+  assert.match(html,/<script src="\.\.\/\.\.\/shared\/boot\/sw-register\.js"><\/script>/);   /* no inline code (CSP, 2026-11-27) */
+  assert.match(fs.readFileSync(path.join(ROOT,'shared/boot/sw-register.js'),'utf8'),/serviceWorker\.register\('\.\.\/\.\.\/service-worker\.js'\)/);
 });
 test('provider renderers escape user-controlled text and render meaningful empty states', () => {
   const dashboard=load('apps/provider/pages/dashboard.page.js').HSProviderDashboardPage;
@@ -79,7 +80,7 @@ test('provider login route hands off to the standalone demo picker and collects 
   const html=fs.readFileSync(path.join(ROOT,'apps/provider/login.html'),'utf8');
   assert.match(html,/<html lang="ar" dir="rtl">/);
   assert.match(html,/http-equiv="refresh" content="0;url=index\.html"/);
-  assert.match(html,/location\.replace\('index\.html'\+location\.hash\)/);
+  assert.match(html,/<script src="\.\.\/\.\.\/shared\/boot\/redirect\.js" data-to="index\.html"><\/script>/);   /* no inline code (CSP) */
   assert.match(html,/<a href="index\.html">/,'no-JS fallback link');
   assert.match(html,/جارٍ تحويلك لصفحة الدخول/,'redirect notice');
   assert.doesNotMatch(html,/<input|<form|password/i,'must not imitate a real login');

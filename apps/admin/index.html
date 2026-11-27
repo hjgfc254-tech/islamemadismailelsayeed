@@ -2,7 +2,8 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
-<script>/* security (M4): the Admin Center never runs inside another site's frame (clickjacking) */ if (window.top !== window.self) { document.documentElement.style.display = "none"; try { window.top.location = window.self.location; } catch (e) {} }</script>
+<script src="../../shared/utils/error-reporter.js"></script>
+<script src="../../shared/boot/frame-guard.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0B1F3A">
 <title>مركز الإدارة | هنصلحلك</title>
@@ -10,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <!-- Font CSS loads without blocking the first paint (display=swap shows the system font until it arrives). -->
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet" media="print" data-async-font>
 <noscript><link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="../../shared/design-system/design-system.css">
 <link rel="stylesheet" href="styles/admin.css">
@@ -27,7 +28,6 @@
   <div class="adm-state adm-boot" role="status" style="margin:15vh auto 0;max-width:420px;border:0;background:none"><span class="adm-spin" aria-hidden="true"></span><p>جاري تحميل مركز الإدارة…</p></div>
   <noscript><p style="padding:24px">يتطلب مركز الإدارة تفعيل JavaScript.</p></noscript>
 </div>
-<script src="../../shared/utils/error-reporter.js"></script>
 <script src="../../shared/icons/icon-registry.js"></script>
 <script src="../../shared/content/site-content.js"></script>
 <script src="../../shared/components/status-badge.js"></script>

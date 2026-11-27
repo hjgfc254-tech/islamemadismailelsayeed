@@ -46,7 +46,7 @@ for (const entry of OFFLINE_ENTRIES) {
 test('only Customer and Provider register the worker; Admin is not an offline entry (boundary is explicit)', () => {
   const registers = f => /serviceWorker\.register\(/.test(read(f));
   assert.ok(registers('apps/customer/app.js'));
-  assert.ok(registers('apps/provider/index.html'));
+  assert.ok(/shared\/boot\/sw-register\.js/.test(read('apps/provider/index.html')) && registers('shared/boot/sw-register.js'));   /* moved out of the page (CSP) */
   const admin = read('apps/admin/index.html');
   assert.doesNotMatch(admin, /serviceWorker\.register|rel="manifest"/,
     'If Admin becomes an offline/PWA entry, add apps/admin/index.html to OFFLINE_ENTRIES and precache its assets.');

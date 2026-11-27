@@ -4,6 +4,16 @@
 > (in particular, entries that say the legacy bridge "must be kept", that profile editing is "disabled", or that the project is
 > "frontend only" are superseded). The system map is `docs/MAINTENANCE_GUIDE.md`.
 
+## 2026-11-27 — CSP readiness (no inline code) + report-only policy
+- All served pages carry no inline code: `shared/boot/{frame-guard,async-fonts,redirect,sw-register}.js`,
+  `apps/customer/boot-head.js` / `boot-home.js`; the font stylesheet uses `data-async-font`; images use
+  `data-remove-on-error`. The error reporter stays the first script of every app.
+- `firebase.json`: `Content-Security-Policy-Report-Only` (script-src 'self' + Google reCAPTCHA hosts, no inline) with
+  `report-uri /csp-report` → new function `cspReport` → `telemetry.cspReport` → Tech Center client errors of kind `csp`.
+  Local check with the policy ENFORCED: 0 violations in landing / customer / provider / admin (local mode).
+- Next: after a week of live traffic, read the «csp» groups in the Tech Center, adjust the policy, then rename the
+  header to `Content-Security-Policy` (enforce). Speed bundling still needs esbuild (install was blocked; ask the owner).
+
 ## 2026-11-27 — Security audit (pre-launch)
 - Fixed:
   1. Stored-link injection: alert / ticket links now accept `#/…` routes only (`HSOpsCore.safeLink`, shared with the

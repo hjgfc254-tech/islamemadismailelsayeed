@@ -235,7 +235,7 @@ const discover = () => `
     <div class="track" id="track">
       ${slideList().map((g,i,L)=>`
       <article class="slide s-${g.id} ${g.img?'has-img':'no-img'}" id="guide-slide-${g.id}" role="group" aria-roledescription="slide" aria-label="${i+1} من ${L.length}" aria-labelledby="guide-tab-${g.id}">
-        ${g.img ? `<img class="s-img" src="${g.img}" alt="" decoding="async" draggable="false" ${i?'loading="lazy"':''} onerror="this.remove()">
+        ${g.img ? `<img class="s-img" src="${g.img}" alt="" decoding="async" draggable="false" ${i?'loading="lazy"':''} data-remove-on-error>
         <div class="s-shade"></div>` : `<div class="s-art" aria-hidden="true"><span class="s-num">${String(i+1).padStart(2,'0')}</span><span class="s-ic">${ic(g.icon||'sparkle')}</span></div>`}
         <div class="s-body">
           <h3>${esc(g.title)}</h3>

@@ -126,6 +126,8 @@ hansalhlak/
 │   │   │   ├── customer.css
 │   │   │   └── overrides.css
 │   │   ├── app.js
+│   │   ├── boot-head.js
+│   │   ├── boot-home.js
 │   │   ├── brand-icons.js
 │   │   ├── customer-router.js
 │   │   ├── customer-session.js
@@ -610,6 +612,11 @@ hansalhlak/
 │   ├── support-api.js
 │   └── uploads-api.js
 ├── shared/
+│   ├── boot/
+│   │   ├── async-fonts.js
+│   │   ├── frame-guard.js
+│   │   ├── redirect.js
+│   │   └── sw-register.js
 │   ├── components/
 │   │   ├── accessible-tabs.js
 │   │   ├── buttons.js
@@ -843,6 +850,7 @@ hansalhlak/
 ├── index.html
 ├── install-tools.ps1
 ├── manifest.json
+├── package-lock.json
 ├── package.json
 ├── README.md
 ├── robots.txt
