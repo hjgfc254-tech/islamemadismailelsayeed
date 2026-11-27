@@ -4,6 +4,17 @@
 > (in particular, entries that say the legacy bridge "must be kept", that profile editing is "disabled", or that the project is
 > "frontend only" are superseded). The system map is `docs/MAINTENANCE_GUIDE.md`.
 
+## 2026-11-27 — Work inbox for a team of employees
+- New `apps/admin/modules/work-inbox.js` (HSWorkInbox: pure `items(db, now)` / `join(items, tickets, mineIds)` + `mount`),
+  mounted by `pages/admin-dashboard.page.js` instead of the old alerts box. In live mode the day view below it shows the
+  shortcuts only (the demo counts / tasks / alerts were fixtures or duplicates).
+- Ownership, hand-over and internal notes reuse the tickets store (`/admin/tickets`), keyed by the item's profile link.
+  No server change. Entity alerts in `services/local-market-store.js` now link to `#/order/<id>` (synced to functions).
+- Tests: `tests/unit/admin-work-inbox.test.js` (items, join, take → note → hand over → close, roles, escaping, wiring).
+- Known limits: two employees pressing «أنا هاخده» at the same second can open two tickets (the first one shows). An
+  item handed to a team whose role cannot view that module stays in «البلاغات» only.
+- Next: internal notes directly on customer / provider profiles (server route), then the payments page in «الفلوس».
+
 ## 2026-11-27 — Full profiles for customers, providers and orders
 - New `apps/admin/modules/profile-360.js` (HSAdminProfile: pure models + views) and `apps/admin/pages/profiles.page.js`
   (registers the hidden routes `#/customer/<id>`, `#/provider/<id>`, `#/order/<id>`, in `LIVE_PAGES`; permissions

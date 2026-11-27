@@ -2,8 +2,8 @@
   "summary": {
     "source_archive": "HANSALEHLAK_PROVIDER_FRONTEND_BATCH01_2026-11-13.zip + AI continuation maps/protocol update (2026-11-13)",
     "inventory_scope": "Complete current working tree after environment normalization; includes frontend, future backend/database scaffolding, tests, assets, and docs.",
-    "file_count": 726,
-    "total_files": 726,
+    "file_count": 728,
+    "total_files": 728,
     "work_queue_count": 141,
     "status_counts": {
       "CONFIGURATION": 33,
@@ -22,7 +22,7 @@
       "IMPLEMENTED (SHELL PARTS)": 1,
       "IMPLEMENTED (SHELL, DEMO)": 1,
       "IMPLEMENTED (SHELL)": 2,
-      "NEEDS_REVIEW": 375,
+      "NEEDS_REVIEW": 377,
       "PARTIALLY IMPLEMENTED": 1,
       "PLACEHOLDER": 64,
       "TEST": 78
@@ -534,7 +534,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md). Loads orders-management.page.js after admin-dashboard.page.js.",
-      "sha256": "47ff68b3d0cc69b4bfd2f6ea62ade3837b73ec72933293671b52adb5623ddcb8",
+      "sha256": "b647abdece2f7fa4d2b34c9df9675770f08e6b59eb40ed9d832377b7e8ee82a6",
       "resolved_dependencies": [
         "apps/admin/styles/admin.css",
         "shared/components/data-grid.js",
@@ -575,7 +575,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 6998
+      "bytes": 7043
     },
     {
       "path": "apps/admin/login.html",
@@ -1052,6 +1052,18 @@
       "bytes": 6483
     },
     {
+      "path": "apps/admin/modules/work-inbox.js",
+      "area": "apps/admin",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "work-inbox.js",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "c0e6050629e78aeaa9f9bfd91281805e66d27d31471a40f7d06d11b2636dd434",
+      "bytes": 21341
+    },
+    {
       "path": "apps/admin/modules/workforce/employee-form.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
@@ -1257,7 +1269,7 @@
       "next_action": "Done. Next: orders-management.page.js (needs shared status-badge/data-grid).",
       "explicit_references": [],
       "notes": "Frontend demo only; figures are fixtures. Verified by tests/unit/admin-dashboard.test.js and Chromium run (docs/TEST_RESULTS.md).",
-      "sha256": "f5de43de7421499ea534c35afec0a5bfb4a380ec85d48f8c639c343f5db42ea4",
+      "sha256": "8ea3d37cbc4808536d2c8ac1a2272db328a03b46173f774d87c9fe5847f1fee9",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -1294,7 +1306,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 16489
+      "bytes": 17238
     },
     {
       "path": "apps/admin/pages/alerts.page.js",
@@ -2697,7 +2709,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md). Also holds .hs-badge styles for shared/components/status-badge.js. Also holds .hs-grid styles for shared/components/data-grid.js.",
-      "sha256": "8c0c1b136242a1df51e8790861c54e14ea4dbbaca4a8f49b84b5fd7bf3ea5d2b",
+      "sha256": "0cc6026bff50c6d17c6df85507f6abf3b1551032ac624481af709e6427b0469e",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2734,7 +2746,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 53469
+      "bytes": 55444
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -10147,7 +10159,7 @@
       "next_action": "تحديثه بالتوازي مع خريطة JSON وMarkdown.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "8e1e9ca2fea535b0af409cc881c316598f73a2bec7eb2fcf2f1aae5ad456f249",
+      "sha256": "cc3f47065249fe246628ccf65ab8d6e889a726bbc9ce3799e8901a5d211b9b3c",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -10183,7 +10195,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 311396
+      "bytes": 311877
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -10243,7 +10255,7 @@
       "next_action": "مراجعتها مع خريطة JSON وتحديثها بعد كل مرحلة.",
       "explicit_references": [],
       "notes": "ملف موجود في النسخة السابقة ولم يكن ضمن جرد الـ246 الأصلي.",
-      "sha256": "b54d7c1854a98abbececf7f393311b0a0f5c25dccd6b06dbe8073e7003c05b14",
+      "sha256": "db67fda6cf92eb27e47c78774fbf19620ec38883dad2855a6c74ced5bd805522",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تم فتح الملف ومراجعة دوره.",
@@ -10279,7 +10291,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 179516
+      "bytes": 179947
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -11222,7 +11234,7 @@
       "next_action": "Review in the relevant task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added during the 2026-11-09 environment normalization pass.",
-      "sha256": "1f3127327bb2db129c0a5d08b9a90e355b9583a1e67fca7917b9b5611fb043e4",
+      "sha256": "64ee436e98385c0c559b3423de750cf3b94c9e387f69e66b0ff90dfeee3855df",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "HANDOFF_NEXT_AI.md",
@@ -11231,7 +11243,7 @@
       "file_behavior": "Inventory entry only; inspect source for exact behavior.",
       "completion_definition": "File responsibility and actual behavior are verified and covered by appropriate checks.",
       "actual_status_ar": "مضاف إلى الجرد الحالي؛ يحتاج فحصًا بحسب المهمة.",
-      "bytes": 105590
+      "bytes": 106681
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -11263,8 +11275,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "d3ce9cc8a684c96a30643f8b2df6f962a8706a3b3e54353d00d7fc47fced4822",
-      "bytes": 83031
+      "sha256": "07685ed6243f86a24887f7802dcb7e9183858e0a23439ff5029d5f1368424a4e",
+      "bytes": 83950
     },
     {
       "path": "docs/MIGRATION_PLAN.md",
@@ -11410,7 +11422,7 @@
       "next_action": "Update only when related implementation changes.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "df7443d89172b91408e279e7679fd91e7628d2f9878c56fb0c198006bd2a1992",
+      "sha256": "afb782a0bfa0ffc5284bcff1777f9556ae0007ee8a469b0ccc270ff7753ca989",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -11447,7 +11459,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 33935
+      "bytes": 34022
     },
     {
       "path": "docs/README.md",
@@ -11708,7 +11720,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "0637d1a4e95ede23fc716e7983672f579f0eb10c61fb39e700bdae1ae3bb581d",
+      "sha256": "12a5a0ff69e779b9ea4983aa5e8b336469a1fab02d96098c8cac1f276cea1f06",
       "bytes": 2469
     },
     {
@@ -11816,8 +11828,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "e458bce9045ea950c67b34f9befb0391ddff53216e98ec59a450f41eb0b45532",
-      "bytes": 103121
+      "sha256": "ef553534cfff1e692b2e34923af62effa942108b02a268c2d3bacf3000da18bb",
+      "bytes": 103225
     },
     {
       "path": "functions/domain/services/notifications-api.js",
@@ -12738,7 +12750,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "c5eae51d4922007d99f434adb06a073ee208053cd6fb53f397ac60dbe4fbb148",
+      "sha256": "324aac39464389559c4f74ff5ab2102d76dd359fb5e06ad801fccbd3c3abdf95",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12775,7 +12787,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 12262
+      "bytes": 12300
     },
     {
       "path": "service-worker.lock.json",
@@ -12786,7 +12798,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "5b582a7ed7a7f1c650a7839767675614c354ff793e99926c1aba6e280602de0d",
+      "sha256": "948389721673faef1b4a073781a62e47cc1e5cf7e10fdb4c3939edeeb9951e0f",
       "bytes": 196
     },
     {
@@ -13243,7 +13255,7 @@
       "next_action": "Protect with regression tests; do not rewrite unnecessarily.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "e458bce9045ea950c67b34f9befb0391ddff53216e98ec59a450f41eb0b45532",
+      "sha256": "ef553534cfff1e692b2e34923af62effa942108b02a268c2d3bacf3000da18bb",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -13282,7 +13294,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 103121
+      "bytes": 103225
     },
     {
       "path": "services/notifications-api.js",
@@ -16071,6 +16083,18 @@
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
       "sha256": "467fd909d656841a41edc8c4a8de579c5a35c372004a97005f0c2bd94d29eded",
       "bytes": 10154
+    },
+    {
+      "path": "tests/unit/admin-work-inbox.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "functional_title": "admin-work-inbox.test.js",
+      "current_responsibility": "Newly discovered file; responsibility and implementation status have not yet been reviewed.",
+      "next_action": "Inspect, classify and document before implementation or deletion.",
+      "explicit_references": [],
+      "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
+      "sha256": "8aaa1d893423f98726fe27c5eec32454224fd56fc759674858a03b6661b31326",
+      "bytes": 8409
     },
     {
       "path": "tests/unit/ai-classify.test.js",

@@ -1,6 +1,6 @@
 {
   "generated_from": "docs/AI_PROJECT_MAP.json",
-  "file_count": 726,
+  "file_count": 728,
   "files": [
     {
       "path": "_redirects",
@@ -146,8 +146,8 @@
       "path": "apps/admin/index.html",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL HOST)",
-      "bytes": 6998,
-      "sha256": "47ff68b3d0cc69b4bfd2f6ea62ade3837b73ec72933293671b52adb5623ddcb8"
+      "bytes": 7043,
+      "sha256": "b647abdece2f7fa4d2b34c9df9675770f08e6b59eb40ed9d832377b7e8ee82a6"
     },
     {
       "path": "apps/admin/login.html",
@@ -297,6 +297,13 @@
       "sha256": "3834f5f00aa5a9a9aad40ce03f5e7e1d1f4da9fc20413f75ef5ae7b6577ab7ae"
     },
     {
+      "path": "apps/admin/modules/work-inbox.js",
+      "area": "apps/admin",
+      "status": "NEEDS_REVIEW",
+      "bytes": 21341,
+      "sha256": "c0e6050629e78aeaa9f9bfd91281805e66d27d31471a40f7d06d11b2636dd434"
+    },
+    {
       "path": "apps/admin/modules/workforce/employee-form.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (FRONTEND DEMO)",
@@ -328,8 +335,8 @@
       "path": "apps/admin/pages/admin-dashboard.page.js",
       "area": "apps/admin",
       "status": "IMPLEMENTED (DEMO)",
-      "bytes": 16489,
-      "sha256": "f5de43de7421499ea534c35afec0a5bfb4a380ec85d48f8c639c343f5db42ea4"
+      "bytes": 17238,
+      "sha256": "8ea3d37cbc4808536d2c8ac1a2272db328a03b46173f774d87c9fe5847f1fee9"
     },
     {
       "path": "apps/admin/pages/alerts.page.js",
@@ -559,8 +566,8 @@
       "path": "apps/admin/styles/admin-components.css",
       "area": "apps/admin",
       "status": "IMPLEMENTED (SHELL PARTS)",
-      "bytes": 53469,
-      "sha256": "8c0c1b136242a1df51e8790861c54e14ea4dbbaca4a8f49b84b5fd7bf3ea5d2b"
+      "bytes": 55444,
+      "sha256": "0cc6026bff50c6d17c6df85507f6abf3b1551032ac624481af709e6427b0469e"
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -2477,8 +2484,8 @@
       "path": "docs/AI_PROJECT_MAP.csv",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 311396,
-      "sha256": "8e1e9ca2fea535b0af409cc881c316598f73a2bec7eb2fcf2f1aae5ad456f249"
+      "bytes": 311877,
+      "sha256": "cc3f47065249fe246628ccf65ab8d6e889a726bbc9ce3799e8901a5d211b9b3c"
     },
     {
       "path": "docs/AI_PROJECT_MAP.json",
@@ -2491,8 +2498,8 @@
       "path": "docs/AI_PROJECT_MAP.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 179516,
-      "sha256": "b54d7c1854a98abbececf7f393311b0a0f5c25dccd6b06dbe8073e7003c05b14"
+      "bytes": 179947,
+      "sha256": "db67fda6cf92eb27e47c78774fbf19620ec38883dad2855a6c74ced5bd805522"
     },
     {
       "path": "docs/API_CONTRACTS.md",
@@ -2876,8 +2883,8 @@
       "path": "docs/HANDOFF_NEXT_AI.md",
       "area": "docs",
       "status": "DOCUMENTATION",
-      "bytes": 105590,
-      "sha256": "1f3127327bb2db129c0a5d08b9a90e355b9583a1e67fca7917b9b5611fb043e4"
+      "bytes": 106681,
+      "sha256": "64ee436e98385c0c559b3423de750cf3b94c9e387f69e66b0ff90dfeee3855df"
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -2890,8 +2897,8 @@
       "path": "docs/MAINTENANCE_GUIDE.md",
       "area": "docs",
       "status": "NEEDS_REVIEW",
-      "bytes": 83031,
-      "sha256": "d3ce9cc8a684c96a30643f8b2df6f962a8706a3b3e54353d00d7fc47fced4822"
+      "bytes": 83950,
+      "sha256": "07685ed6243f86a24887f7802dcb7e9183858e0a23439ff5029d5f1368424a4e"
     },
     {
       "path": "docs/MIGRATION_PLAN.md",
@@ -2932,8 +2939,8 @@
       "path": "docs/PROJECT_TREE.md",
       "area": "docs",
       "status": "CONFIGURATION",
-      "bytes": 33935,
-      "sha256": "df7443d89172b91408e279e7679fd91e7628d2f9878c56fb0c198006bd2a1992"
+      "bytes": 34022,
+      "sha256": "afb782a0bfa0ffc5284bcff1777f9556ae0007ee8a469b0ccc270ff7753ca989"
     },
     {
       "path": "docs/README.md",
@@ -3059,7 +3066,7 @@
       "area": "functions",
       "status": "NEEDS_REVIEW",
       "bytes": 2469,
-      "sha256": "0637d1a4e95ede23fc716e7983672f579f0eb10c61fb39e700bdae1ae3bb581d"
+      "sha256": "12a5a0ff69e779b9ea4983aa5e8b336469a1fab02d96098c8cac1f276cea1f06"
     },
     {
       "path": "functions/domain/services/admin-api.js",
@@ -3121,8 +3128,8 @@
       "path": "functions/domain/services/local-market-store.js",
       "area": "functions",
       "status": "NEEDS_REVIEW",
-      "bytes": 103121,
-      "sha256": "e458bce9045ea950c67b34f9befb0391ddff53216e98ec59a450f41eb0b45532"
+      "bytes": 103225,
+      "sha256": "ef553534cfff1e692b2e34923af62effa942108b02a268c2d3bacf3000da18bb"
     },
     {
       "path": "functions/domain/services/notifications-api.js",
@@ -3562,15 +3569,15 @@
       "path": "service-worker.js",
       "area": "root",
       "status": "CONFIGURATION",
-      "bytes": 12262,
-      "sha256": "c5eae51d4922007d99f434adb06a073ee208053cd6fb53f397ac60dbe4fbb148"
+      "bytes": 12300,
+      "sha256": "324aac39464389559c4f74ff5ab2102d76dd359fb5e06ad801fccbd3c3abdf95"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 196,
-      "sha256": "5b582a7ed7a7f1c650a7839767675614c354ff793e99926c1aba6e280602de0d"
+      "sha256": "948389721673faef1b4a073781a62e47cc1e5cf7e10fdb4c3939edeeb9951e0f"
     },
     {
       "path": "services/admin-api.js",
@@ -3660,8 +3667,8 @@
       "path": "services/local-market-store.js",
       "area": "services",
       "status": "IMPLEMENTED",
-      "bytes": 103121,
-      "sha256": "e458bce9045ea950c67b34f9befb0391ddff53216e98ec59a450f41eb0b45532"
+      "bytes": 103225,
+      "sha256": "ef553534cfff1e692b2e34923af62effa942108b02a268c2d3bacf3000da18bb"
     },
     {
       "path": "services/notifications-api.js",
@@ -4320,6 +4327,13 @@
       "status": "NEEDS_REVIEW",
       "bytes": 10154,
       "sha256": "467fd909d656841a41edc8c4a8de579c5a35c372004a97005f0c2bd94d29eded"
+    },
+    {
+      "path": "tests/unit/admin-work-inbox.test.js",
+      "area": "tests",
+      "status": "NEEDS_REVIEW",
+      "bytes": 8409,
+      "sha256": "8aaa1d893423f98726fe27c5eec32454224fd56fc759674858a03b6661b31326"
     },
     {
       "path": "tests/unit/ai-classify.test.js",

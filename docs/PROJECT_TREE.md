@@ -46,7 +46,8 @@ hansalhlak/
 │   │   │   ├── ops-routes.js
 │   │   │   ├── profile-360.js
 │   │   │   ├── site-content-editor.js
-│   │   │   └── support-settings.js
+│   │   │   ├── support-settings.js
+│   │   │   └── work-inbox.js
 │   │   ├── pages/
 │   │   │   ├── admin-dashboard.page.js
 │   │   │   ├── alerts.page.js
@@ -706,6 +707,7 @@ hansalhlak/
 │       ├── admin-runtime.test.js
 │       ├── admin-shell.test.js
 │       ├── admin-totp.test.js
+│       ├── admin-work-inbox.test.js
 │       ├── ai-classify.test.js
 │       ├── alert-mail.test.js
 │       ├── api-adapters.test.js

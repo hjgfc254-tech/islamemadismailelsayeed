@@ -4,7 +4,7 @@
     "shared/config/legacy-data.js": "39f50b5456f3d685c3f1c06f477e7d90f835d58d850cfee151d1a9fa673dbfff",
     "services/catalog-question-bank.js": "b1b8388fe23aae07c70b5fc6c2953788a9f3929918725d756d88cae3f566effe",
     "services/local-catalog.js": "62a4536301c2b3b1c1927f5a14ac81a4ae01ae3848a3fba22016aee1b830b39c",
-    "services/local-market-store.js": "e458bce9045ea950c67b34f9befb0391ddff53216e98ec59a450f41eb0b45532",
+    "services/local-market-store.js": "ef553534cfff1e692b2e34923af62effa942108b02a268c2d3bacf3000da18bb",
     "services/api-client.js": "33ce93ee20b93ef47850ff8f651d0c1add30012d4876592f75e7be633647d9e1",
     "services/auth-api.js": "7221c02eb6559ce21c465fc5f1987ca47ce43ecefdf963fc901a8e2b3bfd587b",
     "services/orders-api.js": "094eedf0e664c08a6c15ffba32a016e084f16c122f4e0bf7ec2e35fdc6ca55ea",

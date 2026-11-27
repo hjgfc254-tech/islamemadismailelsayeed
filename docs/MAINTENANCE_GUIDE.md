@@ -373,6 +373,15 @@ shows when the admin may open any of its pages and links to the first one allowe
 openable page (`HSAdminShell.openablePages()`). In live mode «الإعدادات» shows one section at a time, and both platform
 rates (markup + fallback) are edited only in «نسب المنصة» (`#/commissions`).
 
+**Work inbox (2026-11-27, `modules/work-inbox.js`, home page):** «صندوق الشغل» lists each thing to do from the read
+model — pending provider, order with no provider, open complaint, platform share overdue (> 7 days), refund in progress —
+filtered by the employee's view permissions, most urgent / oldest first. «أنا هاخده» opens a ticket linked to the item
+(`link` = the profile route, e.g. `#/order/<id>`) and moves it to «doing» on me; «حوّل لـ…» re-assigns the ticket
+(colleague = `owner`, team = `team` + `owner: null`); notes are the ticket notes; «خلصت» closes it. Tabs: مستني حد /
+معايا / مع زمايلي, plus «الفريق» (who holds what) for the owner and admins. No new route: `/admin/tickets` and
+`/admin/alerts`. Alert kinds covered item by item (`COVERED`) are not repeated in the box; entity alerts now link to the
+profile (`#/order/<id>`).
+
 **Full profiles (2026-11-27, `modules/profile-360.js`):** one page per record — `#/customer/<id>`, `#/provider/<id>`,
 `#/order/<id>` — with everything about it, links between them, the supported actions (same API adapters and permissions
 as the list pages), and «انسخ الرابط» so an employee can hand a record to a colleague. Opened from the Ctrl+K palette

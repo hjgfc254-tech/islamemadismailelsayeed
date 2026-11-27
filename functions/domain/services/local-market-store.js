@@ -889,7 +889,7 @@ const MP = (() => {
       for (const r of db.serviceRequests) {
         if (!['received', 'searching'].includes(r.status) || api.providerOf(r.id)) continue;
         const age = min(r.createdAt); if (age < 30) continue;
-        raiseAlert({ team:'ops', severity: age >= 120 ? 'critical' : 'normal', kind:'request.unassigned', title:'طلب من غير مقدم خدمة', body:'الطلب ' + (r.no || r.id) + ' من ' + Math.round(age) + ' دقيقة من غير مقدم خدمة', link:'#/orders', dedupeKey:'req-unassigned:' + r.id }); n++;
+        raiseAlert({ team:'ops', severity: age >= 120 ? 'critical' : 'normal', kind:'request.unassigned', title:'طلب من غير مقدم خدمة', body:'الطلب ' + (r.no || r.id) + ' من ' + Math.round(age) + ' دقيقة من غير مقدم خدمة', link:'#/order/' + encodeURIComponent(r.id), dedupeKey:'req-unassigned:' + r.id }); n++;
       }
       const pend = db.providers.filter(p => p.status === 'pending' && min(p.createdAt) >= 1440);
       if (pend.length) { raiseAlert({ team:'ops', severity:'normal', kind:'provider.pending', title:'طلبات انضمام مستنية مراجعة', body: pend.length + ' مقدم خدمة مستني المراجعة من أكتر من يوم', link:'#/providers', dedupeKey:'providers-pending' }); n++; }
@@ -926,7 +926,7 @@ const MP = (() => {
           r.status = 'searching';
           notify('customer:' + r.customerId, 'مفيش فنيين قدروا يردّوا على طلبك ' + r.no + ' — فريقنا هيدوّرلك على فني بنفسه', r.id);
           notify('admin', 'جولة العروض على الطلب ' + r.no + ' خلصت من غير عروض — محتاج إسناد يدوي', r.id);
-          raiseAlert({ team:'ops', severity:'normal', kind:'bidding.empty', title:'جولة العروض خلصت من غير عروض', body:'الطلب ' + r.no + ' محتاج إسناد يدوي لمقدم خدمة', link:'#/orders', dedupeKey:'bidding-empty:' + r.id });
+          raiseAlert({ team:'ops', severity:'normal', kind:'bidding.empty', title:'جولة العروض خلصت من غير عروض', body:'الطلب ' + r.no + ' محتاج إسناد يدوي لمقدم خدمة', link:'#/order/' + encodeURIComponent(r.id), dedupeKey:'bidding-empty:' + r.id });
           changed.push(r.id);
         }
       }
@@ -1191,7 +1191,7 @@ const MP = (() => {
       notify('admin','شكوى جديدة على الطلب '+(reqId||''), reqId);
       { const pay = /payment|cash/i.test(String((meta&&meta.kind)||''));
         raiseAlert({ team:'ops', severity: pay ? 'critical' : 'normal', kind: pay ? 'cash.dispute' : 'complaint.new', title: pay ? 'خلاف على الدفع' : 'شكوى جديدة',
-          body: (pay ? 'خلاف بين العميل والفني على استلام الحساب' : 'شكوى مفتوحة محتاجة رد') + (reqId ? ' — الطلب ' + ((get('serviceRequests', reqId)||{}).no || reqId) : ''), link:'#/complaints', dedupeKey:'complaint:' + db.complaints[0].id }); }
+          body: (pay ? 'خلاف بين العميل والفني على استلام الحساب' : 'شكوى مفتوحة محتاجة رد') + (reqId ? ' — الطلب ' + ((get('serviceRequests', reqId)||{}).no || reqId) : ''), link: reqId ? '#/order/' + encodeURIComponent(reqId) : '#/complaints', dedupeKey:'complaint:' + db.complaints[0].id }); }
       save();
       return db.complaints[0];
     },

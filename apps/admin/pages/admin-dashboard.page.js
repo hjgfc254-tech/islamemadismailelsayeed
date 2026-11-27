@@ -151,8 +151,12 @@
     });
     return host;
   }
+  const shortcutsHtml = () => `<section class="dash-card" aria-labelledby="dash-h-short"><h2 id="dash-h-short">اختصارات</h2>
+      <div class="dash-short">${SHORTCUTS.map(([id, l, i]) => link(id, `<span aria-hidden="true">${icon(i)}</span>${esc(l)}`, 'dash-sc')).join('')}</div></section>`;
   const viewHtml = () => {
     const m = buildModel(state.period);
+    /* live: the work inbox above lists every item (modules/work-inbox.js); the demo counts / tasks / alerts are fixtures */
+    if (root.HSAdminLive && root.HSAdminLive.enabled() && root.HSWorkInbox) return shortcutsHtml();
     const pend = m.tasks.filter((t) => !t.done).length;
     return `${queueHtml()}
     <div class="dash-cols">
@@ -185,12 +189,14 @@
       const t = e.target;
       if (t.dataset && t.dataset.task) { state.done[t.dataset.task] = t.checked; paint('[data-task="' + t.dataset.task + '"]'); }
     });
-    /* «صندوق الشغل» (modules/ops-center.js): my team's open alerts + my tickets, above the day view */
-    if (!root.HSOpsCenter || !root.HSOpsCenter.mountWorkBox) return wrap;
+    /* «صندوق الشغل» above the day view: item by item with «أنا هاخده» / «حوّل لـ…» / notes (modules/work-inbox.js);
+       falls back to the alerts + tickets box (modules/ops-center.js) */
+    const inbox = root.HSWorkInbox && root.HSWorkInbox.mount;
+    if (!inbox && (!root.HSOpsCenter || !root.HSOpsCenter.mountWorkBox)) return wrap;
     const outer = root.document.createElement('div');
     const box = root.document.createElement('div');
     outer.append(box, wrap);
-    root.HSOpsCenter.mountWorkBox(box);
+    if (inbox) root.HSWorkInbox.mount(box); else root.HSOpsCenter.mountWorkBox(box);
     return outer;
   };
 
