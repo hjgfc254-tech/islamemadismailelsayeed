@@ -373,6 +373,11 @@ shows when the admin may open any of its pages and links to the first one allowe
 openable page (`HSAdminShell.openablePages()`). In live mode «الإعدادات» shows one section at a time, and both platform
 rates (markup + fallback) are edited only in «نسب المنصة» (`#/commissions`).
 
+**Full profiles (2026-11-27, `modules/profile-360.js`):** one page per record — `#/customer/<id>`, `#/provider/<id>`,
+`#/order/<id>` — with everything about it, links between them, the supported actions (same API adapters and permissions
+as the list pages), and «انسخ الرابط» so an employee can hand a record to a colleague. Opened from the Ctrl+K palette
+(records), the «تشغيل السوق» names and the live «الملف الكامل» row action on orders / customers / providers.
+
 | Page | Page file (+ modules) | Permission | Server routes / data |
 |---|---|---|---|
 | `#/dashboard` | `pages/admin-dashboard.page.js` (+ `ops-center.js` work box, `mini-charts.js`) | open to every employee | `GET /admin/summary`, `/admin/alerts`, `/admin/tickets`, sync read model |
@@ -382,6 +387,9 @@ rates (markup + fallback) are edited only in «نسب المنصة» (`#/commiss
 | `#/marketplace` | `pages/marketplace.page.js` | `providers.view` (+ each tab's module) | `/admin/providers/:id/status|rate`, `/admin/requests/:id/assign`, `/admin/customers/:id/status`, `/admin/transactions/:id/collection`, `POST /admin/commission`, `/requests/:id/cancel`, `/complaints/:id/resolve` |
 | `#/orders` | `pages/orders-management.page.js` (+ admin-live) | `orders.view` | sync; `POST /requests/:id/cancel` |
 | `#/quotes` | `pages/quotes-management.page.js` (+ admin-live) | `orders.view` | sync (read-only) |
+| `#/order` (hidden, `#/order/<id>`) | `modules/profile-360.js` — full order profile | `orders.view` (+ `orders.decide` / `finance.edit` per action) | sync; `/admin/requests/:id/assign`, `/requests/:id/cancel`, `/complaints/:id/resolve`, `/admin/payments/:id/release|refund` |
+| `#/customer` (hidden, `#/customer/<id>`) | `modules/profile-360.js` — full customer profile | `customers.view` (+ `customers.decide`) | sync; `/admin/customers/:id/status`, `/complaints/:id/resolve` |
+| `#/provider` (hidden, `#/provider/<id>`) | `modules/profile-360.js` — full provider profile | `providers.view` (+ `providers.decide` / `.edit`) | sync; `/admin/providers/:id/status|warn|rate`, `/complaints/:id/resolve` |
 | `#/providers` | `pages/providers-management.page.js` (+ admin-live) | `providers.view` | `POST /admin/providers/:id/status|warn` |
 | `#/customers` | `pages/customers-management.page.js` (+ admin-live) | `customers.view` | `POST /admin/customers/:id/status` |
 | `#/complaints` | `pages/complaints-management.page.js` (+ admin-live) | `complaints.view` | `POST /complaints/:id/resolve` |

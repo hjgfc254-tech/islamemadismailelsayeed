@@ -366,6 +366,25 @@ a.adm-link:hover{background:var(--nav-dark-hover);color:var(--on-brand)}
 .ins-tabs{display:flex;flex-wrap:wrap;gap:var(--sp-1);margin-bottom:var(--sp-4);padding:var(--sp-1);border-radius:var(--r-lg);background:var(--surface-sunken)}
 .ins-tabs button{min-height:var(--sp-7);padding:0 var(--sp-4);border:0;border-radius:var(--r-md);background:transparent;color:var(--text-secondary);font:inherit;font-weight:700;cursor:pointer}
 .ins-tabs button[aria-selected="true"]{background:var(--surface-primary);color:var(--text-primary);box-shadow:var(--shadow-1)}
+/* Full profiles (modules/profile-360.js): #/customer · #/provider · #/order */
+.pf{display:grid;gap:var(--sp-4)}
+.pf-back{margin:0}
+.pf-head{display:flex;flex-wrap:wrap;align-items:flex-start;justify-content:space-between;gap:var(--sp-3);padding:var(--sp-4);border:1px solid var(--border-subtle);border-radius:var(--r-lg);background:var(--surface-primary)}
+.pf-name{margin:0;font-size:var(--fs-xl)}
+.pf-head p{margin:var(--sp-1) 0 0}
+.pf-badges{display:flex;flex-wrap:wrap;gap:var(--sp-1)}
+.pf-acts{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center}
+.pf-badge{display:inline-flex;align-items:center;min-height:var(--sp-6);padding-inline:var(--sp-2);border-radius:var(--r-pill, var(--r-lg));background:var(--surface-sunken);color:var(--text-secondary);font-size:var(--fs-xs);font-weight:700}
+.pf-badge.is-ok{background:var(--success-soft);color:var(--success)}
+.pf-badge.is-warn{background:var(--warning-soft);color:var(--text-primary)}
+.pf-badge.is-bad{background:var(--danger-soft);color:var(--danger)}
+.pf-facts{grid-template-columns:repeat(auto-fill,minmax(min(100%,10rem),1fr))}
+.pf-card{display:grid;gap:var(--sp-3);align-content:start;padding:var(--sp-4);border:1px solid var(--border-subtle);border-radius:var(--r-lg);background:var(--surface-primary)}
+.pf-h{margin:0;font-size:var(--fs-md)}
+.pf-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:var(--sp-4)}
+.pf-assign{display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--sp-2);padding:var(--sp-3) var(--sp-4);border:1px solid var(--border-default);border-radius:var(--r-lg);background:var(--surface-sunken)}
+.pf-rate{display:flex;flex-wrap:wrap;align-items:flex-end;gap:var(--sp-2)}
+.pf-timeline{margin:0;padding-inline-start:var(--sp-5);display:grid;gap:var(--sp-2)}
 /* Section tabs (admin-shell SECTIONS): sibling pages of one menu entry. Scrolls sideways on narrow screens. */
 .adm-tabs{display:flex;gap:var(--sp-1);margin-block-end:var(--sp-4);padding:var(--sp-1);border-radius:var(--r-lg);background:var(--surface-sunken);overflow-x:auto;scrollbar-width:thin}
 .adm-tabs[hidden]{display:none}

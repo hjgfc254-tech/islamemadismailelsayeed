@@ -126,7 +126,8 @@
       caption: 'قائمة العملاء', columns: COLUMNS, rows: customers, pageSize: 10, rowId: (r) => r.id,
       searchKeys: ['name', 'phone', 'area'],
       filters: [{ key: 'status', label: 'الحالة', options: Object.keys(STATUS).map((k) => ({ value: k, label: STATUS[k].label })) }, { key: 'area', label: 'المنطقة' }],
-      rowActions: [{ id: 'details', label: 'التفاصيل', onClick: (r) => open(r.id) }],
+      rowActions: [{ id: 'details', label: 'التفاصيل', onClick: (r) => open(r.id) }].concat(L && root.HSAdminProfile   /* live: the full profile (modules/profile-360.js) */
+        ? [{ id: 'profile', label: 'الملف الكامل', onClick: (r) => { root.location.hash = root.HSAdminProfile.href('customer', r.id); } }] : []),
       emptyText: 'لا يوجد عملاء في البيانات التجريبية.', onRetry: () => grid.setRows(customers)
     });
     const sync = () => { grid.setRows(customers); paintSum(); };

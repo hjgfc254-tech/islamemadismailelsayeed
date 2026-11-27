@@ -27,6 +27,8 @@
     const emp = S.current();
     return !!emp && (module === 'commissions' ? true : G.can(emp, module, action));   /* commissions: outside the demo RBAC catalog */
   };
+  /* names open the full profile (modules/profile-360.js) when it is loaded */
+  const pf = (kind, id, text) => (root.HSAdminProfile ? `<a href="${esc(root.HSAdminProfile.href(kind, id))}">${esc(text)}</a>` : esc(text));
   const btn = (attrs, text, cls, ok) => `<button type="button" class="adm-btn ${cls || ''}" ${attrs}${ok === false ? ' disabled title="لا تملك صلاحية تنفيذ هذا الإجراء"' : ''}>${text}</button>`;
 
   /* ───── Pure view models (unit-tested) ───── */
@@ -43,7 +45,7 @@
         : p.status === 'approved' ? btn(`data-mk="psusp" data-id="${esc(p.id)}"`, 'تعليق', 'adm-btn-d', ok)
         : p.status === 'suspended' ? btn(`data-mk="psusp" data-id="${esc(p.id)}"`, 'إعادة تفعيل', 'adm-btn-p', ok)
         : btn(`data-mk="padmit" data-id="${esc(p.id)}"`, 'قبول بعد المراجعة', '', ok);
-      return `<tr data-row="${esc(p.id)}"><th scope="row">${esc(p.name)}<br><small class="ord-muted">${esc(p.phone || '')}</small></th><td>${esc((p.cats || []).map((c) => M.catName(c)).join('، '))}</td><td>${esc((p.govs || []).join('، '))}</td>
+      return `<tr data-row="${esc(p.id)}"><th scope="row">${pf('provider', p.id, p.name)}<br><small class="ord-muted">${esc(p.phone || '')}</small></th><td>${esc((p.cats || []).map((c) => M.catName(c)).join('، '))}</td><td>${esc((p.govs || []).join('، '))}</td>
         <td>${esc(PSTATUS[p.status] || p.status)}</td><td><label class="mk-rate">عمولة خاصة %<input type="number" min="0" max="100" step="0.5" value="${p.specialRate == null ? '' : esc(p.specialRate)}" data-mk-rate="${esc(p.id)}" ${okEdit ? '' : 'disabled'} aria-label="عمولة خاصة لـ ${esc(p.name)}"></label>${btn(`data-mk="prate" data-id="${esc(p.id)}"`, 'حفظ', '', okEdit)}</td><td class="mk-acts">${acts}</td></tr>`;
     };
     return `<p class="ord-muted">طلبات الانضمام من تطبيق مقدم الخدمة تظهر هنا بحالة «قيد المراجعة» ولا تستقبل طلبات حتى القبول.</p>
@@ -62,7 +64,7 @@
       const assign = assignable ? `<label class="mk-rate">إسناد إلى<select data-mk-pick="${esc(r.id)}" ${ok ? '' : 'disabled'}><option value="">اختر مقدم خدمة</option>${cands.length ? `<optgroup label="مطابقون">${cands.map((p) => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('')}</optgroup>` : ''}${others.length ? `<optgroup label="خارج التطابق الكامل">${others.map((p) => `<option value="${esc(p.id)}">${esc(p.name)}${p.available ? '' : ' (غير متاح)'}</option>`).join('')}</optgroup>` : ''}</select></label>${btn(`data-mk="assign" data-id="${esc(r.id)}"`, 'إسناد', 'adm-btn-p', ok)}${btn(`data-mk="automatch" data-id="${esc(r.id)}"`, 'مطابقة تلقائية', '', ok)}` : '';
       const cancel = CANCELLABLE.includes(r.status) ? btn(`data-mk="cancel" data-id="${esc(r.id)}"`, 'إلغاء الطلب', 'adm-btn-d', ok) : '';
       const quote = q ? `${money(q.total)} — ${q.status === 'approved' ? 'مقبول' : q.status === 'rejected' ? 'مرفوض' : 'بانتظار العميل'}` : (r.freeService ? 'خدمة مجانية' : '—');
-      return `<tr data-row="${esc(r.id)}"><th scope="row"><bdi dir="ltr">${esc(r.no)}</bdi><br><small class="ord-muted">${esc(r.serviceName)}</small></th><td>${esc(r.gov)} — ${esc(r.area)}</td>
+      return `<tr data-row="${esc(r.id)}"><th scope="row"><bdi dir="ltr">${pf('order', r.id, r.no)}</bdi><br><small class="ord-muted">${esc(r.serviceName)}</small></th><td>${esc(r.gov)} — ${esc(r.area)}</td>
         <td>${esc((typeof STATUS_LABEL !== 'undefined' && STATUS_LABEL[r.status]) || r.status)}</td><td>${esc(prov ? prov.name : '—')}</td><td>${esc(quote)}</td><td class="mk-acts">${assign}${cancel}</td></tr>`;
     };
     return `<div class="rl-scroll" tabindex="0" role="region" aria-label="الطلبات"><table class="rl-table"><caption>طلبات الخدمة (${list.length})</caption>
@@ -73,7 +75,7 @@
     const db = M.db(), ok = allowed('customers', 'decide');
     if (!db.customers.length) return '<div class="adm-state is-empty"><h2>لا يوجد عملاء بعد</h2><p>يظهر العملاء بعد تسجيل الدخول التجريبي أو إنشاء طلب في تطبيق العميل.</p></div>';
     return `<div class="rl-scroll" tabindex="0" role="region" aria-label="العملاء"><table class="rl-table"><caption>العملاء (${db.customers.length})</caption><thead><tr><th scope="col">العميل</th><th scope="col">الهاتف</th><th scope="col">الطلبات</th><th scope="col">الحالة</th><th scope="col">إجراء</th></tr></thead><tbody>
-      ${db.customers.map((c) => `<tr data-row="${esc(c.id)}"><th scope="row">${esc(c.name)}</th><td><bdi dir="ltr">${esc(c.phone)}</bdi></td><td>${db.serviceRequests.filter((r) => r.customerId === c.id).length}</td><td>${c.status === 'suspended' ? 'معلّق' : 'نشط'}</td><td>${btn(`data-mk="csusp" data-id="${esc(c.id)}"`, c.status === 'suspended' ? 'إعادة تفعيل' : 'تعليق', c.status === 'suspended' ? 'adm-btn-p' : 'adm-btn-d', ok)}</td></tr>`).join('')}</tbody></table></div>`;
+      ${db.customers.map((c) => `<tr data-row="${esc(c.id)}"><th scope="row">${pf('customer', c.id, c.name)}</th><td><bdi dir="ltr">${esc(c.phone)}</bdi></td><td>${db.serviceRequests.filter((r) => r.customerId === c.id).length}</td><td>${c.status === 'suspended' ? 'معلّق' : 'نشط'}</td><td>${btn(`data-mk="csusp" data-id="${esc(c.id)}"`, c.status === 'suspended' ? 'إعادة تفعيل' : 'تعليق', c.status === 'suspended' ? 'adm-btn-p' : 'adm-btn-d', ok)}</td></tr>`).join('')}</tbody></table></div>`;
   }
 
   function complaintsTab(M) {

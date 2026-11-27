@@ -20,9 +20,12 @@
   function records(q) {
     if (typeof MP === 'undefined' || !q) return [];
     const d = MP.db(), out = [], n = norm(q);
-    for (const r of d.serviceRequests || []) if (norm(r.no).includes(n) || norm(r.serviceName).includes(n)) out.push({ kind: 'طلب', label: `${r.no} — ${r.serviceName}`, page: 'orders', q: r.no });
-    for (const c of d.customers || []) if (norm(c.name).includes(n) || String(c.phone || '').includes(q)) out.push({ kind: 'عميل', label: `${c.name} — ${c.phone || ''}`, page: 'customers', q: c.name });
-    for (const p of d.providers || []) if (norm(p.name).includes(n) || String(p.phone || '').includes(q)) out.push({ kind: 'مقدم خدمة', label: p.name, page: 'providers', q: p.name });
+    /* a record opens its full profile (modules/profile-360.js) when that page is available to this admin */
+    const S = root.HSAdminShell, P = root.HSAdminProfile;
+    const prof = (kind, id) => (P && S && S.isRegistered(kind) && (!S.canView || S.canView(kind)) ? { hash: P.href(kind, id) } : null);
+    for (const r of d.serviceRequests || []) if (norm(r.no).includes(n) || norm(r.serviceName).includes(n)) out.push(Object.assign({ kind: 'طلب', label: `${r.no} — ${r.serviceName}`, page: 'orders', q: r.no }, prof('order', r.id)));
+    for (const c of d.customers || []) if (norm(c.name).includes(n) || String(c.phone || '').includes(q)) out.push(Object.assign({ kind: 'عميل', label: `${c.name} — ${c.phone || ''}`, page: 'customers', q: c.name }, prof('customer', c.id)));
+    for (const p of d.providers || []) if (norm(p.name).includes(n) || String(p.phone || '').includes(q)) out.push(Object.assign({ kind: 'فني', label: `${p.name}${p.phone ? ' — ' + p.phone : ''}`, page: 'providers', q: p.name }, prof('provider', p.id)));
     return out.slice(0, 20);
   }
   function paint(q) {
@@ -44,6 +47,7 @@
   function choose(i) {
     const it = items[i]; if (!it) return;
     dlg.close();
+    if (it.hash) { root.location.hash = it.hash; return; }   /* full profile of the record */
     root.location.hash = '#/' + it.page;
     if (it.q) setTimeout(() => {
       const box = root.document.querySelector('main input[type="search"], .adm-main input[type="search"], input[type="search"]');
@@ -54,7 +58,7 @@
     if (!dlg) {
       dlg = root.document.createElement('dialog');
       dlg.className = 'cp'; dlg.setAttribute('dir', 'rtl'); dlg.setAttribute('aria-label', 'بحث سريع');
-      dlg.innerHTML = `<div class="cp-in"><input type="search" role="combobox" aria-expanded="true" aria-controls="cp-list" aria-autocomplete="list" placeholder="ابحث عن صفحة، رقم طلب، عميل أو مقدم خدمة…" autocomplete="off">
+      dlg.innerHTML = `<div class="cp-in"><input type="search" role="combobox" aria-expanded="true" aria-controls="cp-list" aria-autocomplete="list" placeholder="ابحث عن صفحة، رقم طلب، أو اسم/موبايل عميل أو فني…" autocomplete="off">
         <ul id="cp-list" role="listbox" data-cp-list></ul><p class="cp-hint">↑ ↓ للتنقل • Enter للفتح • Esc للإغلاق</p></div>`;
       root.document.body.appendChild(dlg);
       const input = dlg.querySelector('input');

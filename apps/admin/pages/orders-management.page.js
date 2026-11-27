@@ -146,7 +146,8 @@
       caption: 'قائمة الطلبات', columns: COLUMNS, rows: orders, pageSize: 10, rowId: (r) => r.id,
       searchKeys: ['no', 'customer', 'service', 'provider', 'area'],
       filters: [{ key: 'status', label: 'الحالة', options: statusOptions() }, { key: 'category', label: 'التصنيف' }, { key: 'area', label: 'المنطقة' }],
-      rowActions: [{ id: 'details', label: 'التفاصيل', onClick: (r) => open(r.id) }],
+      rowActions: [{ id: 'details', label: 'التفاصيل', onClick: (r) => open(r.id) }].concat(L && root.HSAdminProfile   /* live: the full profile (modules/profile-360.js) */
+        ? [{ id: 'profile', label: 'الملف الكامل', onClick: (r) => { root.location.hash = root.HSAdminProfile.href('order', r.id); } }] : []),
       emptyText: 'لا توجد طلبات في البيانات التجريبية.',
       onRetry: () => grid.setRows(orders)
     });

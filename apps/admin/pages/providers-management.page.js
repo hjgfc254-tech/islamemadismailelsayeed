@@ -128,7 +128,8 @@
       caption: 'قائمة مقدمي الخدمة', columns: COLUMNS, rows: providers, pageSize: 10, rowId: (r) => r.id,
       searchKeys: ['name', 'phone', 'specialty', 'area'],
       filters: [{ key: 'status', label: 'حالة الملف', options: Object.keys(STATUS).map((k) => ({ value: k, label: STATUS[k] })) }, { key: 'specialty', label: 'التخصص' }, { key: 'area', label: 'المنطقة' }],
-      rowActions: [{ id: 'details', label: 'فتح الملف', onClick: (r) => { openId = r.id; paintDlg(); d.open(); } }],
+      rowActions: [{ id: 'details', label: 'التفاصيل', onClick: (r) => { openId = r.id; paintDlg(); d.open(); } }].concat(L && root.HSAdminProfile   /* live: the full profile (modules/profile-360.js) */
+        ? [{ id: 'profile', label: 'الملف الكامل', onClick: (r) => { root.location.hash = root.HSAdminProfile.href('provider', r.id); } }] : []),
       emptyText: 'لا يوجد مقدمو خدمة في البيانات التجريبية.', onRetry: () => grid.setRows(providers)
     });
     const sync = () => { grid.setRows(providers); paintSum(); };

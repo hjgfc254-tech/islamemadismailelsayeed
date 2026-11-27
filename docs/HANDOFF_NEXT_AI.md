@@ -4,6 +4,21 @@
 > (in particular, entries that say the legacy bridge "must be kept", that profile editing is "disabled", or that the project is
 > "frontend only" are superseded). The system map is `docs/MAINTENANCE_GUIDE.md`.
 
+## 2026-11-27 — Full profiles for customers, providers and orders
+- New `apps/admin/modules/profile-360.js` (HSAdminProfile: pure models + views) and `apps/admin/pages/profiles.page.js`
+  (registers the hidden routes `#/customer/<id>`, `#/provider/<id>`, `#/order/<id>`, in `LIVE_PAGES`; permissions
+  = the list's module, actions need `.decide` / `.edit` / `finance.edit`).
+- One page per record: facts, related records with links between them, complaints, reviews, payment / voucher, timeline,
+  offers. Actions use the existing adapters only: assign / auto-match / cancel (with a reason), approve / reject /
+  suspend / warn / special rate, customer suspend, resolve complaint, release / refund a held online payment.
+  «انسخ الرابط» hands a record to a colleague.
+- Entry points: Ctrl+K records open the profile; «تشغيل السوق» names are links; live «الملف الكامل» row action on
+  orders / customers / providers.
+- Tests: `tests/unit/admin-profile-360.test.js` (models, links, wiring, escaping). Browser: profiles render, assigning
+  from the order profile works; runners `admin-app`, `admin-controls` green.
+- Next (owner-approved plan): role-based work inbox with «أنا هاخده» / «حوّل لـ…», then internal notes (needs a server
+  route), then the payments page inside «الفلوس».
+
 ## 2026-11-27 — Admin Center simplified (no control removed)
 - **Menu sections:** `SECTIONS` in `apps/admin/admin-shell.js`. Related pages share one menu entry and show as tabs
   (`#adm-tabs`): «مهام اليوم», «الشكاوى والتقييمات», «الكتالوج والأسعار», «الفلوس», «الفريق والصلاحيات». Menu: 26 → 16

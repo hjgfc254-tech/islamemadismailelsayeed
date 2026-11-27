@@ -20,7 +20,8 @@
     /* teams release (2026-11-22): money pages need the finance module, the rest follow their team */
     finance: 'finance', commissions: 'finance', settlements: 'finance', reports: 'finance', quotes: 'orders', insights: 'orders',
     tickets: 'tickets', alerts: 'alerts', tech: 'tech', 'content-studio': 'marketing',
-    callcenter: 'callcenter'   /* call centre (2026-11-25): owner / admin / callcenter role */
+    callcenter: 'callcenter',   /* call centre (2026-11-25): owner / admin / callcenter role */
+    customer: 'customers', provider: 'providers', order: 'orders'   /* full profiles (2026-11-27): same module as their list */
   });
   const rbac = () => root.HSAdminRbac || null;
 

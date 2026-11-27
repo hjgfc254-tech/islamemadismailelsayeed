@@ -7,7 +7,7 @@ const I=shell._internals;
 test('navigation covers every documented admin page except hidden sub-pages',()=>{
   const ids=I.flatItems().map(i=>i.id);
   const pageFiles=fs.readdirSync(path.join(root,'apps/admin/pages')).map(f=>f.replace('.page.js',''));
-  const map={'admin-dashboard':'dashboard','finance-dashboard':'finance','system-settings':'settings','tech-center':'tech','audit-log':'audit','providers-management':'providers','customers-management':'customers','orders-management':'orders','quotes-management':'quotes','services-management':'services','categories-management':'categories','complaints-management':'complaints','reviews-management':'reviews','notifications-management':'notifications'};
+  const map={'admin-dashboard':'dashboard','finance-dashboard':'finance','system-settings':'settings','tech-center':'tech','audit-log':'audit','providers-management':'providers','customers-management':'customers','orders-management':'orders','quotes-management':'quotes','services-management':'services','categories-management':'categories','complaints-management':'complaints','reviews-management':'reviews','notifications-management':'notifications','profiles':'order'};
   for(const f of pageFiles){ if(I.HIDDEN_PAGES[f]) continue; const id=map[f]||f; if(I.HIDDEN_PAGES[id]) continue; assert(ids.includes(id),'missing nav item for '+f+' ('+id+')'); }
   assert.strictEqual(new Set(ids).size,ids.length,'duplicate nav ids');
 });

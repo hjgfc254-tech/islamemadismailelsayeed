@@ -18,7 +18,7 @@
    • CLEAR_CACHE  — مسح كل الكاش (لأدوات العرض التجريبي).
    ═══════════════════════════════════════════════════════════════ */
 
-const CACHE = 'hansalhlak-v11-firebase-125';
+const CACHE = 'hansalhlak-v11-firebase-128';
 
 /* الملفات الأساسية — يجب أن تعمل offline بعد أول زيارة */
 const FILES = [
@@ -131,6 +131,8 @@ const FILES = [
   'apps/admin/modules/marketing-editor.js',
   'apps/admin/modules/mini-charts.js',
   'apps/admin/modules/command-palette.js',
+  'apps/admin/modules/profile-360.js',
+  'apps/admin/pages/profiles.page.js',
   'shared/content/site-content.js',
   'assets/vendor/firebase/13.1.0/firebase-app.js',
   'assets/vendor/firebase/13.1.0/firebase-auth.js',

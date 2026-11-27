@@ -44,6 +44,7 @@ hansalhlak/
 │   │   │   ├── ops-center.js
 │   │   │   ├── ops-core.js
 │   │   │   ├── ops-routes.js
+│   │   │   ├── profile-360.js
 │   │   │   ├── site-content-editor.js
 │   │   │   └── support-settings.js
 │   │   ├── pages/
@@ -64,6 +65,7 @@ hansalhlak/
 │   │   │   ├── notifications-management.page.js
 │   │   │   ├── orders-management.page.js
 │   │   │   ├── permissions.page.js
+│   │   │   ├── profiles.page.js
 │   │   │   ├── providers-management.page.js
 │   │   │   ├── quotes-management.page.js
 │   │   │   ├── reports.page.js
@@ -700,6 +702,7 @@ hansalhlak/
 │       ├── admin-live-editors.test.js
 │       ├── admin-modules.test.js
 │       ├── admin-platform-controls.test.js
+│       ├── admin-profile-360.test.js
 │       ├── admin-runtime.test.js
 │       ├── admin-shell.test.js
 │       ├── admin-totp.test.js

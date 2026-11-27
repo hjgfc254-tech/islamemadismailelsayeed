@@ -57,7 +57,7 @@ test('admin, firebase mode: identity from the server only; fixture pages gated; 
   assert.match(app, /if \(root\.HSFirebaseConfig && root\.HSFirebaseConfig\.mode === 'firebase'\) return startFirebase\(host, d\);/, 'no demo roster picker in firebase mode');
   assert.match(app, /d\.session\.select\(a\.employeeId\)/, 'the shell opens for the server-resolved employee');
   const shell = read('apps/admin/admin-shell.js');
-  assert.match(shell, /const LIVE_PAGES = new Set\(\['marketplace', 'workforce', 'employee-details', 'roles', 'permissions',\s*'orders', 'customers', 'providers', 'complaints', 'reviews', 'categories', 'quotes', 'finance', 'dashboard', 'settlements',\s*'controls', 'tech', 'alerts', 'tickets', 'callcenter', 'insights'\]\);/);
+  assert.match(shell, /const LIVE_PAGES = new Set\(\['marketplace', 'workforce', 'employee-details', 'roles', 'permissions',\s*'orders', 'customers', 'providers', 'complaints', 'reviews', 'categories', 'quotes', 'finance', 'dashboard', 'settlements',\s*'controls', 'tech', 'alerts', 'tickets', 'callcenter', 'insights', 'customer', 'provider', 'order'\]\);/);
   assert.match(shell, /else if \(firebaseMode\(\) && !LIVE_PAGES\.has\(id\)\) \{/, 'fixture-backed pages never render fixtures in firebase mode');
   assert.match(shell, /C\.request\('GET', '\/admin\/summary'\)/, 'the dashboard shows live server counts instead of fixture KPIs');
   assert.match(shell, /\$\{firebaseMode\(\) \? '' : '<span class="adm-chip" role="note">واجهة تجريبية<\/span>'\}/);
