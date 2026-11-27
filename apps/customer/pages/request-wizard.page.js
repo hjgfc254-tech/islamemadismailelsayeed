@@ -719,7 +719,7 @@ Object.assign(screens, {
         <div class="pc-body"><small>سعر الخدمة</small><b class="pc-amount"><span class="sk sk-line w40"></span></b><span class="pc-note"><span class="pc-lock">${safeIc('shield')}</span><span class="pc-text">جارٍ حساب السعر…</span></span></div>
       </div>
       ${CAT.needsVisit(w.item, w.unknown ? '' : w.problem) ? `<div class="need">${safeIc('info')}<span>الفني سيعاين المشكلة أولًا ثم يحدد التكلفة النهائية.</span></div>` : ''}
-      <div class="need wz-reassure">${safeIc('shield')}<span>مش هتدفع أي حاجة دلوقتي، وتقدر تلغي الطلب ببلاش لحد ما الفني يتحرك.</span></div>
+      <div class="need wz-reassure">${safeIc('shield')}<span>${(() => { try { const c = MP.payConfig(); if (c.online && c.gateway) return 'مش هتدفع أي حاجة دلوقتي — بعد ما تتفق على السعر تختار: كاش للفني بعد الشغل، أو أونلاين وفلوسك محجوزة عندنا لحد ما تتأكد + ضمان ' + (c.warrantyDays || 20) + ' يوم. وتقدر تلغي ببلاش لحد ما الفني يتحرك.'; } catch (e) { /* no store */ } return 'مش هتدفع أي حاجة دلوقتي، وتقدر تلغي الطلب ببلاش لحد ما الفني يتحرك.'; })()}</span></div>
       <div class="promo-field"><label for="wz-promo">كود خصم أو كود دعوة (اختياري)</label><input id="wz-promo" value="${_esc(w.promo || '')}" maxlength="16" autocomplete="off" autocapitalize="characters" dir="ltr" placeholder="مثال: RAMADAN"><small>الخصم بيتحسب على المبلغ لما الخدمة تخلص.</small></div>
       ${(typeof HSFirebaseConfig !== 'undefined' && HSFirebaseConfig.mode === 'firebase') ? '' : `<div class="demo-banner">${safeIc('info')}<span>وضع العرض التجريبي — الطلب يُحفظ محليًا ولا يُرسل لفنيين حقيقيين.</span></div>`}`;
     }

@@ -73,7 +73,7 @@ test('wiring: hidden routes under their list, live page, permissions, loaded scr
   const G = require(path.join(ROOT, 'apps/admin/permission-guard.js'));
   assert.deepEqual([G.ROUTE_MODULE.customer, G.ROUTE_MODULE.provider, G.ROUTE_MODULE.order], ['customers', 'providers', 'orders']);
   const read = (f) => fs.readFileSync(path.join(ROOT, f), 'utf8');
-  assert.match(read('apps/admin/admin-shell.js'), /'customer', 'provider', 'order'\]\)/);   // LIVE_PAGES: real data in production
+  assert.match(read('apps/admin/admin-shell.js'), /'customer', 'provider', 'order'(, 'payments')?\]\)/);   // LIVE_PAGES: real data in production
   assert.match(read('apps/admin/index.html'), /<script src="modules\/profile-360\.js"><\/script><script src="pages\/profiles\.page\.js"><\/script>/);
   assert.match(read('apps/admin/pages/profiles.page.js'), /registerPage\('customer'[\s\S]*registerPage\('provider'[\s\S]*registerPage\('order'/);
   assert.match(read('service-worker.js'), /'apps\/admin\/modules\/profile-360\.js'/);

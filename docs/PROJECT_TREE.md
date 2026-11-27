@@ -44,6 +44,7 @@ hansalhlak/
 │   │   │   ├── ops-center.js
 │   │   │   ├── ops-core.js
 │   │   │   ├── ops-routes.js
+│   │   │   ├── payments-admin.js
 │   │   │   ├── profile-360.js
 │   │   │   ├── site-content-editor.js
 │   │   │   ├── support-settings.js
@@ -65,6 +66,7 @@ hansalhlak/
 │   │   │   ├── marketplace.page.js
 │   │   │   ├── notifications-management.page.js
 │   │   │   ├── orders-management.page.js
+│   │   │   ├── payments.page.js
 │   │   │   ├── permissions.page.js
 │   │   │   ├── profiles.page.js
 │   │   │   ├── providers-management.page.js
@@ -110,6 +112,7 @@ hansalhlak/
 │   │   │   ├── onboarding.js
 │   │   │   ├── order-details.page.js
 │   │   │   ├── orders.page.js
+│   │   │   ├── payment-card.js
 │   │   │   ├── providers.page.js
 │   │   │   ├── request-create.page.js
 │   │   │   ├── request-wizard.page.js
@@ -762,6 +765,8 @@ hansalhlak/
 │       ├── offers-undo-timer.test.js
 │       ├── order-lifecycle.test.js
 │       ├── orders-management.test.js
+│       ├── payments-admin.test.js
+│       ├── payments-ui.test.js
 │       ├── payments.test.js
 │       ├── policies.test.js
 │       ├── provider-app-a11y.test.js

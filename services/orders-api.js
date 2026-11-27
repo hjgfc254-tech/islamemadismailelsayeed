@@ -328,6 +328,8 @@
     advance: (reqId, to, eta, pin) => client.post('/requests/' + id(reqId) + '/advance', Object.assign({ to }, eta ? { eta } : {}, pin ? { pin } : {})),
     widen: reqId => client.post('/requests/' + id(reqId) + '/widen', {}),
     cash: (reqId, paid) => client.post('/requests/' + id(reqId) + '/cash', { paid }),
+    pay: (reqId, method) => client.post('/requests/' + id(reqId) + '/pay', { method }),
+    payDemo: reqId => client.post('/requests/' + id(reqId) + '/pay/demo', {}),
     bid: (reqId, b) => client.post('/requests/' + id(reqId) + '/bid', b),
     choose: (reqId, providerId) => client.post('/requests/' + id(reqId) + '/choose', { providerId }),
     inspectionOnly: reqId => client.post('/requests/' + id(reqId) + '/inspection-only', {}),

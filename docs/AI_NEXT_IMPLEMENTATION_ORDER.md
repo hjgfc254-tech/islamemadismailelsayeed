@@ -1,6 +1,6 @@
 # CURRENT ORDER — 2026-11-27 (live on Firebase)
 
-1. **Payments UI:** build the customer payment choice + voucher, the provider payment status / payouts / `payoutWallet`, and the Admin «المدفوعات» page as a tab of «الفلوس» (`docs/agent-briefs/payments-ui-*.md`; the stopped worktrees hold almost nothing).
+1. **Payments go-live:** screens done 2026-11-27; with the owner's Paymob keys, test one real payment end to end.
 2. Clean up the old agent worktrees.
    - Done 2026-11-27: Admin sections with tabs, work inbox, full profiles, internal notes (see the handoff).
    - Still open in Admin: retire «تشغيل السوق» (needs the owner); one live version per Admin page (§7 item 16).

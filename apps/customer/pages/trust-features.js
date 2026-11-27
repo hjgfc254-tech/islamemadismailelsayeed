@@ -201,10 +201,12 @@
     if (!r || r.warrantyOf || !r.warrantyUntil || !['completed', 'closed'].includes(r.status) || Date.parse(r.warrantyUntil) < Date.now()) return '';
     const p = MP.providerOf(r.id) || {}, c = MP.get('customers', r.customerId) || {};
     const done = (r.history || []).slice().reverse().find((h) => h.s === 'completed');
-    return `<details class="w-cert"><summary>${ic('shield')} شهادة الضمان</summary>
-      <div class="w-cert-card" role="group" aria-label="شهادة ضمان الطلب ${esc(r.no)}">
-        <div class="w-cert-head"><b>شهادة ضمان</b><small>هنصلحلك</small></div>
+    const v = r.warrantyVoucher && r.warrantyVoucher.code ? r.warrantyVoucher : null;   /* round 12: online payment → «قسيمة ضمان هنصلحلك» */
+    return `<details class="w-cert"><summary>${ic('shield')} ${v ? 'قسيمة ضمان هنصلحلك' : 'شهادة الضمان'}</summary>
+      <div class="w-cert-card" role="group" aria-label="${v ? 'قسيمة ضمان هنصلحلك' : 'شهادة ضمان'} الطلب ${esc(r.no)}">
+        <div class="w-cert-head"><b>${v ? 'قسيمة ضمان هنصلحلك' : 'شهادة ضمان'}</b><small>هنصلحلك</small></div>
         <dl>
+          ${v ? `<div><dt>كود القسيمة</dt><dd><bdi class="code">${esc(v.code)}</bdi></dd></div><div><dt>مدة الضمان</dt><dd>${esc(String(v.days))} يوم</dd></div>` : ''}
           <div><dt>رقم الطلب</dt><dd><bdi class="code">#${esc(r.no)}</bdi></dd></div>
           <div><dt>الخدمة</dt><dd>${esc(r.serviceName || '')}</dd></div>
           ${c.name ? `<div><dt>العميل</dt><dd>${esc(c.name)}</dd></div>` : ''}

@@ -50,6 +50,7 @@
       { id: 'categories', label: 'التصنيفات والأسعار', icon: 'book' },
       { id: 'commissions', label: 'نسب المنصة', icon: 'earnings' },
       { id: 'settlements', label: 'التسويات والتحصيل', icon: 'wallet' },
+      { id: 'payments', label: 'المدفوعات', icon: 'wallet' },
       { id: 'insights', label: 'الإحصائيات والتقارير', icon: 'info' } ] },
     { id: 'platform', label: 'إدارة المنصة', items: [
       { id: 'controls', label: 'الطوارئ والصيانة', icon: 'power' },
@@ -68,7 +69,7 @@
     dashboard: { label: 'مهام اليوم', pages: ['dashboard', 'alerts', 'tickets'] },
     complaints: { label: 'الشكاوى والتقييمات', pages: ['complaints', 'reviews'] },
     services: { label: 'الكتالوج والأسعار', pages: ['services', 'categories'] },
-    commissions: { label: 'الفلوس', pages: ['commissions', 'settlements'] },
+    commissions: { label: 'الفلوس', pages: ['commissions', 'settlements', 'payments'] },
     workforce: { label: 'الفريق والصلاحيات', pages: ['workforce', 'departments', 'roles', 'permissions', 'security', 'audit'] }
   };
   const sectionOf = (id) => Object.keys(SECTIONS).find((k) => SECTIONS[k].pages.includes(id)) || null;
@@ -180,7 +181,7 @@
   /* marketplace = providers/requests/assignment/finance/complaints on the API; workforce/roles/permissions = server RBAC */
   const LIVE_PAGES = new Set(['marketplace', 'workforce', 'employee-details', 'roles', 'permissions',
     'orders', 'customers', 'providers', 'complaints', 'reviews', 'categories', 'quotes', 'finance', 'dashboard', 'settlements',
-    'controls', 'tech', 'alerts', 'tickets', 'callcenter', 'insights', 'customer', 'provider', 'order']);   /* these read real data via HSAdminLive (modules/admin-live.js); categories = the real catalogue, read-only; insights = live KPIs + server panels */
+    'controls', 'tech', 'alerts', 'tickets', 'callcenter', 'insights', 'customer', 'provider', 'order', 'payments']);   /* these read real data via HSAdminLive (modules/admin-live.js); categories = the real catalogue, read-only; insights = live KPIs + server panels */
   const notConnectedView = (id, title) => `<div class="adm-state is-soon" data-adm-not-connected="${esc(id)}">${icon('info')}<h2>${esc(title)} — غير مرتبطة بالخادم بعد</h2><p>هذه الصفحة ما زالت مبنية على بيانات تجريبية محلية، لذلك لا تُعرض في بيئة الإنتاج. العمليات الحية متاحة في «تشغيل السوق» و«فريق العمل».</p>${id === DEFAULT_ROUTE ? '<div data-adm-live-summary role="status" aria-live="polite"><p>جارٍ تحميل الأرقام الحية من الخادم…</p></div>' : ''}<a class="adm-btn adm-btn-p" href="#/marketplace">فتح تشغيل السوق</a></div>`;
   const SUMMARY_LABELS = { requests: 'كل الطلبات', unassigned: 'طلبات بلا مقدم خدمة', providers: 'مقدمو الخدمة', pending: 'تسجيلات بانتظار المراجعة', openComplaints: 'شكاوى مفتوحة', uncollected: 'عمولات غير محصّلة' };
   const fillLiveSummary = (token) => {

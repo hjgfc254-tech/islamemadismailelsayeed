@@ -51,7 +51,8 @@ test('after choosing: «السعر ثابت» seal; a new price shows its differ
   assert.ok(t.html().includes('+' + (q - agreed).toLocaleString('ar-EG-u-nu-latn')), 'difference shown');
   t.run(`(id => { MP.approveQuote(id); MP.choosePay(id,'online'); MP.markPaid(id,{amount:MP.payDue(MP.get('serviceRequests',id)),ref:'t_'+id}); MP.complete(id); })(${JSON.stringify(id)})`);   /* the certificate comes with an online payment */
   t.run(`show('tracking', ${JSON.stringify(id)})`);
-  assert.match(t.html(), /class="w-cert"/); assert.match(t.html(), /شهادة ضمان/); assert.match(t.html(), /data-act="printCert"/);
+  assert.match(t.html(), /class="w-cert"/); assert.match(t.html(), /قسيمة ضمان هنصلحلك/); assert.match(t.html(), /data-act="printCert"/);
+  assert.match(t.html(), /كود القسيمة[\s\S]*HS-W-/, 'an online payment shows the voucher code');
 });
 
 test('provider: the offer form previews what the customer will see; the bonus card replaces the level card', async () => {

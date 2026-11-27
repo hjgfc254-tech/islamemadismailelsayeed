@@ -7,7 +7,7 @@
     "services/local-market-store.js": "ef553534cfff1e692b2e34923af62effa942108b02a268c2d3bacf3000da18bb",
     "services/api-client.js": "33ce93ee20b93ef47850ff8f651d0c1add30012d4876592f75e7be633647d9e1",
     "services/auth-api.js": "7221c02eb6559ce21c465fc5f1987ca47ce43ecefdf963fc901a8e2b3bfd587b",
-    "services/orders-api.js": "094eedf0e664c08a6c15ffba32a016e084f16c122f4e0bf7ec2e35fdc6ca55ea",
+    "services/orders-api.js": "da7c4b6a1e621c23f3cd5f3c252f00f6c8468da09c3ab79107369fc7d0d35baf",
     "services/quotes-api.js": "81629b0682010cfef34d798ce60bbbe60ff77f5ef8471ba4bf21e995b5f4000f",
     "services/catalog-api.js": "b849ea9b4ddbaedde173a6033e2e2229acdbb16c1c5c7326cdcb3e3dbb506a8d",
     "services/provider-api.js": "d4f4d814b6a8233b91dbfd0382aee210d4bb2372dc8bc0d057243d74aaad8d75",
@@ -20,7 +20,7 @@
     "apps/admin/modules/ops-routes.js": "cc2a03d01e151bcfcd56212b250ed1a267769844163f9773efe61e26037ca4d0",
     "services/ops-api.js": "58a1fbfe3e20714dae59b69e0c26826a47ee4327c189b65c8880d2ad83541464",
     "apps/admin/rbac-store.js": "95af0bd62821ea805c2b9ed414a3681b5adbd70b48162b1a7b537e2db3dfbe62",
-    "apps/admin/permission-guard.js": "f6219542b75510f9af76d94ae03f7762e317c27e27fab4a698f3e786fcfa718a",
+    "apps/admin/permission-guard.js": "c07b69faa3876dee032f4a02f7151aee1e889acfe6e0b5b41fa279860e30acb9",
     "apps/admin/modules/workforce/employee-status.js": "f61a20957671b072818ee6704346fa087f7f3dace03537b6c6bfdac420437472",
     "apps/admin/modules/workforce/employee-form.js": "75eefada7e01aae9be503eaf6490b29853b493472c3d8f83b10d43de70b29acf",
     "apps/admin/modules/workforce/employee-invitation.js": "ef3a7a7400c5d4541ddc09647e74a6ce20695077dc60a1e0f9dd4995af1655d3"

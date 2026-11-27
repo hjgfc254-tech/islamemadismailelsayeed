@@ -820,3 +820,18 @@ body:has(#app.open) .help-fab{visibility:hidden}
 #view .wz-more[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
 #view .wz-more[open]{padding-bottom:12px}
 #view .wz-more>summary:focus-visible{outline:3px solid var(--focus-ring,#1d4ed8);outline-offset:2px;border-radius:var(--hs-r-sm)}
+
+/* ── round 12 — payments: how the customer pays (pages/payment-card.js) ── */
+#view .pay-card{display:grid;gap:12px;margin:12px 0;padding:14px;border-radius:var(--hs-r-md);background:var(--surface-primary);border:1px solid var(--hs-line);box-shadow:var(--hs-shadow-sm)}
+#view .pay-card .sec-title{margin:0;display:flex;align-items:center;gap:8px}
+#view .pay-card .sec-title small{margin-inline-start:auto;font-size:var(--fs-sm);color:var(--text-primary);font-weight:700}
+#view .pay-opts{display:grid;gap:10px}
+#view .pay-opt{display:grid;gap:4px;text-align:start;min-height:64px;padding:12px 14px;border-radius:var(--hs-r-md);border:1px solid var(--hs-line);background:var(--surface-primary);color:var(--text-primary);font:inherit;cursor:pointer}
+#view .pay-opt b{display:flex;align-items:center;gap:8px;font-size:var(--fs-sm)}
+#view .pay-opt span{color:var(--text-secondary);font-size:var(--fs-xs);line-height:1.6}
+#view .pay-opt.is-online{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 6%,var(--surface-primary))}
+#view .pay-opt:hover{border-color:var(--accent)}
+#view .pay-opt:focus-visible{outline:3px solid var(--focus-ring,#1d4ed8);outline-offset:2px}
+#view .pay-wait{display:flex;align-items:center;gap:8px;margin:0;font-size:var(--fs-xs);color:var(--text-secondary)}
+#view .pay-line.is-ok{color:var(--success)}
+#view .pay-line .link-btn{border:0;background:none;padding:0 4px;min-height:44px;color:var(--accent-ink,var(--accent));font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}

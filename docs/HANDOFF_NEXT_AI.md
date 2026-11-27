@@ -4,7 +4,15 @@
 > (in particular, entries that say the legacy bridge "must be kept", that profile editing is "disabled", or that the project is
 > "frontend only" are superseded). The system map is `docs/MAINTENANCE_GUIDE.md`.
 
-## 2026-11-27 — Internal notes on records + documentation refresh (this entry)
+## 2026-11-27 — Payments screens (customer, provider, admin)
+- Customer `pages/payment-card.js` (+ `HSOrdersApi.pay / payDemo`), tracking page hook, voucher on the certificate,
+  wizard copy; provider job card / completion lock / online balance / `payoutWallet` / labour-only preview; admin
+  `#/payments` (`modules/payments-admin.js` + `pages/payments.page.js`, «الفلوس» tab, `finance` permission, live page).
+- Tests: `payments-ui`, `payments-admin`, `trust-ui` updated; runners customer-orders, provider-standalone, guest, a11y,
+  admin-app, admin-controls green.
+- Next: owner's Paymob keys → one real payment end to end. Then the Admin visual refresh (in progress).
+
+## 2026-11-27 — Internal notes on records + documentation refresh
 - `GET/POST /admin/notes` (subject `customer|provider|order:<id>`, needs that list's `.view`): demo route in
   `services/admin-api.js` (`db.adminNotes`), server-native in `functions/src/admin-extra.js` (Firestore `adminNotes`,
   equality query only — no index; 2–500 characters; at most 200 per record). The wiring test lists these as

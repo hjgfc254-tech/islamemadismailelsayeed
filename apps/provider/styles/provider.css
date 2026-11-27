@@ -279,3 +279,14 @@
 
 /* round 10: the register / edit form opened without a visible title */
 .pv-form-title{margin:0 0 4px;font-family:var(--font-display);font-size:20px;font-weight:800;color:var(--text-primary)}
+
+/* round 12 — payments: how the customer pays, online balance (app.js payNote / onlineBalance) */
+.pv-note-pay{display:flex;align-items:center;gap:8px}
+.pv-note-pay.is-paid{color:var(--success)}
+.pv-note-pay.is-wait{color:var(--accent-ink)}
+.pv-online h2{display:flex;align-items:center;gap:8px;margin:0 0 10px;font-size:var(--fs-md)}
+.pv-online h3{margin:12px 0 6px;font-size:var(--fs-sm)}
+.pv-online-paid{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.pv-online-paid li{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;padding:8px 10px;border-radius:var(--r-md);background:color-mix(in srgb,var(--success) 7%,transparent)}
+.pv-online-paid small{color:var(--pv-muted,var(--text-secondary))}
+.pv-bid-total small{flex-basis:100%;color:var(--pv-muted,var(--text-secondary));font-size:var(--fs-xs)}

@@ -46,7 +46,7 @@ background.
   - settings shown one section at a time; platform rates edited only in «نسب المنصة».
 
 ## Open work (details in the guide §7)
-- **Payments UI unfinished.** The customer payment choice, the provider payment status / payouts, and the Admin «المدفوعات» page (a tab of the «الفلوس» section) must be built from the briefs `docs/agent-briefs/payments-ui-*.md`; the two stopped worktrees hold almost nothing. Until then every job is cash and gets no voucher.
+- **Payments go-live.** The screens are done (customer choice card + voucher, provider status / balance / wallet, Admin «المدفوعات»). Online stays off until the owner adds the Paymob keys; then test one real payment end to end.
 - **Owner actions:**
   - Paymob keys + webhook URL;
   - `RESEND_API_KEY` / `MAIL_FROM`;

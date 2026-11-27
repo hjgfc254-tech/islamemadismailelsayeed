@@ -366,6 +366,20 @@ a.adm-link:hover{background:var(--nav-dark-hover);color:var(--on-brand)}
 .ins-tabs{display:flex;flex-wrap:wrap;gap:var(--sp-1);margin-bottom:var(--sp-4);padding:var(--sp-1);border-radius:var(--r-lg);background:var(--surface-sunken)}
 .ins-tabs button{min-height:var(--sp-7);padding:0 var(--sp-4);border:0;border-radius:var(--r-md);background:transparent;color:var(--text-secondary);font:inherit;font-weight:700;cursor:pointer}
 .ins-tabs button[aria-selected="true"]{background:var(--surface-primary);color:var(--text-primary);box-shadow:var(--shadow-1)}
+/* «المدفوعات» (modules/payments-admin.js) */
+.pay{display:grid;gap:var(--sp-4)}
+.pay-banner{padding:var(--sp-3) var(--sp-4);border-radius:var(--r-md);font-weight:700}
+.pay-banner.is-ok{background:var(--success-soft);color:var(--success)}
+.pay-banner.is-warn{background:var(--warning-soft);color:var(--text-primary)}
+.pay-banner.is-info{background:var(--surface-sunken);color:var(--text-secondary)}
+.pay-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13rem),1fr));gap:var(--sp-3)}
+.pay-kpi{display:grid;gap:var(--sp-1);padding:var(--sp-4);border:1px solid var(--border-subtle);border-radius:var(--r-lg);background:var(--surface-primary)}
+.pay-kpi span{color:var(--text-muted);font-size:var(--fs-xs)}
+.pay-kpi b{font-size:var(--fs-xl)}
+.pay-warn{color:var(--danger);font-weight:700}
+.pay-err{color:var(--danger)}
+.pay-form{display:grid;gap:var(--sp-3);max-width:60ch}
+.pay-check{flex-direction:row;align-items:center;gap:var(--sp-2)}
 /* Work inbox (modules/work-inbox.js): «صندوق الشغل» item by item */
 .wi{display:block;margin-block-end:var(--sp-4)}
 .wi-in{display:grid;gap:var(--sp-3);padding:var(--sp-4);border:1px solid var(--border-subtle);border-radius:var(--r-lg);background:var(--surface-primary)}

@@ -416,6 +416,7 @@ internal notes kept per record (`GET/POST /admin/notes`, subject `customer|provi
 | `#/services` | `pages/services-management.page.js` (+ live panel) | `services.view` | `GET /admin/pricing` (panel), catalogue |
 | `#/commissions` | `pages/commissions.page.js` (+ live panel «نسب المنصة») | `finance.view` | `GET/POST /admin/commission`, `GET/POST /admin/pricing` (markup) |
 | `#/settlements` | `pages/settlements.page.js` (+ admin-live) | `finance.view` | `POST /admin/transactions/:id/collection` |
+| `#/payments` | `pages/payments.page.js` + `modules/payments-admin.js` («الفلوس» tab) | `finance.view` (+ `finance.edit` per action) | `GET /admin/payments`, `PATCH /admin/payments/settings`, `POST /admin/payments/payouts`, `POST /admin/payments/:id/release|refund` |
 | `#/insights` | `pages/insights.page.js` (live: reports / owner tabs use the live panels) | `orders.view` | sync read model |
 | `#/finance` (hidden, parent insights) | `pages/finance-dashboard.page.js` | `finance.view` | sync read model |
 | `#/reports` (hidden) | `pages/reports.page.js` (+ live panel) | `finance.view` | sync read model |
@@ -559,11 +560,18 @@ then `npm run functions:sync`); server-only behaviour in `functions/src`.
   `refundOnCancel` (travel fee kept for the provider) → `paymentsClock` sends the refund to Paymob.
 - **Warranty voucher:** `afterCompletion` sets `warrantyUntil` + `warrantyVoucher` only when `paidOnline(r)` (owner rule:
   the «ضمان هنصلحلك» voucher comes with online payment; days = admin warranty settings, default 20).
-- **Not finished (2026-11-27):** the customer payment-choice card, provider payment status / payouts / `payoutWallet`
-  field, and the Admin «المدفوعات» page — work in progress in worktrees `agent-a9037922572203278` and
-  `agent-a42110a30883e0f98` (briefs `docs/agent-briefs/payments-ui-*.md`). Until they land, customers cannot pick
-  online and every job is cash (no voucher).
-- **Tests:** `payments.test.js` (domain + the full server path with Paymob faked), `upfront-pricing`, `round5-features`.
+- **Screens (2026-11-27):**
+  - customer `apps/customer/pages/payment-card.js` (HSPayCard): the choice card once a price is agreed (online only when
+    `payConfig().online && gateway`), then a status line (held / released / refund / top-up / cash); online goes to
+    `data.checkoutUrl`, the local demo confirms with `/pay/demo`. The certificate becomes «قسيمة ضمان هنصلحلك» with
+    the voucher code. The wizard review line mentions online only when it is available;
+  - provider `apps/provider/app.js`: how the customer pays on the job card, «تسجيل الإكمال» disabled while
+    `MP.payBlocked(r)`, «رصيدك من الدفع الأونلاين» in «فلوسي» (hold / due / last paid transfers), the
+    «محفظة استلام الفلوس» field (`payoutWallet`) in profile edit, and the bid preview with labour-only commission;
+  - admin «المدفوعات» `#/payments` (`modules/payments-admin.js`, a tab of «الفلوس»).
+  In production online payment stays off until `PAYMOB_*` is set: the customer sees «هتدفع للفني كاش بعد الشغل».
+- **Tests:** `payments.test.js` (domain + the full server path with Paymob faked), `payments-ui`, `payments-admin`,
+  `trust-ui`, `upfront-pricing`, `round5-features`.
 
 ### 3.15 Service catalogue (admin-managed, CDN feed)
 - **Where:** `services/catalog-question-bank.js` (default bank), `services/local-catalog.js` (CAT, v3 shape with `bank`,
@@ -908,9 +916,8 @@ Not done in this pass (no behaviour change allowed, or a deploy / owner decision
     `RESEND_API_KEY` + `MAIL_FROM` (alert e-mails); the `hansalahlak-staging` Firebase project (§4.11); App Check
     site key + `ENFORCE_APP_CHECK`; support contact numbers; legal review of terms / refund / voucher wording; retention
     for `opsAlerts`, `opsTickets`, `aiUsage`, `adminNotes`; a paid geocoder at scale.
-11. **Payments UI unfinished** (§3.14): build it from `docs/agent-briefs/payments-ui-*.md`. The two stopped worktrees
-    hold almost nothing (3 uncommitted lines in the customer one, nothing in the admin one); the admin page should be a
-    tab of the «الفلوس» section (`SECTIONS.commissions` in `admin-shell.js`).
+11. **Payments go-live** (§3.14): the screens are done (2026-11-27). Left: Paymob keys + webhook, then one real card
+    payment end to end on staging / production (checkout → webhook → held → confirm → payout → refund).
 12. **Old agent worktrees** under `.claude/worktrees/` (about 17): most are merged or abandoned. Remove them with
     `git worktree remove` after a look (never delete branches with unmerged work unreviewed).
 13. **Storage for photos** is not used (photos stay on the customer's device); the owner plans Supabase Storage.
