@@ -919,8 +919,7 @@ Not done in this pass (no behaviour change allowed, or a deploy / owner decision
     for `opsAlerts`, `opsTickets`, `aiUsage`, `adminNotes`; a paid geocoder at scale.
 11. **Payments go-live** (§3.14): the screens are done (2026-11-27). Left: Paymob keys + webhook, then one real card
     payment end to end on staging / production (checkout → webhook → held → confirm → payout → refund).
-12. **Old agent worktrees** under `.claude/worktrees/` (about 17): most are merged or abandoned. Remove them with
-    `git worktree remove` after a look (never delete branches with unmerged work unreviewed).
+12. **Old agent worktrees:** removed 2026-11-27 (all merged), with the old backend/database scaffolding.
 13. **Storage for photos** is not used (photos stay on the customer's device); the owner plans Supabase Storage.
 14. **«تشغيل السوق» overlaps** the orders / providers / customers / complaints pages. Its unique controls (assign,
     per-provider rate, join approval) now also live in the full profiles; removing the page needs the owner's OK.

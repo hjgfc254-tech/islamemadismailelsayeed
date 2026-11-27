@@ -1,25 +1,28 @@
 {
-    "name":  "hansalhlak-v8-frontend",
-    "version":  "8.0.0-architecture",
-    "private":  true,
-    "description":  "Reorganized frontend demo for HANSALEHLAK",
-    "scripts":  {
-    "docs:reference": "node scripts/build-project-reference.cjs",
-                    "test":  "node --test tests/unit/*.test.js",
-                    "test:unit":  "node --test tests/unit/*.test.js",
-                    "test:coverage":  "node --experimental-test-coverage --test tests/unit/*.test.js",
-                    "coverage:map":  "node scripts/coverage-run.cjs",
-                    "audit:inventory":  "node scripts/verify-project-inventory.mjs",
-                    "audit:refresh":  "node scripts/refresh-project-inventory.mjs",
-                    "functions:sync":  "node scripts/sync-functions-domain.cjs",
-                    "functions:check":  "node scripts/sync-functions-domain.cjs --check",
-                    "sw:check":  "node scripts/sw-cache.cjs --check",
-                    "sw:bump":  "node scripts/sw-cache.cjs --bump",
-                    "deploy:record":  "node scripts/record-deploy.cjs",
-                    "deploy:staging":  "firebase deploy -P staging --only functions,hosting,firestore",
-                    "deploy:prod":  "node scripts/deploy-prod.cjs",
-                    "bench:cost":  "node scripts/bench-firestore-cost.cjs",
-                    "test:emulators":  "firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak \"node --test tests/emulator/\"",
-                    "test:emulators:e2e":  "firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak \"node tests/e2e/firebase-emulator.cdp.js\""
-                }
+    "name": "hansalhlak-v8-frontend",
+    "version": "8.0.0-architecture",
+    "private": true,
+    "description": "Reorganized frontend demo for HANSALEHLAK",
+    "scripts": {
+        "docs:reference": "node scripts/build-project-reference.cjs",
+        "test": "node --test tests/unit/*.test.js",
+        "test:unit": "node --test tests/unit/*.test.js",
+        "test:coverage": "node --experimental-test-coverage --test tests/unit/*.test.js",
+        "coverage:map": "node scripts/coverage-run.cjs",
+        "audit:inventory": "node scripts/verify-project-inventory.mjs",
+        "audit:refresh": "node scripts/refresh-project-inventory.mjs",
+        "functions:sync": "node scripts/sync-functions-domain.cjs",
+        "functions:check": "node scripts/sync-functions-domain.cjs --check",
+        "sw:check": "node scripts/sw-cache.cjs --check",
+        "sw:bump": "node scripts/sw-cache.cjs --bump",
+        "deploy:record": "node scripts/record-deploy.cjs",
+        "deploy:staging": "firebase deploy -P staging --only functions,hosting,firestore",
+        "deploy:prod": "node scripts/deploy-prod.cjs",
+        "bench:cost": "node scripts/bench-firestore-cost.cjs",
+        "test:emulators": "firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak \"node --test tests/emulator/\"",
+        "test:emulators:e2e": "firebase emulators:exec --only auth,functions,firestore,database --project hansalahlak \"node tests/e2e/firebase-emulator.cdp.js\""
+    },
+    "devDependencies": {
+        "esbuild": "^0.24.2"
+    }
 }

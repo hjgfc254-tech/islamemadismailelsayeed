@@ -1,8 +1,23 @@
-# CURRENT HANDOFF — 2026-11-27 — Live on Firebase; Admin Center rebuilt for a team; payments UI unfinished
+# CURRENT HANDOFF — 2026-11-27 — PROJECT PAUSED / ARCHIVED (code complete, site offline until launch)
 
 > The newest entry is at the top; everything below this section is a dated history log. Source code wins over any older statement below
 > (in particular, entries that say the legacy bridge "must be kept", that profile editing is "disabled", or that the project is
 > "frontend only" are superseded). The system map is `docs/MAINTENANCE_GUIDE.md`.
+
+## 2026-11-27 — Project archived (this entry — read first)
+- **State:** everything is on GitHub `main`. Firebase Hosting was disabled (`firebase hosting:disable`) because the owner
+  has no hosting plan yet; the site returns «Site Not Found». Cloud Functions (incl. scheduled clocks), Firestore, RTDB and
+  Auth were left in place in the `hansalahlak` project (data kept).
+- **Cleanup:** 16 agent worktrees + 17 merged branches removed; `backend/` and `database/` (old unused scaffolding)
+  removed from git; finished agent briefs removed (`docs/agent-briefs/README.md` kept); `esbuild` added as a dev dependency.
+- **To launch again:**
+  1. `npm install` (root) and `npm --prefix functions install`;
+  2. `npm test` (all green);
+  3. `firebase deploy --only functions,hosting` (hosting comes back on with the deploy);
+  4. owner items: Paymob keys + webhook, `RESEND_API_KEY` / `MAIL_FROM`, App Check key, support numbers, legal review,
+     commercial registration; optionally a custom domain.
+- **Open technical items:** photo storage (owner: Supabase later); esbuild bundling for speed; enforce the CSP after a
+  week of clean «csp» reports in the Tech Center (it runs report-only).
 
 ## 2026-11-27 — CSP readiness (no inline code) + report-only policy
 - All served pages carry no inline code: `shared/boot/{frame-guard,async-fonts,redirect,sw-register}.js`,

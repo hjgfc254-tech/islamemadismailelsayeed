@@ -1,6 +1,9 @@
 # HANSALEHLAK (هنصلحلك) — START HERE
 
-**Phase: LIVE on Firebase (production).** The three apps run against the real backend (Cloud Functions `me-central1`,
+**Status 2026-11-27: PAUSED / ARCHIVED.** Code complete and on GitHub (`main`); Firebase Hosting disabled (site offline)
+until the owner buys hosting / is ready to launch. Re-launch steps: `docs/HANDOFF_NEXT_AI.md` top entry.
+
+**Phase before the pause: LIVE on Firebase (production).** The three apps run against the real backend (Cloud Functions `me-central1`,
 Firestore, RTDB signals, Firebase Auth). `?backend=local` / `hs_backend=local` is the offline demo used by tests and
 browser runners. Real money: cash today; online payment (Paymob) is built on the server and off until the owner adds keys.
 
@@ -55,9 +58,10 @@ background.
   - support numbers;
   - legal review;
   - retention for `opsAlerts` / `opsTickets` / `aiUsage` / `adminNotes`.
-- **Performance:** customer LCP ~5 s on Fast-3G; bundling needs esbuild (ask before installing).
+- **Performance:** on the Fast-3G profile customer LCP ~3.1 s / load ~5.4 s, admin LCP ~4.4 s (106 requests); bundling with esbuild is the next step.
 - **Photos:** stored on the device only; the owner plans Supabase Storage.
-- **About 17 old agent worktrees** to review and remove.
+- Old agent worktrees and branches: removed 2026-11-27 (all were merged). Old `backend/` + `database/` scaffolding and finished agent briefs removed too.
+- **Speed:** esbuild is installed as a dev dependency (2026-11-27) but the bundling / minification step is not built yet.
 
 ## Working rules
 - Owner language: simple Egyptian Arabic in chat. Code, commits and docs in English.

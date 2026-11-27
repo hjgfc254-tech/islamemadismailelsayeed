@@ -30,7 +30,6 @@ Live project: Firebase project `hansalahlak`, Cloud Functions region `me-central
 | `assets/` | Brand, icons (webp), hero images, vendored Leaflet 1.9.4 |
 | `tests/` | `unit/` (Node test runner, vm-loaded classic scripts), `e2e/` (CDP browser checks), `helpers/` |
 | `docs/` | Architecture, API contracts, Firebase schema, AI context, handoff |
-| `backend/`, `database/` | Preserved future scaffolding — not used at runtime |
 | `service-worker.js`, `manifest.json` | PWA cache (version constant `CACHE`) and install metadata |
 
 ## 3. Runtime architecture
@@ -407,6 +406,8 @@ requests offered or assigned to them. **This is a demo boundary.** A real backen
 | `GET /admin/requests/:id/candidates` | admin | admin-api.js | Providers matching a request. |
 | `POST /admin/requests/:id/assign` | admin | admin-api.js | Assign manually {providerId} or auto-match. |
 | `POST /admin/customers/:id/status` | admin | admin-api.js | Suspend / reactivate a customer. |
+| `GET /admin/notes` | admin | admin-api.js | Internal notes on a record (?subject=customer:<id>|provider:<id>|order:<id>), newest first. |
+| `POST /admin/notes` | admin | admin-api.js | Add an internal note to a record {subject, text} (employees only). |
 | `POST /admin/reviews/:id/visibility` | admin | admin-api.js | Hide or re-publish a review {hidden, reason}. |
 | `GET /admin/tech/status` | admin (owner, tech) | functions/src/tech-status.js | Tech Center: health (Firestore / RTDB / Auth latency), clocks, deploy info, grouped errors (top 20), usage + cost vs budget, p50/p95 per route group, limits. System information only — never personal data (server-only route, not in the shared domain). |
 | `POST /admin/tech/check` | admin (owner, tech) | tech-status.js | Run the health probe now (10 s cooldown). |
@@ -932,8 +933,6 @@ service cloud.firestore {
       "tests/**",
       "docs/**",
       "scripts/**",
-      "backend/**",
-      "database/**",
       "graphify-out/**",
       "ai-workforce/**",
       "design-reference/**",
@@ -954,7 +953,7 @@ service cloud.firestore {
       ".claude/**",
       "install-tools.ps1",
       "**/*.ps1",
-      "coverage-map.txt",
+      "coverage-map.txt", "20*.txt",
       "service-worker.lock.json",
       ".github/**",
       "tools/**"
@@ -964,6 +963,13 @@ service cloud.firestore {
         "source": "/catalog-feed",
         "function": {
           "functionId": "catalogFeed",
+          "region": "me-central1"
+        }
+      },
+      {
+        "source": "/csp-report",
+        "function": {
+          "functionId": "cspReport",
           "region": "me-central1"
         }
       }
@@ -1035,7 +1041,15 @@ service cloud.firestore {
           },
           {
             "key": "Content-Security-Policy",
-            "value": "frame-ancestors 'none'"
+            "value": "frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'"
+          },
+          {
+            "key": "Content-Security-Policy-Report-Only",
+            "value": "default-src 'self'; script-src 'self' https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.cloudfunctions.net https://*.firebasedatabase.app wss://*.firebasedatabase.app https://*.firebaseio.com wss://*.firebaseio.com https://tiles.openfreemap.org https://nominatim.openstreetmap.org https://www.google.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-src https://www.google.com https://recaptcha.google.com https://*.firebaseapp.com; worker-src 'self' blob:; manifest-src 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'; report-uri /csp-report"
+          },
+          {
+            "key": "Permissions-Policy",
+            "value": "geolocation=(self), camera=(self), microphone=(), payment=(), usb=(), serial=(), bluetooth=(), interest-cohort=()"
           }
         ]
       }
@@ -1123,58 +1137,63 @@ service cloud.firestore {
 |---|---|---|
 | `apps/admin/rbac-store.js` | IMPLEMENTED (DEMO) | 22436 |
 
-### apps/admin (66)
+### apps/admin (71)
 
 | File | Status | Bytes |
 |---|---|---|
 | `apps/admin/admin-auth.js` | IMPLEMENTED (FRONTEND DEMO) | 1434 |
 | `apps/admin/admin-router.js` | IMPLEMENTED (FRONTEND DEMO) | 1998 |
 | `apps/admin/admin-session.js` | IMPLEMENTED (FRONTEND DEMO) | 1857 |
-| `apps/admin/admin-shell.js` | IMPLEMENTED (SHELL, DEMO) | 26560 |
+| `apps/admin/admin-shell.js` | IMPLEMENTED (SHELL, DEMO) | 30338 |
 | `apps/admin/app.js` | IMPLEMENTED (FRONTEND DEMO) | 6355 |
-| `apps/admin/index.html` | IMPLEMENTED (SHELL HOST) | 6905 |
-| `apps/admin/login.html` | IMPLEMENTED (FRONTEND DEMO) | 812 |
+| `apps/admin/index.html` | IMPLEMENTED (SHELL HOST) | 6926 |
+| `apps/admin/login.html` | IMPLEMENTED (FRONTEND DEMO) | 824 |
 | `apps/admin/modules/access-control/permission-matrix.js` | IMPLEMENTED (FRONTEND DEMO) | 2356 |
 | `apps/admin/modules/access-control/permission-presets.js` | IMPLEMENTED (FRONTEND DEMO) | 2066 |
 | `apps/admin/modules/access-control/role-editor.js` | IMPLEMENTED (FRONTEND DEMO) | 7597 |
-| `apps/admin/modules/admin-live-panels.js` | NEEDS_REVIEW | 22660 |
+| `apps/admin/modules/admin-live-panels.js` | NEEDS_REVIEW | 25432 |
 | `apps/admin/modules/admin-live.js` | NEEDS_REVIEW | 20715 |
 | `apps/admin/modules/ai-settings.js` | NEEDS_REVIEW | 11272 |
 | `apps/admin/modules/audit/audit-details.js` | IMPLEMENTED (FRONTEND DEMO) | 2422 |
 | `apps/admin/modules/audit/audit-filters.js` | IMPLEMENTED (FRONTEND DEMO) | 1382 |
 | `apps/admin/modules/catalog-editor.js` | NEEDS_REVIEW | 15949 |
 | `apps/admin/modules/client-errors.js` | NEEDS_REVIEW | 4863 |
-| `apps/admin/modules/command-palette.js` | NEEDS_REVIEW | 5202 |
+| `apps/admin/modules/command-palette.js` | NEEDS_REVIEW | 5999 |
 | `apps/admin/modules/digest-settings.js` | NEEDS_REVIEW | 11460 |
 | `apps/admin/modules/marketing-editor.js` | NEEDS_REVIEW | 22045 |
 | `apps/admin/modules/mini-charts.js` | NEEDS_REVIEW | 3610 |
-| `apps/admin/modules/ops-center.js` | NEEDS_REVIEW | 16642 |
-| `apps/admin/modules/ops-core.js` | NEEDS_REVIEW | 12316 |
+| `apps/admin/modules/ops-center.js` | NEEDS_REVIEW | 17033 |
+| `apps/admin/modules/ops-core.js` | NEEDS_REVIEW | 12644 |
 | `apps/admin/modules/ops-routes.js` | NEEDS_REVIEW | 8750 |
+| `apps/admin/modules/payments-admin.js` | NEEDS_REVIEW | 12774 |
+| `apps/admin/modules/profile-360.js` | NEEDS_REVIEW | 30242 |
 | `apps/admin/modules/site-content-editor.js` | NEEDS_REVIEW | 15530 |
 | `apps/admin/modules/support-settings.js` | NEEDS_REVIEW | 6483 |
+| `apps/admin/modules/work-inbox.js` | NEEDS_REVIEW | 21388 |
 | `apps/admin/modules/workforce/employee-form.js` | IMPLEMENTED (FRONTEND DEMO) | 4496 |
 | `apps/admin/modules/workforce/employee-invitation.js` | IMPLEMENTED (FRONTEND DEMO) | 1386 |
 | `apps/admin/modules/workforce/employee-status.js` | IMPLEMENTED (FRONTEND DEMO) | 2235 |
 | `apps/admin/navigation-builder.js` | IMPLEMENTED (FRONTEND DEMO) | 1519 |
-| `apps/admin/pages/admin-dashboard.page.js` | IMPLEMENTED (DEMO) | 16489 |
+| `apps/admin/pages/admin-dashboard.page.js` | IMPLEMENTED (DEMO) | 17238 |
 | `apps/admin/pages/alerts.page.js` | NEEDS_REVIEW | 911 |
 | `apps/admin/pages/audit-log.page.js` | IMPLEMENTED (DEMO) | 12027 |
 | `apps/admin/pages/callcenter.page.js` | NEEDS_REVIEW | 14258 |
 | `apps/admin/pages/categories-management.page.js` | IMPLEMENTED (DEMO) | 22144 |
-| `apps/admin/pages/commissions.page.js` | IMPLEMENTED | 22287 |
+| `apps/admin/pages/commissions.page.js` | IMPLEMENTED | 22290 |
 | `apps/admin/pages/complaints-management.page.js` | IMPLEMENTED (DEMO) | 16717 |
 | `apps/admin/pages/controls.page.js` | NEEDS_REVIEW | 7366 |
-| `apps/admin/pages/customers-management.page.js` | IMPLEMENTED (DEMO) | 12846 |
+| `apps/admin/pages/customers-management.page.js` | IMPLEMENTED (DEMO) | 13090 |
 | `apps/admin/pages/departments.page.js` | IMPLEMENTED (DEMO) | 19520 |
 | `apps/admin/pages/employee-details.page.js` | IMPLEMENTED (DEMO) | 9080 |
 | `apps/admin/pages/finance-dashboard.page.js` | IMPLEMENTED | 14682 |
-| `apps/admin/pages/insights.page.js` | NEEDS_REVIEW | 11407 |
-| `apps/admin/pages/marketplace.page.js` | IMPLEMENTED (DEMO) | 23230 |
+| `apps/admin/pages/insights.page.js` | NEEDS_REVIEW | 11732 |
+| `apps/admin/pages/marketplace.page.js` | IMPLEMENTED (DEMO) | 23499 |
 | `apps/admin/pages/notifications-management.page.js` | IMPLEMENTED (DEMO) — PARTIAL (templates + read-only delivery log) | 21352 |
-| `apps/admin/pages/orders-management.page.js` | IMPLEMENTED (DEMO) | 15070 |
+| `apps/admin/pages/orders-management.page.js` | IMPLEMENTED (DEMO) | 15311 |
+| `apps/admin/pages/payments.page.js` | NEEDS_REVIEW | 858 |
 | `apps/admin/pages/permissions.page.js` | IMPLEMENTED (DEMO) | 10432 |
-| `apps/admin/pages/providers-management.page.js` | IMPLEMENTED (DEMO) | 13325 |
+| `apps/admin/pages/profiles.page.js` | NEEDS_REVIEW | 1269 |
+| `apps/admin/pages/providers-management.page.js` | IMPLEMENTED (DEMO) | 13568 |
 | `apps/admin/pages/quotes-management.page.js` | IMPLEMENTED (DEMO) | 17915 |
 | `apps/admin/pages/reports.page.js` | IMPLEMENTED (DEMO) | 26239 |
 | `apps/admin/pages/reviews-management.page.js` | IMPLEMENTED (DEMO) | 15011 |
@@ -1186,25 +1205,27 @@ service cloud.firestore {
 | `apps/admin/pages/system-settings.page.js` | IMPLEMENTED (DEMO) | 14838 |
 | `apps/admin/pages/tech-center.page.js` | NEEDS_REVIEW | 18088 |
 | `apps/admin/pages/workforce.page.js` | IMPLEMENTED (DEMO) | 16932 |
-| `apps/admin/permission-guard.js` | IMPLEMENTED (FRONTEND DEMO) | 6513 |
+| `apps/admin/permission-guard.js` | IMPLEMENTED (FRONTEND DEMO) | 6711 |
 | `apps/admin/README.md` | DOCUMENTATION | 1444 |
-| `apps/admin/styles/admin-components.css` | IMPLEMENTED (SHELL PARTS) | 50870 |
+| `apps/admin/styles/admin-components.css` | IMPLEMENTED (SHELL PARTS) | 56652 |
 | `apps/admin/styles/admin-responsive.css` | IMPLEMENTED (SHELL) | 1790 |
 | `apps/admin/styles/admin.css` | IMPLEMENTED (SHELL) | 5575 |
-| `apps/admin/styles/brand-2026.css` | NEEDS_REVIEW | 1967 |
+| `apps/admin/styles/brand-2026.css` | NEEDS_REVIEW | 10067 |
 | `apps/admin/styles/overrides.css` | NEEDS_REVIEW | 1187 |
 
-### apps/customer (30)
+### apps/customer (33)
 
 | File | Status | Bytes |
 |---|---|---|
-| `apps/customer/app.js` | PARTIALLY IMPLEMENTED | 104935 |
+| `apps/customer/app.js` | PARTIALLY IMPLEMENTED | 104932 |
+| `apps/customer/boot-head.js` | NEEDS_REVIEW | 1199 |
+| `apps/customer/boot-home.js` | NEEDS_REVIEW | 1558 |
 | `apps/customer/brand-icons.js` | NEEDS_REVIEW | 4862 |
 | `apps/customer/customer-router.js` | IMPLEMENTED (FRONTEND DEMO) | 3508 |
 | `apps/customer/customer-session.js` | IMPLEMENTED (FRONTEND DEMO) | 4646 |
 | `apps/customer/experience.js` | NEEDS_REVIEW | 8582 |
-| `apps/customer/index.html` | IMPLEMENTED | 10611 |
-| `apps/customer/pages/account.page.js` | IMPLEMENTED | 31305 |
+| `apps/customer/index.html` | IMPLEMENTED | 8382 |
+| `apps/customer/pages/account.page.js` | IMPLEMENTED | 31533 |
 | `apps/customer/pages/addresses.page.js` | IMPLEMENTED | 10365 |
 | `apps/customer/pages/ai-assist.js` | NEEDS_REVIEW | 5809 |
 | `apps/customer/pages/discover.page.js` | IMPLEMENTED | 15067 |
@@ -1214,18 +1235,19 @@ service cloud.firestore {
 | `apps/customer/pages/offer-alerts.js` | NEEDS_REVIEW | 6589 |
 | `apps/customer/pages/offers.js` | NEEDS_REVIEW | 13088 |
 | `apps/customer/pages/onboarding.js` | NEEDS_REVIEW | 5842 |
-| `apps/customer/pages/order-details.page.js` | IMPLEMENTED (DEMO) | 20022 |
+| `apps/customer/pages/order-details.page.js` | IMPLEMENTED (DEMO) | 20077 |
 | `apps/customer/pages/orders.page.js` | IMPLEMENTED (DEMO) | 3062 |
+| `apps/customer/pages/payment-card.js` | NEEDS_REVIEW | 6914 |
 | `apps/customer/pages/providers.page.js` | IMPLEMENTED | 11096 |
 | `apps/customer/pages/request-create.page.js` | IMPLEMENTED (FRONTEND DEMO) | 2370 |
-| `apps/customer/pages/request-wizard.page.js` | IMPLEMENTED | 79414 |
+| `apps/customer/pages/request-wizard.page.js` | IMPLEMENTED | 79873 |
 | `apps/customer/pages/search.page.js` | IMPLEMENTED | 35380 |
 | `apps/customer/pages/smart-help.js` | NEEDS_REVIEW | 16827 |
 | `apps/customer/pages/support-chat.js` | NEEDS_REVIEW | 12629 |
 | `apps/customer/pages/support.page.js` | IMPLEMENTED | 22669 |
-| `apps/customer/pages/trust-features.js` | NEEDS_REVIEW | 21012 |
+| `apps/customer/pages/trust-features.js` | NEEDS_REVIEW | 21508 |
 | `apps/customer/README.md` | CONFIGURATION | 323 |
-| `apps/customer/styles/brand-2026.css` | NEEDS_REVIEW | 79114 |
+| `apps/customer/styles/brand-2026.css` | NEEDS_REVIEW | 80657 |
 | `apps/customer/styles/customer.css` | IMPLEMENTED | 157282 |
 | `apps/customer/styles/overrides.css` | NEEDS_REVIEW | 2036 |
 
@@ -1241,9 +1263,9 @@ service cloud.firestore {
 
 | File | Status | Bytes |
 |---|---|---|
-| `apps/provider/app.js` | IMPLEMENTED (FRONTEND DEMO) | 78758 |
-| `apps/provider/index.html` | IMPLEMENTED (FRONTEND DEMO) | 3855 |
-| `apps/provider/login.html` | IMPLEMENTED (FRONTEND DEMO) | 822 |
+| `apps/provider/app.js` | IMPLEMENTED (FRONTEND DEMO) | 82290 |
+| `apps/provider/index.html` | IMPLEMENTED (FRONTEND DEMO) | 3764 |
+| `apps/provider/login.html` | IMPLEMENTED (FRONTEND DEMO) | 834 |
 | `apps/provider/pages/active-jobs.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 174 |
 | `apps/provider/pages/dashboard.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 1694 |
 | `apps/provider/pages/earnings.page.js` | IMPLEMENTED (DEMO PRESENTATION) | 842 |
@@ -1266,7 +1288,7 @@ service cloud.firestore {
 | `apps/provider/README.md` | CONFIGURATION | 2123 |
 | `apps/provider/styles/brand-2026.css` | NEEDS_REVIEW | 5629 |
 | `apps/provider/styles/overrides.css` | NEEDS_REVIEW | 1123 |
-| `apps/provider/styles/provider.css` | IMPLEMENTED (RESPONSIVE FRONTEND) | 40561 |
+| `apps/provider/styles/provider.css` | IMPLEMENTED (RESPONSIVE FRONTEND) | 41378 |
 
 ### assets (115)
 
@@ -1469,7 +1491,7 @@ service cloud.firestore {
 
 | File | Status | Bytes |
 |---|---|---|
-| `docs/ADMIN_MODULES.md` | CONFIGURATION | 1309 |
+| `docs/ADMIN_MODULES.md` | CONFIGURATION | 1638 |
 | `docs/agent-briefs/admin-2fa.md` | NEEDS_REVIEW | 3423 |
 | `docs/agent-briefs/architecture-maintenance.md` | NEEDS_REVIEW | 6021 |
 | `docs/agent-briefs/callcenter-ai.md` | NEEDS_REVIEW | 4945 |
@@ -1486,26 +1508,26 @@ service cloud.firestore {
 | `docs/agent-briefs/tech-center.md` | NEEDS_REVIEW | 1667 |
 | `docs/agent-briefs/tech-micro-audit.md` | NEEDS_REVIEW | 3676 |
 | `docs/agent-briefs/test-gaps.md` | NEEDS_REVIEW | 2180 |
-| `docs/AI_AGENT_CONTINUATION_PROTOCOL.md` | DOCUMENTATION | 12918 |
+| `docs/AI_AGENT_CONTINUATION_PROTOCOL.md` | DOCUMENTATION | 13247 |
 | `docs/AI_CALLCENTER.md` | NEEDS_REVIEW | 19345 |
-| `docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md` | DOCUMENTATION | 4382 |
-| `docs/AI_CONTEXT/DOMAIN_MAPS/CUSTOMER.md` | DOCUMENTATION | 7442 |
-| `docs/AI_CONTEXT/DOMAIN_MAPS/FRONTEND_RUNTIME.md` | DOCUMENTATION | 3744 |
-| `docs/AI_CONTEXT/DOMAIN_MAPS/FUTURE_BACKEND_BOUNDARY.md` | DOCUMENTATION | 1611 |
-| `docs/AI_CONTEXT/DOMAIN_MAPS/PROVIDER.md` | DOCUMENTATION | 11289 |
-| `docs/AI_CONTEXT/DOMAIN_MAPS/SHARED_AND_SERVICES.md` | DOCUMENTATION | 2836 |
-| `docs/AI_CONTEXT/DOMAIN_MAPS/TESTING.md` | DOCUMENTATION | 5646 |
-| `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md` | DOCUMENTATION | 7594 |
+| `docs/AI_CONTEXT/DOMAIN_MAPS/ADMIN.md` | DOCUMENTATION | 4711 |
+| `docs/AI_CONTEXT/DOMAIN_MAPS/CUSTOMER.md` | DOCUMENTATION | 7771 |
+| `docs/AI_CONTEXT/DOMAIN_MAPS/FRONTEND_RUNTIME.md` | DOCUMENTATION | 4073 |
+| `docs/AI_CONTEXT/DOMAIN_MAPS/FUTURE_BACKEND_BOUNDARY.md` | DOCUMENTATION | 1940 |
+| `docs/AI_CONTEXT/DOMAIN_MAPS/PROVIDER.md` | DOCUMENTATION | 11618 |
+| `docs/AI_CONTEXT/DOMAIN_MAPS/SHARED_AND_SERVICES.md` | DOCUMENTATION | 3165 |
+| `docs/AI_CONTEXT/DOMAIN_MAPS/TESTING.md` | DOCUMENTATION | 5975 |
+| `docs/AI_CONTEXT/EXECUTION_CHECKPOINT.md` | DOCUMENTATION | 7951 |
 | `docs/AI_CONTEXT/FILE_INDEX.json` | DOCUMENTATION |  |
-| `docs/AI_CONTEXT/README.md` | DOCUMENTATION | 1248 |
-| `docs/AI_CONTEXT/START_HERE.md` | DOCUMENTATION | 10647 |
-| `docs/AI_CONTEXT/WORKFLOW.md` | DOCUMENTATION | 1652 |
-| `docs/AI_NEXT_IMPLEMENTATION_ORDER.md` | CONFIGURATION | 14399 |
-| `docs/AI_PROJECT_MAP.csv` | CONFIGURATION | 310671 |
+| `docs/AI_CONTEXT/README.md` | DOCUMENTATION | 1317 |
+| `docs/AI_CONTEXT/START_HERE.md` | DOCUMENTATION | 5258 |
+| `docs/AI_CONTEXT/WORKFLOW.md` | DOCUMENTATION | 1981 |
+| `docs/AI_NEXT_IMPLEMENTATION_ORDER.md` | CONFIGURATION | 15371 |
+| `docs/AI_PROJECT_MAP.csv` | CONFIGURATION | 315141 |
 | `docs/AI_PROJECT_MAP.json` | CONFIGURATION |  |
-| `docs/AI_PROJECT_MAP.md` | CONFIGURATION | 178868 |
-| `docs/API_CONTRACTS.md` | CONFIGURATION | 29323 |
-| `docs/ARCHITECTURE.md` | CONFIGURATION | 1980 |
+| `docs/AI_PROJECT_MAP.md` | CONFIGURATION | 182880 |
+| `docs/API_CONTRACTS.md` | CONFIGURATION | 29579 |
+| `docs/ARCHITECTURE.md` | CONFIGURATION | 2309 |
 | `docs/archive/ADMIN_BACKEND_STATUS.md` | NEEDS_REVIEW | 5123 |
 | `docs/archive/ARCHITECTURE_BLUEPRINT_V1.md` | NEEDS_REVIEW | 54657 |
 | `docs/archive/DEPENDENCY_GRAPH.md` | NEEDS_REVIEW | 3030 |
@@ -1535,8 +1557,8 @@ service cloud.firestore {
 | `docs/archive/REMOVED_FILES_REPORT.md` | NEEDS_REVIEW | 299 |
 | `docs/archive/RESPONSIVE_AUDIT.md` | NEEDS_REVIEW | 5797 |
 | `docs/archive/TEST_RESULTS.md` | NEEDS_REVIEW | 16582 |
-| `docs/AUTHENTICATION.md` | CONFIGURATION | 948 |
-| `docs/DATA_MODEL.md` | CONFIGURATION | 1381 |
+| `docs/AUTHENTICATION.md` | CONFIGURATION | 1277 |
+| `docs/DATA_MODEL.md` | CONFIGURATION | 1710 |
 | `docs/DECISIONS/2026-11-09-audit-log-demo-assumptions.md` | DECISION | 1546 |
 | `docs/DECISIONS/2026-11-09-quotes-demo-assumptions.md` | DECISION | 2984 |
 | `docs/DECISIONS/2026-11-09-reports-demo-assumptions.md` | DECISION | 3865 |
@@ -1544,40 +1566,40 @@ service cloud.firestore {
 | `docs/DECISIONS/2026-11-09-settlements-demo-assumptions.md` | DECISION | 3082 |
 | `docs/DECISIONS/2026-11-09-system-settings-demo-assumptions.md` | DECISION | 2370 |
 | `docs/DECISIONS/2026-11-10-super-dashboard-demo-assumptions.md` | DECISION | 4656 |
-| `docs/DEEPSEEK_HANDOFF.md` | NEEDS_REVIEW | 3416 |
-| `docs/DEPLOY_CHECKLIST.md` | NEEDS_REVIEW | 6233 |
+| `docs/DEEPSEEK_HANDOFF.md` | NEEDS_REVIEW | 3745 |
+| `docs/DEPLOY_CHECKLIST.md` | NEEDS_REVIEW | 7732 |
 | `docs/DESIGN_MAP.md` | NEEDS_REVIEW | 6301 |
 | `docs/DESIGN_SYSTEM_V9.md` | NEEDS_REVIEW | 6806 |
-| `docs/FIREBASE_BACKEND.md` | NEEDS_REVIEW | 17914 |
+| `docs/FIREBASE_BACKEND.md` | NEEDS_REVIEW | 18700 |
 | `docs/FIREBASE_SCHEMA.md` | NEEDS_REVIEW | 8356 |
-| `docs/FRONTEND_ARCHITECTURE.md` | DOCUMENTATION | 4873 |
-| `docs/FRONTEND_COMPONENT_CATALOG.md` | DOCUMENTATION | 5262 |
-| `docs/FRONTEND_DESIGN_SYSTEM.md` | DOCUMENTATION | 4953 |
-| `docs/FRONTEND_FILE_CATALOG.md` | DOCUMENTATION | 55284 |
-| `docs/FRONTEND_INTERACTION_SPEC.md` | DOCUMENTATION | 4826 |
-| `docs/FRONTEND_PAGE_CATALOG.md` | DOCUMENTATION | 14612 |
-| `docs/FRONTEND_QA_ACCEPTANCE.md` | DOCUMENTATION | 3456 |
-| `docs/FRONTEND_TEAM_AI_PROTOCOL.md` | DOCUMENTATION | 4790 |
-| `docs/HANDOFF_NEXT_AI.md` | DOCUMENTATION | 99593 |
-| `docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md` | DOCUMENTATION | 21527 |
-| `docs/MAINTENANCE_GUIDE.md` | NEEDS_REVIEW | 76573 |
+| `docs/FRONTEND_ARCHITECTURE.md` | DOCUMENTATION | 5202 |
+| `docs/FRONTEND_COMPONENT_CATALOG.md` | DOCUMENTATION | 5591 |
+| `docs/FRONTEND_DESIGN_SYSTEM.md` | DOCUMENTATION | 5282 |
+| `docs/FRONTEND_FILE_CATALOG.md` | DOCUMENTATION | 55613 |
+| `docs/FRONTEND_INTERACTION_SPEC.md` | DOCUMENTATION | 5155 |
+| `docs/FRONTEND_PAGE_CATALOG.md` | DOCUMENTATION | 14941 |
+| `docs/FRONTEND_QA_ACCEPTANCE.md` | DOCUMENTATION | 3785 |
+| `docs/FRONTEND_TEAM_AI_PROTOCOL.md` | DOCUMENTATION | 5119 |
+| `docs/HANDOFF_NEXT_AI.md` | DOCUMENTATION | 111620 |
+| `docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md` | DOCUMENTATION | 21856 |
+| `docs/MAINTENANCE_GUIDE.md` | NEEDS_REVIEW | 87542 |
 | `docs/MIGRATION_PLAN.md` | CONFIGURATION | 1820 |
-| `docs/NEXT_SESSION.md` | NEEDS_REVIEW | 5529 |
-| `docs/PERMISSIONS.md` | CONFIGURATION | 824 |
+| `docs/NEXT_SESSION.md` | NEEDS_REVIEW | 5858 |
+| `docs/PERMISSIONS.md` | CONFIGURATION | 1153 |
 | `docs/PLAYBOOKS.md` | NEEDS_REVIEW | 13769 |
-| `docs/PROJECT_REFERENCE.md` | NEEDS_REVIEW | 92834 |
-| `docs/PROJECT_TREE.md` | CONFIGURATION | 33801 |
-| `docs/README.md` | NEEDS_REVIEW | 3633 |
+| `docs/PROJECT_REFERENCE.md` | NEEDS_REVIEW | 111023 |
+| `docs/PROJECT_TREE.md` | CONFIGURATION | 34574 |
+| `docs/README.md` | NEEDS_REVIEW | 5099 |
 | `docs/SECURITY_AUDIT_2026-11-23.md` | NEEDS_REVIEW | 9258 |
-| `docs/SECURITY_MODEL.md` | CONFIGURATION | 1054 |
-| `docs/TESTING_STRATEGY.md` | DOCUMENTATION | 7746 |
-| `docs/UI_EDIT_GUIDE_AR.md` | NEEDS_REVIEW | 7259 |
+| `docs/SECURITY_MODEL.md` | CONFIGURATION | 1383 |
+| `docs/TESTING_STRATEGY.md` | DOCUMENTATION | 8075 |
+| `docs/UI_EDIT_GUIDE_AR.md` | NEEDS_REVIEW | 7742 |
 
 ### firebase.json (1)
 
 | File | Status | Bytes |
 |---|---|---|
-| `firebase.json` | NEEDS_REVIEW | 3332 |
+| `firebase.json` | NEEDS_REVIEW | 4658 |
 
 ### firestore.indexes.json (1)
 
@@ -1597,35 +1619,35 @@ service cloud.firestore {
 |---|---|---|
 | `functions/.env.example` | NEEDS_REVIEW | 1688 |
 | `functions/.gitignore` | NEEDS_REVIEW | 21 |
-| `functions/domain/apps/admin/modules/ops-core.js` | NEEDS_REVIEW | 12316 |
+| `functions/domain/apps/admin/modules/ops-core.js` | NEEDS_REVIEW | 12644 |
 | `functions/domain/apps/admin/modules/ops-routes.js` | NEEDS_REVIEW | 8750 |
 | `functions/domain/apps/admin/modules/workforce/employee-form.js` | NEEDS_REVIEW | 4496 |
 | `functions/domain/apps/admin/modules/workforce/employee-invitation.js` | NEEDS_REVIEW | 1386 |
 | `functions/domain/apps/admin/modules/workforce/employee-status.js` | NEEDS_REVIEW | 2235 |
-| `functions/domain/apps/admin/permission-guard.js` | NEEDS_REVIEW | 6513 |
+| `functions/domain/apps/admin/permission-guard.js` | NEEDS_REVIEW | 6711 |
 | `functions/domain/apps/admin/rbac-store.js` | NEEDS_REVIEW | 22436 |
 | `functions/domain/manifest.json` | NEEDS_REVIEW | 2469 |
-| `functions/domain/services/admin-api.js` | NEEDS_REVIEW | 31012 |
+| `functions/domain/services/admin-api.js` | NEEDS_REVIEW | 33904 |
 | `functions/domain/services/api-client.js` | NEEDS_REVIEW | 10859 |
 | `functions/domain/services/auth-api.js` | NEEDS_REVIEW | 4274 |
 | `functions/domain/services/catalog-api.js` | NEEDS_REVIEW | 4536 |
 | `functions/domain/services/catalog-question-bank.js` | NEEDS_REVIEW | 16221 |
-| `functions/domain/services/customer-api.js` | NEEDS_REVIEW | 8882 |
+| `functions/domain/services/customer-api.js` | NEEDS_REVIEW | 9562 |
 | `functions/domain/services/finance-api.js` | NEEDS_REVIEW | 8102 |
 | `functions/domain/services/local-catalog.js` | NEEDS_REVIEW | 54320 |
-| `functions/domain/services/local-market-store.js` | NEEDS_REVIEW | 103121 |
+| `functions/domain/services/local-market-store.js` | NEEDS_REVIEW | 103225 |
 | `functions/domain/services/notifications-api.js` | NEEDS_REVIEW | 1769 |
 | `functions/domain/services/ops-api.js` | NEEDS_REVIEW | 5184 |
-| `functions/domain/services/orders-api.js` | NEEDS_REVIEW | 30862 |
+| `functions/domain/services/orders-api.js` | NEEDS_REVIEW | 31029 |
 | `functions/domain/services/provider-api.js` | NEEDS_REVIEW | 7873 |
 | `functions/domain/services/quotes-api.js` | NEEDS_REVIEW | 7074 |
 | `functions/domain/services/support-api.js` | NEEDS_REVIEW | 4714 |
 | `functions/domain/shared/config/legacy-data.js` | NEEDS_REVIEW | 38016 |
-| `functions/index.js` | NEEDS_REVIEW | 14644 |
+| `functions/index.js` | NEEDS_REVIEW | 15814 |
 | `functions/package-lock.json` | NEEDS_REVIEW | 111337 |
 | `functions/package.json` | NEEDS_REVIEW | 606 |
 | `functions/src/admin-code.js` | NEEDS_REVIEW | 16477 |
-| `functions/src/admin-extra.js` | NEEDS_REVIEW | 12672 |
+| `functions/src/admin-extra.js` | NEEDS_REVIEW | 14704 |
 | `functions/src/agent-gateway.js` | NEEDS_REVIEW | 29710 |
 | `functions/src/ai.js` | NEEDS_REVIEW | 16787 |
 | `functions/src/alert-mail.js` | NEEDS_REVIEW | 5724 |
@@ -1642,7 +1664,7 @@ service cloud.firestore {
 | `functions/src/owner-alerts.js` | NEEDS_REVIEW | 1991 |
 | `functions/src/partial.js` | NEEDS_REVIEW | 13607 |
 | `functions/src/payments.js` | NEEDS_REVIEW | 10105 |
-| `functions/src/plan.js` | NEEDS_REVIEW | 17411 |
+| `functions/src/plan.js` | NEEDS_REVIEW | 17592 |
 | `functions/src/provider-stats.js` | NEEDS_REVIEW | 4221 |
 | `functions/src/retention.js` | NEEDS_REVIEW | 1615 |
 | `functions/src/runtime.js` | NEEDS_REVIEW | 6582 |
@@ -1651,7 +1673,7 @@ service cloud.firestore {
 | `functions/src/store.js` | NEEDS_REVIEW | 1838 |
 | `functions/src/support-chat.js` | NEEDS_REVIEW | 51620 |
 | `functions/src/tech-status.js` | NEEDS_REVIEW | 17503 |
-| `functions/src/telemetry.js` | NEEDS_REVIEW | 6064 |
+| `functions/src/telemetry.js` | NEEDS_REVIEW | 7784 |
 | `functions/src/usage.js` | NEEDS_REVIEW | 8164 |
 | `functions/src/workforce.js` | NEEDS_REVIEW | 13117 |
 
@@ -1670,6 +1692,18 @@ service cloud.firestore {
 | `legal/privacy.html` | NEEDS_REVIEW | 19436 |
 | `legal/terms.html` | NEEDS_REVIEW | 14400 |
 
+### package-lock.json (1)
+
+| File | Status | Bytes |
+|---|---|---|
+| `package-lock.json` | NEEDS_REVIEW | 16907 |
+
+### robots.txt (1)
+
+| File | Status | Bytes |
+|---|---|---|
+| `robots.txt` | NEEDS_REVIEW | 46 |
+
 ### root (10)
 
 | File | Status | Bytes |
@@ -1678,12 +1712,12 @@ service cloud.firestore {
 | `.editorconfig` | CONFIGURATION | 232 |
 | `.gitignore` | CONFIGURATION | 1048 |
 | `AGENTS.md` | DOCUMENTATION | 289 |
-| `CLAUDE.md` | DOCUMENTATION | 4030 |
-| `index.html` | CONFIGURATION | 423 |
+| `CLAUDE.md` | DOCUMENTATION | 5050 |
+| `index.html` | CONFIGURATION | 432 |
 | `manifest.json` | CONFIGURATION | 629 |
-| `package.json` | CONFIGURATION | 1712 |
+| `package.json` | CONFIGURATION | 1553 |
 | `README.md` | CONFIGURATION | 4086 |
-| `service-worker.js` | CONFIGURATION | 12184 |
+| `service-worker.js` | CONFIGURATION | 12611 |
 
 ### scripts (13)
 
@@ -1692,7 +1726,7 @@ service cloud.firestore {
 | `scripts/agent-guard.cjs` | NEEDS_REVIEW | 2883 |
 | `scripts/bench-firestore-cost.cjs` | NEEDS_REVIEW | 10386 |
 | `scripts/build-lucide-icons.cjs` | NEEDS_REVIEW | 7133 |
-| `scripts/build-project-reference.cjs` | NEEDS_REVIEW | 14954 |
+| `scripts/build-project-reference.cjs` | NEEDS_REVIEW | 15461 |
 | `scripts/coverage-map.cjs` | NEEDS_REVIEW | 3617 |
 | `scripts/coverage-run.cjs` | NEEDS_REVIEW | 923 |
 | `scripts/deploy-prod.cjs` | NEEDS_REVIEW | 1594 |
@@ -1713,33 +1747,37 @@ service cloud.firestore {
 
 | File | Status | Bytes |
 |---|---|---|
-| `services/admin-api.js` | IMPLEMENTED (MOCK ADAPTER) | 31012 |
+| `services/admin-api.js` | IMPLEMENTED (MOCK ADAPTER) | 33904 |
 | `services/api-client.js` | IMPLEMENTED (MOCK ADAPTER) | 10859 |
 | `services/auth-api.js` | IMPLEMENTED (MOCK ADAPTER) | 4274 |
 | `services/catalog-api.js` | IMPLEMENTED (MOCK ADAPTER) | 4536 |
 | `services/catalog-question-bank.js` | NEEDS_REVIEW | 16221 |
 | `services/catalog-remote.js` | NEEDS_REVIEW | 2578 |
-| `services/customer-api.js` | IMPLEMENTED (MOCK ADAPTER) | 8882 |
+| `services/customer-api.js` | IMPLEMENTED (MOCK ADAPTER) | 9562 |
 | `services/finance-api.js` | IMPLEMENTED (MOCK ADAPTER) | 8102 |
 | `services/firebase-backend.js` | NEEDS_REVIEW | 43338 |
 | `services/firebase-config.js` | NEEDS_REVIEW | 4400 |
 | `services/local-attachments.js` | IMPLEMENTED | 14813 |
 | `services/local-catalog.js` | IMPLEMENTED | 54320 |
-| `services/local-market-store.js` | IMPLEMENTED | 103121 |
+| `services/local-market-store.js` | IMPLEMENTED | 103225 |
 | `services/notifications-api.js` | IMPLEMENTED (MOCK ADAPTER) | 1769 |
 | `services/ops-api.js` | NEEDS_REVIEW | 5184 |
-| `services/orders-api.js` | IMPLEMENTED (MOCK ADAPTER) | 30862 |
+| `services/orders-api.js` | IMPLEMENTED (MOCK ADAPTER) | 31029 |
 | `services/provider-api.js` | IMPLEMENTED (MOCK ADAPTER) | 7873 |
 | `services/quotes-api.js` | IMPLEMENTED (MOCK ADAPTER) | 7074 |
-| `services/README.md` | CONFIGURATION | 1226 |
+| `services/README.md` | CONFIGURATION | 1601 |
 | `services/realtime-client.js` | IMPLEMENTED (MOCK ADAPTER) | 3369 |
 | `services/support-api.js` | IMPLEMENTED (MOCK ADAPTER) | 4714 |
 | `services/uploads-api.js` | IMPLEMENTED (MOCK ADAPTER) | 3215 |
 
-### shared (39)
+### shared (43)
 
 | File | Status | Bytes |
 |---|---|---|
+| `shared/boot/async-fonts.js` | NEEDS_REVIEW | 1107 |
+| `shared/boot/frame-guard.js` | NEEDS_REVIEW | 467 |
+| `shared/boot/redirect.js` | NEEDS_REVIEW | 491 |
+| `shared/boot/sw-register.js` | NEEDS_REVIEW | 341 |
 | `shared/components/accessible-tabs.js` | IMPLEMENTED | 3123 |
 | `shared/components/buttons.js` | IMPLEMENTED | 1372 |
 | `shared/components/data-grid.js` | IMPLEMENTED (DEMO) | 17072 |
@@ -1786,12 +1824,12 @@ service cloud.firestore {
 |---|---|---|
 | `start-deepseek.ps1` | NEEDS_REVIEW | 3830 |
 
-### tests (151)
+### tests (156)
 
 | File | Status | Bytes |
 |---|---|---|
 | `tests/e2e/a11y.cdp.js` | TEST | 10350 |
-| `tests/e2e/admin-app.cdp.js` | TEST | 9388 |
+| `tests/e2e/admin-app.cdp.js` | TEST | 10079 |
 | `tests/e2e/admin-controls.cdp.js` | NEEDS_REVIEW | 6495 |
 | `tests/e2e/audit-log.browser.js` | TEST | 2352 |
 | `tests/e2e/client-errors.cdp.js` | NEEDS_REVIEW | 3094 |
@@ -1801,7 +1839,7 @@ service cloud.firestore {
 | `tests/e2e/customer-sheet-focus.browser.py` | TEST | 8930 |
 | `tests/e2e/firebase-emulator.cdp.js` | NEEDS_REVIEW | 22711 |
 | `tests/e2e/guest.cdp.js` | TEST | 10718 |
-| `tests/e2e/interaction.cdp.js` | NEEDS_REVIEW | 13756 |
+| `tests/e2e/interaction.cdp.js` | NEEDS_REVIEW | 13744 |
 | `tests/e2e/lib/a11y-audit.js` | TEST | 4900 |
 | `tests/e2e/lib/cdp.js` | TEST | 6507 |
 | `tests/e2e/offer-alerts.cdp.js` | NEEDS_REVIEW | 4785 |
@@ -1830,10 +1868,12 @@ service cloud.firestore {
 | `tests/unit/admin-dashboard.test.js` | TEST | 1885 |
 | `tests/unit/admin-live-editors.test.js` | NEEDS_REVIEW | 10896 |
 | `tests/unit/admin-modules.test.js` | TEST | 9308 |
-| `tests/unit/admin-platform-controls.test.js` | NEEDS_REVIEW | 14851 |
-| `tests/unit/admin-runtime.test.js` | TEST | 7903 |
-| `tests/unit/admin-shell.test.js` | TEST | 3012 |
+| `tests/unit/admin-platform-controls.test.js` | NEEDS_REVIEW | 15889 |
+| `tests/unit/admin-profile-360.test.js` | NEEDS_REVIEW | 8142 |
+| `tests/unit/admin-runtime.test.js` | TEST | 8290 |
+| `tests/unit/admin-shell.test.js` | TEST | 3031 |
 | `tests/unit/admin-totp.test.js` | NEEDS_REVIEW | 10154 |
+| `tests/unit/admin-work-inbox.test.js` | NEEDS_REVIEW | 8409 |
 | `tests/unit/ai-classify.test.js` | NEEDS_REVIEW | 9241 |
 | `tests/unit/alert-mail.test.js` | NEEDS_REVIEW | 6285 |
 | `tests/unit/api-adapters.test.js` | TEST | 20167 |
@@ -1867,9 +1907,9 @@ service cloud.firestore {
 | `tests/unit/discover.test.js` | IMPLEMENTED | 12452 |
 | `tests/unit/experience.test.js` | NEEDS_REVIEW | 2997 |
 | `tests/unit/finance-dashboard.test.js` | TEST | 4499 |
-| `tests/unit/firebase-backend.test.js` | NEEDS_REVIEW | 66774 |
+| `tests/unit/firebase-backend.test.js` | NEEDS_REVIEW | 68450 |
 | `tests/unit/firebase-integration-contract.test.js` | NEEDS_REVIEW | 8695 |
-| `tests/unit/firebase-mode-data.test.js` | NEEDS_REVIEW | 16296 |
+| `tests/unit/firebase-mode-data.test.js` | NEEDS_REVIEW | 16736 |
 | `tests/unit/frontend-contracts.test.js` | TEST | 8995 |
 | `tests/unit/home.test.js` | IMPLEMENTED | 10379 |
 | `tests/unit/icon-asset-audit.test.js` | TEST | 4660 |
@@ -1888,6 +1928,8 @@ service cloud.firestore {
 | `tests/unit/offers-undo-timer.test.js` | NEEDS_REVIEW | 2930 |
 | `tests/unit/order-lifecycle.test.js` | TEST | 7182 |
 | `tests/unit/orders-management.test.js` | TEST | 3201 |
+| `tests/unit/payments-admin.test.js` | NEEDS_REVIEW | 4977 |
+| `tests/unit/payments-ui.test.js` | NEEDS_REVIEW | 6629 |
 | `tests/unit/payments.test.js` | NEEDS_REVIEW | 14192 |
 | `tests/unit/policies.test.js` | NEEDS_REVIEW | 4335 |
 | `tests/unit/provider-app-a11y.test.js` | TEST | 7816 |
@@ -1897,7 +1939,7 @@ service cloud.firestore {
 | `tests/unit/provider-bonus.test.js` | NEEDS_REVIEW | 6148 |
 | `tests/unit/provider-customer-location.test.js` | NEEDS_REVIEW | 7450 |
 | `tests/unit/provider-domain.test.js` | TEST | 8366 |
-| `tests/unit/provider-pages.test.js` | TEST | 6954 |
+| `tests/unit/provider-pages.test.js` | TEST | 7214 |
 | `tests/unit/provider-request-domain.test.js` | TEST | 18661 |
 | `tests/unit/provider-screen-sweep.test.js` | NEEDS_REVIEW | 6785 |
 | `tests/unit/providers-management.test.js` | TEST | 3427 |
@@ -1911,11 +1953,12 @@ service cloud.firestore {
 | `tests/unit/reviews-management.test.js` | TEST | 4794 |
 | `tests/unit/round5-features.test.js` | NEEDS_REVIEW | 38173 |
 | `tests/unit/routes-coverage.test.js` | NEEDS_REVIEW | 19425 |
+| `tests/unit/security-audit-1127.test.js` | NEEDS_REVIEW | 6644 |
 | `tests/unit/security-audit-2026-11-23.test.js` | NEEDS_REVIEW | 4209 |
 | `tests/unit/security-fixes.test.js` | NEEDS_REVIEW | 5779 |
 | `tests/unit/security-round2.test.js` | NEEDS_REVIEW | 6954 |
 | `tests/unit/security.test.js` | TEST | 6317 |
-| `tests/unit/service-worker-precache.test.js` | TEST | 2791 |
+| `tests/unit/service-worker-precache.test.js` | TEST | 2903 |
 | `tests/unit/services-management.test.js` | TEST | 4892 |
 | `tests/unit/settlements-edge-cases.test.js` | TEST | 7542 |
 | `tests/unit/settlements.test.js` | TEST | 14636 |
@@ -1934,12 +1977,12 @@ service cloud.firestore {
 | `tests/unit/teams-alerts.test.js` | NEEDS_REVIEW | 10700 |
 | `tests/unit/tech-center.test.js` | NEEDS_REVIEW | 17768 |
 | `tests/unit/tree.test.js` | TEST | 3224 |
-| `tests/unit/trust-ui.test.js` | NEEDS_REVIEW | 6392 |
+| `tests/unit/trust-ui.test.js` | NEEDS_REVIEW | 6514 |
 | `tests/unit/ui-adapter-integration.test.js` | TEST | 9665 |
 | `tests/unit/ui-kit.test.js` | IMPLEMENTED | 3133 |
 | `tests/unit/ui-round3.test.js` | NEEDS_REVIEW | 6370 |
 | `tests/unit/upfront-pricing.test.js` | NEEDS_REVIEW | 7428 |
-| `tests/unit/wiring.test.js` | NEEDS_REVIEW | 21244 |
+| `tests/unit/wiring.test.js` | NEEDS_REVIEW | 21524 |
 | `tests/unit/workforce.test.js` | TEST | 6422 |
 
 ### tools (1)

@@ -8,12 +8,12 @@
 5. Read the exact source files and tests that the task touches. Source code outranks stale documentation. Documents marked «Historical» describe the old frontend-only phase.
 
 ## Current phase
-**Live in production on Firebase** (Cloud Functions `me-central1`, Firestore, RTDB signals, Firebase Auth). The apps default to the real backend; `?backend=local` is the offline demo used by tests and browser runners. Browser runners pin local mode and block production hosts — never point tests at production data.
+**Paused / archived (2026-11-27)** until the owner is ready to launch: the code is complete and pushed to GitHub, Firebase Hosting is **disabled** (the site is offline), Cloud Functions / Firestore / Auth stay in the Firebase project. To go live again: `firebase deploy --only functions,hosting` (see `docs/HANDOFF_NEXT_AI.md`, top entry). The apps default to the real backend; `?backend=local` is the offline demo used by tests and browser runners. Browser runners pin local mode and block production hosts — never point tests at production data.
 
 - Shared business rules live in `services/*.js` and are copied to `functions/domain` with `npm run functions:sync` after every change there.
 - Payments: cash today. Online payment (Paymob) is built on the server and stays off until the owner sets `PAYMOB_*`. The server never enables the simulated «demo» gateway.
-- Standing approval: push to GitHub and `firebase deploy` after each finished change. Destructive data operations, installing tools and anything costing money need the owner first. Never commit secrets.
-- `backend/` and `database/` are old scaffolding (unused). Do not delete them without the owner.
+- While paused: push to GitHub only; do **not** redeploy hosting until the owner says so. (Before the pause the standing approval was push + `firebase deploy` after each change.) Destructive data operations, installing tools and anything costing money need the owner first. Never commit secrets.
+- The old `backend/` and `database/` scaffolding was removed on 2026-11-27 (owner request); the server is `functions/`.
 
 ## Change discipline
 - Before creating a file/component, search for an existing implementation.

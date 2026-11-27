@@ -50,8 +50,6 @@
       "tests/**",
       "docs/**",
       "scripts/**",
-      "backend/**",
-      "database/**",
       "graphify-out/**",
       "ai-workforce/**",
       "design-reference/**",

@@ -44,7 +44,6 @@ Live project: Firebase project \`hansalahlak\`, Cloud Functions region \`me-cent
 | \`assets/\` | Brand, icons (webp), hero images, vendored Leaflet 1.9.4 |
 | \`tests/\` | \`unit/\` (Node test runner, vm-loaded classic scripts), \`e2e/\` (CDP browser checks), \`helpers/\` |
 | \`docs/\` | Architecture, API contracts, Firebase schema, AI context, handoff |
-| \`backend/\`, \`database/\` | Preserved future scaffolding — not used at runtime |
 | \`service-worker.js\`, \`manifest.json\` | PWA cache (version constant \`CACHE\`) and install metadata |
 
 ## 3. Runtime architecture
