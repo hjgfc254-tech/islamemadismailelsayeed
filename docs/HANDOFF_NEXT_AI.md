@@ -4,6 +4,15 @@
 > (in particular, entries that say the legacy bridge "must be kept", that profile editing is "disabled", or that the project is
 > "frontend only" are superseded). The system map is `docs/MAINTENANCE_GUIDE.md`.
 
+## 2026-11-27 — Admin visual refresh
+- Finishing layer at the end of `apps/admin/styles/brand-2026.css` (loaded last; not counted by the Admin hard-coded
+  audit, still token-based): white header with a wide pill search (icon-only on phones), tighter sidebar with a red
+  marker, clearer page header, underline section / settings tabs, one card style, calm tables (sticky soft-navy header,
+  tabular numbers), one button scale (40 px desktop / 44 px touch; danger = red outline, filled only inside dialogs),
+  24 px minimum for links in tables (WCAG 2.5.8). Same identity colours.
+- `modules/ops-center.js`: the ticket note form gives visible feedback when empty (the interaction runner flagged it).
+- Runners green: admin-app, admin-controls, a11y, responsive-sweep, interaction.
+
 ## 2026-11-27 — Payments screens (customer, provider, admin)
 - Customer `pages/payment-card.js` (+ `HSOrdersApi.pay / payDemo`), tracking page hook, voucher on the certificate,
   wizard copy; provider job card / completion lock / online balance / `payoutWallet` / labour-only preview; admin

@@ -17,3 +17,97 @@
 /* status pills in tables broke unevenly over 2–3 lines — balanced lines (nowrap pushed the actions column off-screen) */
 .hs-grid-table .hs-badge{text-wrap:balance;line-height:1.35}/* tables: text sat at the top of the row while the row's buttons were centred — one middle line */
 .rl-table td{vertical-align:middle}
+
+/* ═════ 2026-11-27 — professional refresh (owner: «أفضل وأكثر بروفيشنال») ═════
+   Same identity (navy + red, white surfaces), calmer and more consistent: one card style, one button scale, underline
+   section tabs, quieter tables with tabular numbers, a clearer page header. Presentation only — no markup changes. */
+.adm{--pro-r:var(--r-lg);--pro-line:var(--border-subtle);--pro-pad:var(--sp-5);font-feature-settings:"tnum" 1;-webkit-font-smoothing:antialiased}
+.adm-main{background:var(--bg-primary)}
+
+/* header: one clean white bar, wide search, quiet secondary links */
+.adm-head{box-shadow:none;border-bottom:1px solid var(--pro-line);background:var(--surface-primary)}
+.adm-brand-t{color:var(--brand-primary);font-weight:800;letter-spacing:-.2px}
+.adm-brand small{color:var(--text-muted);font-weight:600}
+.adm-head .adm-search-btn{flex:0 1 26rem;justify-content:flex-start;gap:var(--sp-2);margin-inline:auto;min-height:40px;padding-inline:var(--sp-3);border-color:var(--pro-line);border-radius:var(--r-pill);background:var(--surface-secondary);color:var(--text-muted);font-weight:600}
+.adm-head .adm-search-btn kbd{margin-inline-start:auto;padding:1px var(--sp-2);border:1px solid var(--pro-line);border-radius:var(--r-sm);background:var(--surface-primary);color:var(--text-muted);font:inherit;font-size:var(--fs-xs)}
+.adm-head .adm-search-btn:hover{border-color:var(--border-default);color:var(--text-secondary)}
+.adm-head .adm-site{border-color:transparent;background:transparent;color:var(--text-secondary)}
+.adm-head .adm-site:hover{background:var(--surface-sunken)}
+
+/* sidebar: tighter rhythm, clear group labels, a red marker on the open page */
+.adm-nav{padding:var(--sp-4) var(--sp-3)}
+.adm-group{margin-bottom:var(--sp-5)}
+.adm-group-t{margin:0 var(--sp-3) var(--sp-2);font-size:var(--fs-xs);font-weight:700;letter-spacing:.3px;opacity:.85}
+.adm-link{min-height:40px;border-radius:var(--r-md);font-size:var(--fs-sm);font-weight:600;position:relative}
+.adm-link.is-active,[dir="rtl"] .adm-link.is-active{background:var(--nav-dark-active)}
+.adm-link.is-active::before{content:"";position:absolute;inset-block:var(--sp-2);inset-inline-start:calc(var(--sp-1) * -1);width:3px;border-radius:var(--r-pill);background:var(--accent)}
+
+/* page header */
+.adm-crumbs{font-size:var(--fs-xs);color:var(--text-muted)}
+.adm-titlebar{margin-block:var(--sp-2) var(--sp-4);align-items:center}
+.adm-title{font-size:clamp(1.35rem,1.1rem + .8vw,1.75rem);font-weight:800;letter-spacing:-.3px;line-height:1.3}
+.adm-desc{font-size:var(--fs-sm);color:var(--text-muted);margin-top:var(--sp-1)}
+
+/* section tabs: underline style */
+.adm-tabs{gap:var(--sp-1);padding:0;border-radius:0;background:transparent;border-bottom:1px solid var(--pro-line);margin-block-end:var(--sp-5)}
+.adm-tab{min-height:44px;border:0;border-bottom:2px solid transparent;border-radius:0;background:transparent;color:var(--text-muted);font-size:var(--fs-sm);margin-bottom:-1px}
+.adm-tab:hover{color:var(--text-primary);background:transparent}
+.adm-tab.is-active{background:transparent;border-color:transparent;border-bottom-color:var(--accent);color:var(--brand-primary)}
+.ins-tabs{background:transparent;padding:0;border-radius:0;border-bottom:1px solid var(--pro-line);gap:var(--sp-1)}
+.ins-tabs button{border-radius:0;border-bottom:2px solid transparent;margin-bottom:-1px;color:var(--text-muted)}
+.ins-tabs button[aria-selected="true"]{background:transparent;box-shadow:none;border-bottom-color:var(--accent);color:var(--brand-primary)}
+
+/* one card style everywhere */
+.pf-card,.pf-head,.ins-card,.dash-card,.wi-in,.pay-kpi,.ops-box-in,.adm-live-panel>form,.hs-grid-scroll,.rl-scroll{border:1px solid var(--pro-line);border-radius:var(--pro-r);background:var(--surface-primary);box-shadow:0 1px 2px rgba(15,27,45,.04)}
+.pf-card,.pf-head,.ins-card,.dash-card,.wi-in{padding:var(--pro-pad)}
+.pf-h,.wi-in h2,.dash-card h2{font-size:var(--fs-md);font-weight:700;color:var(--text-primary);letter-spacing:-.1px}
+.hs-grid-scroll,.rl-scroll{overflow:auto}
+
+/* KPI tiles */
+.pay-kpi,.dash-kpi{padding:var(--sp-4) var(--pro-pad)}
+.pay-kpi span,.ord-facts dt{font-size:var(--fs-xs);font-weight:600;color:var(--text-muted);letter-spacing:.2px}
+.pay-kpi b{font-size:clamp(1.25rem,1rem + .8vw,1.6rem);font-weight:800;color:var(--brand-primary);font-variant-numeric:tabular-nums}
+.ord-facts dd{font-variant-numeric:tabular-nums}
+
+/* tables: calm header, roomy rows, numbers aligned */
+.hs-grid-table,.rl-table{border-collapse:separate;border-spacing:0;width:100%;font-size:var(--fs-sm)}
+.hs-grid-table th,.rl-table th{position:sticky;top:0;z-index:1;background:var(--brand-primary-soft);color:var(--brand-primary);font-size:var(--fs-xs);font-weight:700;letter-spacing:.2px;border-bottom:1px solid var(--pro-line)}
+.hs-grid-table td,.rl-table td{border-bottom:1px solid var(--pro-line);font-variant-numeric:tabular-nums}
+.hs-grid-table tbody tr:last-child td,.rl-table tbody tr:last-child td{border-bottom:0}
+.hs-grid-table tbody tr:hover td{background:var(--surface-secondary)}
+
+/* buttons: one scale; danger is an outline (a loud red fill only for the final confirm in dialogs) */
+.adm-btn{min-height:40px;border-radius:var(--r-md);background:var(--surface-primary);border-color:var(--border-default);font-weight:600;transition:background var(--motion-fast),border-color var(--motion-fast),color var(--motion-fast)}
+.adm-btn:hover{background:var(--surface-sunken);border-color:var(--border-strong)}
+.adm-btn-p{background:var(--brand-primary);border-color:var(--brand-primary);color:var(--on-brand)}
+.adm-btn-p:hover{background:var(--brand-primary-hover);border-color:var(--brand-primary-hover);filter:none}
+.adm-btn-d{background:var(--surface-primary);border-color:color-mix(in srgb,var(--danger) 45%,transparent);color:var(--danger)}
+.adm-btn-d:hover{background:var(--accent-soft);border-color:var(--danger)}
+.ord-dlg .adm-btn-d,dialog .adm-btn-d{background:var(--danger);border-color:var(--danger);color:var(--on-accent)}
+.adm-btn:focus-visible{outline:none;box-shadow:var(--focus-ring)}
+@media (pointer:coarse),(max-width:767px){.adm-btn,.adm-link,.adm-head .adm-search-btn{min-height:44px}}
+
+/* inputs */
+.hs-grid-field input:not([type=checkbox]):not([type=radio]),.hs-grid-field select{min-height:40px}
+.hs-grid-field>span{font-size:var(--fs-xs);font-weight:600;color:var(--text-secondary)}
+
+/* badges */
+.pf-badge,.hs-badge{font-weight:700;letter-spacing:.1px}
+
+/* work inbox and profiles: calmer rows */
+.wi-it{border-color:var(--pro-line);border-radius:var(--r-md);transition:border-color var(--motion-fast),background var(--motion-fast)}
+.wi-it:hover{border-color:var(--border-default)}
+.wi-t{color:var(--text-primary);text-decoration:none}
+.wi-t:hover{color:var(--brand-primary-hover);text-decoration:underline}
+.pf-name{font-size:clamp(1.2rem,1rem + .6vw,1.5rem);font-weight:800;letter-spacing:-.2px}
+
+/* demo / helper notes: quieter */
+.dash-note,.ord-muted{color:var(--text-muted)}
+.adm-banner{border-radius:var(--r-md);font-size:var(--fs-sm)}.pf-card .hs-grid-scroll,.wi-in .hs-grid-scroll,.dash-card .hs-grid-scroll,.adm-live-panel .pf-card .hs-grid-scroll{border:0;box-shadow:none;border-radius:var(--r-md)}.pf>.pf-facts{padding:var(--sp-4) var(--pro-pad);border:1px solid var(--pro-line);border-radius:var(--pro-r);background:var(--surface-primary);margin:0}.adm-tabs,.ins-tabs{overflow-y:hidden}
+.adm-side .adm-collapse{background:var(--nav-dark-hover);border-color:var(--nav-dark-line);color:var(--on-brand)}
+.adm-side .adm-collapse:hover{background:var(--nav-dark-line);border-color:var(--nav-dark-line)}
+@media (max-width:767px){
+  .adm-head .adm-search-btn{flex:none;margin-inline:0;min-width:44px;padding-inline:var(--sp-2);justify-content:center}
+  .adm-head .adm-search-btn span,.adm-head .adm-search-btn kbd{display:none}
+}/* links inside tables / lists (profile links) keep a 24 px tap height on phones (WCAG 2.5.8) */
+.rl-table :is(th,td) a,.hs-grid-table :is(th,td) a,.pf-card :is(th,td) a,.wi-t,.pay :is(th,td) a{display:inline-flex;align-items:center;min-height:24px}

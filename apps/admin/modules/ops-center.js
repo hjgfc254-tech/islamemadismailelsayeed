@@ -82,7 +82,7 @@
         ${t.description ? `<p>${esc(t.description)}</p>` : ''}${t.link ? `<p><a href="${esc(t.link)}">افتح المكان المرتبط</a></p>` : ''}
         <ul class="ops-notes">${(t.notes || []).map((n) => `<li><b>${esc((n.by && n.by.name) || '')}</b> ${esc(n.text)} <small class="ord-muted">${esc(ago(n.at))}</small></li>`).join('')}</ul>
         <div class="ops-al-acts">${t.status !== 'doing' ? `<button type="button" class="adm-btn" data-tk-set="doing" data-id="${esc(t.id)}">ابدأ فيه</button>` : ''}${t.status !== 'done' ? `<button type="button" class="adm-btn adm-btn-p" data-tk-set="done" data-id="${esc(t.id)}">خلص</button>` : ''}</div>
-        <form class="ops-note-f" data-tk-note="${esc(t.id)}"><label class="hs-grid-field"><span>ملاحظة</span><input name="text" maxlength="500" required></label><button type="submit" class="adm-btn">أضف</button></form>
+        <form class="ops-note-f" data-tk-note="${esc(t.id)}" novalidate><label class="hs-grid-field"><span>ملاحظة</span><input name="text" maxlength="500" required></label><button type="submit" class="adm-btn">أضف</button></form>
       </details></li>`;
     async function load() {
       const q = {}; if (f.team) q.team = f.team; if (f.status) q.status = f.status; if (f.mine) q.mine = '1';
@@ -117,6 +117,7 @@
         await load(); return status('اتفتح البلاغ.');
       }
       if (form.dataset.tkNote) {
+        if (!String(form.text.value || '').trim()) { status('اكتب الملاحظة الأول.'); form.text.focus(); return; }   /* visible feedback instead of a silent browser bubble */
         const r = await req('POST', '/admin/tickets/' + encodeURIComponent(form.dataset.tkNote) + '/notes', { body: { text: form.text.value } });
         if (!r.ok) return status(errText(r));
         await load(); status('اتضافت الملاحظة.');

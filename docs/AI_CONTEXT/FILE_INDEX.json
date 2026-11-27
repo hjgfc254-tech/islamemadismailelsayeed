@@ -258,8 +258,8 @@
       "path": "apps/admin/modules/ops-center.js",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 16642,
-      "sha256": "c69624696ba27c6ec43ffc946e63a70e69d46708df7541a534490528103144ba"
+      "bytes": 16844,
+      "sha256": "417570b38d4b8cf041fe00f97f5bf24543baa92cb2008cd7bb1afc593ab64850"
     },
     {
       "path": "apps/admin/modules/ops-core.js",
@@ -601,8 +601,8 @@
       "path": "apps/admin/styles/brand-2026.css",
       "area": "apps/admin",
       "status": "NEEDS_REVIEW",
-      "bytes": 1967,
-      "sha256": "4e647f94b3bb6e51b8f08aa0d27a208fb1c88f2fef984db4e00c90bdb4fe5cc8"
+      "bytes": 10067,
+      "sha256": "383ef3ede09b0b2ffdfad611d7eb2e6fd89af7f824858a243cd8e21f2e970519"
     },
     {
       "path": "apps/admin/styles/overrides.css",
@@ -3591,14 +3591,14 @@
       "area": "root",
       "status": "CONFIGURATION",
       "bytes": 12422,
-      "sha256": "493b7cc150e44abe2ec08b4a1b89629db488e94d731cb5f9c6911eeffbedf175"
+      "sha256": "9aae0ddaa8428dcf395cb7d0eae149ad305ec210d8400e2440c957d60e2e1d48"
     },
     {
       "path": "service-worker.lock.json",
       "area": "service-worker.lock.json",
       "status": "NEEDS_REVIEW",
       "bytes": 196,
-      "sha256": "b941b2972d3851070ff62f6a0f4c843863e9850cc634750df73693d381c441e2"
+      "sha256": "d5b4b04f86a062e45ebdeff581f31f408d185df3216e213e435c9f9c69157a1b"
     },
     {
       "path": "services/admin-api.js",
