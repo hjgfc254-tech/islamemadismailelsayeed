@@ -12,6 +12,8 @@
 
   function pages() {
     const shell = root.HSAdminShell; if (!shell || !shell.NAV) return [];
+    /* every page this admin can open, including the section tabs that are not in the menu */
+    if (typeof shell.openablePages === 'function') return shell.openablePages().map(i => ({ kind: 'صفحة', label: i.label, page: i.id, q: '' }));
     const allowed = new Set([...root.document.querySelectorAll('a[href^="#/"]')].map(a => a.getAttribute('href').slice(2)));
     return shell.NAV.flatMap(g => g.items || []).filter(i => allowed.has(i.id)).map(i => ({ kind: 'صفحة', label: i.label, page: i.id, q: '' }));
   }

@@ -4,7 +4,23 @@
 > (in particular, entries that say the legacy bridge "must be kept", that profile editing is "disabled", or that the project is
 > "frontend only" are superseded). The system map is `docs/MAINTENANCE_GUIDE.md`.
 
-## 2026-11-27 — Documentation review (this entry)
+## 2026-11-27 — Admin Center simplified (no control removed)
+- **Menu sections:** `SECTIONS` in `apps/admin/admin-shell.js`. Related pages share one menu entry and show as tabs
+  (`#adm-tabs`): «مهام اليوم», «الشكاوى والتقييمات», «الكتالوج والأسعار», «الفلوس», «الفريق والصلاحيات». Menu: 26 → 16
+  entries, 7 → 5 groups. Every page keeps its own route, permission and actions; the Ctrl+K palette uses
+  `HSAdminShell.openablePages()`. Section pages show `الإدارة › group › section › page` crumbs.
+- **Live fixes:** «الإحصائيات» was gated as «غير مرتبطة بالخادم» in production. It is now in `LIVE_PAGES`, and its
+  reports / owner tabs mount the live panels. Live panels show live descriptions (`HSAdminLivePanels.DESC`) instead of
+  the demo pages' «محاكاة محلية» text.
+- **Settings and rates:** live «الإعدادات» shows one section at a time (التشغيل, أرقام الدعم, الملخصات, العروض, الذكاء
+  الاصطناعي, محتوى الموقع), mounted on demand. The markup rate was editable in two places; both rates now live only in
+  «نسب المنصة» (`#/commissions`), and only changed values are sent.
+- Tests: `admin-platform-controls` (new sections test), `firebase-mode-data`, `admin-runtime`; runners `admin-app`
+  (tabs) and `admin-controls` green; `interaction.cdp.js` now visits every openable page.
+- Next: the payments UI (see below). The «تشغيل السوق» tabs still overlap the orders / providers / complaints pages;
+  merging them needs the owner (they hold assignment and per-provider rate controls).
+
+## 2026-11-27 — Documentation review
 - Reviewed every project document against the source at `45e90b2`. Updated: `CLAUDE.md` (phase = live on Firebase),
   `docs/AI_CONTEXT/START_HERE.md` (rewritten), this handoff, `docs/MAINTENANCE_GUIDE.md` (owner overview, §3.3 labour-only
   share, new §3.14 Payments and §3.15 Catalogue, §7 gaps), `docs/README.md`, `docs/AI_NEXT_IMPLEMENTATION_ORDER.md`

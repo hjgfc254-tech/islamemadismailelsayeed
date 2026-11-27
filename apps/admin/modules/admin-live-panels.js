@@ -21,6 +21,7 @@
   const status = (host, msg) => { const s = host.querySelector('[data-live-status]'); if (s) s.textContent = msg || ''; };
   const frame = (title, body) => `<section class="adm-live-panel" aria-label="${esc(title)}">${note}<p data-live-status role="status" aria-live="polite" class="ord-muted"></p>${body}</section>`;
 
+  let settingsTab = 'ops';   /* «الإعدادات»: the open section, kept while the admin moves between pages */
   const PANELS = {
     async audit(host) {
       /* «سجل الإداريين»: who did what and when — sign-ins with the access code (ok / wrong / locked), code set / reset,
@@ -59,30 +60,36 @@
       paint();
     },
     async settings(host) {
+      /* One section at a time (2026-11-27): the page used to stack six editors in one long scroll. Each section mounts
+         only when opened. The platform rates moved to «الفلوس › نسب المنصة» so they are edited in one place only. */
       const res = await C().request('GET', '/admin/settings');
       if (!res.ok) { host.innerHTML = frame('إعدادات النظام', `<p>${esc(errText(res))}</p>`); return; }
       const s = res.data;
-      host.innerHTML = frame('إعدادات النظام', `<form data-live-settings class="ord-dlg-in">
+      const SECTIONS = [
+        ['ops', 'التشغيل'], ['support', 'أرقام الدعم'], ['digest', 'الملخصات بالإيميل'],
+        ['marketing', 'العروض والخصومات'], ['ai', 'الذكاء الاصطناعي'], ['site', 'محتوى الموقع']];
+      const MODULES = { support: ['HSAdminSupportSettings', 'بيانات تواصل الدعم'], digest: ['HSDigestSettings', 'إعدادات الملخصات'],
+        marketing: ['HSMarketingEditor', 'العروض والخصومات'], ai: ['HSAiSettings', 'إعدادات الذكاء الاصطناعي'], site: ['HSSiteContentEditor', 'محتوى الواجهة'] };
+      if (!SECTIONS.some(([k]) => k === settingsTab)) settingsTab = 'ops';
+      const opsHtml = `<form data-live-settings class="ord-dlg-in">
         <label class="hs-grid-field"><span>الإسناد التلقائي للطلبات الجديدة</span><input type="checkbox" name="autoAssign" ${s.autoAssign ? 'checked' : ''}></label>
         <label class="hs-grid-field"><span>تطبيق رسوم على العميل</span><input type="checkbox" name="customerFee" ${s.customerFee ? 'checked' : ''}></label>
-        <label class="hs-grid-field"><span>نسبة المنصة على السعر (٪)</span><input type="number" name="markupRate" min="0" max="100" step="0.5" value="${esc(s.markupRate)}"></label>
-        <p class="ord-muted">نموذج التحصيل: العميل يدفع لمقدم الخدمة، وحصة المنصة تُحصَّل من مقدم الخدمة.</p>
-        <p><button type="submit" class="adm-btn adm-btn-p">حفظ الإعدادات</button></p></form><div data-support-settings></div><div data-digest></div><div data-marketing></div><div data-ai-settings></div><div data-site-content></div>`);
-      const dg = host.querySelector('[data-digest]');
-      if (dg && root.HSDigestSettings) root.HSDigestSettings.mount(dg).catch(() => { dg.innerHTML = '<p>تعذّر تحميل إعدادات الملخصات.</p>'; });   /* modules/digest-settings.js */
-      const sup = host.querySelector('[data-support-settings]');
-      if (sup && root.HSAdminSupportSettings) root.HSAdminSupportSettings.mount(sup).catch(() => { sup.innerHTML = '<p>تعذّر تحميل بيانات تواصل الدعم.</p>'; });
-      const ais = host.querySelector('[data-ai-settings]');
-      if (ais && root.HSAiSettings) root.HSAiSettings.mount(ais).catch(() => { ais.innerHTML = '<p>تعذّر تحميل إعدادات التوجيه الذكي.</p>'; });
-      const mk = host.querySelector('[data-marketing]');
-      if (mk && root.HSMarketingEditor) root.HSMarketingEditor.mount(mk).catch(() => { mk.innerHTML = '<p>تعذّر تحميل العروض والخصومات.</p>'; });
-      const sc = host.querySelector('[data-site-content]');
-      if (sc && root.HSSiteContentEditor) root.HSSiteContentEditor.mount(sc).catch(() => { sc.innerHTML = '<p>تعذّر تحميل محتوى الواجهة.</p>'; });
-      host.querySelector('[data-live-settings]').addEventListener('submit', async (e) => {
+        <p class="ord-muted">نسب المنصة بتتعدّل من <a href="#/commissions">الفلوس › نسب المنصة</a>.</p>
+        <p><button type="submit" class="adm-btn adm-btn-p">حفظ الإعدادات</button></p></form>`;
+      host.innerHTML = frame('إعدادات النظام', `<div class="ins-tabs" role="tablist" aria-label="أقسام الإعدادات">${SECTIONS.map(([k, l]) =>
+        `<button type="button" role="tab" id="set-t-${k}" aria-controls="set-panel" aria-selected="${k === settingsTab}" tabindex="${k === settingsTab ? 0 : -1}" data-set-tab="${k}">${esc(l)}</button>`).join('')}</div>
+        <div id="set-panel" role="tabpanel" aria-labelledby="set-t-${settingsTab}" data-set-panel>${settingsTab === 'ops' ? opsHtml : ''}</div>`);
+      const panel = host.querySelector('[data-set-panel]');
+      const m = MODULES[settingsTab];
+      if (m && panel && root[m[0]]) Promise.resolve(root[m[0]].mount(panel)).catch(() => { panel.innerHTML = `<p>تعذّر تحميل ${esc(m[1])}.</p>`; });
+      host.querySelectorAll('[data-set-tab]').forEach((b) => b.addEventListener('click', () => {
+        settingsTab = b.dataset.setTab; PANELS.settings(host).then(() => { const n = host.querySelector(`[data-set-tab="${settingsTab}"]`); if (n && n.focus) n.focus(); });
+      }));
+      const form = host.querySelector('[data-live-settings]');
+      if (settingsTab === 'ops' && form) form.addEventListener('submit', async (e) => {
         e.preventDefault(); const f = e.target;
-        const r1 = await call('POST', '/admin/settings', { autoAssign: f.autoAssign.checked, customerFee: f.customerFee.checked });
-        const r2 = r1.ok ? await call('POST', '/admin/pricing', { markupRate: Number(f.markupRate.value) }) : r1;
-        status(host, r2.ok ? 'تم حفظ الإعدادات على الخادم.' : errText(r2));
+        const r = await call('POST', '/admin/settings', { autoAssign: f.autoAssign.checked, customerFee: f.customerFee.checked });
+        status(host, r.ok ? 'تم حفظ الإعدادات على الخادم.' : errText(r));
       });
     },
     async departments(host) {
@@ -147,14 +154,22 @@
       const [c, p] = await Promise.all([C().request('GET', '/admin/commission'), C().request('GET', '/admin/pricing')]);
       if (!c.ok) { host.innerHTML = frame('العمولات', `<p>${esc(errText(c))}</p>`); return; }
       const rates = c.data.rates || {};
-      host.innerHTML = frame('العمولات', `<dl class="ord-facts"><div><dt>نسبة المنصة على السعر المحدد مسبقًا</dt><dd>${esc(p.ok ? p.data.markupRate : '—')}٪</dd></div>
-        <div><dt>النسبة الافتراضية للطلبات بلا سعر محدد</dt><dd>${esc(c.data.defaultRate)}٪</dd></div></dl>` +
-        table(['القسم', 'نسبة خاصة'], Object.keys(rates).map((k) => [esc(typeof MP !== 'undefined' ? MP.catName(k) : k), esc(rates[k] + '٪')])) +
-        `<form data-live-rate class="ord-dlg-in"><h3>تعديل النسبة الافتراضية</h3><label class="hs-grid-field"><span>النسبة (٪)</span><input type="number" name="rate" min="0" max="100" step="0.5" value="${esc(c.data.defaultRate)}"></label>
-         <p><button type="submit" class="adm-btn adm-btn-p">حفظ</button></p></form>`);
+      /* Both platform rates in ONE form (the markup used to be edited from «الإعدادات» too). Only changed values are sent. */
+      const markup = p.ok ? p.data.markupRate : '';
+      host.innerHTML = frame('نسب المنصة', `<form data-live-rate class="ord-dlg-in">
+         <label class="hs-grid-field"><span>نسبة المنصة (٪) — بتتضاف على المصنعية في عروض الفنيين والأسعار الثابتة، والعميل بيشوف الإجمالي</span><input type="number" name="markupRate" min="0" max="100" step="0.5" value="${esc(markup)}" ${p.ok ? '' : 'disabled'}></label>
+         <label class="hs-grid-field"><span>النسبة الاحتياطية (٪) — للطلبات اللي اتقفلت من غير سعر متفق عليه</span><input type="number" name="rate" min="0" max="100" step="0.5" value="${esc(c.data.defaultRate)}"></label>
+         <p><button type="submit" class="adm-btn adm-btn-p">حفظ النسب</button></p></form>` +
+        (Object.keys(rates).length ? '<h3>نسب خاصة لبعض الأقسام</h3>' + table(['القسم', 'نسبة خاصة'], Object.keys(rates).map((k) => [esc(typeof MP !== 'undefined' ? MP.catName(k) : k), esc(rates[k] + '٪')])) : '') +
+        '<p class="ord-muted">النسبة الخاصة لفني معيّن بتتحط من «تشغيل السوق › مقدمو الخدمة».</p>');
       host.querySelector('[data-live-rate]').addEventListener('submit', async (e) => {
-        e.preventDefault(); const r = await call('POST', '/admin/commission', { defaultRate: Number(e.target.rate.value) });
-        if (r.ok) return PANELS.commissions(host); status(host, errText(r));
+        e.preventDefault(); const f = e.target;
+        const tasks = [];
+        if (f.markupRate && !f.markupRate.disabled && String(f.markupRate.value) !== String(markup)) tasks.push(() => call('POST', '/admin/pricing', { markupRate: Number(f.markupRate.value) }));
+        if (String(f.rate.value) !== String(c.data.defaultRate)) tasks.push(() => call('POST', '/admin/commission', { defaultRate: Number(f.rate.value) }));
+        if (!tasks.length) { status(host, 'مفيش تغيير.'); return; }
+        for (const t of tasks) { const r = await t(); if (!r.ok) { status(host, errText(r)); return; } }
+        await PANELS.commissions(host); status(host, 'تم حفظ النسب على الخادم.');
       });
     },
     async reports(host) {
@@ -194,7 +209,19 @@
     try { await p(host); } catch (e) { host.innerHTML = frame('', '<p>تعذّر تحميل البيانات من الخادم.</p>'); }
     return true;
   }
-  const api = Object.freeze({ mount, ids: Object.keys(PANELS) });
+  /* Page descriptions on the live server (the demo pages' own descriptions talk about local simulation). */
+  const DESC = Object.freeze({
+    audit: 'مين عمل إيه وإمتى: الدخول بالأكواد، مفاتيح الطوارئ، وكل تعديل من مركز الإدارة.',
+    settings: 'إعدادات التشغيل، أرقام الدعم، الملخصات، العروض، الذكاء الاصطناعي ومحتوى الموقع — قسم واحد في المرة.',
+    departments: 'إدارات الفريق: أضف إدارة أو وقّفها.',
+    security: 'أكواد الدخول والتحقق بخطوتين وجلسات كل موظف.',
+    notifications: 'ابعت إشعار داخل التطبيق للعملاء أو للفنيين.',
+    commissions: 'النسبة اللي المنصة بتاخدها على المصنعية — بتتعدّل من هنا بس.',
+    reports: 'الطلبات حسب الحالة والمعاملات المكتملة.',
+    'super-dashboard': 'أهم أرقام المنصة.',
+    services: 'الخدمات والأسئلة والمحافظات اللي العميل بيشوفها، ونشرها للتطبيق.'
+  });
+  const api = Object.freeze({ mount, ids: Object.keys(PANELS), DESC });
   root.HSAdminLivePanels = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

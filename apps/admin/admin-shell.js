@@ -45,13 +45,11 @@
       { id: 'complaints', label: 'الشكاوى', icon: 'warn' },
       { id: 'reviews', label: 'التقييمات', icon: 'star' },
       { id: 'notifications', label: 'الإشعارات', icon: 'bell' } ] },
-    { id: 'catalog', label: 'الكتالوج والأسعار', items: [
+    { id: 'business', label: 'الكتالوج والفلوس', items: [
+      { id: 'services', label: 'الخدمات والأسئلة', icon: 'p-service' },
       { id: 'categories', label: 'التصنيفات والأسعار', icon: 'book' },
-      { id: 'services', label: 'الخدمات', icon: 'p-service' } ] },
-    { id: 'money', label: 'المالية', items: [
-      { id: 'commissions', label: 'العمولات', icon: 'earnings' },
-      { id: 'settlements', label: 'التسويات والتحصيل', icon: 'wallet' } ] },
-    { id: 'numbers', label: 'الأرقام', items: [
+      { id: 'commissions', label: 'نسب المنصة', icon: 'earnings' },
+      { id: 'settlements', label: 'التسويات والتحصيل', icon: 'wallet' },
       { id: 'insights', label: 'الإحصائيات والتقارير', icon: 'info' } ] },
     { id: 'platform', label: 'إدارة المنصة', items: [
       { id: 'controls', label: 'الطوارئ والصيانة', icon: 'power' },
@@ -64,6 +62,16 @@
       { id: 'audit', label: 'سجل الإداريين', icon: 'clock' },
       { id: 'settings', label: 'الإعدادات', icon: 'settings' } ] }
   ];
+  /* Sections (2026-11-27): related pages share ONE menu entry and appear as tabs above each other. Every page keeps its
+     own route, permission and actions — the menu is shorter, nothing is removed. Key = the menu entry (first page). */
+  const SECTIONS = {
+    dashboard: { label: 'مهام اليوم', pages: ['dashboard', 'alerts', 'tickets'] },
+    complaints: { label: 'الشكاوى والتقييمات', pages: ['complaints', 'reviews'] },
+    services: { label: 'الكتالوج والأسعار', pages: ['services', 'categories'] },
+    commissions: { label: 'الفلوس', pages: ['commissions', 'settlements'] },
+    workforce: { label: 'الفريق والصلاحيات', pages: ['workforce', 'departments', 'roles', 'permissions', 'security', 'audit'] }
+  };
+  const sectionOf = (id) => Object.keys(SECTIONS).find((k) => SECTIONS[k].pages.includes(id)) || null;
   /* Pages that exist but are reached from a parent page, not from the menu. */
   const HIDDEN_PAGES = { 'employee-details': { label: 'تفاصيل الموظف', parent: 'workforce' },
     finance: { label: 'الماليات', parent: 'insights' }, reports: { label: 'التقارير', parent: 'insights' }, 'super-dashboard': { label: 'لوحة المالك', parent: 'insights' } };
@@ -82,7 +90,12 @@
   const findItem = (id) => Router.findItem(NAV, id);
   const parseHash = (hash) => Router.parse(hash);
   /** Breadcrumb trail as plain data: [{label, id?}] — last item is the current page. */
-  const breadcrumbsFor = (id, titleOverride) => Router.breadcrumbs(NAV, HIDDEN_PAGES, id, titleOverride);
+  const breadcrumbsFor = (id, titleOverride) => {
+    const trail = Router.breadcrumbs(NAV, HIDDEN_PAGES, id, titleOverride);
+    const key = !HIDDEN_PAGES[id] && sectionOf(id);   /* a section page: الإدارة › group › section › page */
+    if (key) trail.splice(trail.length - 1, 0, { label: SECTIONS[key].label, id: key });
+    return trail;
+  };
   /* Presentation-only access check (set by apps/admin/app.js from permission-guard.js). Default: everything visible. */
   let canViewRoute = () => true;
 
@@ -106,11 +119,21 @@
     const ready = it.ready !== undefined ? it.ready : !!pages[it.id];
     const ico = `<span class="adm-ico" aria-hidden="true">${icon(it.icon)}</span>`;
     if (ready) {
-      return `<li><a class="adm-link" href="#/${esc(it.id)}" data-nav="${esc(it.id)}">${ico}<span class="adm-lbl">${esc(it.label)}</span></a></li>`;
+      return `<li><a class="adm-link" href="#/${esc(sectionEntry(it.id))}" data-nav="${esc(it.id)}" title="${esc(it.label)}">${ico}<span class="adm-lbl">${esc(it.label)}</span></a></li>`;
     }
     return `<li><span class="adm-link is-soon" role="link" aria-disabled="true" data-nav="${esc(it.id)}">${ico}<span class="adm-lbl">${esc(it.label)}</span><span class="adm-soon">قريبًا</span></span></li>`;
   };
-  const navHtml = () => NavBuilder.build(NAV, { isRegistered: (id) => !!pages[id], canView: (id) => canViewRoute(id) }).map((g) =>
+  /* Section pages this admin may open (registered + allowed), in tab order. */
+  const sectionPages = (key) => (SECTIONS[key] ? SECTIONS[key].pages.filter((p) => pages[p] && canViewRoute(p)) : []);
+  /* A section's menu link opens its first page this admin may open (a role may lack the first one). */
+  const sectionEntry = (id) => (SECTIONS[id] ? (sectionPages(id)[0] || id) : id);
+  /* The menu: one entry per section (named after the section), the other section pages become tabs. */
+  const menuNav = () => NAV.map((g) => ({ id: g.id, label: g.label,
+    items: g.items.filter((it) => { const s = sectionOf(it.id); return !s || s === it.id; })
+      .map((it) => (SECTIONS[it.id] ? Object.assign({}, it, { label: SECTIONS[it.id].label }) : it)) }));
+  const navHtml = () => NavBuilder.build(menuNav(), {
+    isRegistered: (id) => (SECTIONS[id] ? SECTIONS[id].pages.some((p) => !!pages[p]) : !!pages[id]),
+    canView: (id) => (SECTIONS[id] ? SECTIONS[id].pages.some((p) => canViewRoute(p)) : canViewRoute(id)) }).map((g) =>
     `<section class="adm-group" aria-labelledby="adm-g-${esc(g.id)}"><h2 class="adm-group-t" id="adm-g-${esc(g.id)}">${esc(g.label)}</h2><ul class="adm-list">${g.items.map(navItemHtml).join('')}</ul></section>`
   ).join('');
 
@@ -143,6 +166,7 @@
       <div class="adm-titles"><h1 class="adm-title" id="adm-title" tabindex="-1"></h1><p class="adm-desc" id="adm-desc"></p></div>
       <div class="adm-actions" id="adm-actions"></div>
     </div>
+    <nav class="adm-tabs" id="adm-tabs" aria-label="صفحات القسم" hidden></nav>
     <div class="adm-content" id="adm-content" aria-live="polite" aria-busy="false"></div>
   </main>
   <div class="adm-sr" id="adm-live" role="status" aria-live="polite"></div>
@@ -154,7 +178,7 @@
   /* marketplace = providers/requests/assignment/finance/complaints on the API; workforce/roles/permissions = server RBAC */
   const LIVE_PAGES = new Set(['marketplace', 'workforce', 'employee-details', 'roles', 'permissions',
     'orders', 'customers', 'providers', 'complaints', 'reviews', 'categories', 'quotes', 'finance', 'dashboard', 'settlements',
-    'controls', 'tech', 'alerts', 'tickets', 'callcenter']);   /* these read real data via HSAdminLive (modules/admin-live.js); categories = the real catalogue, read-only */
+    'controls', 'tech', 'alerts', 'tickets', 'callcenter', 'insights']);   /* these read real data via HSAdminLive (modules/admin-live.js); categories = the real catalogue, read-only; insights = live KPIs + server panels */
   const notConnectedView = (id, title) => `<div class="adm-state is-soon" data-adm-not-connected="${esc(id)}">${icon('info')}<h2>${esc(title)} — غير مرتبطة بالخادم بعد</h2><p>هذه الصفحة ما زالت مبنية على بيانات تجريبية محلية، لذلك لا تُعرض في بيئة الإنتاج. العمليات الحية متاحة في «تشغيل السوق» و«فريق العمل».</p>${id === DEFAULT_ROUTE ? '<div data-adm-live-summary role="status" aria-live="polite"><p>جارٍ تحميل الأرقام الحية من الخادم…</p></div>' : ''}<a class="adm-btn adm-btn-p" href="#/marketplace">فتح تشغيل السوق</a></div>`;
   const SUMMARY_LABELS = { requests: 'كل الطلبات', unassigned: 'طلبات بلا مقدم خدمة', providers: 'مقدمو الخدمة', pending: 'تسجيلات بانتظار المراجعة', openComplaints: 'شكاوى مفتوحة', uncollected: 'عمولات غير محصّلة' };
   const fillLiveSummary = (token) => {
@@ -199,8 +223,20 @@
     });
   };
 
+  /* Tabs for the pages of the current section (links: each tab is its own route, so Back and deep links work). */
+  const setTabs = (id) => {
+    const base = HIDDEN_PAGES[id] ? HIDDEN_PAGES[id].parent : id;
+    const key = sectionOf(base), list = key ? sectionPages(key) : [];
+    if (list.length < 2) { els.tabs.hidden = true; els.tabs.innerHTML = ''; return; }
+    els.tabs.setAttribute('aria-label', 'صفحات ' + SECTIONS[key].label);
+    els.tabs.innerHTML = list.map((p) => { const it = findItem(p); const on = p === base;
+      return `<a class="adm-tab${on ? ' is-active' : ''}" href="#/${esc(p)}" data-adm-tab="${esc(p)}"${on ? ' aria-current="page"' : ''}>${esc(it ? it.label : p)}</a>`; }).join('');
+    els.tabs.hidden = false;
+  };
+
   const markActive = (id) => {
-    const key = HIDDEN_PAGES[id] ? HIDDEN_PAGES[id].parent : id;
+    const base = HIDDEN_PAGES[id] ? HIDDEN_PAGES[id].parent : id;
+    const key = sectionOf(base) || base;
     els.nav.querySelectorAll('[data-nav]').forEach((n) => {
       const on = n.getAttribute('data-nav') === key;
       n.classList.toggle('is-active', on);
@@ -227,6 +263,7 @@
     const ctx = { id, route: '#/' + id, shell: api, signal: ac.signal };
 
     markActive(id);
+    setTabs(id);
     els.content.setAttribute('aria-busy', 'false');
 
     let title, desc = '';
@@ -250,6 +287,7 @@
       /* Firebase backend: pages still built on local demo fixtures never show those fixtures as real data */
       setActions(null, ctx);
       if (root.HSAdminLivePanels && root.HSAdminLivePanels.ids.includes(id)) {   /* server-backed panel (modules/admin-live-panels.js) */
+        const d = (root.HSAdminLivePanels.DESC || {})[id] || ''; els.desc.textContent = d; els.desc.hidden = !d;   /* the demo page's description talks about local simulation */
         mountContent('<div data-adm-live-panel="' + esc(id) + '"></div>');
         const host = els.content.querySelector('[data-adm-live-panel]'); if (host) root.HSAdminLivePanels.mount(id, host);
       } else {
@@ -353,7 +391,7 @@
       const q = (s) => host.querySelector(s);
       els = { host, root: q('.adm'), side: q('#adm-side'), nav: q('#adm-nav'), toggle: q('#adm-toggle'), collapse: q('#adm-collapse'),
         backdrop: q('#adm-backdrop'), main: q('#adm-main'), crumbs: q('#adm-crumbs'), title: q('#adm-title'), desc: q('#adm-desc'),
-        actions: q('#adm-actions'), content: q('#adm-content'), live: q('#adm-live') };
+        actions: q('#adm-actions'), tabs: q('#adm-tabs'), content: q('#adm-content'), live: q('#adm-live') };
       mq = typeof root.matchMedia === 'function' ? root.matchMedia(DESKTOP_MQ) : null;
       applyCollapsed(store.get());
       els.toggle.addEventListener('click', toggleSidebar);
@@ -372,7 +410,9 @@
       renderRoute(parseHash(root.location.hash), { keepFocus: true });
       return api;
     },
-    _internals: { parseHash, breadcrumbsFor, flatItems, findItem, esc, HIDDEN_PAGES }
+    /** Pages this admin can open (registered + allowed), including section tabs — used by the Ctrl+K palette. */
+    openablePages: () => flatItems().filter((i) => pages[i.id] && canViewRoute(i.id)),
+    _internals: { parseHash, breadcrumbsFor, flatItems, findItem, esc, HIDDEN_PAGES, SECTIONS, sectionOf, menuNav }
   };
 
   root.HSAdminShell = api;

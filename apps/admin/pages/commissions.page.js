@@ -222,7 +222,7 @@
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (root.HSAdminShell && typeof root.HSAdminShell.registerPage === 'function') {
     root.HSAdminShell.registerPage('commissions', {
-      title: 'العمولات',
+      title: 'نسب المنصة',
       description: 'قواعد العمولة وتواريخ سريانها والعمولات السارية، مع معاينة الأثر الافتراضي وسجل تعديلات محلي — عرض تجريبي فقط.',
       actions: [
         { id: 'add', label: 'إضافة قاعدة', kind: 'primary', onClick: () => { if (createHook) createHook(); } },

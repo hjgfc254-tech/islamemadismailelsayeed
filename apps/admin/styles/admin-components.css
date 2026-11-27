@@ -366,6 +366,13 @@ a.adm-link:hover{background:var(--nav-dark-hover);color:var(--on-brand)}
 .ins-tabs{display:flex;flex-wrap:wrap;gap:var(--sp-1);margin-bottom:var(--sp-4);padding:var(--sp-1);border-radius:var(--r-lg);background:var(--surface-sunken)}
 .ins-tabs button{min-height:var(--sp-7);padding:0 var(--sp-4);border:0;border-radius:var(--r-md);background:transparent;color:var(--text-secondary);font:inherit;font-weight:700;cursor:pointer}
 .ins-tabs button[aria-selected="true"]{background:var(--surface-primary);color:var(--text-primary);box-shadow:var(--shadow-1)}
+/* Section tabs (admin-shell SECTIONS): sibling pages of one menu entry. Scrolls sideways on narrow screens. */
+.adm-tabs{display:flex;gap:var(--sp-1);margin-block-end:var(--sp-4);padding:var(--sp-1);border-radius:var(--r-lg);background:var(--surface-sunken);overflow-x:auto;scrollbar-width:thin}
+.adm-tabs[hidden]{display:none}
+.adm-tab{display:inline-flex;align-items:center;flex:0 0 auto;min-height:var(--sp-7);padding-inline:var(--sp-4);border:1px solid transparent;border-radius:var(--r-md);color:var(--text-secondary);font-weight:700;text-decoration:none;white-space:nowrap}
+.adm-tab:hover{color:var(--text-primary)}
+.adm-tab.is-active{background:var(--surface-primary);border-color:var(--border-default);color:var(--text-primary)}
+.adm-tab:focus-visible{outline:2px solid currentColor;outline-offset:2px}
 .ins-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,15rem),1fr));gap:var(--sp-3)}
 .ins-card{display:grid;gap:var(--sp-2);align-content:start;padding:var(--sp-4);border:1px solid var(--border-subtle);border-radius:var(--r-lg);background:var(--surface-primary)}
 .ins-card h3{margin:0;font-size:var(--fs-md);color:var(--text-secondary)}

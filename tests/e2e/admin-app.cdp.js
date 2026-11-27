@@ -41,12 +41,15 @@ async function run({ exe, wsUrl }) {
     ok(await waitFor('!document.querySelector("#adm-account").hidden && /تبديل الحساب/.test(document.querySelector("#adm-account").textContent)'), `${tag} header shows the demo account and a switch control`);
     ok(await evaluate('HSAdminRbac.state.actor === "owner"'), `${tag} RBAC actor follows the signed-in employee`);
     const ownerNav = await navIds();
-    ok(ownerNav.includes('roles') && ownerNav.includes('permissions') && ownerNav.includes('orders'), `${tag} owner nav includes team & operations pages`);
+    ok(ownerNav.includes('workforce') && ownerNav.includes('orders') && !ownerNav.includes('roles'), `${tag} owner nav includes the team section & operations pages (roles is a tab of the team section)`);
     ok(await noOverflow(), `${tag} shell: no horizontal overflow`);
 
     // Extracted modules/* working inside their pages (owner, desktop).
     if (w === 1280) {
-      await evaluate('location.hash = "#/roles"; true');
+      await evaluate('location.hash = "#/workforce"; true');
+      ok(await waitFor('[...document.querySelectorAll("#adm-tabs [data-adm-tab]")].map(a=>a.dataset.admTab).join()==="workforce,departments,roles,permissions,security,audit"', 4000), `${tag} the team section shows its pages as tabs`);
+      await evaluate('document.querySelector("#adm-tabs [data-adm-tab=\\"roles\\"]").click(); true');
+      ok(await waitFor('location.hash==="#/roles" && document.querySelector("#adm-tabs [aria-current=page]")?.dataset.admTab==="roles" && document.querySelector("#adm-nav [data-nav=workforce]").classList.contains("is-active")', 4000), `${tag} a tab opens its page; the menu keeps the section active`);
       ok(await waitFor('!!document.querySelector("#adm-content tr[data-row] [data-act=\\"details\\"]")', 5000), `${tag} roles page renders its grid`);
       const customId = await evaluate('HSAdminRbac.state.roles.find(r=>!r.system).id');
       await evaluate(`document.querySelector('#adm-content tr[data-row="${customId}"] [data-act="details"]').click(); true`);

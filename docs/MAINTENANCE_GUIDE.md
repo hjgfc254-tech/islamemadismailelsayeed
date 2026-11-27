@@ -365,6 +365,14 @@ mode the pages listed under *live* use real data: `modules/admin-live.js` maps a
 `modules/admin-live-panels.js` replaces fixture pages with server panels (audit, settings, departments, security,
 notifications, commissions, reports, super-dashboard, services).
 
+**Sections (2026-11-27):** `SECTIONS` in `admin-shell.js` groups related pages under ONE menu entry and shows them as
+tabs (`#adm-tabs`, links): «مهام اليوم» (dashboard, alerts, tickets), «الشكاوى والتقييمات» (complaints, reviews),
+«الكتالوج والأسعار» (services, categories), «الفلوس» (commissions, settlements), «الفريق والصلاحيات» (workforce,
+departments, roles, permissions, security, audit). Every page keeps its own route, permission and actions; a menu entry
+shows when the admin may open any of its pages and links to the first one allowed. The Ctrl+K palette lists every
+openable page (`HSAdminShell.openablePages()`). In live mode «الإعدادات» shows one section at a time, and both platform
+rates (markup + fallback) are edited only in «نسب المنصة» (`#/commissions`).
+
 | Page | Page file (+ modules) | Permission | Server routes / data |
 |---|---|---|---|
 | `#/dashboard` | `pages/admin-dashboard.page.js` (+ `ops-center.js` work box, `mini-charts.js`) | open to every employee | `GET /admin/summary`, `/admin/alerts`, `/admin/tickets`, sync read model |
@@ -381,9 +389,9 @@ notifications, commissions, reports, super-dashboard, services).
 | `#/notifications` | `pages/notifications-management.page.js` (+ live panel) | `notifications.view` | `GET /admin/notifications/broadcasts`, `POST /admin/notifications/broadcast` |
 | `#/categories` | `pages/categories-management.page.js` | `categories.view` | `GET/POST /admin/pricing` |
 | `#/services` | `pages/services-management.page.js` (+ live panel) | `services.view` | `GET /admin/pricing` (panel), catalogue |
-| `#/commissions` | `pages/commissions.page.js` (+ live panel) | `finance.view` | `GET/POST /admin/commission`, `GET /admin/pricing` |
+| `#/commissions` | `pages/commissions.page.js` (+ live panel «نسب المنصة») | `finance.view` | `GET/POST /admin/commission`, `GET/POST /admin/pricing` (markup) |
 | `#/settlements` | `pages/settlements.page.js` (+ admin-live) | `finance.view` | `POST /admin/transactions/:id/collection` |
-| `#/insights` | `pages/insights.page.js` | `orders.view` | sync read model |
+| `#/insights` | `pages/insights.page.js` (live: reports / owner tabs use the live panels) | `orders.view` | sync read model |
 | `#/finance` (hidden, parent insights) | `pages/finance-dashboard.page.js` | `finance.view` | sync read model |
 | `#/reports` (hidden) | `pages/reports.page.js` (+ live panel) | `finance.view` | sync read model |
 | `#/super-dashboard` (hidden) | `pages/super-dashboard.page.js` (+ live panel) | owner only | `GET /admin/summary`, sync |
@@ -396,7 +404,7 @@ notifications, commissions, reports, super-dashboard, services).
 | `#/permissions` | `pages/permissions.page.js` | `permissions.view` | `POST /admin/rbac/overrides/:employeeId` |
 | `#/security` | `pages/security.page.js` (+ live panel) | owner only | `/admin/security/*` |
 | `#/audit` | `pages/audit-log.page.js` (+ live panel, `client-errors.js`) | owner only | `GET /admin/audit`, `/admin/client-errors*` |
-| `#/settings` | `pages/system-settings.page.js` (+ live panel, `site-content-editor.js`, `marketing-editor.js`, `support-settings.js`, `digest-settings.js`, `ai-settings.js`) | owner only | `/admin/settings`, `POST /admin/pricing` (markup), `/admin/content`, `/admin/media`, `/admin/marketing`, `/admin/support-contacts`, `/admin/data-policy`, `/admin/digest/*`, `/admin/ai*` |
+| `#/settings` | `pages/system-settings.page.js` (+ live panel, `site-content-editor.js`, `marketing-editor.js`, `support-settings.js`, `digest-settings.js`, `ai-settings.js`) | owner only | `/admin/settings`, `/admin/content`, `/admin/media`, `/admin/marketing`, `/admin/support-contacts`, `/admin/data-policy`, `/admin/digest/*`, `/admin/ai*` |
 
 Header extras for every admin: «الملخصات» (`/admin/digest/me`), code change (`session.adminCode`), Ctrl+K palette
 (`modules/command-palette.js`).

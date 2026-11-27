@@ -67,13 +67,28 @@ test('server: only the owner flips a switch; maintenance refuses customer change
 test('navigation: grouped by responsibility; one statistics page; owner area holds emergency, staff, security, log, settings', () => {
   const shell = require(path.join(ROOT, 'apps/admin/admin-shell.js'));
   const groups = shell.NAV.map((g) => g.label);
-  assert.deepEqual(groups, ['اليوم', 'التشغيل', 'الدعم والجودة', 'الكتالوج والأسعار', 'المالية', 'الأرقام', 'إدارة المنصة']);
+  assert.deepEqual(groups, ['اليوم', 'التشغيل', 'الدعم والجودة', 'الكتالوج والفلوس', 'إدارة المنصة']);
   const platform = shell.NAV.find((g) => g.id === 'platform').items.map((i) => i.id);
   assert.deepEqual(platform, ['controls', 'tech', 'workforce', 'departments', 'roles', 'permissions', 'security', 'audit', 'settings']);
   const flat = shell._internals.flatItems().map((i) => i.id);
   for (const statsPage of ['finance', 'reports', 'super-dashboard']) assert.ok(!flat.includes(statsPage) && shell._internals.HIDDEN_PAGES[statsPage].parent === 'insights', statsPage + ' lives under «الإحصائيات»');
   const G = require(path.join(ROOT, 'apps/admin/permission-guard.js'));
   assert.deepEqual([...G.OWNER_ONLY].sort(), ['audit', 'controls', 'security', 'settings', 'super-dashboard']);
+});
+
+test('navigation: sections — related pages share one menu entry and show as tabs; every page keeps its route', () => {
+  const shell = require(path.join(ROOT, 'apps/admin/admin-shell.js'));
+  const I = shell._internals;
+  const menu = I.menuNav().flatMap((g) => g.items);
+  const menuIds = menu.map((i) => i.id);
+  assert.deepEqual(menuIds, ['dashboard', 'callcenter', 'marketplace', 'orders', 'quotes', 'providers', 'customers', 'complaints', 'notifications', 'services', 'commissions', 'insights', 'controls', 'tech', 'workforce', 'settings']);
+  assert.equal(menu.find((i) => i.id === 'workforce').label, 'الفريق والصلاحيات');
+  for (const key of Object.keys(I.SECTIONS)) for (const p of I.SECTIONS[key].pages) {
+    assert.ok(I.findItem(p), p + ' stays a routable page');
+    assert.equal(I.sectionOf(p), key);
+  }
+  /* a section page sits under its section in the breadcrumbs */
+  assert.deepEqual(I.breadcrumbsFor('roles').map((c) => c.label), ['الإدارة', 'إدارة المنصة', 'الفريق والصلاحيات', 'الأدوار']);
 });
 
 test('work pages hide their own statistic strips; «الإحصائيات» keeps them', () => {

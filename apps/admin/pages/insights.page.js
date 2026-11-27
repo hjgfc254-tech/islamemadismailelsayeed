@@ -75,6 +75,9 @@
     const t = TABS.find((x) => x.id === tab) || TABS[0];
     if (t.id === 'overview') { host.innerHTML = ''; if (root.HSAdminDashboardPage && root.HSAdminDashboardPage.kpiView) root.HSAdminDashboardPage.kpiView(host); return; }
     if (t.id === 'areas') { host.innerHTML = areasHtml(); return; }
+    /* live server: reports / owner board come from the server panels (their demo pages use local fixtures) */
+    const live = root.HSAdminLive && root.HSAdminLive.enabled() && root.HSAdminLivePanels && root.HSAdminLivePanels.ids.includes(t.page);
+    if (live) { await root.HSAdminLivePanels.mount(t.page, host); return; }
     const def = root.HSAdminShell && root.HSAdminShell.getPage ? root.HSAdminShell.getPage(t.page) : null;
     if (!def) { host.innerHTML = '<p class="ord-muted">الصفحة غير متاحة.</p>'; return; }
     host.innerHTML = '<div aria-busy="true" class="sk sk-bar"></div>';

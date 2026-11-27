@@ -133,7 +133,7 @@ async function run({ exe, wsUrl }) {
   await cdp.send('Emulation.setDeviceMetricsOverride', { width: 1280, height: 900, deviceScaleFactor: 1, mobile: false });
   const OWNER = `if(!sessionStorage.getItem('hs_admin_demo_session')){sessionStorage.setItem('hs_admin_demo_session',HSAdminRbac.state.roster.find(e=>e.role==='owner'&&e.status==='active').id);location.reload();}`;
   await screen('admin', 'admin picker', A, `sessionStorage.removeItem('hs_admin_demo_session');location.hash='';`);
-  const adminRoutes = await (async () => { await load(A + '#/dashboard', OWNER); await sleep(600); return evaluate('[...document.querySelectorAll("#adm-nav a[data-nav]")].map(a=>a.getAttribute("data-nav"))'); })();
+  const adminRoutes = await (async () => { await load(A + '#/dashboard', OWNER); await sleep(600); return evaluate('HSAdminShell.openablePages().map(i=>i.id)'); })();   /* menu entries + section tabs */
   for (const r of adminRoutes) await screen('admin', 'admin ' + r, A + '#/' + r, OWNER);
   for (const t of ['orders', 'customers', 'complaints', 'commissions']) await screen('admin', 'admin marketplace/' + t, A + '#/marketplace', OWNER + `;setTimeout(()=>{},0);document.querySelector('[data-mk-tab="${t}"]')&&document.querySelector('[data-mk-tab="${t}"]').click()`);
 

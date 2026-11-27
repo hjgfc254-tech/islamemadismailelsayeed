@@ -436,7 +436,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md).",
-      "sha256": "3f8504000ff6ba6f7b4db7f5103f02cafb000d2c2f1f8401683a14774a572728",
+      "sha256": "9b2f193617531578650bcf4b729319db63363e7060194d384026ab32511cb6be",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -473,7 +473,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 26560
+      "bytes": 29924
     },
     {
       "path": "apps/admin/app.js",
@@ -782,8 +782,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "48e85143ee6d0a07bbb02dbba12b49449d25ade07e8fa88e18d4608433a3bf8a",
-      "bytes": 22660
+      "sha256": "5cac1fd2cb4b1b566e14c3c4f2377c543c0fae80c4ea557b5860635ee8ae3876",
+      "bytes": 25432
     },
     {
       "path": "apps/admin/modules/admin-live.js",
@@ -940,8 +940,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "ccbc904ede71cbe930c8e06db2960a576579d5c0672cff79cd6c6db328cbbfdf",
-      "bytes": 5202
+      "sha256": "5604fef54d32a849e25b84781e55c1f98a8555c069d583c1c40cce156948f57e",
+      "bytes": 5445
     },
     {
       "path": "apps/admin/modules/digest-settings.js",
@@ -1424,7 +1424,7 @@
       "next_action": "None for this file.",
       "explicit_references": [],
       "notes": "IMPLEMENTED (DEMO). tests/unit/commissions.test.js (14 cases); browser-checked 1280/768/390px. Registers badge domain `commissionrule`. Fixed demo date 2026-11-09. Depends on finance-dashboard.page.js for categories and 30-day sample volumes.",
-      "sha256": "b595bced3b8ef93cc419eecec111ec1d8e2f0131dc998c00c59da64380b1f06c",
+      "sha256": "86b10e481ba23a0921a77ac40ae1e942701c93b50e6c949c0923b818547bbb70",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -1461,7 +1461,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 22287
+      "bytes": 22290
     },
     {
       "path": "apps/admin/pages/complaints-management.page.js",
@@ -1746,8 +1746,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "c6b8cd3c5519720066a8e7e21546ecc5dac17447e43850a269b3b4cf5f5f4f2b",
-      "bytes": 11407
+      "sha256": "6029c97db8252e4e98707ae42d38622d3f84402b43c4fa9c37f358f24514723c",
+      "bytes": 11732
     },
     {
       "path": "apps/admin/pages/marketplace.page.js",
@@ -2673,7 +2673,7 @@
       "next_action": "Shell done. Next: register real admin pages (dashboard first) via HSAdminShell.registerPage and add shared admin components (buttons/forms/dialogs/tables).",
       "explicit_references": [],
       "notes": "Frontend demo shell only. Admin pages remain PLACEHOLDERS; no authentication or server-side authorization exists. Verified by tests/unit/admin-shell.test.js and a Chromium run (see docs/TEST_RESULTS.md). Also holds .hs-badge styles for shared/components/status-badge.js. Also holds .hs-grid styles for shared/components/data-grid.js.",
-      "sha256": "17ccb11a96f3d9671dd1c9c53f3610e5dfa8dc6d4b92b1bef6bd7d43671c3cf6",
+      "sha256": "670c64cf0daefb6c1dbce7474a96029a32ca3a77518cc31a6204978b2a6194a9",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -2710,7 +2710,7 @@
         "team_handoff": "على المهندس المنفذ قراءة الملف واعتمادياته واختباراته قبل التعديل؛ يذكر الملفات التي غيّرها، سبب التغيير، المخاطر، والاختبارات ونتائجها. لا يوسع نطاق المهمة دون توضيح واعتماد.",
         "implementation_truth": "الحالة الحالية في الحقل status هي مرجع الجرد؛ الوصف المستهدف لا يعني أن التنفيذ موجود."
       },
-      "bytes": 50870
+      "bytes": 51682
     },
     {
       "path": "apps/admin/styles/admin-responsive.css",
@@ -11198,7 +11198,7 @@
       "next_action": "Review in the relevant task; do not duplicate existing behavior.",
       "explicit_references": [],
       "notes": "Added during the 2026-11-09 environment normalization pass.",
-      "sha256": "cced6fac293a9a30ddc012b53dfbb377a1c828bc2e76887df05d79477f32e0dd",
+      "sha256": "b7a0246694283236915f5511658f1c2d3401d9f6c516f40ce016f8f63f7b20d7",
       "resolved_dependencies": [],
       "dependents": [],
       "functional_title": "HANDOFF_NEXT_AI.md",
@@ -11207,7 +11207,7 @@
       "file_behavior": "Inventory entry only; inspect source for exact behavior.",
       "completion_definition": "File responsibility and actual behavior are verified and covered by appropriate checks.",
       "actual_status_ar": "مضاف إلى الجرد الحالي؛ يحتاج فحصًا بحسب المهمة.",
-      "bytes": 102542
+      "bytes": 104241
     },
     {
       "path": "docs/HANSALEHLAK_MASTER_FUNCTIONAL_ARCHITECTURE.md",
@@ -11239,8 +11239,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "29999b1e5a04a34aecf90470f4a3a4750b4e1be05ca7a5c4ffdc736afbec8953",
-      "bytes": 80887
+      "sha256": "ae46a0f60cf7866fee10b3e6528fd161c4d0870278072b76d57da6de01b4b084",
+      "bytes": 81815
     },
     {
       "path": "docs/MIGRATION_PLAN.md",
@@ -12714,7 +12714,7 @@
       "next_action": "Bump cache key whenever precached runtime assets change; keep manifest and asset precache in sync.",
       "explicit_references": [],
       "notes": "",
-      "sha256": "8b0dc5eb4448ac34103c8a9916be9928c64db7d346de19967eb46aa61816cf3a",
+      "sha256": "f18aed9a43472d7bbb2f79bc3d5fb2f85ff65d3e2ca6e2c9a312387bf94b7635",
       "resolved_dependencies": [],
       "acceptance_criteria": [
         "تمت مراجعة محتوى الملف الفعلي ومسؤوليته مقارنة بالمعمارية.",
@@ -12762,7 +12762,7 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "7a624668bfaf4e35bc1dc34858883a9eaa3628998b74b96167d5c4da8ab14595",
+      "sha256": "b4a1fb3f6637b64f5699346bc9f5ce8f54dd2a21f1abe86c001cbb034251ae95",
       "bytes": 196
     },
     {
@@ -15271,8 +15271,8 @@
       "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
-      "sha256": "8e7752e09b84ad61c6c0b2f58e23ae980569cd637334da213779bd2f590f5a18",
-      "bytes": 9388
+      "sha256": "8d1f95ed4ee1b45a8ac21e5a6b922e99c52fa50038d5cf4fa8889529337bce6c",
+      "bytes": 10079
     },
     {
       "path": "tests/e2e/admin-controls.cdp.js",
@@ -15418,8 +15418,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "8a3f72e7eab6520d1e4215b37f399756826c4402ceaac34f8f4c2d64f3f802ef",
-      "bytes": 13756
+      "sha256": "da9062b5fe7975193be80f760b94e006391d85c10ea30e9c62399ecff06e40a4",
+      "bytes": 13744
     },
     {
       "path": "tests/e2e/lib/a11y-audit.js",
@@ -15988,8 +15988,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "3826f8bb2d5b2ea26e0fa7c2f89a2d6a019ccdb74c804231aedd4bf20c42d1a2",
-      "bytes": 14851
+      "sha256": "24244bdb91c2ff9ba6645824c7f982afcedcb8990b8decd51b5e9603de079e7b",
+      "bytes": 15889
     },
     {
       "path": "tests/unit/admin-runtime.test.js",
@@ -16000,8 +16000,8 @@
       "next_action": "Read when relevant; keep tests/docs aligned with behavior changes.",
       "explicit_references": [],
       "notes": "Classified 2026-11-13 after implementation (Admin runtime batch).",
-      "sha256": "dea976f000f9c55ac801dcf0f6d5c6d59b60bbcef3fc3b838bbabbb4d52927a3",
-      "bytes": 7903
+      "sha256": "ccb6104bfd67bb7d9935a034f215e7941addfc60146e174c176e9768c68a0855",
+      "bytes": 8137
     },
     {
       "path": "tests/unit/admin-shell.test.js",
@@ -16710,8 +16710,8 @@
       "next_action": "Inspect, classify and document before implementation or deletion.",
       "explicit_references": [],
       "notes": "Automatically added by refresh-project-inventory.mjs; manual classification required.",
-      "sha256": "8060a1042ee92a32686bdc94a05bb4f42532883eb0d5a69788831a47e9c23fc7",
-      "bytes": 16296
+      "sha256": "adb68d6b5f05752c5c68099ee18cae933cda0b5af7ef6054c6c904ce9de4a677",
+      "bytes": 16691
     },
     {
       "path": "tests/unit/frontend-contracts.test.js",

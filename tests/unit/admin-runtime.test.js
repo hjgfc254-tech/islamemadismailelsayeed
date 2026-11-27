@@ -111,7 +111,7 @@ test('app bootstrap: picker escapes roster text; the shell yields its auto-mount
 
 test('shell: setAccess hides disallowed items from the nav model and renders a denied state', () => {
   const src = read('apps/admin/admin-shell.js');
-  assert.match(src, /NavBuilder\.build\(NAV, \{ isRegistered: \(id\) => !!pages\[id\], canView: \(id\) => canViewRoute\(id\) \}\)/);
+  assert.match(src, /NavBuilder\.build\(menuNav\(\), \{\s*isRegistered: \(id\) => \(SECTIONS\[id\] \? SECTIONS\[id\]\.pages\.some\(\(p\) => !!pages\[p\]\) : !!pages\[id\]\),\s*canView: \(id\) => \(SECTIONS\[id\] \? SECTIONS\[id\]\.pages\.some\(\(p\) => canViewRoute\(p\)\) : canViewRoute\(id\)\) \}\)/);   // a section entry shows when any of its pages may be opened
   assert.match(src, /if \(denied\) \{ mountContent\(stateView\.denied\(\)\); \}/);
   const shell = require(path.join(ROOT, 'apps/admin/admin-shell.js'));
   assert.equal(typeof shell.setAccess, 'function');
